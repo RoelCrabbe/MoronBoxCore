@@ -135,20 +135,7 @@ function MBC:ToggleButton(Parent, Width, Height)
     end)
 
     function UpdateButtonIcon(Item)
-        if MBR:ItemIsBlacklist(Item) then
-            ToggleButton:SetNormalTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
-            ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
-            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
-            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
-
-            ToggleButton:SetScript("OnEnter", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
-            end)
-
-            ToggleButton:SetScript("OnLeave", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
-            end)
-        else
+        if MBR:ItemExistsInPossibleVendorItems(Item) then
             ToggleButton:SetNormalTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Minus.tga")
             ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Minus.tga")
             ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
@@ -160,6 +147,19 @@ function MBC:ToggleButton(Parent, Width, Height)
 
             ToggleButton:SetScript("OnLeave", function(self)
                 self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
+            end)
+        else
+            ToggleButton:SetNormalTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
+            ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
+            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
+            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+
+            ToggleButton:SetScript("OnEnter", function(self)
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
+            end)
+
+            ToggleButton:SetScript("OnLeave", function(self)
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
             end)
         end
     end
