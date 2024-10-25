@@ -17,65 +17,39 @@ MBC.COLORS = {
     CloseButtonNormal = {0.55, 0, 0, 0.8}, -- Close button normal color (RGBA tuple)
     CloseButtonHover = {1, 0, 0, 0.8}, -- Close button hover color (RGBA tuple)
     ReturnButtonNormal = {0, 0.55, 0, 0.8}, -- Return button normal color (RGBA tuple)
-    ReturnButtonHover = {0.0, 1, 0.0, 0.8} -- Darker green for return button hover (RGBA tuple)
+    ReturnButtonHover = {0.0, 1, 0.0, 0.8}, -- Darker green for return button hover (RGBA tuple)
+    FadeFrame = {0, 0, 0, 0.4} -- Darker green for return button hover (RGBA tuple)
 }
 
 MBC.BACKDROPS = {
     Basic = {
         bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Border.tga",
         tile = false,
-        tileSize = 16,
-        edgeSize = 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 },
-    },
-
-    No_Top = {
-        bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = false,
-        tileSize = 16,
-        edgeSize = 12,
-        insets = { left = 1, right = 1, top = 0, bottom = 1 },
-    },
-
-    Thin = {
-        bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = false,
-        tileSize = 16,
-        edgeSize = 1,
-        insets = { left = 0, right = 0, top = 0, bottom = 0 },
-    },
-
-    Hover = {
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = false,
-        edgeSize = 24,
-        insets = { left = -1, right = -1, top = -1, bottom = -1 },
-    },
-
-    Blizz_Background = {
-        bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
-        tile = true,
         tileSize = 8,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 },
+        edgeSize = 14,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 }
     },
-
-    Blizz_Border = {
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = false,
-        tileSize = 16,
-        edgeSize = 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 },
-    },
-
-    Blizz_Full = {
+    No_Border = {
         bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true,
+        edgeFile = nil,
+        tile = false,
         tileSize = 8,
-        edgeSize = 12,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 },
-    },
+        edgeSize = 14,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 }
+    }
+}
+
+MBC.Button = {
+    Fit = "Auto",
+    Small = 16,
+    Medium = 24,
+    Large = 32,
+    XLarge = 40,
+    XXLarge = 48
+}
+
+MBC.Font = {
+    DefaultSize = 14,
+    DefaultFont = "MoronFont"
 }

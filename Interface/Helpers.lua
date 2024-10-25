@@ -7,7 +7,7 @@ function MBC:ApplyTextColor(Text, Color)
 end
 
 function MBC:GetFont(FontFile)
-    return "Interface\\AddOns\\MoronBoxCore\\Media\\Fonts\\"..FontFile
+    return "Interface\\AddOns\\MoronBoxCore\\Media\\Fonts\\"..FontFile..".ttf"
 end
 
 function MBC:ApplyCustomFont(FontString, Size, Flags)
@@ -16,7 +16,7 @@ function MBC:ApplyCustomFont(FontString, Size, Flags)
     Size = Size or 14
     Flags = Flags or nil
 
-    FontString:SetFont(MBC:GetFont("MoronFont.ttf"), Size, Flags)
+    FontString:SetFont(MBC:GetFont(MBC.Font.DefaultFont), Size, Flags)
 end
 
 function MBC:Print(Text)

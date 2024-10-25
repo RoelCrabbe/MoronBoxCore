@@ -25,18 +25,30 @@ function MBC:CreateButton(Parent, Width, Height, Label)
     if not Parent or not Label then return end
 
     local Button = CreateFrame("Button", nil, Parent)
-    Button:SetSize(Width, Height)
+    Button:SetHeight(Height)
     Button:SetBackdrop(MBC.BACKDROPS.Basic)
     Button:SetBackdropColor(unpack(MBC.COLORS.Background))
     MBC:ApplyHoverEffect(Button, MBC.COLORS.Background, MBC.COLORS.HoverBackground)
 
+    local FontSize = math.floor((Height * 0.33) + 0.5)
+    if FontSize < MBC.Font.DefaultSize then
+        FontSize = math.floor((Height / 2) + 0.5)
+    end
+
     local ButtonText = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     ButtonText:SetPoint("CENTER", Button, "CENTER", 0, 0)
     ButtonText:SetTextColor(unpack(MBC.COLORS.TextLight))
-    ButtonText:SetFont(MBC:GetFont("MoronFont.ttf"), 15)
+    ButtonText:SetFont(MBC:GetFont(MBC.Font.DefaultFont), FontSize)
     ButtonText:SetText(Label)
-
     Button.Text = ButtonText
+
+    if not Width or Width == MBC.Button.Fit then
+        local CalcWidth = math.floor(ButtonText:GetStringWidth() + (Height * 1.33))
+        Button:SetWidth(CalcWidth)
+    else
+        Button:SetWidth(Width)
+    end
+
     return Button
 end
 
@@ -228,7 +240,7 @@ function MBC:CreateItemIcon(Parent, Item, Width, Height)
 
     local ItemIcon = CreateFrame("Button", nil, Parent)
     ItemIcon:SetSize(Width, Height)
-    ItemIcon:SetPoint("CENTER", Parent, "LEFT", 23.5, -1)
+    ItemIcon:SetPoint("CENTER", Parent, "LEFT", (Width * 0.5) + 2, 0)
 
     local Texture = ItemIcon:CreateTexture()
     Texture:SetAllPoints()
@@ -244,11 +256,15 @@ end
 -------------------------------------------------------------------------------
 
 function MBC:CreateLine(Parent, Width, Height, OffsetX, OffsetY, Color)
+    if not Parent then return end
+
     local Line = Parent:CreateTexture(nil, "ARTWORK")
     Line:SetSize(Width, Height)
     Line:SetPoint("CENTER", Parent, "CENTER", OffsetX, OffsetY)
     Line:SetTexture(1, 1, 1, 1)
-    Line:SetVertexColor(unpack(Color))    
+    Line:SetVertexColor(unpack(Color))
+    Parent.Line = Line
+
     return Line
 end
 
@@ -263,9 +279,10 @@ function MBC:CreateFrame(Parent, Backdrop, Width, Height)
     Height = Height or 400
 
     local NewFrame = CreateFrame("Frame", nil, Parent)
-    NewFrame:SetPoint("CENTER", UIParent, "CENTER")
     NewFrame:SetSize(Width, Height)
     NewFrame:SetBackdrop(Backdrop)
+    NewFrame:SetPoint("CENTER", Parent, "CENTER")
+    NewFrame:SetBackdropColor(unpack(MBC.COLORS.FrameBackground))
 
     return NewFrame
 end
@@ -277,7 +294,6 @@ function MBC:CreateGeneralWindow(Parent, TitleText, Width, Height)
     Height = Height or 600
 
     local SettingsFrame = MBC:CreateFrame(Parent, MBC.BACKDROPS.Basic, Width, Height)
-    SettingsFrame:SetBackdropColor(unpack(MBC.COLORS.FrameBackground))
 
     local Title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     Title:SetText(MBC:ApplyTextColor(TitleText, MBC.COLORS.Title))
@@ -303,6 +319,7 @@ function MBC:CreateGeneralWindow(Parent, TitleText, Width, Height)
 end
 
 function MBC:CreateAddonGroupText(Parent)
+    if not Parent then return end
 
     local GroupText = Parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     GroupText:SetPoint("CENTER", Parent, "BOTTOM", 0, 20)
@@ -314,7 +331,8 @@ function MBC:CreateAddonGroupText(Parent)
     )
 
     MBC:ApplyCustomFont(GroupText, 12)
-    
+    Parent.GroupText = GroupText
+
     return GroupText
 end
 
@@ -333,3 +351,44 @@ function MBC:MakeMoveable(Frame)
     end)
 end
 
+function MBC:CustomPopup(Message, OnConfirm, OnCancel)
+    if not Message then return end
+
+    local PopupBackdrop = CreateFrame("Frame", nil, UIParent)
+    PopupBackdrop:SetFrameStrata("FULLSCREEN_DIALOG")
+    PopupBackdrop:SetAllPoints(UIParent)
+    PopupBackdrop:EnableMouse(true)
+    PopupBackdrop:SetBackdrop(MBC.BACKDROPS.No_Border)
+    PopupBackdrop:SetBackdropColor(unpack(MBC.COLORS.FadeFrame))
+
+    local PopupDialog = MBC:CreateFrame(PopupBackdrop, MBC.BACKDROPS.Basic, 300, 150)
+    local MessageText = PopupDialog:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    MessageText:SetPoint("TOP", PopupDialog, "TOP", 0, -20)
+    MessageText:SetText(Message)
+
+    local ConfirmButton = MBC:CreateButton(PopupDialog, 100, MBC.Button.Large, "Confirm")
+    ConfirmButton:SetPoint("BOTTOMLEFT", PopupDialog, "BOTTOM", 15, 20)
+    ConfirmButton:SetScript("OnClick", function()
+        if OnConfirm then OnConfirm() end
+        PopupBackdrop:Hide()
+    end)
+
+    local CancelButton = MBC:CreateButton(PopupDialog, 100, MBC.Button.Large, "Cancel")
+    CancelButton:SetPoint("BOTTOMRIGHT", PopupDialog, "BOTTOM", -15, 20)
+    CancelButton:SetScript("OnClick", function()
+        if OnCancel then OnCancel() end
+        PopupBackdrop:Hide()
+    end)
+
+    local CalcWidth = math.floor(MessageText:GetStringWidth() * 1.25)
+    PopupDialog:SetWidth(CalcWidth)
+    MBC:MakeMoveable(PopupDialog)
+    MBC:ApplyCustomFont(MessageText, 15)
+
+    PopupBackdrop.PopupDialog = PopupDialog
+    PopupBackdrop.MessageText = MessageText
+    PopupBackdrop.ConfirmButton = ConfirmButton
+    PopupBackdrop.CancelButton = CancelButton
+
+    PopupBackdrop:Show()
+end
