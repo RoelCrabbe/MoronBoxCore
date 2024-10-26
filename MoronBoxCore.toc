@@ -8,5 +8,9 @@ Core\Main.lua
 
 Interface\Styles.lua
 Interface\Helpers.lua
+
+Locales\enUS.lua
+Locales\Initialize.lua
+
 Interface\Components.lua
 Interface\Display.lua

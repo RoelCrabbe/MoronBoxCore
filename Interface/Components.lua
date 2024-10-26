@@ -3,17 +3,20 @@
 -------------------------------------------------------------------------------
 
 function MBC:CreateOptionsWindow(aName)
+    if not aName then return end
 
     local OptionsFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
-    OptionsFrame.name = aName -- Do not change .name here
+    OptionsFrame.name = aName
     InterfaceOptions_AddCategory(OptionsFrame)
 
     local Title = OptionsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    Title:SetText(MBC:ApplyTextColor(aName, MBC.COLORS.Title))
-    Title:SetPoint("TOPLEFT", 16, -16)
-    MBC:ApplyCustomFont(Title, 20)
+    Title:SetText(self:ApplyTextColor(aName, MBC.Colors.Title))
+    Title:SetPoint("TOPLEFT", 15, -15)
+
+    self:ApplyCustomFont(Title, MBC.Font.Title)
 
     OptionsFrame.Title = Title
+
     return OptionsFrame
 end
 
@@ -26,24 +29,24 @@ function MBC:CreateButton(Parent, Width, Height, Label)
 
     local Button = CreateFrame("Button", nil, Parent)
     Button:SetHeight(Height)
-    Button:SetBackdrop(MBC.BACKDROPS.Basic)
-    Button:SetBackdropColor(unpack(MBC.COLORS.Background))
-    MBC:ApplyHoverEffect(Button, MBC.COLORS.Background, MBC.COLORS.HoverBackground)
+    Button:SetBackdrop(MBC.BackDrops.Basic)
+    Button:SetBackdropColor(unpack(MBC.Colors.Background))
+    self:ApplyHoverEffect(Button, MBC.Colors.Background, MBC.Colors.HoverBackground)
 
-    local FontSize = math.floor((Height * 0.33) + 0.5)
+    local FontSize = Height * MBC.Math.OneThirds
     if FontSize < MBC.Font.DefaultSize then
-        FontSize = math.floor((Height / 2) + 0.5)
+        FontSize = Height / 2
     end
 
     local ButtonText = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     ButtonText:SetPoint("CENTER", Button, "CENTER", 0, 0)
-    ButtonText:SetTextColor(unpack(MBC.COLORS.TextLight))
-    ButtonText:SetFont(MBC:GetFont(MBC.Font.DefaultFont), FontSize)
+    ButtonText:SetTextColor(unpack(MBC.Colors.TextLight))
+    ButtonText:SetFont(self:GetFont(MBC.Font.DefaultFont), FontSize)
     ButtonText:SetText(Label)
     Button.Text = ButtonText
 
     if not Width or Width == MBC.Button.Fit then
-        local CalcWidth = math.floor(ButtonText:GetStringWidth() + (Height * 1.33))
+        local CalcWidth = ButtonText:GetStringWidth() + (Height * MBC.Math.FourThirds)
         Button:SetWidth(CalcWidth)
     else
         Button:SetWidth(Width)
@@ -52,20 +55,24 @@ function MBC:CreateButton(Parent, Width, Height, Label)
     return Button
 end
 
-function MBC:ApplyHoverEffect(Frame, NormalColor, HoverColor)
+function MBC:ApplyHoverEffect(Parent, NormalColor, HoverColor)
+    if not Parent then return end
 
-    local HighlightOverlay = Frame:CreateTexture(nil, "OVERLAY")
-    HighlightOverlay:SetAllPoints(Frame)
+    NormalColor = NormalColor or MBC.Colors.Background
+    HoverColor = HoverColor or MBC.Colors.HoverBackground
+    
+    local HighlightOverlay = Parent:CreateTexture(nil, "OVERLAY")
+    HighlightOverlay:SetAllPoints(Parent)
     HighlightOverlay:SetTexture("Interface\\AddOns\\MoronBoxCore\\Textures\\Highlight.tga")
     HighlightOverlay:SetVertexColor(1, 1, 1, 0.1)
     HighlightOverlay:Hide()
 
-    Frame:SetScript("OnEnter", function(self)
+    Parent:SetScript("OnEnter", function(self)
         self:SetBackdropColor(unpack(HoverColor))
         HighlightOverlay:Show()
     end)
 
-    Frame:SetScript("OnLeave", function(self)
+    Parent:SetScript("OnLeave", function(self)
         self:SetBackdropColor(unpack(NormalColor))
         HighlightOverlay:Hide()
     end)
@@ -83,15 +90,15 @@ function MBC:CloseButton(Parent, Width, Height)
     CloseButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Close.tga")
     CloseButton:SetPoint("TOPRIGHT", Parent, "TOPRIGHT", -Width / 2, -Height / 2)
 
-    CloseButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
-    CloseButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+    CloseButton:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
+    CloseButton:GetPushedTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
 
     CloseButton:SetScript("OnEnter", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
     end)
 
     CloseButton:SetScript("OnLeave", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
     end)
 
     return CloseButton
@@ -109,15 +116,15 @@ function MBC:ReturnButton(Parent, Width, Height)
     ReturnButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Return.tga")
     ReturnButton:SetPoint("TOPLEFT", Parent, "TOPLEFT", Width / 2, -Height / 2)
 
-    ReturnButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
-    ReturnButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
+    ReturnButton:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonNormal))
+    ReturnButton:GetPushedTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonHover))
 
     ReturnButton:SetScript("OnEnter", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonHover))
     end)
 
     ReturnButton:SetScript("OnLeave", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonNormal))
     end)
 
     return ReturnButton
@@ -135,43 +142,43 @@ function MBC:ToggleButton(Parent, Width, Height)
     ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Minus.tga")
     ToggleButton:SetPoint("CENTER", Parent, "RIGHT", -Width, 0)
 
-    ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
-    ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+    ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
+    ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
 
     ToggleButton:SetScript("OnEnter", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
         end)
         
     ToggleButton:SetScript("OnLeave", function(self)
-        self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
+        self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
     end)
 
     function UpdateButtonIcon(Item)
         if MBR:ItemExistsInPossibleVendorItems(Item) then
             ToggleButton:SetNormalTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Minus.tga")
             ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Minus.tga")
-            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
-            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
+            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonNormal))
+            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonHover))
 
             ToggleButton:SetScript("OnEnter", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
             end)
 
             ToggleButton:SetScript("OnLeave", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
             end)
         else
             ToggleButton:SetNormalTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
             ToggleButton:SetPushedTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Plus.tga")
-            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonNormal))
-            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.COLORS.CloseButtonHover))
+            ToggleButton:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonNormal))
+            ToggleButton:GetPushedTexture():SetVertexColor(unpack(MBC.Colors.CloseButtonHover))
 
             ToggleButton:SetScript("OnEnter", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonHover))
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonHover))
             end)
 
             ToggleButton:SetScript("OnLeave", function(self)
-                self:GetNormalTexture():SetVertexColor(unpack(MBC.COLORS.ReturnButtonNormal))
+                self:GetNormalTexture():SetVertexColor(unpack(MBC.Colors.ReturnButtonNormal))
             end)
         end
     end
@@ -186,44 +193,49 @@ end
 -- CheckBox {{{
 -------------------------------------------------------------------------------
 
-function MBC:CreateCheckButton(Parent, Title, Value, XAsis)
+function MBC:CreateCheckButton(Parent, Title, Value, XOffset)
     if not Parent or not Title then return end
 
     Value = Value or false
-    XAsis = XAsis or -48.5
+    XOffset = XOffset or -45
 
     local CheckButton = CreateFrame("CheckButton", nil, Parent, "OptionsCheckButtonTemplate")
     CheckButton:SetChecked(Value)
 
-    local CheckButtonText = CheckButton:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    CheckButtonText:SetText(Title)
-    CheckButtonText:SetPoint("RIGHT", CheckButton, "LEFT", XAsis, 0)
+    local Label = CheckButton:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    Label:SetText(Title)
+    Label:SetPoint("RIGHT", CheckButton, "LEFT", XOffset, 0)
 
-    CheckButton.CheckButtonText = CheckButtonText
+    CheckButton.Label = Label
+
     return CheckButton
 end
 
-function MBC:CreateCustomCheckbox(Parent, Val, Width, Height)
+function MBC:CreateCustomCheckbox(Parent, Value, Width, Height)
     if not Parent then return end 
 
-    Val = Val or false
+    Value = Value or false
     Width = Width or 32
     Height = Height or 32
 
     local Checkbox = CreateFrame("CheckButton", nil, Parent)
     Checkbox:SetSize(Width, Height)
-    Checkbox:SetBackdrop(MBC.BACKDROPS.Basic)
-    Checkbox:SetBackdropColor(unpack(MBC.COLORS.Charcoal))
+    Checkbox:SetBackdrop(MBC.BackDrops.Basic)
+    Checkbox:SetBackdropColor(unpack(MBC.Colors.Charcoal))
 
-    local Checked = Checkbox:CreateTexture(nil, "ARTWORK")
-    Checked:SetTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Close.tga")
-    Checked:SetSize(Width * (2 / 3), Height * (2 / 3))
-    Checked:SetVertexColor(unpack(MBC.COLORS.LightBlue))
-    Checked:SetPoint("CENTER", Checkbox, "CENTER")
-    Checkbox:SetCheckedTexture(Checked)
-    Checkbox.Checked = Checked
+    local CalcWidth = Checkbox:GetWidth() * MBC.Math.TwoThirds
+    local CalcHeight = Checkbox:GetHeight() * MBC.Math.TwoThirds
 
-    Checkbox:SetChecked(Val)
+    local CheckedTexture = Checkbox:CreateTexture(nil, "ARTWORK")
+    CheckedTexture:SetTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Close.tga")
+    CheckedTexture:SetSize(CalcWidth, CalcHeight)
+    CheckedTexture:SetVertexColor(unpack(MBC.Colors.LightBlue))
+    CheckedTexture:SetPoint("CENTER", Checkbox, "CENTER")
+    
+    Checkbox:SetCheckedTexture(CheckedTexture)
+    Checkbox:SetChecked(Value)
+
+    Checkbox.CheckedTexture = CheckedTexture
 
     return Checkbox
 end
@@ -240,12 +252,15 @@ function MBC:CreateItemIcon(Parent, Item, Width, Height)
 
     local ItemIcon = CreateFrame("Button", nil, Parent)
     ItemIcon:SetSize(Width, Height)
-    ItemIcon:SetPoint("CENTER", Parent, "LEFT", (Width * 0.5) + 2, 0)
 
     local Texture = ItemIcon:CreateTexture()
     Texture:SetAllPoints()
     Texture:SetTexture(Item.Icon)
+
+    local CalcWidth = (Width / 2) + 2
     ItemIcon:SetNormalTexture(Texture)
+    ItemIcon:SetPoint("CENTER", Parent, "LEFT", CalcWidth, 0)
+
     Parent.Texture = Texture
 
     return ItemIcon
@@ -258,11 +273,18 @@ end
 function MBC:CreateLine(Parent, Width, Height, OffsetX, OffsetY, Color)
     if not Parent then return end
 
+    Width = Width or Parent:GetWidth()
+    Height = Height or 1
+    OffsetX = OffsetX or 0
+    OffsetY = OffsetY or 0
+    Color = Color or MBC.Colors.LineColor
+
     local Line = Parent:CreateTexture(nil, "ARTWORK")
-    Line:SetSize(Width, Height)
-    Line:SetPoint("CENTER", Parent, "CENTER", OffsetX, OffsetY)
     Line:SetTexture(1, 1, 1, 1)
+    Line:SetSize(Width, Height)
     Line:SetVertexColor(unpack(Color))
+    Line:SetPoint("CENTER", Parent, "CENTER", OffsetX, OffsetY)
+    
     Parent.Line = Line
 
     return Line
@@ -279,42 +301,38 @@ function MBC:CreateFrame(Parent, Backdrop, Width, Height)
     Height = Height or 400
 
     local NewFrame = CreateFrame("Frame", nil, Parent)
-    NewFrame:SetSize(Width, Height)
     NewFrame:SetBackdrop(Backdrop)
+    NewFrame:SetSize(Width, Height)
+    NewFrame:SetBackdropColor(unpack(MBC.Colors.FrameBackground))
     NewFrame:SetPoint("CENTER", Parent, "CENTER")
-    NewFrame:SetBackdropColor(unpack(MBC.COLORS.FrameBackground))
 
     return NewFrame
 end
 
 function MBC:CreateGeneralWindow(Parent, TitleText, Width, Height)
-    if not Parent then return end
+    if not Parent or not TitleText then return end
 
     Width = Width or 500
     Height = Height or 600
 
-    local SettingsFrame = MBC:CreateFrame(Parent, MBC.BACKDROPS.Basic, Width, Height)
+    local SettingsFrame = self:CreateFrame(Parent, MBC.BackDrops.Basic, Width, Height)
+    local ReturnButton = self:ReturnButton(SettingsFrame, 20, 20)
+    local CloseButton = self:CloseButton(SettingsFrame, 20, 20)
+    local OffsetY = (SettingsFrame:GetHeight() / 2) - 35
 
     local Title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    Title:SetText(MBC:ApplyTextColor(TitleText, MBC.COLORS.Title))
-    Title:SetPoint("TOP", SettingsFrame, "TOP", 0, -10)
-    MBC:ApplyCustomFont(Title, 30)
+    Title:SetText(self:ApplyTextColor(TitleText, MBC.Colors.Title))
+    Title:SetPoint("TOP", SettingsFrame, "TOP", 0, -5)
+
+    self:ApplyCustomFont(Title, MBC.Font.BigTitle)
+    self:CreateLine(SettingsFrame, (SettingsFrame:GetWidth() - 60), 1, 0, -OffsetY, MBC.Colors.LineColor)
+    self:CreateAddonGroupText(SettingsFrame)
+    self:MakeMoveable(SettingsFrame)
+
     SettingsFrame.Title = Title
-
-    local ReturnButton = MBC:ReturnButton(SettingsFrame, 20, 20)
     SettingsFrame.ReturnButton = ReturnButton
-
-    local CloseButton = MBC:CloseButton(SettingsFrame, 20, 20)
     SettingsFrame.CloseButton = CloseButton
 
-    local FrameHeight = SettingsFrame:GetHeight()
-    local LineWidth = SettingsFrame:GetWidth() - 60
-    local OffsetY = FrameHeight * 0.5 - 35
-    
-    MBC:CreateLine(SettingsFrame, LineWidth, 1, 0, -OffsetY, MBC.COLORS.LineColor)
-    MBC:CreateAddonGroupText(SettingsFrame)
-    MBC:MakeMoveable(SettingsFrame)
-    
     return SettingsFrame
 end
 
@@ -324,13 +342,10 @@ function MBC:CreateAddonGroupText(Parent)
     local GroupText = Parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     GroupText:SetPoint("CENTER", Parent, "BOTTOM", 0, 20)
     GroupText:SetJustifyH("CENTER")
-    GroupText:SetText(
-        MBC:ApplyTextColor("This addon is part of the ", MBC.COLORS.Text) ..
-        MBC:ApplyTextColor("MoronBox", MBC.COLORS.Highlight) ..
-        MBC:ApplyTextColor(" addon group!", MBC.COLORS.Text)
-    )
+    GroupText:SetText(self:SL("Addon Group"))
 
-    MBC:ApplyCustomFont(GroupText, 12)
+    self:ApplyCustomFont(GroupText, MBC.Font.SmallSize)
+
     Parent.GroupText = GroupText
 
     return GroupText
@@ -354,41 +369,44 @@ end
 function MBC:CustomPopup(Message, OnConfirm, OnCancel)
     if not Message then return end
 
-    local PopupBackdrop = CreateFrame("Frame", nil, UIParent)
-    PopupBackdrop:SetFrameStrata("FULLSCREEN_DIALOG")
-    PopupBackdrop:SetAllPoints(UIParent)
-    PopupBackdrop:EnableMouse(true)
-    PopupBackdrop:SetBackdrop(MBC.BACKDROPS.No_Border)
-    PopupBackdrop:SetBackdropColor(unpack(MBC.COLORS.FadeFrame))
+    local BackGround = CreateFrame("Frame", nil, UIParent)
+    BackGround:SetFrameStrata("FULLSCREEN_DIALOG")
+    BackGround:SetAllPoints(UIParent)
+    BackGround:EnableMouse(true)
+    BackGround:SetBackdrop(MBC.BackDrops.No_Border)
+    BackGround:SetBackdropColor(unpack(MBC.Colors.FadeFrame))
 
-    local PopupDialog = MBC:CreateFrame(PopupBackdrop, MBC.BACKDROPS.Basic, 300, 150)
+    local PopupDialog = MBC:CreateFrame(BackGround, MBC.BackDrops.Basic, 300, 150)
     local MessageText = PopupDialog:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    MessageText:SetPoint("TOP", PopupDialog, "TOP", 0, -20)
+    MessageText:SetPoint("TOP", PopupDialog, "TOP", 0, -25)
+    MessageText:SetJustifyH("CENTER")
     MessageText:SetText(Message)
 
+    local CancelButton = MBC:CreateButton(PopupDialog, 100, MBC.Button.Large, "Cancel")
+    CancelButton:SetPoint("BOTTOMLEFT", PopupDialog, "BOTTOMLEFT", 50, 20)
+
     local ConfirmButton = MBC:CreateButton(PopupDialog, 100, MBC.Button.Large, "Confirm")
-    ConfirmButton:SetPoint("BOTTOMLEFT", PopupDialog, "BOTTOM", 15, 20)
+    ConfirmButton:SetPoint("BOTTOMRIGHT", PopupDialog, "BOTTOMRIGHT", -50, 20)
+
+    local CalcWidth = MessageText:GetStringWidth() * MBC.Math.ThreeSeconds
+    PopupDialog:SetWidth(CalcWidth)
+
     ConfirmButton:SetScript("OnClick", function()
         if OnConfirm then OnConfirm() end
-        PopupBackdrop:Hide()
+        BackGround:Hide()
     end)
 
-    local CancelButton = MBC:CreateButton(PopupDialog, 100, MBC.Button.Large, "Cancel")
-    CancelButton:SetPoint("BOTTOMRIGHT", PopupDialog, "BOTTOM", -15, 20)
     CancelButton:SetScript("OnClick", function()
         if OnCancel then OnCancel() end
-        PopupBackdrop:Hide()
+        BackGround:Hide()
     end)
 
-    local CalcWidth = math.floor(MessageText:GetStringWidth() * 1.25)
-    PopupDialog:SetWidth(CalcWidth)
-    MBC:MakeMoveable(PopupDialog)
-    MBC:ApplyCustomFont(MessageText, 15)
+    MBC:ApplyCustomFont(MessageText, MBC.Font.Title)
 
-    PopupBackdrop.PopupDialog = PopupDialog
-    PopupBackdrop.MessageText = MessageText
-    PopupBackdrop.ConfirmButton = ConfirmButton
-    PopupBackdrop.CancelButton = CancelButton
+    BackGround.PopupDialog = PopupDialog
+    BackGround.MessageText = MessageText
+    BackGround.ConfirmButton = ConfirmButton
+    BackGround.CancelButton = CancelButton
 
-    PopupBackdrop:Show()
+    BackGround:Show()
 end

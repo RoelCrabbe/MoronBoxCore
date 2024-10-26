@@ -2,7 +2,7 @@
 -- Colors and Backdrop {{{
 -------------------------------------------------------------------------------
 
-MBC.COLORS = {
+MBC.Colors = {
     Title = "7B68EE",        -- Medium Slate Blue
     Highlight = "00CCFF",    -- Bright cyan
     Text = "A9A9A9",         -- Dark gray (as in your example)
@@ -21,7 +21,7 @@ MBC.COLORS = {
     FadeFrame = {0, 0, 0, 0.4} -- Darker green for return button hover (RGBA tuple)
 }
 
-MBC.BACKDROPS = {
+MBC.BackDrops = {
     Basic = {
         bgFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Smooth.tga",
         edgeFile = "Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Border.tga",
@@ -50,6 +50,17 @@ MBC.Button = {
 }
 
 MBC.Font = {
+    SmallSize = 13,
     DefaultSize = 14,
+    InformationSize = 16,
+    Title = 20,
+    BigTitle = 32,
     DefaultFont = "MoronFont"
+}
+
+MBC.Math = {
+    OneThirds = 1 / 3,
+    TwoThirds = 2 / 3,
+    FourThirds = 4 / 3,
+    ThreeSeconds = 3 / 2,
 }

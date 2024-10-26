@@ -4,28 +4,23 @@
 
 function MBC:InterfaceOptionsFrame()
 
-    local AddonGUI = MBC:CreateOptionsWindow("MoronBoxCore")
+    local AddonGUI = self:CreateOptionsWindow(self:SL("MoronBoxCore"))
     local Description = AddonGUI:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     Description:SetPoint("TOPLEFT", AddonGUI.Title, "BOTTOMLEFT", 0, -10)
     Description:SetWidth(AddonGUI:GetParent():GetWidth() - 30)
     Description:SetJustifyH("LEFT")
     Description:SetHeight(0)
-    Description:SetText(
-        MBC:ApplyTextColor("MoronBoxCore", MBC.COLORS.Highlight) ..
-        MBC:ApplyTextColor(" is the essential foundation of the Moron Multi Box collection. It delivers crucial mathematical functions and indispensable tools that all associated add-ons rely on. This core component fundamentally empowers the ", MBC.COLORS.Text) ..
-        MBC:ApplyTextColor("MoronBox", MBC.COLORS.Highlight) ..
-        MBC:ApplyTextColor(" ecosystem, guaranteeing efficient multiboxing and ensuring seamless gameplay, ultimately elevating the user experience.", MBC.COLORS.Text)
-    )    
+    Description:SetText(self:SL("Intro"))    
     
-    local Button = MBC:CreateButton(AddonGUI, MBC.Button.Fit, MBC.Button.XXLarge, "Open General Menu")
+    local Button = self:CreateButton(AddonGUI, MBC.Button.Fit, MBC.Button.XXLarge, "Open General Menu")
     Button:SetPoint("CENTER", AddonGUI, "CENTER", 0, 0)
     Button:SetScript("OnClick", function()  
-        MBC:HideFrameIfShown(InterfaceOptionsFrame)
-        MBC:HideFrameIfShown(GameMenuFrame)   
-        MBC:CreateSettingsWindow()
+        self:HideFrameIfShown(InterfaceOptionsFrame)
+        self:HideFrameIfShown(GameMenuFrame)   
+        self:CreateSettingsWindow()
     end)
 
-    MBC:ApplyCustomFont(Description, 15)
+    self:ApplyCustomFont(Description, MBC.Font.InformationSize)
 
     AddonGUI.Description = Description
     AddonGUI.Button = Button
@@ -33,35 +28,29 @@ end
 
 function MBC:CreateSettingsWindow()
 
-    local SettingsFrame = MBC:CreateGeneralWindow(UIParent, "Moron Box Menu", 500, 600)
+    local SettingsFrame = self:CreateGeneralWindow(UIParent, self:SL("Moron Box Menu"), 500, 600)
     local Description = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     Description:SetPoint("TOPLEFT", SettingsFrame, "TOPLEFT", 20, -60)
     Description:SetWidth(SettingsFrame:GetWidth())
     Description:SetJustifyH("LEFT")
     Description:SetHeight(0)
-    Description:SetText(
-        MBC:ApplyTextColor("Your addons that depend on ", MBC.COLORS.Text) ..
-        MBC:ApplyTextColor("MoronBoxCore", MBC.COLORS.Highlight) .. 
-        MBC:ApplyTextColor(":\n\n", MBC.COLORS.Text)
-    )
+    Description:SetText(self:SL("Depending"))
 
-    local Addons = MBC:GetDependingAddons()
+    local Addons = self:GetDependingAddons()
     local OffsetY = -100
     
-    for _, Addon in InTable(Addons) do
+    for _, Addon in ipairs(Addons) do
 
-        local AddonButton = MBC:CreateButton(SettingsFrame, MBC.Button.Fit, MBC.Button.Large, Addon)
+        local AddonButton = self:CreateButton(SettingsFrame, MBC.Button.Fit, MBC.Button.Large, Addon)
         AddonButton:SetPoint("TOPLEFT", SettingsFrame, "TOPLEFT", 20, OffsetY)
 
         AddonButton:SetScript("OnClick", function()
-            MBC:OpenAddonGeneralWindow(Addon)
+            self:OpenAddonGeneralWindow(Addon)
             SettingsFrame:Hide()
         end)
     
         OffsetY = OffsetY - 40
     end
-
-    SettingsFrame:SetHeight(MBC:CalcRespHeight(#Addons, 100, MBC.Button.Large, 15))
 
     SettingsFrame.ReturnButton:SetScript("OnClick", function()
         SettingsFrame:Hide()
@@ -71,12 +60,13 @@ function MBC:CreateSettingsWindow()
     SettingsFrame.CloseButton:SetScript("OnClick", function()
         SettingsFrame:Hide()
     end)
-
-    SettingsFrame.Line:Hide()
-    SettingsFrame.GroupText:Hide()
-    MBC:ApplyCustomFont(Description, 15)
+    
+    SettingsFrame:SetHeight(self:CalcRespHeight(#Addons, 100, MBC.Button.Large, 15))
+    self:ApplyCustomFont(Description, MBC.Font.InformationSize)
 
     SettingsFrame.Description = Description
+    SettingsFrame.Line:Hide()
+    SettingsFrame.GroupText:Hide()
 
     return SettingsFrame
 end
