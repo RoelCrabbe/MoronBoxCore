@@ -52,6 +52,29 @@ function MBC:CreateButton(Parent, Width, Height, Label)
         Button:SetWidth(Width)
     end
 
+    local WaveDots = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    WaveDots:SetPoint("LEFT", ButtonText, "RIGHT", 1, 0)
+    WaveDots:SetTextColor(unpack(MBC.Colors.TextLight))
+    WaveDots:SetFont(self:GetFont(MBC.Font.DefaultFont), FontSize)
+    Button.WaveDots = WaveDots
+
+    WaveDots:Hide()
+    Button.DotStep = 0
+
+    function Button:EnableDots()
+        self.WaveDots:Show()
+        self.DotStep = (self.DotStep or 0) + 1
+        local Step = self.DotStep % 4 
+        local Dots = string.rep('.', Step)
+        self.WaveDots:SetText(Dots)
+    end
+
+    function Button:DisableDots()
+        self.WaveDots:Hide()
+        self.DotStep = 0
+        self.WaveDots:SetText("")
+    end
+
     return Button
 end
 
@@ -240,6 +263,40 @@ function MBC:CreateCustomCheckbox(Parent, Value, Width, Height)
     return Checkbox
 end
 
+function MBC:CreateCustomCheckboxWithLabel(Parent, Name, Width, Height)
+    if not Parent then return end 
+
+    Name = Name or nil
+    Width = Width or 32
+    Height = Height or 32
+
+    local Checkbox = CreateFrame("CheckButton", Name, Parent)
+    Checkbox:SetSize(Width, Height)
+    Checkbox:SetBackdrop(MBC.BackDrops.Basic)
+    Checkbox:SetBackdropColor(unpack(MBC.Colors.Charcoal))
+
+    local CalcWidth = Checkbox:GetWidth() * MBC.Math.TwoThirds
+    local CalcHeight = Checkbox:GetHeight() * MBC.Math.TwoThirds
+
+    local CheckedTexture = Checkbox:CreateTexture(nil, "ARTWORK")
+    CheckedTexture:SetTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Close.tga")
+    CheckedTexture:SetSize(CalcWidth, CalcHeight)
+    CheckedTexture:SetVertexColor(unpack(MBC.Colors.LightBlue))
+    CheckedTexture:SetPoint("CENTER", Checkbox, "CENTER")
+    
+    Checkbox:SetCheckedTexture(CheckedTexture)
+    Checkbox:SetChecked(false)
+
+    local Label = Checkbox:CreateFontString(Name.."Text", "BACKGROUND", "GameFontHighlightSmall")
+    Label:SetPoint("BOTTOM", Checkbox, "TOP", 0, 2)
+    MBC:ApplyCustomFont(Label, MBC.Font.DefaultSize)
+
+    Checkbox.Label = Label
+    Checkbox.CheckedTexture = CheckedTexture
+
+    return Checkbox
+end
+
 -------------------------------------------------------------------------------
 -- Item Icon {{{
 -------------------------------------------------------------------------------
@@ -409,4 +466,111 @@ function MBC:CustomPopup(Message, OnConfirm, OnCancel)
     BackGround.CancelButton = CancelButton
 
     BackGround:Show()
+end
+
+-------------------------------------------------------------------------------
+-- Mail Entry {{{
+-------------------------------------------------------------------------------
+
+function MBC:CreateMailEntry(Parent, N, Height, MyIcon, MyLink, Title, Sender, MsgMoney, OnCheckboxClick)
+    if not Parent then return end
+
+    Height = Height or 45
+
+    local MailEntry = CreateFrame("Frame", "MBPMailEntry"..N, Parent)
+    MailEntry:SetBackdrop(MBC.BackDrops.Basic)
+    MailEntry:SetBackdropColor(unpack(MBC.Colors.FrameBackground))
+    MailEntry:SetSize(Parent:GetWidth(), Height)
+    MailEntry:SetPoint("TOP", Parent, "TOP", 0, -((N - 1) * (Height + 6)))
+
+    -- Mail Icon
+    local MailIcon = MBC:CreateItemIcon(MailEntry, { Icon = MyIcon }, 40, 40)
+    MailEntry.MailIcon = MailIcon
+
+    MailIcon:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        if MyLink and MyLink ~= "" then
+            GameTooltip:SetHyperlink(MyLink)
+        elseif MsgMoney and MsgMoney > 0 then
+            GameTooltip:AddLine("Gold: ["..GetCoinTextureString(MsgMoney).."]", 1, 1, 1) 
+        else
+            GameTooltip:AddLine("Sender: "..(Sender or "Unknown Sender"), 1, 1, 1)
+        end
+        GameTooltip:Show()
+    end)
+
+    MailIcon:SetScript("OnLeave", function(self)
+        GameTooltip:Hide()
+    end)
+
+    -- Mail Title
+    local MailTitle = MailEntry:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    MailTitle:SetPoint("LEFT", MailIcon, "RIGHT", 10, 0)
+    MailTitle:SetText(Title)
+    MBC:ApplyCustomFont(MailTitle, MBC.Font.Title)
+    MailEntry.MailTitle = MailTitle
+
+    -- Checkbox
+    local CheckBox = MBC:CreateCustomCheckboxWithLabel(MailEntry, "MBPInboxCB"..N, 20, 20)
+    CheckBox:SetPoint("RIGHT", -5, -5)
+    CheckBox:SetID(N)
+    CheckBox.Label:SetText(N)
+    CheckBox:SetScript("OnClick", OnCheckboxClick)
+    MailEntry.CheckBox = CheckBox
+
+    return MailEntry
+end
+
+function MBC:PaginationButton(Parent, Version, Width, Height)
+    if not Parent then return end
+
+    Width = Width or 16
+    Height = Height or 16
+
+    local Button = CreateFrame("Button", nil, Parent)
+    Button:SetSize(Width, Height)
+    Button:SetBackdrop(MBC.BackDrops.Basic)
+    Button:SetBackdropColor(unpack(MBC.Colors.Background))
+    self:ApplyHoverEffect(Button, MBC.Colors.Background, MBC.Colors.HoverBackground)
+
+    -- Create a texture for the button
+    local Texture = Button:CreateTexture(nil, "BACKGROUND")
+    Texture:SetPoint("CENTER", Button, "CENTER", 0, 0)
+    Texture:SetSize(Height * 0.5, Height * 0.5)
+
+    if Version == 1 then
+        Texture:SetTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Left.tga")
+    elseif Version == 2 then
+        Texture:SetTexture("Interface\\AddOns\\MoronBoxCore\\Media\\Icons\\Right.tga")
+    end
+
+    Button:SetNormalTexture(Texture)
+    Button:SetPushedTexture(Texture)
+
+    Texture:SetVertexColor(unpack(MBC.Colors.TextLight))
+    Texture:Show()
+
+    return Button
+end
+
+function MBC:PageIndicator(Parent, CurrentPage, MaxPages)
+    if not Parent then return end
+
+    CurrentPage = CurrentPage or 1
+    MaxPages = MaxPages == 0 and 1 or MaxPages
+    local Text = CurrentPage.." of "..MaxPages
+    
+    local PageIndicator = Parent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    PageIndicator:SetText(self:ApplyTextColor(Text, MBC.Colors.Text))
+
+    self:ApplyCustomFont(PageIndicator, MBC.Font.InformationSize)
+
+    function PageIndicator:Update(CurrentPage, MaxPages)
+        MaxPages = MaxPages == 0 and 1 or MaxPages
+        local Text = CurrentPage.." of "..MaxPages
+        self:SetText(MBC:ApplyTextColor(Text, MBC.Colors.Text))
+    end
+
+    return PageIndicator
 end

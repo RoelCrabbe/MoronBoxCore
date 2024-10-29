@@ -2,10 +2,6 @@
 -- Colors and Backdrop Helpers {{{
 -------------------------------------------------------------------------------
 
-function MBC:ApplyTextColor(Text, Color)
-    return string.format("|cff%s%s|r", Color, Text)
-end
-
 function MBC:GetFont(FontFile)
     return "Interface\\AddOns\\MoronBoxCore\\Media\\Fonts\\"..FontFile..".ttf"
 end
@@ -20,7 +16,7 @@ function MBC:ApplyCustomFont(FontString, Size, Flags)
 end
 
 function MBC:Print(Text)
-    return Print(MBC:ApplyTextColor("MoronBox", MBC.COLORS.Highlight)..": "..Text)
+    return Print(MBC:ApplyTextColor("MoronBox", MBC.Colors.Highlight)..": "..Text)
 end
 
 -------------------------------------------------------------------------------
@@ -33,7 +29,7 @@ function MBC:HideFrameIfShown(Frame)
     end
 end
 
-function MBC:ShowFrameIfShown(Frame)
+function MBC:ShowFrameIfHidden(Frame)
     if not Frame:IsShown() then
         ShowUIPanel(Frame)
     end
@@ -47,9 +43,18 @@ function MBC:ToggleFrame(Frame)
     end
 end
 
+MBC.OpenAddonWindows = {}
+
 function MBC:OpenAddonGeneralWindow(Name)
+    if MBC.OpenAddonWindows[Name] and MBC.OpenAddonWindows[Name]:IsShown() then
+        MBC.OpenAddonWindows[Name] = nil
+        return
+    end
+
     if _G[Name] and type(_G[Name].GeneralSettingWindow) == "function" then
-        _G[Name]:GeneralSettingWindow()
+        local Frame = _G[Name]:GeneralSettingWindow()
+        MBC:ShowFrameIfHidden(Frame)
+        MBC.OpenAddonWindows[Name] = Frame
     else
         MBC:Print("No settings menu found for addon: " .. Name)
     end
@@ -57,4 +62,13 @@ end
 
 function MBC:CalcRespHeight(NumAddons, BaseHeight, ButtonHeight, ButtonSpacing)
     return BaseHeight + (NumAddons * (ButtonHeight + ButtonSpacing))
+end
+
+function MBC:Contains(table, value)
+    for _, v in ipairs(table) do
+        if v == value then
+            return true
+        end
+    end
+    return false
 end

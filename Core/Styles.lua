@@ -44,6 +44,7 @@ MBC.Button = {
     Fit = "Auto",
     Small = 16,
     Medium = 24,
+    Middle = 28,
     Large = 32,
     XLarge = 40,
     XXLarge = 48
@@ -64,3 +65,7 @@ MBC.Math = {
     FourThirds = 4 / 3,
     ThreeSeconds = 3 / 2,
 }
+
+function MBC:ApplyTextColor(Text, Color)
+    return string.format("|cff%s%s|r", Color, Text)
+end

@@ -5,12 +5,11 @@
 ## Notes: |cff00ccffMoronBoxCore|r is a lightweight addon that supports any of my addons.
 
 Core\Main.lua
-
-Interface\Styles.lua
-Interface\Helpers.lua
+Core\Styles.lua
 
 Locales\enUS.lua
 Locales\Initialize.lua
 
+Interface\Helpers.lua
 Interface\Components.lua
 Interface\Display.lua
