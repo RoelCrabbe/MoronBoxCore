@@ -72,3 +72,12 @@ function MBC:Contains(table, value)
     end
     return false
 end
+
+function MBC:IsEmptyList(...)
+    for _, list in ipairs({...}) do
+        if #list > 0 then
+            return false
+        end
+    end
+    return true
+end

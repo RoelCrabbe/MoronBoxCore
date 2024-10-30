@@ -75,6 +75,16 @@ function MBC:CreateButton(Parent, Width, Height, Label)
         self.WaveDots:SetText("")
     end
 
+    function Button:Disable()
+        self:EnableMouse(false)
+        self:SetAlpha(0.75)
+    end
+
+    function Button:Enable()
+        self:EnableMouse(true)
+        self:SetAlpha(1)
+    end
+
     return Button
 end
 
@@ -472,16 +482,16 @@ end
 -- Mail Entry {{{
 -------------------------------------------------------------------------------
 
-function MBC:CreateMailEntry(Parent, N, Height, MyIcon, MyLink, Title, Sender, MsgMoney, OnCheckboxClick)
+function MBC:CreateMailEntry(Parent, Height, Amount, Count, MyIcon, MyLink, Title, Sender, MsgMoney, OnCheckboxClick)
     if not Parent then return end
 
     Height = Height or 45
 
-    local MailEntry = CreateFrame("Frame", "MBPMailEntry"..N, Parent)
+    local MailEntry = CreateFrame("Frame", "MBPMailEntry"..Count, Parent)
     MailEntry:SetBackdrop(MBC.BackDrops.Basic)
     MailEntry:SetBackdropColor(unpack(MBC.Colors.FrameBackground))
     MailEntry:SetSize(Parent:GetWidth(), Height)
-    MailEntry:SetPoint("TOP", Parent, "TOP", 0, -((N - 1) * (Height + 6)))
+    MailEntry:SetPoint("TOP", Parent, "TOP", 0, -((Amount - 1) * (Height + 6)))
 
     -- Mail Icon
     local MailIcon = MBC:CreateItemIcon(MailEntry, { Icon = MyIcon }, 40, 40)
@@ -512,10 +522,10 @@ function MBC:CreateMailEntry(Parent, N, Height, MyIcon, MyLink, Title, Sender, M
     MailEntry.MailTitle = MailTitle
 
     -- Checkbox
-    local CheckBox = MBC:CreateCustomCheckboxWithLabel(MailEntry, "MBPInboxCB"..N, 20, 20)
+    local CheckBox = MBC:CreateCustomCheckboxWithLabel(MailEntry, "MBPInboxCB"..Count, 20, 20)
     CheckBox:SetPoint("RIGHT", -5, -5)
-    CheckBox:SetID(N)
-    CheckBox.Label:SetText(N)
+    CheckBox:SetID(Count)
+    CheckBox.Label:SetText(Count)
     CheckBox:SetScript("OnClick", OnCheckboxClick)
     MailEntry.CheckBox = CheckBox
 
