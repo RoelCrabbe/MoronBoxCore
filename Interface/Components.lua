@@ -38,7 +38,7 @@ function MBC:CreateButton(Parent, Width, Height, Label)
         FontSize = Height / 2
     end
 
-    local ButtonText = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local ButtonText = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     ButtonText:SetPoint("CENTER", Button, "CENTER", 0, 0)
     ButtonText:SetTextColor(unpack(MBC.Colors.TextLight))
     ButtonText:SetFont(self:GetFont(MBC.Font.DefaultFont), FontSize)
@@ -52,7 +52,7 @@ function MBC:CreateButton(Parent, Width, Height, Label)
         Button:SetWidth(Width)
     end
 
-    local WaveDots = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local WaveDots = Button:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     WaveDots:SetPoint("LEFT", ButtonText, "RIGHT", 1, 0)
     WaveDots:SetTextColor(unpack(MBC.Colors.TextLight))
     WaveDots:SetFont(self:GetFont(MBC.Font.DefaultFont), FontSize)
@@ -297,7 +297,7 @@ function MBC:CreateCustomCheckboxWithLabel(Parent, Name, Width, Height)
     Checkbox:SetCheckedTexture(CheckedTexture)
     Checkbox:SetChecked(false)
 
-    local Label = Checkbox:CreateFontString(Name.."Text", "BACKGROUND", "GameFontHighlightSmall")
+    local Label = Checkbox:CreateFontString(Name.."Text", "BACKGROUND", "GameFontHighlight")
     Label:SetPoint("BOTTOM", Checkbox, "TOP", 0, 2)
     MBC:ApplyCustomFont(Label, MBC.Font.DefaultSize)
 
@@ -406,7 +406,7 @@ end
 function MBC:CreateAddonGroupText(Parent)
     if not Parent then return end
 
-    local GroupText = Parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local GroupText = Parent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     GroupText:SetPoint("CENTER", Parent, "BOTTOM", 0, 20)
     GroupText:SetJustifyH("CENTER")
     GroupText:SetText(self:SL("Addon Group"))
@@ -482,7 +482,7 @@ end
 -- Mail Entry {{{
 -------------------------------------------------------------------------------
 
-function MBC:CreateMailEntry(Parent, Height, Amount, Count, MyIcon, MyLink, Title, Sender, MsgMoney, OnCheckboxClick)
+function MBC:CreateMailEntry(Parent, Height, Amount, Count, MyIcon, MyLink, Title, Sender, MsgMoney, Quantity)
     if not Parent then return end
 
     Height = Height or 45
@@ -514,8 +514,17 @@ function MBC:CreateMailEntry(Parent, Height, Amount, Count, MyIcon, MyLink, Titl
         GameTooltip:Hide()
     end)
 
+    -- Quantity
+    if Quantity and Quantity > 0 then
+        local QuantityText = MailIcon:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        QuantityText:SetPoint("TOPLEFT", MailIcon, "TOPLEFT", 2, 0)
+        QuantityText:SetText(Quantity)
+        MBC:ApplyCustomFont(QuantityText, MBC.Font.DefaultSize)
+        MailEntry.QuantityText = QuantityText
+    end
+
     -- Mail Title
-    local MailTitle = MailEntry:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local MailTitle = MailEntry:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     MailTitle:SetPoint("LEFT", MailIcon, "RIGHT", 10, 0)
     MailTitle:SetText(Title)
     MBC:ApplyCustomFont(MailTitle, MBC.Font.Title)

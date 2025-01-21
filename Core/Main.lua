@@ -8,24 +8,30 @@ MBC = CreateFrame("Frame", "MoronBoxCore", UIParent)
 -- Core Event Code {{{
 -------------------------------------------------------------------------------
 
+MBC.Session = {
+    ItemList = {
+        [1] = "Fel Armament",
+        [2] = "Arcane Tome",
+    }
+}
+
 MBC:RegisterEvent("ADDON_LOADED")
+MBC:RegisterEvent("START_LOOT_ROLL")
 
 function MBC:OnEvent(event)
     if event == "ADDON_LOADED" and arg1 == MBC:GetName() then
         MBC:InterfaceOptionsFrame()
+    elseif event == "START_LOOT_ROLL" then
+        MBC:PrepareAutoLoot(arg1)
+        C_Timer.After(math.random(5, 10), MBC:AutoLoot(arg1))
     end
 end
 
 MBC:SetScript("OnEvent", MBC.OnEvent)
 
-function Print(msg)
-	if msg then return print(msg) end
-end
-
-function CapitalizeFirstLetter(str)
-    if not str or str == "" then return str end
-    return str:sub(1, 1):upper() .. str:sub(2)
-end
+-------------------------------------------------------------------------------
+-- Gets dependent addons {{{
+-------------------------------------------------------------------------------
 
 function MBC:GetDependingAddons()
     local loadedAddons = {}
@@ -46,12 +52,4 @@ function MBC:GetDependingAddons()
     end
 
     return loadedAddons
-end
-
-for _, cmd in pairs({ "/rl", "/RL", "/Rl", "/rL" }) do
-    _G["SLASH_RELOADUI" .. _] = cmd
-end
-
-SlashCmdList["RELOADUI"] = function()
-    ReloadUI()
 end

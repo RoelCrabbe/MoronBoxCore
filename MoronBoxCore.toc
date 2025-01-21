@@ -4,8 +4,14 @@
 ## LoadOnDemand: 0
 ## Notes: |cff00ccffMoronBoxCore|r is a lightweight addon that supports any of my addons.
 
+Core\Slash.lua
+
 Core\Main.lua
 Core\Styles.lua
+Core\Helpers.lua
+
+Modules\AttackSpeed.lua
+Modules\AutoLoot.lua
 
 Locales\enUS.lua
 Locales\Initialize.lua
