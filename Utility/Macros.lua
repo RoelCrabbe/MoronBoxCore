@@ -24,10 +24,10 @@ function mb_createBinds()
 	SetBinding("SHIFT-V", "NAMEPLATES") -- Show all Nameplates.
 	SetBinding("NUMPADMINUS", "CAMERAZOOMIN") -- Zoom in view.
 	SetBinding("NUMPADPLUS", "CAMERAZOOMOUT") -- Zoom out view.
-	SetBinding("NUMPADDECIMAL", "SM_MACRO31") -- ReloadUI.
+	SetBinding("MINUS", "SM_MACRO31") -- ReloadUI.
 
 	-- Set Custom Macro Binds
-	SetBinding("NUMPAD1", "SM_MACRO1") -- Setup / Buffs.
+	SetBinding("0", "SM_MACRO1") -- Setup / Buffs.
 	SetBinding("2", "SM_MACRO2") -- Single DPS.
 	SetBinding("3", "SM_MACRO3") -- Multi DPS.
 	SetBinding("L", "SM_MACRO4") -- Cooldowns.

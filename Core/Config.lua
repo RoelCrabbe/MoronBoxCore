@@ -2,7 +2,7 @@
 ----------------------------------------------- Config! ----------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
-MB_raidinviter = "Suecia" -- Handling Raidinvites
+MB_raidinviter = "Moron" -- Handling Raidinvites
 
 MB_raidAssist = { -- Raid tools
 	AutoTurnToTarget = false, -- AutoTurning to raidLeader, copied from 5MMB (Never used lol but tought it was cool)
@@ -208,8 +208,8 @@ MB_tanklist = {}
 MB_tanklist = { -- Fill your tanks in this list for a login tanklist
 
 	-- Horde
+	"Moron",
 	"Suecia",
-	"Honeycocain",
 	"Ajlano",
 	"Rows",
 	"Almisael",

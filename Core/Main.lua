@@ -662,71 +662,89 @@ function MMB:OnEvent()
 
 		elseif arg1 == MB_RAID.."_CC" then
 
-			if myName == arg2 then
+			if arg2 == myName then
 				AssistUnit(MBID[MB_raidLeader])
 
-				if arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
-					RunLine("/raid I, "..GetColors(arg2).." will be CCing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
-				elseif arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] then
-					RunLine("/party I, "..GetColors(arg2).." will be CCing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+				if not UnitName("target") then
+					mb_message("Im unable to be assigned to this target.")
+					return
 				end
 
-				MB_myCCTarget = GetRaidTargetIndex("target")
+				if not MB_myCCTarget and myName then
+					if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
+						RunLine("/raid I, "..GetColors(myName).." will be CCing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
+						RunLine("/party I, "..GetColors(myName).." will be CCing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					end
+
+					MB_myCCTarget = GetRaidTargetIndex("target")
+				end
 			end
 		
 		elseif arg1 == MB_RAID.."_INT" then
 
-			if myName == arg2 then
+			if arg2 == myName then
 				AssistUnit(MBID[MB_raidLeader])
 
-				if arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
-					RunLine("/raid I, "..GetColors(arg2).." will be Interrupting "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
-				elseif arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] then
-					RunLine("/party I, "..GetColors(arg2).." will be Interrupting "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+				if not UnitName("target") then
+					mb_message("Im unable to be assigned to this target.")
+					return
 				end
 
-				MB_myInterruptTarget = GetRaidTargetIndex("target")
+				if not MB_myInterruptTarget and myName then
+					if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
+						RunLine("/raid I, "..GetColors(myName).." will be Interrupting "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
+						RunLine("/party I, "..GetColors(myName).." will be Interrupting "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					end
+
+					MB_myInterruptTarget = GetRaidTargetIndex("target")
+				end
 			end
 		
 		elseif arg1 == MB_RAID.."_FEAR" then
 
-			if myName == arg2 then
+			if arg2 == myName then
 				AssistUnit(MBID[MB_raidLeader])
 
-				if arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
-					RunLine("/raid I, "..GetColors(arg2).." will be Fearing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
-				elseif arg2 and MB_raidTargetNames[GetRaidTargetIndex("target")] then
-					RunLine("/party I, "..GetColors(arg2).." will be Fearing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+				if not UnitName("target") then
+					mb_message("Im unable to be assigned to this target.")
+					return
 				end
 
-				MB_myFearTarget = GetRaidTargetIndex("target")
+				if not MB_myFearTarget and myName then
+					if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
+						RunLine("/raid I, "..GetColors(myName).." will be Fearing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
+						RunLine("/party I, "..GetColors(myName).." will be Fearing "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					end
+
+					MB_myFearTarget = GetRaidTargetIndex("target")
+				end
 			end
 		
 		elseif arg1 == MB_RAID.."_OT" then
 
-			Print(arg2)
-			
-			if myName == arg2 then
+			if arg2 == myName then
 				AssistUnit(MBID[MB_raidLeader])
 
-				if not UnitName("target") then mb_message("Im unable to be assigned to this target.") return end
-
-				if not MB_myOTTarget then
-					if myName and MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
-						RunLine("/raid I, "..GetColors(myName).." will be Tanking "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
-					elseif myName and MB_raidTargetNames[GetRaidTargetIndex("target")] then
-						RunLine("/party I, "..GetColors(myName).." will be Tanking "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
-					end
-				else
-					mb_message("wth")
+				if not UnitName("target") then
+					mb_message("Im unable to be assigned to this target.")
+					return
 				end
 
-				MB_myOTTarget = GetRaidTargetIndex("target")
-			
-				if mb_myNameInTable(MB_furysThatCanTank) then
-				
-					mb_tankGear()
-					MB_warriorbinds = nil					
+				if not MB_myOTTarget and myName then
+					if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
+						RunLine("/raid I, "..GetColors(myName).." will be Tanking "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
+						RunLine("/party I, "..GetColors(myName).." will be Tanking "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+					end
+
+					if mb_myNameInTable(MB_furysThatCanTank) then				
+						mb_tankGear()			
+					end
+
+					MB_myOTTarget = GetRaidTargetIndex("target")
 				end
 			end
 		
@@ -742,8 +760,7 @@ function MMB:OnEvent()
 						RunLine("/party I, "..GetColors(myName).." stopped Tanking "..GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
 					end
 
-					if mb_myNameInTable(MB_furysThatCanTank) then
-						
+					if mb_myNameInTable(MB_furysThatCanTank) then						
 						mb_furyGear()						
 					end
 
