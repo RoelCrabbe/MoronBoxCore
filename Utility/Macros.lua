@@ -22,12 +22,10 @@ function mb_createBinds()
 
 	-- Extra's
 	SetBinding("SHIFT-V", "NAMEPLATES") -- Show all Nameplates.
-	SetBinding("NUMPADMINUS", "CAMERAZOOMIN") -- Zoom in view.
-	SetBinding("NUMPADPLUS", "CAMERAZOOMOUT") -- Zoom out view.
 	SetBinding("MINUS", "SM_MACRO31") -- ReloadUI.
 
 	-- Set Custom Macro Binds
-	SetBinding("0", "SM_MACRO1") -- Setup / Buffs.
+	SetBinding("PAGEDOWN", "SM_MACRO1") -- Setup / Buffs.
 	SetBinding("2", "SM_MACRO2") -- Single DPS.
 	SetBinding("3", "SM_MACRO3") -- Multi DPS.
 	SetBinding("L", "SM_MACRO4") -- Cooldowns.
@@ -41,7 +39,7 @@ function mb_createBinds()
 	SetBinding("F5", "SM_MACRO10") -- Assign Offtanks to target, ShiftKeyDown => Assign interrupt to target.
 	SetBinding("F6", "SM_MACRO11") -- Assign CC to target, ShiftKeyDown => assign fear.
 	SetBinding("F7", "SM_MACRO12") -- Clear assign to target.
-	SetBinding("NUMPAD8", "SM_MACRO13") -- Make water on mages.
+	SetBinding("PAGEUP", "SM_MACRO13") -- Make water on mages.
 	SetBinding("A", "SM_MACRO14") -- Drink and Trade for water.
 	SetBinding("CTRL-A", "SM_MACRO14") -- Drink and Trade for water.
 	SetBinding("F", "SM_MACRO15") -- Breakfear, ShiftKeyDown => Poison/Disease Cleanse Totem.
@@ -49,7 +47,7 @@ function mb_createBinds()
 	SetBinding("N", "SM_MACRO17") -- DropTotems.
 	
 	SetBinding("V", "SM_MACRO19") -- Tanks and Healers ONLY, no dps.
-	SetBinding("NUMPAD6", "SM_MACRO20") -- Craftable Cooldowns.	
+	SetBinding("9", "SM_MACRO20") -- Craftable Cooldowns.	
 	SetBinding("SHIFT-T", "SM_MACRO21") -- Interrupt Focus target.
 
 	SetBinding("SHIFT-G", "SM_MACRO22") -- Casters Follow.
@@ -58,7 +56,7 @@ function mb_createBinds()
 	SetBinding("SHIFT-C", "SM_MACRO25") -- Tank Follow.
 
 	SetBinding("6", "SM_MACRO26") -- Manual Recklessness.
-	SetBinding("NUMPAD7", "SM_MACRO27") -- Reports Cooldowns of Certain spells.
+	SetBinding("0", "SM_MACRO27") -- Reports Cooldowns of Certain spells.
 	SetBinding("K", "SM_MACRO28") -- Tank Shoot.
 
 	if myClass == "Druid" or myClass == "Shaman" or myClass == "Priest" or myClass == "Paladin" then
