@@ -6651,7 +6651,7 @@ function mb_getTarget() -- GetTarget Magic
 							SetRaidTarget("target", 4)							
 						end
 
-					elseif (mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramMiddlOFFTANKS)) then
+					elseif (mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramMiddleOFFTANKS)) then
 
 						if not GetRaidTargetIndex("target") then
 
@@ -8311,7 +8311,7 @@ function mb_meleeFollow() -- Melee follow
 				return
 			end
 
-			if mb_myNameInTable(MB_mySkeramMiddlOFFTANKS) then
+			if mb_myNameInTable(MB_mySkeramMiddleOFFTANKS) then
 
 				FollowByName(mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank), 1)
 				return
@@ -8545,22 +8545,22 @@ function mb_instructorRazAddsHeal() -- Heal Razovious adds
 
 				if myClass == "Shaman" then
 				
-					allowedOverHeal = GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPrecentage * 4
+					allowedOverHeal = GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
 					spellToCast = "Healing Wave("..MB_myShamanMainTankHealingRank.."\)"
 
 				elseif myClass == "Paladin" then
 					
-					allowedOverHeal = GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPrecentage * 4
+					allowedOverHeal = GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
 					spellToCast = "Flash of Light("..MB_myPaladinMainTankHealingRank.."\)"
 
 				elseif myClass == "Priest" then
 				
-					allowedOverHeal = GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPrecentage * 4
+					allowedOverHeal = GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
 					spellToCast = "Greater Heal("..MB_myPriestMainTankHealingRank.."\)"
 
 				elseif myClass == "Druid" then
 				
-					allowedOverHeal = GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPrecentage * 4
+					allowedOverHeal = GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
 					spellToCast = "Healing Touch("..MB_myDruidMainTankHealingRank.."\)"
 				end
 
@@ -10500,7 +10500,7 @@ function mb_shamanMTHeals(assignedtarget) -- Shaman MT healing
 	if not (mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Maexxna") or mb_tankTarget("Ossirian the Unscarred")) then
 
 		-- Stop when target is not below HP and is not far into the cast
-		if (mb_healthDown("target") <= (GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPrecentage)) and (GetTime() > HealWave.Time) and (GetTime() < HealWave.Time + 0.5) and HealWave.Interrupt then
+		if (mb_healthDown("target") <= (GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPercentage)) and (GetTime() > HealWave.Time) and (GetTime() < HealWave.Time + 0.5) and HealWave.Interrupt then
 			
 			SpellStopCasting()
 			HealWave.Interrupt = false
@@ -11757,7 +11757,7 @@ function mb_priestMTHeals(assignedtarget)
 	if not (mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Maexxna") or mb_tankTarget("Ossirian the Unscarred")) then
 
 		-- Stop when target is not below HP and is not far into the cast
-		if (mb_healthDown("target") <= (GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPrecentage)) and (GetTime() > GreaterHeal.Time) and (GetTime() < GreaterHeal.Time + 0.5) and GreaterHeal.Interrupt then
+		if (mb_healthDown("target") <= (GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage)) and (GetTime() > GreaterHeal.Time) and (GetTime() < GreaterHeal.Time + 0.5) and GreaterHeal.Interrupt then
 			
 			SpellStopCasting()			
 			GreaterHeal.Interrupt = false
@@ -12663,7 +12663,7 @@ function mb_warriorTank()
 				UseItemByName("Greater Stoneshield Potion")
 			end
 
-		elseif mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= MB_myHuhuranTankDefensivePrecentage and MB_myHuhuranBoxStrategy then
+		elseif mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
 
 			if mb_spellReady("Last Stand") then
 					
@@ -12675,7 +12675,7 @@ function mb_warriorTank()
 				CastSpellByName("Shield Wall")
 			end
 
-		elseif mb_tankTarget("Ossirian the Unscarred") and mb_healthPct("target") <= MB_myOssirianTankDefensivePrecentage and MB_myOssirianBoxStrategy then
+		elseif mb_tankTarget("Ossirian the Unscarred") and mb_healthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
 
 			if mb_healthPct("player") <= 0.3 then
 				
@@ -13187,7 +13187,7 @@ function mb_warriorTankMulti() -- Tank multi
 				UseItemByName("Greater Stoneshield Potion")
 			end
 
-		elseif mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= MB_myHuhuranTankDefensivePrecentage and MB_myHuhuranBoxStrategy then
+		elseif mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
 
 			if mb_spellReady("Last Stand") then
 					
@@ -13220,7 +13220,7 @@ function mb_warriorTankMulti() -- Tank multi
 				end
 			end
 
-		elseif mb_tankTarget("Ossirian the Unscarred") and mb_healthPct("target") <= MB_myOssirianTankDefensivePrecentage and MB_myOssirianBoxStrategy then
+		elseif mb_tankTarget("Ossirian the Unscarred") and mb_healthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
 
 			if mb_healthPct("player") <= 0.3 then 
 				
@@ -15199,7 +15199,7 @@ function mb_druidMTHeals(assignedtarget)
 	if not (mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Maexxna") or mb_tankTarget("Ossirian the Unscarred")) then
 
 		-- Stop when target is not below HP and is not far into the cast
-		if (mb_healthDown("target") <= (GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPrecentage)) and (GetTime() > HealTouch.Time) and (GetTime() < HealTouch.Time + 0.5) and HealTouch.Interrupt then
+		if (mb_healthDown("target") <= (GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPercentage)) and (GetTime() > HealTouch.Time) and (GetTime() < HealTouch.Time + 0.5) and HealTouch.Interrupt then
 			
 			SpellStopCasting()
 			HealTouch.Interrupt = false
@@ -16293,7 +16293,7 @@ function mb_paladinMTHeals(assignedtarget)
 	if not (mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Maexxna") or mb_tankTarget("Ossirian the Unscarred")) then
 
 		-- Stop when target is not below HP and is not far into the cast
-		if (mb_healthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPrecentage)) and (GetTime() > FlashOfLight.Time) and (GetTime() < FlashOfLight.Time + 0.5) and FlashOfLight.Interrupt then
+		if (mb_healthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage)) and (GetTime() > FlashOfLight.Time) and (GetTime() < FlashOfLight.Time + 0.5) and FlashOfLight.Interrupt then
 			
 			SpellStopCasting()			
 			FlashOfLight.Interrupt = false
@@ -16593,10 +16593,10 @@ function mb_loathebHealing()
 	
 	if myName == MB_myLoathebHealer[HealerCounter] and MBID[MB_myLoathebMainTank] then
 
-		Print("My heal will start when "..MB_myLoathebMainTank.." is below "..(GetHealValueFromRank(MB_myLoathebHealSpell[myClass], MB_myLoathebHealSpellRank[myClass]) * MB_myMainTankOverhealingPrecentage).." HP")
+		Print("My heal will start when "..MB_myLoathebMainTank.." is below "..(GetHealValueFromRank(MB_myLoathebHealSpell[myClass], MB_myLoathebHealSpellRank[myClass]) * MB_myMainTankOverhealingPercentage).." HP")
 		Print("Without overhealing my heal would heal for "..GetHealValueFromRank(MB_myLoathebHealSpell[myClass], MB_myLoathebHealSpellRank[myClass]))
 		
-		if (mb_healthDown(MBID[MB_myLoathebMainTank]) >= (GetHealValueFromRank(MB_myLoathebHealSpell[myClass], MB_myLoathebHealSpellRank[myClass]) * MB_myMainTankOverhealingPrecentage)) then
+		if (mb_healthDown(MBID[MB_myLoathebMainTank]) >= (GetHealValueFromRank(MB_myLoathebHealSpell[myClass], MB_myLoathebHealSpellRank[myClass]) * MB_myMainTankOverhealingPercentage)) then
 			
 			TargetByName(MB_myLoathebMainTank)
 			CastSpellByName(MB_myLoathebHealSpell[myClass])

@@ -239,10 +239,10 @@ function mb_tankList(encounter)
 	local faction = UnitFactionGroup("player")
     local presets = {
 		Horde = {
-			NRML   = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Hondtje" },
-			NAXX   = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Goodbeef", "Axhole" },
-			HEIGAN = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael" },
-			DEFAULT= { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Hondtje" }
+			NRML   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Hondtje" },
+			NAXX   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Goodbeef", "Axhole" },
+			HEIGAN = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" },
+			DEFAULT= { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Hondtje" }
 		},
         Alliance = {
             NRML   = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },
