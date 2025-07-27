@@ -54,11 +54,11 @@ MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- MAGES WILL NOT DO ANY 
 	}
 
 	MB_myFlashHealerList = { -- Flashhealers default list
-		-- "Draub",
+		"Draub",
 		-- "Ayag",
 		-- "Corinn",
 		-- "Healdealz",
-		-- "Midavellir",
+		"Midavellir",
 		-- "Ez",
 
 		-- "Murdrum",
@@ -66,7 +66,6 @@ MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- MAGES WILL NOT DO ANY 
 		-- "Hms",
 		-- "Nouveele",
 		-- "Luxic"
-		"Yabedabedo"
 	}
 	
 	----------------------------------------- Healing Idea's -----------------------------------------

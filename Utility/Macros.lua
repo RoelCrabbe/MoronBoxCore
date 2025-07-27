@@ -256,6 +256,7 @@ function mb_createMacros()
 
     mb_createBinds()
     mb_addonsDisableEnable()
+	TrinketMenu_MainFrame:Hide()
 end
 
 local DeleteMacros = {
@@ -311,6 +312,17 @@ local EnableDisableAddons = {
         ["Rogue"]   = false,
         ["Warlock"]   = false,
     },
+	["Thaliz"] = {
+        ["Priest"]  = true,
+        ["Shaman"]  = true,
+        ["Paladin"] = true,
+        ["Druid"]   = true,
+        ["Mage"]    = false,
+        ["Warrior"] = false,
+        ["Hunter"]  = false,
+        ["Rogue"]   = false,
+        ["Warlock"]   = false,
+    },
     ["MoronBoxSummon"] = {
         ["Priest"]  = false,
         ["Shaman"]  = false,
@@ -321,6 +333,17 @@ local EnableDisableAddons = {
         ["Hunter"]  = false,
         ["Rogue"]   = false,
         ["Warlock"]   = true,
+    },
+	["MoronBoxGM"] = {
+        ["Priest"]  = false,
+        ["Shaman"]  = false,
+        ["Paladin"] = false,
+        ["Druid"]   = false,
+        ["Mage"]    = false,
+        ["Warrior"] = false,
+        ["Hunter"]  = false,
+        ["Rogue"]   = false,
+        ["Warlock"]   = false,
     }
 }
 

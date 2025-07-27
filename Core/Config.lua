@@ -2,28 +2,29 @@
 ----------------------------------------------- Config! ----------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
-MB_raidinviter = "Moron" -- Handling Raidinvites
+MB_raidInviter = "Moron" -- Handling Raidinvites
+MB_tankList = {}
 
 MB_raidAssist = { -- Raid tools
-	AutoTurnToTarget = false, -- AutoTurning to raidLeader, copied from 5MMB (Never used lol but tought it was cool)
-	Frameflash = true, -- Change this to nil if you do not want the frames to flash when you are out of range etc.
-	Use40yardHealingRangeOnInstants = false, -- Can cause massive lag and freezing if activated and raid is low on health. if nil = 28 yards, if true = 40 yards.
-	FollowTheLeaderTaxi = true, --Change this to nil if you do not want slaves to automatically fly where mb_raidleader flies!
+	AutoTurnToTarget = false, -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
+	Frameflash = true, -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
+	Use40yardHealingRangeOnInstants = false, -- Can cause massive lag and freezing if activated and raid is low on health. If nil = 28 yards, if true = 40 yards.
+	FollowTheLeaderTaxi = true, -- Change this to nil if you do not want followers to automatically fly where the raid leader flies.
 
-	AutoEquipSet = { -- Auto Equip Set on login
-		Active = true, -- True or false, work or not
-		Set = "NRML" -- Your normal set name
+	AutoEquipSet = { -- Automatically equips your gear set on login
+		Active = true, -- Set to true to enable, false to disable
+		Set = "NRML" -- Name of your default gear set
 	},
 
-	GTFO = { -- If you get baron bomb, Vaelastraz bomb you follow this person.
-		Active = true, -- True or false, work or not
+	GTFO = { -- If you get Baron bomb or Vaelastrasz bomb, follow this person.
+		Active = true, -- Set to true to enable, false to disable
 
 		-- Encounter, follower
-		Baron = { -- Baron bom
-			"Rows", -- Horde
+		Baron = { -- Baron bomb
+			"Suecia", -- Horde
 			"Bellamaya" -- Alliance
 		},
-		Vaelastrasz = { -- Vaelastraz
+		Vaelastrasz = { -- Vaelastrasz
 			"Tauror", -- Horde
 			"Bellamaya" -- Alliance
 		},
@@ -31,47 +32,37 @@ MB_raidAssist = { -- Raid tools
 			"Bloodbatz", -- Horde
 			"Murdrum", -- Alliance
 		},
-		Onyxia = { -- Ony Phase 2 (Toon that gets fireballed moves out to reduce dmg)
-			"Suecia", -- Horde
+		Onyxia = { -- Onyxia Phase 2 (Character that gets fireballed moves out to reduce damage)
+			"Moron", -- Horde
 			"Carden" -- Alliance
 		}
 	},
 
-	Shaman = { -- Shamans options
-		DefaultToHealingWave = true, -- If you don't have a given setpart will default to heal wave
+	Shaman = { -- Shaman options
+		DefaultToHealingWave = true, -- If you don't have a specific set, will default to Healing Wave
 		NSLowHealthAggroedPlayers = true, -- Change to nil if you experience lag
-
-		-- Will use Chain Heals in certain encounters wheb RaidHP is between High and Low %
-		AdjustiveChainHeals = { 
-			Active = true, -- true or false
-
-			Razorgore = true,
-			FaerlinaTrash = true,
-			SuppressionRoom = true,
-			Normal = true	
-		},
 	},
 
 	Warlock = { -- Warlock options
-		ShouldBeWhores = false, -- Change this to true if you want warlocks to use shadowburn on targets with 5x shadoweaving and improved shadowbolt on target.
+		ShouldBeWhores = false, -- Set to true to use Shadowburn on targets with 5x Shadoweaving and Improved Shadowbolt
 		FarmSoulStones = false -- On HealAndTank, warlocks will Drain Soul
 	},
 
 	Rogue = { -- Rogue options
-		SaveEnergyForInterrupt = false, -- Will not use attacks if below 65energy, to always be ready with kick on GCD.
+		SaveEnergyForInterrupt = false, -- Will not use attacks if below 65 energy, to always be ready with Kick on GCD
 	},
 
-	Paladin = {
+	Paladin = { -- Paladin options
 		HolyShockLowHealthAggroedPlayers = true -- Change to nil if you experience lag
 	},
 
-	Druid = {
-		BuffTanksWithThorns = false, -- No more buffing with Thorns
-		PrioritizePriestsAtieshBuff = true -- My raid has 1 priest, 1 druid in a grp with Atiesh. Turned on this will not re-equip druid atiesh so priest can have his
+	Druid = { -- Druid options
+		BuffTanksWithThorns = false, -- No longer buffs tanks with Thorns
+		PrioritizePriestsAtieshBuff = true -- If enabled, prevents druid from re-equipping Atiesh so priest can keep the buff
 	},
 
-	Priest = {
-		PowerInfusionList = { -- People in this list can get Power Infusion (Random).
+	Priest = { -- Priest options
+		PowerInfusionList = { -- Players in this list can receive Power Infusion (randomly selected)
 			-- Horde
 			"Thehatter",
 			"Trinali",
@@ -85,12 +76,10 @@ MB_raidAssist = { -- Raid tools
 		}
 	},
 
-	Warrior = { -- Warriors only, only for Annihilator
-		Active = true, -- True or false, work or not
-				
-		AnnihilatorWeavers = { -- Everyone that does Anni in here + Fix weapons database (WarriorData.lua)
+	Warrior = { -- Warrior options, only for Annihilator
+		Active = true, -- Set to true to enable, false to disable
+		AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
 			-- Horde
-			--"Tazmahdingo",
 			"Dl",
 
 			"Ajlano", -- Tank
@@ -106,36 +95,35 @@ MB_raidAssist = { -- Raid tools
 	},
 
 	Mage = {
-
 		StarterIgniteTick = 500, -- Represents the threshold tick value for the Ignite debuff
 		AllowIgniteToDropWhenBadTick = false, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
 		AllowInstantCast = true, -- Indicates whether instant cast spells should be allowed		
-		
+
 		--[[
-			When running multiple DIFFERENT SPECC mages in 1 teams following problems occurred :
-			You're Frost / Arcane mages have more mana then you're Fire mages.
-			This caused my firemages to do nothing
+			When running multiple different spec mages in one team, the following problems occurred:
+			Your Frost/Arcane mages have more mana than your Fire mages.
+			This caused my Fire mages to do nothing.
 
-			Why? My firemages wait for 5 stacks of scorch before fireballing.
-			How it used to be is that the 5 BIGGEST mages (The 5 mages with highest mana) cast scorch first.
-			With the extra arcane mages I run those 5 will be frost and therefore scorch will never be up.
+			Why? My Fire mages wait for 5 stacks of Scorch before casting Fireball.
+			How it used to work is that the 5 mages with the highest mana would cast Scorch first.
+			With the extra Arcane mages, those 5 will be Frost, and therefore Scorch will never be up.
 
-			This is why there are 2 tables FireMages and FrostMages
-			You will need to fill those in For Firemages, frost currently has no usage yet but is there for show :-). (Solution to running multiplemages)
+			This is why there are two tables: FireMages and FrostMages.
+			You will need to fill those in for Fire mages; Frost currently has no usage yet but is there for reference.
+			(Solution to running multiple mage specs)
 
-			(Also tried my best at controlling ignite, but lol u can't :D)
+			(Also tried my best at controlling Ignite, but you can't really do it
 		]]
 
 		FireMages = {
-
 			-- Horde Main Team --
-			"Thehatter", -- 41.8
-			"Trinali", -- 38.3
-			"Rotonic", -- 38.3
-			"Schoffie", -- 37.9
-			"Excold", -- 36.9
-			"Mizea", -- 35.9
+			"Thehatter",
+			"Trinali",
+			"Rotonic",
+			"Schoffie",
+			"Excold",
+			"Mizea",
 
 			-- Horde Extra --
 			"Wizea",
@@ -147,14 +135,13 @@ MB_raidAssist = { -- Raid tools
 			-- Alliance Main Team --
 			"Salka",
 			"Pienipyöreä",
-			"Bluedabadee", -- 27.9
+			"Bluedabadee",
 			"Seamount"
 		},
 
 		FrostMages = {
-
 			-- Horde Main Team --
-			"Oponn", -- 30.7
+			"Oponn",
 			"Naturka",
 			"Kl",
 			"Caribbean",
@@ -190,172 +177,92 @@ MB_raidAssist = { -- Raid tools
 		Razorgore = "Akaaka"
 	},
 
-	PotionTraders = { -- When ur buffingand ctrlkeydown, these toons will collect those pots
-		Active = true, -- Working or not
-		MajorMana = "Smalheal", -- The toon that will be giving out mana pots to all healers that need it
+	PotionTraders = { -- When buffing and holding Ctrl, these characters will collect potions
+		Active = true, -- Set to true to enable, false to disable
+		MajorMana = "Smalheal", -- The character that will distribute mana potions to all healers who need them
 	}
 }
 
-MB_sortingBags = { -- Auto sorts bags and Bank, if enabled
-	Active = true, 
-	Bank = false 
+MB_sortingBags = { -- Automatically sorts bags and bank if enabled
+    Active = true, -- Set to true to enable, false to disable
+    Bank = false -- Set to true to also sort the bank
 }
 
--- https://guybrushgit.github.io/WarriorSim/
+MB_tankList = { -- Add your tanks to this list for the login tank list
+    -- Horde
+    "Moron",
+    "Suecia",
+    "Ajlano",
+    "Rows",
+    "Almisael",
+    "Tauror",
+    "Empada",
 
-MB_tanklist = {}
-
-MB_tanklist = { -- Fill your tanks in this list for a login tanklist
-
-	-- Horde
-	"Moron",
-	"Suecia",
-	"Ajlano",
-	"Rows",
-	"Almisael",
-	"Tauror",
-	"Hondtje",
-
-	-- Alliance
-	"Deadgods",
-	"Drudish",
-	"Gupy",
-	"Bellamaya"
+    -- Alliance
+    "Deadgods",
+    "Drudish",
+    "Gupy",
+    "Bellamaya"
 }
 
-MB_extraTanks = { --> These tanks will be added inside the no 'taunt off' list
-	"Deathknight Understudy",
-	"Bendorama",
-	"Empada",
-	"Underkraftet",
-	"Carden",
-	"Goldgoldgold",
-	"Faceplate",
-	"Moronbox",
-	"Klawss"
+MB_extraTanks = { -- These tanks will be added to the 'no taunt off' list
+    "Deathknight Understudy",
+    "Bendorama",
+    "Empada",
+    "Underkraftet",
+    "Carden",
+    "Goldgoldgold",
+    "Faceplate",
+    "Moronbox",
+    "Klawss"
 }
 
-function mb_tankList(encounter) --> DO NOT PUT OTHER / GUEST TANKS ON HERE, ADD THEM in MB_extraTanks!!
+MB_furysThatCanTank = { -- DPS warriors with a tank set (create ItemRack sets named "TANK" and "DPS" to use this). Also add these names to the tank list.
+    -- Horde
+    "Goodbeef",
+    "Axhole",
 
-	-- /tanklist <encouter> will trigger this function and run a preset list
-	if not encounter or encounter == "" then Print("Usage /tanklist < encounter >.") return end
+    -- Alliance
+    "Akileys",
+    "Bestguy"
+}
 
-	MB_tanklist = {}
+function mb_tankList(encounter)
+    -- DO NOT PUT OTHER / GUEST TANKS ON HERE, ADD THEM in MB_extraTanks!!
+    -- /tanklist <encounter> will trigger this function and run a preset list
 
-	if UnitFactionGroup("player") == "Horde" then
+    if not encounter or encounter == "" then
+        Print("Usage: /tanklist <encounter>")
+        return
+    end
 
-		if encounter == "NRML" then 		
+	local faction = UnitFactionGroup("player")
+    local presets = {
+		Horde = {
+			NRML   = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Hondtje" },
+			NAXX   = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Goodbeef", "Axhole" },
+			HEIGAN = { "Moron", "Suecia", "Ajlano", "Rows", "Almisael" },
+			DEFAULT= { "Moron", "Suecia", "Ajlano", "Rows", "Almisael", "Hondtje" }
+		},
+        Alliance = {
+            NRML   = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },
+            NAXX   = { "Deadgods", "Drudish", "Gupy", "Bellamaya", "Akileys", "Bestguy" },
+            HEIGAN = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },
+            DEFAULT= { "Deadgods", "Drudish", "Gupy", "Bellamaya" }
+        }
+    }
 
-			MB_tanklist = {
-				"Suecia",
-				"Ajlano",
-				"Rows",
-				"Almisael",
-				"Tauror",
-				"Hondtje",
-			}
+	local tanks = presets[faction] and presets[faction][encounter] or presets[faction] and presets[faction].DEFAULT or {}
+    MB_tankList = tanks
 
-		elseif encounter == "NAXX" then 
+    if IsRaidLeader() then
+        mb_message(encounter.." Tanklist loaded.")
+        for i, tank in ipairs(MB_tankList) do
+            mb_message(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
+        end
+    end
 
-			MB_tanklist = {
-				"Suecia",
-				"Ajlano",
-				"Rows",
-				"Almisael",
-				"Tauror",
-
-				"Goodbeef",
-				"Axhole"
-			}
-
-		elseif encounter == "HEIGAN" then
-
-			MB_tanklist = {
-				"Suecia",
-				"Ajlano",
-				"Rows",
-				"Almisael",
-				"Tauror",
-			}
-
-		else
-
-			encounter = "DEFAULT"
-
-			MB_tanklist = {
-				"Suecia",
-				"Ajlano",
-				"Rows",
-				"Almisael",
-				"Tauror",
-				"Hondtje",
-			}
-		end
-
-	elseif UnitFactionGroup("player") == "Alliance" then
-
-		if encounter == "NRML" then 		
-
-			MB_tanklist = {
-				"Deadgods",
-				"Drudish",
-				"Gupy",
-				"Bellamaya",
-			}
-
-		elseif encounter == "NAXX" then 
-
-			MB_tanklist = {
-				"Deadgods",
-				"Drudish",
-				"Gupy",
-				"Bellamaya",
-
-				"Akileys",
-				"Bestguy"
-			}
-
-		elseif encounter == "HEIGAN" then
-
-			MB_tanklist = {
-				"Deadgods",
-				"Drudish",
-				"Gupy",
-				"Bellamaya",
-			}
-
-		else
-
-			encounter = "DEFAULT"
-
-			MB_tanklist = {
-				"Deadgods",
-				"Drudish",
-				"Gupy",
-				"Bellamaya",
-			}
-		end
-	end
-
-	if IsRaidLeader() then 
-		mb_message(encounter.." Tanklist loaded.")
-		
-		for i,tank in pairs(MB_tanklist) do
-			mb_message(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
-		end
-	end
-
-	mb_initializeClasslists()
+    mb_initializeClasslists()
 end
-
-MB_furysThatCanTank = { -- DPS warriors, with tank set (Make an ItemRack called "TANK" and "DPS" to make it work), also ass this name in Tanklist ofc :V
-	-- Horde
-	"Goodbeef",
-	"Axhole",
-
-	-- Alliance
-	"Akileys",
-	"Bestguy"
-}
 
 --------------------------------------------- End Globals! -------------------------------------------

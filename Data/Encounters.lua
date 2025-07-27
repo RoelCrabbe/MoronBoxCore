@@ -10,7 +10,7 @@
 	-- Alliance doesn't need this shit, they have Devine Intervention
 	--------------------------------------------------------------------------------------------------
 
-	MB_myThreatPWSoaker = "Suecia"
+	MB_myThreatPWSoaker = "Moron"
 	MB_myThreatPWSoakerHealerList = {
 		"Bogeycrap", -- 8T1 Shaman
 		"Midavellir", -- Priest
@@ -60,7 +60,7 @@
 	MB_myMaexxnaMainTank = {
 
 		-- Horde Team 1
-		"Suecia",
+		"Moron",
 
 		-- Horde Team 2
 		"Hondtje",
@@ -114,7 +114,7 @@
 	MB_myGrobbulusFollowTarget = "Ajlano"
 	MB_myGrobbulusSecondFollowTarget = "Rows"
 
-	MB_myGrobbulusMainTank = "Suecia"
+	MB_myGrobbulusMainTank = "Moron"
 	MB_myGrobbulusSlimeTankOne = "Faceplate"
 	MB_myGrobbulusSlimeTankTwo = "Rows"
 
@@ -158,7 +158,7 @@
 	MB_mySkeramMiddleTank = {
 
 		-- Horde
-		"Suecia",
+		"Moron",
 
 		-- Alliance
 		"Deadgods"	
@@ -279,9 +279,9 @@
 	-- MB_myHuhuranMainTank uses SW/LS at MB_myHuhuranTankDefensivePrecentage
 	--------------------------------------------------------------------------------------------------
 
-	MB_myHuhuranMainTank = "Suecia"
+	MB_myHuhuranMainTank = "Moron"
 	MB_myHuhuranTankDefensivePrecentage = 0.25
-	MB_myHuhuranFirstDruidHealer = "Pyqmi"
+	MB_myHuhuranFirstDruidHealer = "Smalheal"
 
 ---------------------------------------------- Huhuran ----------------------------------------------
 
@@ -315,7 +315,7 @@
 	MB_myRazorgoreLeftTank = { -- Tank Left
 
 		-- Horde
-		"Suecia",
+		"Moron",
 
 		-- Alliance
 		"Deadgods"
@@ -430,8 +430,8 @@
 	-- Shield Wall when low HP whe boss is below MB_myOssirianTankDefensivePrecentage
 	--------------------------------------------------------------------------------------------------
 
-	MB_myOssirianMainTank = "Suecia"
-	MB_myOssirianTankDefensivePrecentage = 0.37
+	MB_myOssirianMainTank = "Moron"
+	MB_myOssirianTankDefensivePrecentage = 0.35
 
 ---------------------------------------------- Ossirian ----------------------------------------------
 
@@ -446,7 +446,7 @@
 	-- MB_myOnyxiaFollowTarget !! MUST BE ASSIGNED !! The followback target
 	--------------------------------------------------------------------------------------------------
 
-	MB_myOnyxiaMainTank = "Suecia"
+	MB_myOnyxiaMainTank = "Moron"
 	MB_myOnyxiaFollowTarget = "Ajlano"
 
 ---------------------------------------------- Onyxia ----------------------------------------------

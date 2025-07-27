@@ -3697,7 +3697,7 @@ end
 function mb_getGoldFromLeader(amount)
 	if not MB_raidLeader then return end
 
-	if myName ~= MB_raidinviter then
+	if myName ~= MB_raidInviter then
 		local myGold = GetMoney()
 
 		if myGold >= amount*10000 then return end
@@ -3711,7 +3711,7 @@ function mb_getGoldFromLeader(amount)
 			return
 		end
 
-	elseif myName == MB_raidinviter then
+	elseif myName == MB_raidInviter then
 		local myGold = GetMoney()
 
 		if myGold <= amount*10000 then
@@ -3734,14 +3734,14 @@ end
 function mb_tradeGoldToLeader(amount)
 	if not MB_raidLeader then return end
 
-	if myName == MB_raidinviter then
+	if myName == MB_raidInviter then
 
 		if MB_tradeOpen and GetTargetTradeMoney() > 0 then
 			AcceptTrade()
 			return
 		end
 
-	elseif myName ~= MB_raidinviter then
+	elseif myName ~= MB_raidInviter then
 		local myGold = GetMoney()
 
 		if myGold <= amount*10000 then return end
@@ -4892,7 +4892,7 @@ function mb_initializeClasslists()
 
 	--------------------------------------------------------------------------------------------------
 
-	for k, tank in pairs(MB_tanklist) do
+	for k, tank in pairs(MB_tankList) do
 		if MBID[tank] then
 
 			if UnitInParty(MBID[tank]) then
@@ -5235,7 +5235,7 @@ function mb_requestInviteSummon() -- Set up raid stuff
 
 	if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then -- Alt key to inv
 		
-		if MB_raidinviter == myName then
+		if MB_raidInviter == myName then
 			
 			SetLootMethod("freeforall", myName)
 			
@@ -5246,12 +5246,12 @@ function mb_requestInviteSummon() -- Set up raid stuff
 			return
 		end
 
-		if MB_raidinviter then
+		if MB_raidInviter then
 
-			if not (mb_isInRaid(MB_raidinviter) or mb_isInGroup(MB_raidinviter)) then
+			if not (mb_isInRaid(MB_raidInviter) or mb_isInGroup(MB_raidInviter)) then
 			
 				mb_disbandRaid()
-				SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidinviter);
+				SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidInviter);
 			end
 		end
 		return
@@ -6515,8 +6515,8 @@ function mb_assistFocus() -- Assist the focus target
 		end
 	else
 
-		AssistByName(MB_raidinviter, 1)
-		RunLine("/w "..MB_raidinviter.." Press setFOCUS!")
+		AssistByName(MB_raidInviter, 1)
+		RunLine("/w "..MB_raidInviter.." Press setFOCUS!")
 	end
 end
 
@@ -8774,7 +8774,7 @@ function mb_flashFrameFlashHandler()
 		--Highlight MainTankTargetstarget
 		if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader].."targettarget") == myName and UnitIsEnemy("target", "player") then
 			
-			if mb_findInTable(MB_tanklist, myName) then
+			if mb_findInTable(MB_tankList, myName) then
 				--Highlight Tank
 				t1:SetTexture(1.0, 1.0, 1.0, 0.4)
 				t2:SetTexture(1.0, 1.0, 1.0, 0.4)
@@ -11482,16 +11482,16 @@ function mb_priestHealerDebuffs() -- Priest debuffs
 			end
 
 		else
-			if MB_raidinviter then
+			if MB_raidInviter then
 
-				if (UnitCanAttack("player", MBID[MB_raidinviter].."target") and mb_debuffShadowWeavingAmount() < 5) and mb_isValidEnemyTargetWithin28YardRange(MBID[MB_raidinviter].."target") then
+				if (UnitCanAttack("player", MBID[MB_raidInviter].."target") and mb_debuffShadowWeavingAmount() < 5) and mb_isValidEnemyTargetWithin28YardRange(MBID[MB_raidInviter].."target") then
 					
-					AssistUnit(MBID[MB_raidinviter])
+					AssistUnit(MBID[MB_raidInviter])
 					CastSpellByName("Shadow Word: Pain(rank 1)")
 					return true
 				else
 				
-					AssistUnit(MBID[MB_raidinviter])
+					AssistUnit(MBID[MB_raidInviter])
 					mb_cooldownCast("Shadow Word: Pain(rank 1)", 17)
 				end
 			end
@@ -14687,11 +14687,11 @@ function mb_druidHealerDebuffs() -- Druid debuffs, special and I don't want to e
 		end
 
 	else
-		if MB_raidinviter then
+		if MB_raidInviter then
 
-			if UnitCanAttack("player", MBID[MB_raidinviter].."target") and (not mb_hasBuffOrDebuff("Faerie Fire", MBID[MB_raidinviter].."target", "debuff") or not mb_hasBuffOrDebuff("Faerie Fire (Feral)", MBID[MB_raidLeader].."target", "debuff")) then
+			if UnitCanAttack("player", MBID[MB_raidInviter].."target") and (not mb_hasBuffOrDebuff("Faerie Fire", MBID[MB_raidInviter].."target", "debuff") or not mb_hasBuffOrDebuff("Faerie Fire (Feral)", MBID[MB_raidLeader].."target", "debuff")) then
 					
-				AssistUnit(MBID[MB_raidinviter])
+				AssistUnit(MBID[MB_raidInviter])
 				CastSpellByName("Faerie Fire")
 				TargetLastTarget()
 			end

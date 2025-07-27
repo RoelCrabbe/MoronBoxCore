@@ -28,7 +28,7 @@ local myRace = UnitRace("player")
 function mb_tradeCooldownMaterialsToLeader() -- This is our trade to Leader function
 	
 	if not MB_raidLeader then 
-		RunLine("/w "..MB_raidinviter.." Press setFOCUS!")
+		RunLine("/w "..MB_raidInviter.." Press setFOCUS!")
 		return
 	end
 
