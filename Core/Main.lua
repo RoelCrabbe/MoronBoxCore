@@ -1080,9 +1080,10 @@ function MMB:OnEvent()
 		local _, _, caster, spell = string.find(arg1, "(.*) begins to cast (.*).")
 		
 		if caster and UnitName("target") == caster then
-			for k, badspell in MB_spellsToInt do
-				if spell == badspell then
-					if UnitName("target") and badspell and mb_spellReady(MB_myInterruptSpell[myClass]) then
+			for k, badSpell in MB_spellsToInt do
+				if spell == badSpell then
+					Print("Found bad spell: "..badSpell.." from: "..caster)
+					if UnitName("target") and badSpell and mb_spellReady(MB_myInterruptSpell[myClass]) then
 						if myClass == "Priest" and not mb_knowSpell("Silence") then return end
 
 						MB_doInterrupt.Active = true
@@ -1421,6 +1422,14 @@ function mb_tankTarget(mobname) -- Sometimes we have to know if the tank is targ
 		if UnitName(MBID[MB_raidLeader].."target") == mobname then return true end
 	end
 	return false
+end
+
+function mb_tankTargetInSet(mobSet)
+    if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader].."target") then
+        local tankTargetName = UnitName(MBID[MB_raidLeader].."target")
+        return mobSet[tankTargetName] == true
+    end
+    return false
 end
 
 function mb_playerWithAgroFromSpecificTarget(target, player)
@@ -9764,7 +9773,7 @@ function mb_mageSetup() -- Buffing
 		return
 	end
 
-	if (mb_mageWater() > 60) or MB_isMoving.Active then -- Buff and make water
+	if (mb_mageWater() > 100) or MB_isMoving.Active then -- Buff and make water
 		
 		if not MB_autoBuff.Active then
 
@@ -9789,8 +9798,7 @@ function mb_mageSetup() -- Buffing
 				mb_multiBuff("Dampen Magic")
 			end
 			
-			
-			if mb_mobsToAplifyMagic() then
+			if mb_mobsToAmplifyMagic() then
 				
 				if mb_tankTarget("Gluth") then
 	
@@ -12000,14 +12008,16 @@ function mb_priestSetup() -- Buffing
 
 		mb_multiBuff("Prayer of Fortitude")
 
-		if mb_knowSpell("Prayer of Spirit") then
-			
-			mb_multiBuff("Prayer of Spirit")
-		end
+		if not GetRealZoneText() == "Molten Core" then
+			if mb_knowSpell("Prayer of Spirit") then
+				
+				mb_multiBuff("Prayer of Spirit")
+			end
 
-		if not mb_isAtInstructorRazuvious() then 
-			
-			mb_multiBuff("Prayer of Shadow Protection")
+			if not mb_isAtInstructorRazuvious() then 
+				
+				mb_multiBuff("Prayer of Shadow Protection")
+			end
 		end
 
 		if mb_spellReady("Fear Ward") and mb_mobsToFearWard() then -- Fear Warding 
@@ -12366,7 +12376,7 @@ function mb_annihilatorWeaving()
 			
 				if mb_debuffAmountShatter() == 3 then
 
-					if mb_itemNameOfEquippedSlot(17) ~= mb_GetWeaverWeapon(name ,"NOH") then 
+					if mb_itemNameOfEquippedSlot(17) ~= mb_getWeaverWeapon(name ,"NOH") then 
 
 						if mb_itemNameOfEquippedSlot(17) then
 
@@ -12374,7 +12384,7 @@ function mb_annihilatorWeaving()
 						end
 					end 
 
-					if mb_itemNameOfEquippedSlot(16) ~= mb_GetWeaverWeapon(name ,"NMH") then 
+					if mb_itemNameOfEquippedSlot(16) ~= mb_getWeaverWeapon(name ,"NMH") then 
 
 						if mb_itemNameOfEquippedSlot(16) then
 							
@@ -12382,13 +12392,13 @@ function mb_annihilatorWeaving()
 						end
 					end
 
-					RunLine("/equip "..mb_GetWeaverWeapon(name ,"NMH"))
-					RunLine("/equip "..mb_GetWeaverWeapon(name ,"NOH"))
+					RunLine("/equip "..mb_getWeaverWeapon(name ,"NMH"))
+					RunLine("/equip "..mb_getWeaverWeapon(name ,"NOH"))
 
 				else
 
 
-					if mb_itemNameOfEquippedSlot(17) ~= mb_GetWeaverWeapon(name ,"BOH") then 
+					if mb_itemNameOfEquippedSlot(17) ~= mb_getWeaverWeapon(name ,"BOH") then 
 
 						if mb_itemNameOfEquippedSlot(17) then
 
@@ -12396,7 +12406,7 @@ function mb_annihilatorWeaving()
 						end
 					end 
 
-					if mb_itemNameOfEquippedSlot(16) ~= mb_GetWeaverWeapon(name ,"BMH") then 
+					if mb_itemNameOfEquippedSlot(16) ~= mb_getWeaverWeapon(name ,"BMH") then 
 
 						if mb_itemNameOfEquippedSlot(16) then
 							
@@ -12404,12 +12414,12 @@ function mb_annihilatorWeaving()
 						end
 					end
 
-					RunLine("/equip "..mb_GetWeaverWeapon(name ,"BMH"))
-					RunLine("/equip "..mb_GetWeaverWeapon(name ,"BOH"))
+					RunLine("/equip "..mb_getWeaverWeapon(name ,"BMH"))
+					RunLine("/equip "..mb_getWeaverWeapon(name ,"BOH"))
 				end	
 			else
 
-				if mb_itemNameOfEquippedSlot(17) ~= mb_GetWeaverWeapon(name ,"NOH") then 
+				if mb_itemNameOfEquippedSlot(17) ~= mb_getWeaverWeapon(name ,"NOH") then 
 
 					if mb_itemNameOfEquippedSlot(17) then
 
@@ -12417,7 +12427,7 @@ function mb_annihilatorWeaving()
 					end
 				end 
 
-				if mb_itemNameOfEquippedSlot(16) ~= mb_GetWeaverWeapon(name ,"NMH") then 
+				if mb_itemNameOfEquippedSlot(16) ~= mb_getWeaverWeapon(name ,"NMH") then 
 
 					if mb_itemNameOfEquippedSlot(16) then
 						
@@ -12425,8 +12435,8 @@ function mb_annihilatorWeaving()
 					end
 				end
 
-				RunLine("/equip "..mb_GetWeaverWeapon(name ,"NMH"))
-				RunLine("/equip "..mb_GetWeaverWeapon(name ,"NOH"))
+				RunLine("/equip "..mb_getWeaverWeapon(name ,"NMH"))
+				RunLine("/equip "..mb_getWeaverWeapon(name ,"NOH"))
 			end end
 		end 
 	end

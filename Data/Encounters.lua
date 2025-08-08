@@ -17,7 +17,7 @@
         "Pyqmi" -- Druid
     }
 
-    MB_myFirstPWSoaker = "Rows"
+    MB_myFirstPWSoaker = "Suecia"
     MB_myFirstPWSoakerHealerList = {
         "Shamuk", -- 6T3+ Shaman for BUFF
         "Draub", -- 8T2 Priest
@@ -25,7 +25,7 @@
         "Superkoe", -- 8T1 Shaman	
     }
     
-    MB_mySecondPWSoaker = "Almisael"
+    MB_mySecondPWSoaker = "Ajlano"
     MB_mySecondPWSoakerHealerList = {
         "Laitelaismo", -- 6T3+ Shaman for BUFF
         "Ayag", -- 8T2 Priest
@@ -33,7 +33,7 @@
         "Smalheal", -- Druid
     }
         
-    MB_myThirdPWSoaker = "Ajlano"
+    MB_myThirdPWSoaker = "Almisael"
     MB_myThirdPWSoakerHealerList = {
         "Ootskar", -- 6T3+ Shaman for BUFF
         "Healdealz", -- Priest
@@ -62,25 +62,24 @@
         "Moron",
 
         -- Alliance
-        "Klawss"
+        "Alliance Tank 1"
     }
 
     MB_myMaexxnaDruidHealer = {        
         -- Horde Team 1
-        "Pyqmi",
         "Smalheal",
+        "Pyqmi",
 
         -- Alliance
-        "Jahetsu",
-        "Kusch"
+        "Alliance Druid 1"
     }
 
     MB_myMaexxnaPriestHealer = {        
         -- Horde Team 1
-        "Healdealz",
+        "Midavellir",
 
         -- Alliance
-        "Murdrum"
+        "Alliance Priest 1"
     }
 
 ----------------------------------------------- Maexxna ----------------------------------------------
@@ -129,7 +128,7 @@
         "Suecia",
 
         -- Alliance
-        "Gupy"	
+        "Alliance Tank 1"	
     }
 
     MB_mySkeramLeftOFFTANKS = { -- To help marking boss        
@@ -137,7 +136,7 @@
         "Rows",
 
         -- Alliance
-        "Bestguy"		
+        "Alliance Offtank 1"		
     }
 
     MB_mySkeramMiddleTank = {
@@ -145,7 +144,7 @@
         "Moron",
 
         -- Alliance
-        "Deadgods"	
+        "Alliance Tank 2"	
     }
 
     MB_mySkeramMiddleOFFTANKS = { -- To help marking boss
@@ -153,37 +152,22 @@
         "Almisael",
 
         -- Alliance
-        "Bellamaya"	
+        "Alliance Offtank 2"	
     }
 
     MB_mySkeramMiddleDPSERS = {
         -- Horde DPS
-        "Miagi", -- Rogue
-        "Levski", -- Rogue
-        "Invictivus",
-        "Chabalala", -- Warr
-        "Angerissues", -- Warr
-        "Gogopwranger", -- Warr
-        "Tazmahdingo", -- Warr
-        "Maximumzug", -- Warr
-        "Cornanimal", -- Warr
-        "Badhatter", -- Warr
-        "Uzug", -- Warr
-        "Xoncharr",
-        "Dl",
+        "Moonspawn",
+        "Likez",
+        "Angerissues",
+        "Tazmahdingo",
+        "Gogopwranger",
+        "Chabalala",
+        "Weedzy",
+        "Miagi",
 
         -- Alliance DPS
-        "Spessu", -- Rogue
-        "Insanette", -- Warr
-        "Starnight", -- Warr
-        "Klaidas", -- Warr
-        "Croglust", -- Warr
-        "Pinkyz", -- Warr
-        "Miksmaks", -- Rogue
-        "Arkius", -- Warr
-        "Arent", -- Warr
-        "Uvu", -- Warr
-        "Hutao"
+        "Alliance Melee 1"
     }
 
     MB_mySkeramRightTank = { 
@@ -191,7 +175,7 @@
         "Ajlano",
 
         -- Alliance
-        "Drudish"	
+        "Alliance Tank 3"	
     }
 
     MB_mySkeramRightOFFTANKS = { -- To help marking boss        
@@ -199,7 +183,7 @@
         "Sabo",
 
         -- Alliance
-        "Akileys"	
+        "Alliance Offtank 3"	
     }
 
 ----------------------------------------------- Skeram -----------------------------------------------
@@ -222,7 +206,7 @@
         "Suecia",
 
         -- Alliance
-        "Drudish"	
+        "Alliance Offtank 1"	
     }
 
     MB_myFankrissSnakeTankOne = {
@@ -230,7 +214,7 @@
         "Ajlano",
 
         -- Alliance
-        "Gupy"
+        "Alliance Snake Tank 1"
     }
 
     MB_myFankrissSnakeTankTwo = {
@@ -238,7 +222,7 @@
         "Almisael",
 
         -- Alliance
-        "Bellamaya"
+        "Alliance Snake Tank 2"
     }
 
 ---------------------------------------------- Fankriss ----------------------------------------------
@@ -285,7 +269,7 @@
         "Rows",
 
         -- Alliance
-        "Pureblood"
+        "Alliance Orb Tank 1"
     }
 
     MB_myRazorgoreLeftTank = { -- Tank Left
@@ -293,7 +277,7 @@
         "Moron",
 
         -- Alliance
-        "Deadgods"
+        "Alliance Tank 1"
     }
     MB_myRazorgoreLeftDPSERS = {
         -- Horde Offtank
@@ -308,17 +292,6 @@
         "Uzug", -- Warr
         "Axhole", -- Warr
         "Kyrielle", -- Warr
-
-        -- Alliance Offtank
-        "Bellamaya", -- No TF
-
-        -- Alliance DPS
-        "Spessu", -- Rogue
-        "Klaidas", -- Warr
-        "Starnight", -- Warr
-        "Arent", -- Warr
-        "Croglust", -- Warr
-        "Akileys", -- Warr
     }
     
     MB_myRazorgoreRightTank = { -- Tank Right
@@ -326,7 +299,7 @@
         "Suecia",
 
         -- Alliance
-        "Drudish"
+        "Alliance Tank 2"
     }
     MB_myRazorgoreRightDPSERS = {        
         -- Horde Offtank
@@ -341,18 +314,6 @@
         "Cornanimal", -- Warr
         "Rapenaattori", -- Warr
         "Goodbeef", -- Warr
-
-        -- Alliance Offtank
-        "Gupy", -- No TF
-
-        -- Alliance DPS
-        "Pinkyz", -- Rogue
-        "Insanette", -- Warr
-        "Nyka", -- Warr
-        "Miksmaks", -- Warr
-        "Arkius", -- Warr
-        "Uvu", -- Warr
-        "Bestguy" -- Warr
     }
 
 ---------------------------------------------- Razorgore ---------------------------------------------
@@ -439,7 +400,7 @@
         "Ez",		
 
         -- Alliance
-        "Captivity"	
+        "Alliance Priest 1"	
     }
 
 ---------------------------------------------- Razuvious ----------------------------------------------
@@ -461,11 +422,8 @@
         -- Horde Team 1
         "Midavellir",
 
-        -- Horde Team 2
-        "Schmuk",
-
         -- Alliance
-        "Captivity"
+        "Alliance Priest 1"
     }
 
 ---------------------------------------------- Faerlina ----------------------------------------------
@@ -487,7 +445,7 @@
         "Akaaka",		
 
 		-- Alliance
-        "Trachyt"	
+        "Alliance Warlock 1"	
     }
 
 ----------------------------------------------- Twins ------------------------------------------------

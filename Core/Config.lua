@@ -22,19 +22,19 @@ MB_raidAssist = { -- Raid tools
 		-- Encounter, follower
 		Baron = { -- Baron bomb
 			"Suecia", -- Horde
-			"Bellamaya" -- Alliance
+			"Alliance Soak 1" -- Alliance
 		},
 		Vaelastrasz = { -- Vaelastrasz
-			"Tauror", -- Horde
-			"Bellamaya" -- Alliance
+			"Suecia", -- Horde
+			"Alliance Soak 1" -- Alliance
 		},
 		Grobbulus = { -- Grobbulus
 			"Bloodbatz", -- Horde
-			"Murdrum", -- Alliance
+			"Alliance Priest 1", -- Alliance
 		},
 		Onyxia = { -- Onyxia Phase 2 (Character that gets fireballed moves out to reduce damage)
 			"Moron", -- Horde
-			"Carden" -- Alliance
+			"Alliance Soak 1" -- Alliance
 		}
 	},
 
@@ -80,17 +80,14 @@ MB_raidAssist = { -- Raid tools
 		Active = true, -- Set to true to enable, false to disable
 		AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
 			-- Horde
-			"Dl",
+			"Jokamok",
 
+			"Suecia", -- Tank
 			"Ajlano", -- Tank
-			"Rows", -- Tank
 			"Almisael", -- Tank
-			"Tauror", -- Tank
 
 			-- Alliance
-			"Hutao",
-			"Uvu",
-			"Drudish" -- Tank
+			"Alliance Warrior 1",
 		}
 	},
 
@@ -119,47 +116,29 @@ MB_raidAssist = { -- Raid tools
 		FireMages = {
 			-- Horde Main Team --
 			"Thehatter",
-			"Trinali",
 			"Rotonic",
+			"Trinali",
 			"Schoffie",
-			"Excold",
 			"Mizea",
 
-			-- Horde Extra --
-			"Wizea",
-			"Mivea",
-
-			"Ytru",
-			"Zadazdaa",
-
 			-- Alliance Main Team --
-			"Salka",
-			"Pienipyöreä",
-			"Bluedabadee",
-			"Seamount"
+			"Alliance Mage 1",
 		},
 
 		FrostMages = {
 			-- Horde Main Team --
-			"Oponn",
-			"Naturka",
-			"Kl",
-			"Caribbean",
-
-			-- Horde Extra --
-			"Goodfella",
-			"Hjälp",
+			"Xlimidrizer",
+			"Kelseran",
+			"Damacon",
+			"Salka",
+			"Umek",
+			"Oxg",
 
 			-- Horde Shatter --
-			"Mmhm",
-			"Mycah",
+			"Bluedabadee",
 
 			-- Alliance Main Team --
-			"Lilfker",
-			"Drplum",
-			"Drgrean",
-			"Drzoidburg",
-			"Drfarnsworth"
+			"Alliance Mage 2",
 		}
 	},
 
@@ -193,38 +172,26 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
     "Moron",
     "Suecia",
     "Ajlano",
-    "Rows",
     "Almisael",
-    "Tauror",
-    "Empada",
+    "Rows", 
+	"Sabo",
 
     -- Alliance
-    "Deadgods",
-    "Drudish",
-    "Gupy",
-    "Bellamaya"
+    "Alliance Tank 1"
 }
 
 MB_extraTanks = { -- These tanks will be added to the 'no taunt off' list
     "Deathknight Understudy",
-    "Bendorama",
-    "Empada",
-    "Underkraftet",
-    "Carden",
-    "Goldgoldgold",
-    "Faceplate",
-    "Moronbox",
-    "Klawss"
+    "Extra Tank 1"
 }
 
 MB_furysThatCanTank = { -- DPS warriors with a tank set (create ItemRack sets named "TANK" and "DPS" to use this). Also add these names to the tank list.
     -- Horde
-    "Goodbeef",
-    "Axhole",
+    "Crymeariver",
+    "Jokamok",
 
     -- Alliance
-    "Akileys",
-    "Bestguy"
+    "Alliance Fury 1"
 }
 
 function mb_tankList(encounter)
@@ -239,10 +206,10 @@ function mb_tankList(encounter)
 	local faction = UnitFactionGroup("player")
     local presets = {
 		Horde = {
-			NRML   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Hondtje" },
-			NAXX   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Goodbeef", "Axhole" },
+			NRML   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" },
+			NAXX   = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Crymeariver", "Jokamok" },
 			HEIGAN = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" },
-			DEFAULT= { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Hondtje" }
+			DEFAULT= { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" }
 		},
         Alliance = {
             NRML   = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },

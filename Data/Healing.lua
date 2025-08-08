@@ -55,13 +55,13 @@ MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- Mages will not use Sco
 
 	MB_myFlashHealerList = { -- Flashhealers default list
 		"Draub",
-		-- "Ayag",
+		"Ayag",
 		-- "Corinn",
 		-- "Healdealz",
 		"Midavellir",
-		-- "Ez",
+		"Moronpriest",
 
-		-- "Murdrum",
+		"Murdrum",
 		-- "Wiccana",
 		-- "Hms",
 		-- "Nouveele",
