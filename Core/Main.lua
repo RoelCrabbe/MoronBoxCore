@@ -98,7 +98,13 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 		["Shadow Bolt"] = 380,
 		["Soul Fire"] = 335,
 		["Immolate"] = 380,
-		["Corruption"] = 340
+		["Corruption"] = 340,
+
+		-- Priest
+		["Smite"] = 280,
+		["Mind Flay"] = 205,
+		["Mind Blast"] = 250,
+		["Mana Burn"] = 270
 	}
 
 	-- Raid Targets
@@ -1266,12 +1272,9 @@ function MMB:OnUpdate()
         end
     end
 
-	if MB_autoToggleSheeps.Active then
-        if GetTime() > MB_autoToggleSheeps.Time then
-
-            MB_autoToggleSheeps.Active = false
-        end
-    end
+	if MB_autoToggleSheeps.Active and GetTime() > MB_autoToggleSheeps.Time then
+		MB_autoToggleSheeps.Active = false
+	end
 
 	if MB_autoBuff.Active then
         if GetTime() > MB_autoBuff.Time then
@@ -2037,7 +2040,7 @@ function mb_fearBreak() -- Fearbreaking
 			return
 		end
 
-		mb_cooldownCast("Tremor Totem", 15)
+		mb_coolDownCast("Tremor Totem", 15)
 	end
 
 	if mb_knowSpell("Will of the Forsaken") then -- Undeads only
@@ -2379,13 +2382,11 @@ function spairs(t, order)
 	end
 end
 
-function TableLength(tab) -- This utility tells you how many elements are in a table if table doesn't exist, it's 0.
-
-	if not tab then return 0 end
-	local len = 0
-
-	for _ in pairs(tab) do len = len + 1 end
-	return len
+function TableLength(tab)
+    if not tab then return 0 end
+    local len = 0
+    for _ in pairs(tab) do len = len + 1 end
+    return len
 end
 
 function IncrementIndex(tab, len)
@@ -3187,7 +3188,7 @@ function mb_spellNumber(spell)
 	return highestmb_spellNumber
 end
 
-function mb_cooldownCast(spell, cooldown)
+function mb_coolDownCast(spell, cooldown)
 	local time = GetTime()
 
 	if not MB_cooldowns[spell] then
@@ -5105,6 +5106,13 @@ function mb_mySpecc() -- Speccs
 			MB_mySpecc = "Bitch"
 			return 
 		end
+
+		_, _, _, _, TalentsIn = GetTalentInfo(3, 16)
+		if TalentsIn > 0 then
+
+			MB_mySpecc = "Shadow"
+			return 
+		end	
 	end
 
 	if myClass == "Warrior" then
@@ -5923,7 +5931,7 @@ function mb_healAndTank()
 
 				if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
 						
-					mb_crowdControlMCedRaidmemberSkeramAOE()
+					mb_crowdControlMCedRaidMemberSkeramAOE()
 				end
 				
 			elseif myClass == "Warlock" and MB_mySkeramBoxStrategyWarlock then -- Warlock fear AQ40
@@ -8165,7 +8173,7 @@ function mb_crowdControlMCedRaidmemberSkeramFear() -- CC Hakker MC'd target
 	return false
 end
 
-function mb_crowdControlMCedRaidmemberSkeramAOE() -- Fear Skeram MC'd target
+function mb_crowdControlMCedRaidMemberSkeramAOE() -- Fear Skeram MC'd target
 	if mb_dead("player") then return end
 
 	for i = 1, GetNumRaidMembers() do				
@@ -10147,7 +10155,7 @@ function mb_shamanSingle()
 		end
 		
 		CastSpellByName("Poison Cleansing Totem")
-		mb_cooldownCast("Poison Cleansing Totem", 6)
+		mb_coolDownCast("Poison Cleansing Totem", 6)
 		return
 	end	
 
@@ -10162,7 +10170,7 @@ function mb_shamanSingle()
 			end
 
 			CastSpellByName("Disease Cleansing Totem")
-			mb_cooldownCast("Disease Cleansing Totem", 6)
+			mb_coolDownCast("Disease Cleansing Totem", 6)
 			return
 		end
 	end
@@ -10224,12 +10232,12 @@ function mb_shamanHeal()
 			if (MB_partyManaDown / mb_numOfCasterHealerInParty()) > 1500 and mb_manaDown() > 1050 then
 				
 				CastSpellByName("Mana Tide Totem") 
-				mb_cooldownCast("Mana Tide Totem", 13)
+				mb_coolDownCast("Mana Tide Totem", 13)
 				
 			elseif mb_manaDown() > 1500 then 
 
 				CastSpellByName("Mana Tide Totem") 
-				mb_cooldownCast("Mana Tide Totem", 13) 		 
+				mb_coolDownCast("Mana Tide Totem", 13) 		 
 			end
 		end
 		
@@ -10905,7 +10913,7 @@ function mb_castTotem(totem)
 				}
 	}
 	if mb_findInTable(MB_totemtypes.nobuff, totem) then
-		mb_cooldownCast(totem, duration)
+		mb_coolDownCast(totem, duration)
 	else
 		if totem and not mb_hasBuffOrDebuff(totem, "player", "buff") then 
 			CastSpellByName(totem) 
@@ -11239,7 +11247,7 @@ function mb_priestSingle()
 
 			if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
 					
-				mb_crowdControlMCedRaidmemberSkeramAOE()
+				mb_crowdControlMCedRaidMemberSkeramAOE()
 			end
 		end
 	end
@@ -11475,7 +11483,6 @@ end
 function mb_priestHealerDebuffs() -- Priest debuffs
 	
 	if MB_mySpecc == "Bitch" then
-
 		if MB_raidLeader then
 			
 			if (UnitCanAttack("player", MBID[MB_raidLeader].."target") and mb_debuffShadowWeavingAmount() < 5) and mb_isValidEnemyTargetWithin28YardRange(MBID[MB_raidLeader].."target") then
@@ -11486,7 +11493,7 @@ function mb_priestHealerDebuffs() -- Priest debuffs
 			else
 
 				AssistUnit(MBID[MB_raidLeader])
-				mb_cooldownCast("Shadow Word: Pain(rank 1)", 17)
+				mb_coolDownCast("Shadow Word: Pain(rank 1)", 17)
 			end
 
 		else
@@ -11500,7 +11507,7 @@ function mb_priestHealerDebuffs() -- Priest debuffs
 				else
 				
 					AssistUnit(MBID[MB_raidInviter])
-					mb_cooldownCast("Shadow Word: Pain(rank 1)", 17)
+					mb_coolDownCast("Shadow Word: Pain(rank 1)", 17)
 				end
 			end
 		end
@@ -12027,6 +12034,7 @@ function mb_priestSetup() -- Buffing
 	end
 
 	mb_selfBuff("Inner Fire")
+	mb_selfBuff("Shadowform")
 
 	-- Drink
 	if not mb_inCombat("player") and (mb_manaPct("player") < 0.20) and not mb_hasBuffNamed("Drink", "player") then
@@ -13686,7 +13694,7 @@ function mb_warlockSingle()	-- Single Code
 
 		if MB_mySpecc == "Corruption" and UnitMana("player") > MB_classSpellManaCost["Corruption"] and not IsAutoRepeatAction(wndslot) then
 			
-			mb_cooldownCast("Corruption", 18)
+			mb_coolDownCast("Corruption", 18)
 		end
 	end
 
@@ -14047,7 +14055,7 @@ function mb_warlockBossSpecificDPS()
 
 		if UnitName("target") == "Battleguard Sartura" then
 
-			mb_cooldownCast("Corruption", 18)
+			mb_coolDownCast("Corruption", 18)
 		end
 
 		if UnitName("target") == "Obsidian Eradicator" and mb_manaPct("target") > 0.7 then
@@ -14092,7 +14100,7 @@ function mb_warlockBossSpecificDPS()
 
 		if UnitName("target") == "Onyxia" then
 
-			mb_cooldownCast("Corruption", 18)
+			mb_coolDownCast("Corruption", 18)
 		end
 
 	elseif GetRealZoneText() == "Zul\'Gurub" then -- ZG
@@ -15518,7 +15526,7 @@ function mb_hunterSingle() -- Hunter single
 		
 	if mb_tankTarget("Moam") then
 		
-		mb_cooldownCast("Viper Sting", 8)
+		mb_coolDownCast("Viper Sting", 8)
 	end
 
 	if (mb_tankTarget("Gluth") or mb_tankTarget("Princess Huhuran") or mb_tankTarget("Flamegor") or mb_tankTarget("Chromaggus") or mb_tankTarget("Magmadar")) and mb_spellReady("Tranquilizing Shot") then

@@ -24,3 +24,6 @@ Data\Healing.lua
 Utility\Professions.lua
 Utility\Macros.lua
 Utility\Reagents.lua
+
+Rotation\Global.lua
+Rotation\Priest.lua
