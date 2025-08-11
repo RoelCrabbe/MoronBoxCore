@@ -3664,7 +3664,7 @@ function mb_cooldownRaidWarning(msg, timer)
     SendChatMessage(msg,"RAID_WARNING")
 end
 
-function mb_cooldownPrint(msg, timer)
+function mb_coolDownPrint(msg, timer)
 
 	local cooldown
 	local time = GetTime()
@@ -4808,7 +4808,7 @@ function mb_equippedSetCount(set)
 		for i = 1, 10 do
 		local link = GetInventoryItemLink("player", item_slots[i])
 		if link == nil then 
-			mb_cooldownPrint("Missing gear in slots, can\'t decide proper healspell based on gear.", 30)
+			mb_coolDownPrint("Missing gear in slots, can\'t decide proper healspell based on gear.", 30)
 			return 0
 		end
 		local _, _, item_name = string.find(link, "%[(.*)%]", 27)
@@ -4843,7 +4843,7 @@ end
 
 function mb_equipSet(set) -- If you don't use ItemRack this should make it that you don't get any errors
 	local _, _, _, Enabled, _, _, _ = GetAddOnInfo("ItemRack")
-	if Enabled then EquipSet(set) return else mb_cooldownPrint("No ItemRack Addon Found") end
+	if Enabled then EquipSet(set) return else mb_coolDownPrint("No ItemRack Addon Found") end
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -5878,7 +5878,7 @@ function mb_healAndTank()
 
 			if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
 					
-				mb_crowdControlMCedRaidmemberHakkar()
+				mb_crowdControlMCedRaidMemberHakkar()
 			end
 		end
 
@@ -5910,7 +5910,7 @@ function mb_healAndTank()
 
 				if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
 						
-					mb_crowdControlMCedRaidmemberSkeram()
+					mb_crowdControlMCedRaidMemberSkeram()
 				end
 				
 			elseif myClass == "Priest" then -- Priest AOE fear Skeram
@@ -5952,7 +5952,7 @@ function mb_healAndTank()
 
 				if MB_ssCounterWarlock == mb_myClassAlphabeticalOrder() then
 					
-					mb_crowdControlMCedRaidmemberSkeramFear()
+					mb_crowdControlMCedRaidMemberSkeramFear()
 				end	
 			end
 		
@@ -5991,7 +5991,7 @@ function mb_healAndTank()
 
 				if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
 						
-					mb_crowdControlMCedRaidmemberNefarian()
+					mb_crowdControlMCedRaidMemberNefarian()
 				end
 			end
 		end
@@ -6646,7 +6646,7 @@ function mb_getTarget() -- GetTarget Magic
 						return
 					end
 
-					mb_cooldownPrint("Focussing Attacks on "..UnitName("target"), 30)
+					mb_coolDownPrint("Focussing Attacks on "..UnitName("target"), 30)
 					return
 				end		
 			end
@@ -7668,7 +7668,7 @@ function mb_crowdControl() -- CC
 	for i = 1, 10 do
 		if GetRaidTargetIndex("target") == MB_myCCTarget and not UnitIsDead("target") and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
 
-			mb_cooldownPrint("CC spell is: "..MB_myCCSpell[myClass])
+			mb_coolDownPrint("CC spell is: "..MB_myCCSpell[myClass])
 
 			mb_message(MB_myCCSpell[myClass].."ing "..UnitName("target"))
 			CastSpellByName(MB_myCCSpell[myClass])
@@ -8056,7 +8056,7 @@ function mb_autoAssignBanishOnMoam() -- Auto CC Moam
 	end
 end
 
-function mb_crowdControlMCedRaidmemberHakkar() -- CC Hakker MC'd target
+function mb_crowdControlMCedRaidMemberHakkar() -- CC Hakker MC'd target
 	if mb_dead("player") then return end
 
 	for i = 1, GetNumRaidMembers() do				
@@ -8079,7 +8079,7 @@ function mb_crowdControlMCedRaidmemberHakkar() -- CC Hakker MC'd target
 	return false
 end
 
-function mb_crowdControlMCedRaidmemberSkeram() -- CC Skeram MC'd target
+function mb_crowdControlMCedRaidMemberSkeram() -- CC Skeram MC'd target
 	if mb_dead("player") then return end
 
 	for i = 1, GetNumRaidMembers() do				
@@ -8102,7 +8102,7 @@ function mb_crowdControlMCedRaidmemberSkeram() -- CC Skeram MC'd target
 	return false
 end
 
-function mb_crowdControlMCedRaidmemberSkeramFear() -- CC Hakker MC'd target
+function mb_crowdControlMCedRaidMemberSkeramFear() -- CC Hakker MC'd target
 	if mb_dead("player") then return end
 
 	for i = 1, GetNumRaidMembers() do				
@@ -8146,7 +8146,7 @@ function mb_crowdControlMCedRaidMemberSkeramAOE() -- Fear Skeram MC'd target
 	return false
 end
 
-function mb_crowdControlMCedRaidmemberNefarian() -- Nefarian MC'd target
+function mb_crowdControlMCedRaidMemberNefarian() -- Nefarian MC'd target
 	if mb_dead("player") then return end
 
 	for i = 1, GetNumRaidMembers() do				
@@ -8183,7 +8183,7 @@ function mb_offTank() -- Offtank
 			return
 		end
 
-		mb_cooldownPrint("Locked On Target")
+		mb_coolDownPrint("Locked On Target")
 		return
 	end
 
@@ -8999,215 +8999,6 @@ end
 ------------------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------------------------------
--------------------------------------------- Single Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_mageSingle() -- Single Code
-
-	if not MB_mySpecc then --> Specc Defaults
-		
-		mb_message("My specc is fucked. Defaulting to frost.")
-		MB_mySpecc = "Frost"
-	end
-
-	mb_getTarget() -- Gettarget
-
-	if mb_crowdControl() then return end -- No need to do anything when CCing
-	
-	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then --> Stop when evocating
-		return
-	end
-
-	mb_decurse() -- Decurse
-
-	if mb_tankTarget("Ossirian the Unscarred") then return end -- Don't do anything when fighting Ossi, just dispell
-
-	if UnitName("target") and MB_myCCTarget then -- CC'ing
-		if GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-			
-			mb_crowdControl()
-			return 
-		end
-	end
-
-	if UnitName("target") and mb_crowdControlledMob() then -- If mobs is CC'd gettarget
-		
-		mb_getTarget()
-		return
-	end
-
-	if GetRealZoneText() == "Ahn\'Qiraj" then --> CC skeram
-		
-		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then ClearTarget() return end -- If your target is still a MC'd target here, clear target
-
-		if mb_isAtSkeram() then -- Sheep Skeram
-
-			if not MB_autoToggleSheeps.Active then
-
-				MB_autoToggleSheeps.Active = true
-				MB_autoToggleSheeps.Time = GetTime() + 2
-
-				if MB_buffingCounterMage == TableLength(MB_classList["Mage"]) + 1 then
-					
-					MB_buffingCounterMage = 1
-				else
-
-					MB_buffingCounterMage = MB_buffingCounterMage + 1
-				end
-			end
-
-			if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
-					
-				mb_crowdControlMCedRaidmemberSkeram()
-			end
-		end
-
-	elseif GetRealZoneText() == "Blackwing Lair" and string.find(GetSubZoneText(), "Nefarian.*Lair") then 
-
-		if mb_isAtNefarianPhase() then -- Sheep Nefarain Phase
-
-			if mb_hasBuffOrDebuff("Shadow Command", "target", "debuff") then ClearTarget() return end -- If your target is still a MC'd target here, clear target
-
-			if not MB_autoToggleSheeps.Active then
-
-				MB_autoToggleSheeps.Active = true
-				MB_autoToggleSheeps.Time = GetTime() + 2
-
-				if MB_buffingCounterMage == TableLength(MB_classList["Mage"]) + 1 then
-					
-					MB_buffingCounterMage = 1
-				else
-
-					MB_buffingCounterMage = MB_buffingCounterMage + 1
-				end
-			end
-
-			if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
-					
-				mb_crowdControlMCedRaidmemberNefarian()
-			end
-		end
-
-	elseif GetRealZoneText() == "Zul\'Gurub" then -- CC ZulGurub
-
-		if mb_tankTarget("Hakkar") then -- Sheep Hakkar
-					
-			if mb_hasBuffOrDebuff("Mind Control", "target", "debuff") then ClearTarget() return end -- If your target is still a MC'd target here, clear target
-
-			if not MB_autoToggleSheeps.Active then
-
-				MB_autoToggleSheeps.Active = true
-				MB_autoToggleSheeps.Time = GetTime() + 10
-
-				if MB_buffingCounterMage == TableLength(MB_classList["Mage"]) + 1 then
-					
-					MB_buffingCounterMage = 1
-				else
-
-					MB_buffingCounterMage = MB_buffingCounterMage + 1
-				end
-			end
-
-			if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
-					
-				mb_crowdControlMCedRaidmemberHakkar()
-			end
-		end
-	end
-
-	if not mb_inCombat("target") then return end -- If target is not in combat then stop
-
-	if mb_inCombat("player") then -- Incombat player
-
-		mb_mageUseManaGems()
-		mb_takeManaPotionAndRune() -- Pots
-		mb_takeManaPotionIfBelowManaPotMana()
-
-		if MB_isMoving.Active then -- Moving things
-			
-			mb_selfBuff("Presence of Mind")			
-		end
-
-		if mb_manaPct() <= 0.1 and mb_spellReady("Evocation") then -- Evocation & Gems
-
-			CastSpellByName("Evocation")
-			return		
-		end
-	end
-	
-	if MB_myInterruptTarget and MB_doInterrupt.Active and mb_spellReady(MB_myInterruptSpell[myClass]) then -- Innterupting when assigned
-		
-		mb_getMyInterruptTarget()
-
-		if mb_imBusy() then
-			
-			SpellStopCasting() 
-		end
-
-		CastSpellByName(MB_myInterruptSpell[myClass])
-		mb_cooldownPrint("Interrupting!")
-		MB_doInterrupt.Active = false
-		return
-	end
-	
-	if MB_doInterrupt.Active and mb_spellReady(MB_myInterruptSpell[myClass]) then -- Innterupting when not assigned
-		
-		if mb_imBusy() then
-			
-			SpellStopCasting() 
-		end
-
-		CastSpellByName(MB_myInterruptSpell[myClass])
-		mb_cooldownPrint("Interrupting!")
-		MB_doInterrupt.Active = false
-		return
-	end
-
-	-- Automatic Cooldowns
-	if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) then
-
-		mb_mageCooldowns()
-	end
-
-	if mb_mageBossSpecificDPS() then return end -- Boss specific damage
-
-	if MB_mySpecc == "Fire" then -- Fire dps
-
-		if mb_isFireImmune() or not mb_spellReady("Scorch") then
-			
-			mb_castSpellOrWand("Frostbolt")
-			return
-		end
-
-		mb_mageRollIgnite()		
-
-	elseif MB_mySpecc == "Frost" then -- Frost dps
-
-		if mb_inCombat("player") then
-			
-			if mb_focusAggro() and mb_knowSpell("Ice Block") and mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.20 and not mb_isAtGrobbulus() then
-			
-				CastSpellByName("Ice Block")
-				return
-			end
-
-			if mb_knowSpell("Ice Barrier") and mb_spellReady("Ice Barrier") and mb_healthPct("player") >= 0.70 then
-				
-				CastSpellByName("Ice Barrier")
-				return
-			end
-		end
-
-		if not mb_spellReady("Frostbolt") then
-			
-			mb_castSpellOrWand("Fireball")
-		else
-			mb_castSpellOrWand("Frostbolt")
-		end
-	end
-end
-
-------------------------------------------------------------------------------------------------------
 --------------------------------------------- Multi Code! --------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
@@ -9283,286 +9074,7 @@ end
 --------------------------------------------- Burst Code! --------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
-function mb_mageBossSpecificDPS() -- Mage specific 
 
-	if UnitName("target") == "Emperor Vek\'nilash" then return true end
-
-	-- Detect Magic 
-	if mb_mobsToDetectMagic() and not mb_hasBuffOrDebuff("Detect Magic", "target", "debuff") then
-		
-		if not mb_hasBuffOrDebuff("Detect Magic", "player", "debuff") then
-
-			CastSpellByName("Detect Magic")
-			return true
-		end
-	end
-
-	-- Fire ward
-	if not mb_hasBuffOrDebuff("Fire Ward", "player", "buff") and mb_spellReady("Fire Ward") then
-		if mb_mobsToFireWard() then
-			
-			mb_selfBuff("Fire Ward")
-			return true
-		end
-	end
-
-	-- Reflecting
-	-- Needs rework : Note.Update 
-	if ((mb_hasBuffOrDebuff("Immolate", "target", "debuff") or mb_hasBuffOrDebuff("Detect Magic", "player", "debuff")) and mb_hasBuffNamed("Shadow and Frost Reflect", "target")) then
-
-		if mb_imBusy() then 
-			
-			SpellStopCasting()
-		end
-		
-		mb_autoWandAttack()
-		return true
-
-	elseif (mb_hasBuffOrDebuff("Immolate", "target", "debuff") or mb_hasBuffOrDebuff("Detect Magic", "player", "debuff")) then
-
-		mb_castSpellOrWand("Frostbolt")
-		return true
-
-	elseif mb_hasBuffNamed("Shadow and Frost Reflect", "target") then
-
-		mb_mageRollIgnite()
-		return true
-
-	elseif mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
-		
-		if mb_imBusy() then 
-			
-			SpellStopCasting()
-		end
-
-		mb_autoWandAttack()
-		return true
-	end
-
-	-- Azuregos
-	if mb_tankTarget("Azuregos") and mb_hasBuffNamed("Magic Shield", "target") then
-		
-		if mb_imBusy() then 
-			
-			SpellStopCasting()
-		end 
-		
-		mb_selfBuff("Frost Ward")
-		return true
-	end
-
-	if GetRealZoneText() == "Naxxramas" then -- Naxx
-
-		--
-
-	elseif GetRealZoneText() == "Ahn\'Qiraj" then -- AQ40
-		
-		if UnitName("target") == "Viscidus" then -- Viscidus
-			
-			if mb_healthPct("target") < 0.35 then 
-				
-				CastSpellByName("Frostbolt(Rank 1)")
-				return true
-			end
-
-			mb_mageRollIgnite()
-			return true			
-		end
-
-		if UnitName("target") == "Spawn of Fankriss" then -- Fankriss
-			
-			if mb_spellReady("Fireblast") and mb_inMeleeRange() then
-
-				CastSpellByName("Fire Blast")
-			end
-
-			mb_mageRollIgnite()
-			return true
-		end
-
-	elseif GetRealZoneText() == "Blackwing Lair" then -- BWL
-
-		if (UnitName("target") == "Corrupted Healing Stream Totem" or UnitName("target") == "Corrupted Windfury Totem" or UnitName("target") == "Corrupted Stoneskin Totem" or UnitName("target") == "Corrupted Fire Nova Totem") and not mb_dead("target") then
-			
-			if mb_spellReady("Fireblast") then
-
-				CastSpellByName("Fire Blast")
-			end
-
-			mb_castSpellOrWand("Scorch")
-			return true
-		end
-
-	elseif GetRealZoneText() == "Molten Core" then -- MC
-
-		if UnitName("target") == "Shazzrah" then -- Shazz
-
-			if MB_mySpecc == "Fire" then -- Fire dps
-
-				if not (mb_spellReady("Scorch") or mb_spellReady("Fireball")) then
-				
-					mb_castSpellOrWand("Frostbolt")
-					return true
-				end
-
-			elseif MB_mySpecc == "Frost" then -- Frost dps
-
-				if not mb_spellReady("Frostbolt") then
-				
-					mb_castSpellOrWand("Scorch")
-					return true
-				end
-			end
-		end
-
-		if UnitName("target") == "Lava Spawn" then -- Lava Spawn
-
-			if mb_inMeleeRange() then
-				if mb_spellReady("Cone of Cold") then 
-				
-					mb_castSpellOrWand("Cone of Cold")
-					return true
-				end
-			end
-		end
-
-	elseif GetRealZoneText() == "Zul\'Gurub" then -- ZG
-
-		--Jindo
-
-		if mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
-
-			if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
-
-				if mb_spellReady("Fire Blast") then 
-
-					CastSpellByName("Fire Blast") 
-				end 
-					
-				mb_castSpellOrWand("Scorch") 
-				return true
-			end
-		end
-
-		if UnitName("target") == "Powerful Healing Ward" and not mb_dead("target") then
-
-			if mb_spellReady("Fire Blast") then
-				
-				CastSpellByName("Fire Blast")
-			end
-
-			mb_castSpellOrWand("Scorch")
-			return true
-		end
-
-		if UnitName("target") == "Brain Wash Totem" and not mb_dead("target") then
-
-			if mb_spellReady("Fire Blast") then
-				
-				CastSpellByName("Fire Blast")
-			end
-
-			mb_castSpellOrWand("Scorch")
-			return true
-		end
-
-	elseif GetRealZoneText() == "Ruins of Ahn\'Qiraj" then -- AQ20
-
-		-- Ossirian
-
-		if UnitName("target") == "Ossirian the Unscarred" then
-			
-			if mb_hasBuffOrDebuff("Fire Weakness", "target", "debuff") then
-			
-				mb_mageRollIgnite()
-				return true
-
-			elseif mb_hasBuffOrDebuff("Frost Weakness", "target", "debuff") then
-
-				mb_castSpellOrWand("Frostbolt")
-				return true
-
-			elseif mb_hasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
-			
-				mb_castSpellOrWand("Arcane Missiles")
-				return true
-			end
-		end
-	end
-	return false
-end
-
-function mb_mageRollIgnite() -- Mage Ignite
-
-	local igTick = tonumber(MB_ignite.Amount)
-
-	if MB_ignite.Active then
-
-		if mb_inMeleeRange() and mb_spellReady("Fire Blast") and MB_raidAssist.Mage.AllowInstantCast then
-			
-			CastSpellByName("Fire Blast")
-		end
-
-		if (MB_ignite.Starter == myName) then
-		
-			if (igTick > MB_raidAssist.Mage.StarterIgniteTick) then
-
-				mb_castSpellOrWand("Fireball")
-			else
-
-				if MB_raidAssist.Mage.AllowIgniteToDropWhenBadTick then
-
-					mb_castSpellOrWand("Frostbolt")
-				else
-
-					mb_castSpellOrWand("Fireball")
-				end
-			end
-		else
-			if mb_hasBuffOrDebuff("Ignite", "target", "debuff") then 
-
-				mb_castSpellOrWand(MB_raidAssist.Mage.SpellToKeepIgniteUp)
-			end
-		end		
-
-	else
-
-		if mb_debuffScorchAmount() == 5 then
-			
-			mb_mageCooldowns()
-		end
-
-		mb_castSpellOrWand("Fireball")
-	end
-end
-
-function mb_isFireImmune() -- Mobs that are immune to fire
-    if UnitName("target") == "Baron Geddon" or
-		UnitName("target") == "Flameguard" or
-		UnitName("target") == "Firewalker" or
-		UnitName("target") == "Firelord" or
-		UnitName("target") == "Lava Spawn" or
-		UnitName("target") == "Son of Flame" or
-		UnitName("target") == "Ragnaros" or
-		UnitName("target") == "Corrupted Infernal" or
-		UnitName("target") == "Vaelastrasz the Corrupt" or
-		UnitName("target") == "Corrupted Red Whelp" or
-		UnitName("target") == "Firemaw" or
-		UnitName("target") == "Prince Skaldrenox" or
-		UnitName("target") == "Ebonroc" or
-		UnitName("target") == "Onyxia" or
-		UnitName("target") == "Black Drakonid" or
-		UnitName("target") == "Red Drakonid" or
-		UnitName("target") == "Onyxian Warder" or
-		UnitName("target") == "Blazing Fireguard" or
-		UnitName("target") == "Lord Incendius" or
-		UnitName("target") == "Fireguard" or
-		UnitName("target") == "Pyroguard Emberseer" or
-		UnitName("target") == "Fireguard Destroyer" or
-		UnitName("target") == "Flamegor"  then 
-        return true
-    end
-end
 
 ------------------------------------------------------------------------------------------------------
 -------------------------------------------- Precast Code! -------------------------------------------
@@ -9607,25 +9119,7 @@ end
 ------------------------------------------- Cooldowns Code! ------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
-function mb_mageCooldowns() -- Mage cooldowns
 
-	if mb_imBusy() then return end
-
-	if mb_inCombat("player") then
-
-		mb_selfBuff("Berserking") 
-		
-		if not mb_hasBuffOrDebuff("Power Infusion", "player", "buff") then
-
-			mb_selfBuff("Arcane Power")			
-		end
-
-		mb_selfBuff("Combustion")
-		mb_selfBuff("Presence of Mind")
-		
-		mb_casterTrinkets()
-	end
-end
 
 function mb_conjureManaGems() -- Make gems
 
@@ -10139,7 +9633,7 @@ function mb_shamanSingle()
 		end
 
 		CastSpellByName(MB_myInterruptSpell[myClass].."(rank 1)")
-		mb_cooldownPrint("Interrupting!")
+		mb_coolDownPrint("Interrupting!")
 		MB_doInterrupt.Active = false
 		return
 	end
@@ -10154,7 +9648,7 @@ function mb_shamanSingle()
 		end
 
 		CastSpellByName(MB_myInterruptSpell[myClass].."(rank 1)")
-		mb_cooldownPrint("Interrupting!")
+		mb_coolDownPrint("Interrupting!")
 		MB_doInterrupt.Active = false
 		return
 	end
@@ -11279,7 +10773,7 @@ function mb_rogueSingle()
 			mb_getMyInterruptTarget()
 
 			CastSpellByName(MB_myInterruptSpell[myClass])
-			mb_cooldownPrint("Interrupting!")
+			mb_coolDownPrint("Interrupting!")
 			MB_doInterrupt.Active = false
 		end
 		return
@@ -11289,7 +10783,7 @@ function mb_rogueSingle()
 		if UnitMana("player") >= 25 then
 			
 			CastSpellByName(MB_myInterruptSpell[myClass])
-			mb_cooldownPrint("Interrupting!")
+			mb_coolDownPrint("Interrupting!")
 			MB_doInterrupt.Active = false
 		end
 		return
@@ -11743,7 +11237,7 @@ function mb_warriorDPSSingle() -- Single dps
 			if UnitMana("player") >= 10 then
 				
 				CastSpellByName(MB_myInterruptSpell[myClass])
-				mb_cooldownPrint("Interrupting!")
+				mb_coolDownPrint("Interrupting!")
 				MB_doInterrupt.Active = false
 			end
 			return
@@ -12076,7 +11570,7 @@ function mb_warriorTank()
 		if UnitMana("player") >= 10 then
 			
 			CastSpellByName("Shield Bash")
-			mb_cooldownPrint("Interrupting!")
+			mb_coolDownPrint("Interrupting!")
 			MB_doInterrupt.Active = false
 		end
 	end
@@ -12276,7 +11770,7 @@ function mb_warriorDPSMulti() -- Multi dps
 			if UnitMana("player") >= 10 then
 				
 				CastSpellByName(MB_myInterruptSpell[myClass])
-				mb_cooldownPrint("Interrupting!")
+				mb_coolDownPrint("Interrupting!")
 				MB_doInterrupt.Active = false
 			end
 			return
@@ -12562,7 +12056,7 @@ function mb_warriorTankMulti() -- Tank multi
 		if UnitMana("player") >= 10 then
 			
 			CastSpellByName("Shield Bash")
-			mb_cooldownPrint("Interrupting!")
+			mb_coolDownPrint("Interrupting!")
 			MB_doInterrupt.Active = false
 		end
 	end
@@ -12846,7 +12340,7 @@ function mb_warlockSingle()	-- Single Code
 
 			if MB_ssCounterWarlock == mb_myClassAlphabeticalOrder() then
 
-				mb_crowdControlMCedRaidmemberSkeramFear()
+				mb_crowdControlMCedRaidMemberSkeramFear()
 			end
 		end
 	end
@@ -15694,7 +15188,7 @@ MAT:SetScript("OnUpdate", MAT.OnUpdate)
 function mb_openClickQiraji()
 
 	if mb_haveInBags("Ancient Qiraji Artifact") then
-		mb_cooldownPrint("I have an artifact!")
+		mb_coolDownPrint("I have an artifact!")
 		UseItemByName("Ancient Qiraji Artifact")
 		AcceptQuest()
 		return

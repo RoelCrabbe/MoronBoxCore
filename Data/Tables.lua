@@ -209,6 +209,41 @@ local MB_bossToNeverInterruptHealSet = {
     ["Ossirian the Unscarred"] = true
 }
 
+-- Fire Immunity Set
+local MB_fireImmuneSet = {
+    ["Baron Geddon"] = true,
+    ["Flameguard"] = true,
+    ["Firewalker"] = true,
+    ["Firelord"] = true,
+    ["Lava Spawn"] = true,
+    ["Son of Flame"] = true,
+    ["Ragnaros"] = true,
+    ["Corrupted Infernal"] = true,
+    ["Vaelastrasz the Corrupt"] = true,
+    ["Corrupted Red Whelp"] = true,
+    ["Firemaw"] = true,
+    ["Prince Skaldrenox"] = true,
+    ["Ebonroc"] = true,
+    ["Onyxia"] = true,
+    ["Black Drakonid"] = true,
+    ["Red Drakonid"] = true,
+    ["Onyxian Warder"] = true,
+    ["Blazing Fireguard"] = true,
+    ["Lord Incendius"] = true,
+    ["Fireguard"] = true,
+    ["Pyroguard Emberseer"] = true,
+    ["Fireguard Destroyer"] = true,
+    ["Flamegor"] = true
+}
+
+-- Corrupted Totems Set
+local MB_corruptedTotemsSet = {
+    ["Corrupted Healing Stream Totem"] = true,
+    ["Corrupted Windfury Totem"] = true,
+    ["Corrupted Stoneskin Totem"] = true,
+    ["Corrupted Fire Nova Totem"] = true
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -325,6 +360,18 @@ end
 -- Healing Functions
 function mb_bossNeverInterruptHeal()
     return mb_tankTargetInSet(MB_bossToNeverInterruptHealSet)
+end
+
+-- Fire Immunity Functions
+function mb_isFireImmune()
+    local targetName = UnitName("target")
+    return targetName and MB_fireImmuneSet[targetName] == true
+end
+
+-- Corrupted Totems Functions
+function mb_corruptedTotems()
+    local targetName = UnitName("target")
+    return targetName and MB_corruptedTotemsSet[targetName] == true
 end
 
 -- Spells to Intterupt --

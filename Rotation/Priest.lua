@@ -7,7 +7,6 @@ local Priest = CreateFrame("Frame", "Priest")
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 local tName = UnitName("target")
-local myZone = GetRealZoneText()
 local myMana = UnitMana("player")
 
 local PriestCounter = {
@@ -177,6 +176,7 @@ function Priest:BossSpecificDPS()
 	elseif Instance.Ony and mb_tankTarget("Onyxia") then
 		mb_coolDownCast("Shadow Word: Pain", 24)
 	end
+	
 	return false
 end
 
@@ -576,7 +576,7 @@ local function PriestSingle()
                 PriestCounter.Cycle()
             end
 
-            if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
+            if mb_myClassAlphabeticalOrder() == MB_buffingCounterPriest then
                 mb_crowdControlMCedRaidMemberSkeramAOE()
             end
 		end
