@@ -202,6 +202,13 @@ local MB_mobsToAoeTotemSet = {
     ["Poisonous Skitterer"] = true,
 }
 
+-- Bosses no Interrupts
+local MB_bossToNeverInterruptHealSet = {
+    ["Vaelastrasz the Corrupt"] = true,
+    ["Maexxna"] = true,
+    ["Ossirian the Unscarred"] = true
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -313,6 +320,11 @@ end
 
 function mb_mobsToAoeTotem()
     return mb_tankTargetInSet(MB_mobsToAoeTotemSet)
+end
+
+-- Healing Functions
+function mb_bossNeverInterruptHeal()
+    return mb_tankTargetInSet(MB_bossToNeverInterruptHealSet)
 end
 
 -- Spells to Intterupt --

@@ -340,9 +340,11 @@
     MB_myVaelastraszPaladinThree = "Fatnun"
 
     MB_myVaelastraszPriestHealing = true -- (Renew / Shield MT)
-    MB_myVaelastraszPriestOne = "Healdealz" -- "Murdrum"
-    MB_myVaelastraszPriestTwo = "Corinn" -- "Hms"
-    MB_myVaelastraszPriestThree = "Midavellir" -- "Wiccana"
+    MB_myVaelastraszPriests = {
+        "Healdealz",
+        "Corinn",
+        "Midavellir",
+    }
 
     MB_myVaelastraszDruidHealing = true -- (Regrowth / Rejuvenation MT)
     MB_myVaelastraszDruidOne = "Pyqmi" -- "Jahetsu"

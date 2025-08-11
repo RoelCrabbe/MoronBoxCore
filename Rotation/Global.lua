@@ -6,6 +6,12 @@ local myZone = GetRealZoneText()
 
 MB_mySpeccList = {}
 MB_mySingleList = {}
+MB_myMultiList = {}
+MB_myAOEList = {}
+MB_mySetupList = {}
+MB_myPreCastList = {}
+MB_myLoathebList = {}
+MB_myHealList = {}
 
 Instance = {
     Naxx  = (myZone == "Naxxramas"),

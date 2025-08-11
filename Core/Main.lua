@@ -131,7 +131,7 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 	
 	MB_isCastingMyCCSpell = nil
 	
-	local MB_isMoving = { Active = false, Time = 0 }
+	MB_isMoving = { Active = false, Time = 0 }
 
 	-- Ignite
 
@@ -141,7 +141,7 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 	local MB_ssCounterWarlock = 1
 	local MB_buffingCounterDruid = 1
 	local MB_buffingCounterMage = 1
-	local MB_buffingCounterPriest = 1
+	MB_buffingCounterPriest = 1
 	local MB_buffingCounterPaladin = 1
 	local MB_powerInfusionCounter = 1
 
@@ -161,7 +161,7 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 	local MB_lieutenantAndorovIsNotHealable = { Active = false, Time = 0 }
 	local MB_targetWrongWayOrTooFar = { Active = false, Time = 0 }
 	local MB_autoToggleSheeps = { Active = false, Time = 0 }
-	local MB_autoBuff = { Active = false, Time = 0 }
+	MB_autoBuff = { Active = false, Time = 0 }
 	local MB_useCooldowns = { Active = false, Time = 0 }
 	local MB_useBigCooldowns = { Active = false, Time = 0 }
 
@@ -5369,7 +5369,7 @@ function mb_single() -- Single Code
 
 				if myClass == "Mage" then mb_mageSingle() return end
 				if myClass == "Shaman" then mb_shamanSingle() return end
-				if myClass == "Priest" then mb_priestSingle() return end
+				if myClass == "Priest" then MB_mySingleList[myClass]() return end
 				if myClass == "Rogue" then mb_rogueSingle() return end
 				if myClass == "Warrior" then mb_warriorSingle() return end
 				if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5381,7 +5381,7 @@ function mb_single() -- Single Code
 			
 			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestSingle() return end
+			if myClass == "Priest" then MB_mySingleList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5398,7 +5398,7 @@ function mb_single() -- Single Code
 
 			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestSingle() return end
+			if myClass == "Priest" then MB_mySingleList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5413,7 +5413,7 @@ function mb_single() -- Single Code
 
 			if myClass == "Mage" then mb_mageSingle() return end
 			--if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestLoatheb() return end
+			if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5426,7 +5426,7 @@ function mb_single() -- Single Code
 	-- Normal Single
 	if myClass == "Mage" then mb_mageSingle() return end
 	if myClass == "Shaman" then mb_shamanSingle() return end
-	if myClass == "Priest" then mb_priestSingle() return end
+	if myClass == "Priest" then MB_mySingleList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueSingle() return end
 	if myClass == "Warrior" then mb_warriorSingle() return end
 	if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5501,7 +5501,7 @@ function mb_multi() -- Multi Code
 
 			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestSingle() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5519,7 +5519,7 @@ function mb_multi() -- Multi Code
 
 			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then mb_priestMulti() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
@@ -5531,7 +5531,7 @@ function mb_multi() -- Multi Code
 
 			if myClass == "Mage" then mb_mageSingle() return end
 			--if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestLoatheb() return end
+			if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5548,7 +5548,7 @@ function mb_multi() -- Multi Code
 
 			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then mb_priestMulti() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
@@ -5565,7 +5565,7 @@ function mb_multi() -- Multi Code
 			
 			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then mb_priestMulti() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
@@ -5578,7 +5578,7 @@ function mb_multi() -- Multi Code
 	-- Normal Multi
 	if myClass == "Mage" then mb_mageMulti() return end
 	if myClass == "Shaman" then mb_shamanMulti() return end
-	if myClass == "Priest" then mb_priestMulti() return end
+	if myClass == "Priest" then MB_myMultiList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueMulti() return end
 	if myClass == "Warrior" then mb_warriorMulti() return end
 	if myClass == "Warlock" then mb_warlockMulti() return end
@@ -5655,7 +5655,7 @@ function mb_AOE() -- AOE Code
 
 			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then mb_priestMulti() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockAOE() return end
@@ -5672,7 +5672,7 @@ function mb_AOE() -- AOE Code
 
 			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanAOE() return end
-			if myClass == "Priest" then mb_priestAOE() return end
+			if myClass == "Priest" then MB_myAOEList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueAOE() return end
 			if myClass == "Warrior" then mb_warriorAOE() return end
 			if myClass == "Warlock" then mb_warlockAOE() return end
@@ -5687,7 +5687,7 @@ function mb_AOE() -- AOE Code
 
 			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then mb_priestSingle() return end
+			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
@@ -5700,7 +5700,7 @@ function mb_AOE() -- AOE Code
 	-- Normal AOE
 	if myClass == "Mage" then mb_mageAOE() return end
 	if myClass == "Shaman" then mb_shamanAOE() return end
-	if myClass == "Priest" then mb_priestAOE() return end
+	if myClass == "Priest" then MB_myAOEList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueAOE() return end
 	if myClass == "Warrior" then mb_warriorAOE() return end
 	if myClass == "Warlock" then mb_warlockAOE() return end
@@ -5730,7 +5730,7 @@ function mb_preCast() -- Precasting
 	-- Normal Precast
 	if myClass == "Mage" then mb_magePreCast() return end
 	if myClass == "Shaman" then mb_shamanPreCast() return end
-	if myClass == "Priest" then mb_priestPreCast() return end
+	if myClass == "Priest" then MB_myPreCastList[myClass]() return end
 	if myClass == "Warlock" then mb_warlockPreCast() return end
 	if myClass == "Druid" then mb_druidPreCast() return end
 	if myClass == "Hunter" then mb_hunterPreCast() return end
@@ -5776,7 +5776,7 @@ function mb_healAndTank()
 				if myClass == "Warrior" then mb_warriorSingle() return end
 
 				--if myClass == "Shaman" then mb_shamanSingle() return end
-				if myClass == "Priest" then mb_priestLoatheb() return end
+				if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 				if myClass == "Druid" then mb_druidLoatheb() return end
 				if myClass == "Paladin" then mb_paladinLoatheb() return end
 
@@ -6038,7 +6038,7 @@ function mb_healAndTank()
 		
 		elseif myClass == "Priest" then -- Priest heal
 
-			mb_priestHeal()
+			MB_myHealList[myClass]()
 
 		elseif myClass == "Shaman" then -- Shaman heal
 		
@@ -6084,7 +6084,7 @@ function mb_setup()
 	-- Normal Setup
 	if myClass == "Mage" then mb_mageSetup() return end
 	if myClass == "Shaman" then mb_shamanSetup() return end
-	if myClass == "Priest" then mb_priestSetup() return end
+	if myClass == "Priest" then MB_mySetupList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueSetup() return end
 	if myClass == "Warrior" then return end
 	if myClass == "Warlock" then mb_warlockSetup() return end
@@ -7546,54 +7546,6 @@ function mb_giveShieldToBombFollowTarget() -- Shield the Vael tanks from exploti
 		end
 
 		TargetLastTarget()
-	end
-end
-
-function mb_priestMaxShieldAggroedPlayer() -- Shield Agro player
-
-	local shieldTarget
-	if MBID[MB_raidLeader] then
-		shieldTarget = MBID[MB_raidLeader].."targettarget"
-	end
-
-	if shieldTarget then
-
-		if mb_isValidFriendlyTarget(shieldTarget, "Power Word: Shield") and mb_healthPct(shieldTarget) <= 0.95 and not mb_hasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") and mb_spellReady("Power Word: Shield") then 
-				
-			if UnitIsFriend("player", shieldTarget) then
-				ClearTarget()
-			end	
-				
-			--mb_message("Shield on "..UnitName(shieldTarget), 30)
-
-			CastSpellByName("Power Word: Shield", false)
-			SpellTargetUnit(shieldTarget)
-			SpellStopTargeting()
-		end
-	end	
-end
-
-function mb_priestMaxRenewAggroedPlayer() -- Max ranks Vael renews on agroed player
-
-	local renewTarget
-	if MBID[MB_raidLeader] then
-		renewTarget = MBID[MB_raidLeader].."targettarget"
-	end
-
-	if renewTarget then
-
-		if mb_isValidFriendlyTarget(renewTarget, "Renew") and mb_healthPct(renewTarget) <= 0.95 and not mb_hasBuffNamed("Renew", renewTarget) then 
-			
-			if UnitIsFriend("player", renewTarget) then
-				ClearTarget()
-			end	
-			
-			--mb_message("Renew on "..UnitName(renewTarget), 30)
-
-			CastSpellByName("Renew")
-			SpellTargetUnit(renewTarget)
-			SpellStopTargeting()
-		end
 	end
 end
 
@@ -11170,705 +11122,6 @@ function mb_shamanSetup() -- Shaman setup
 	end
 end
 
-------------------------------------------------------------------------------------------------------
------------------------------------------ START PRIEST CODE! -----------------------------------------
-------------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Single Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestSingle()
-
-	mb_getTarget() -- Gettarget
-
-	if mb_crowdControl() then return end -- No need to do anything when CCing
-
-	-- Buffs
-	if mb_mobsToFearWard() then
-
-		if not MB_autoBuff.Active then
-
-			MB_autoBuff.Active = true
-			MB_autoBuff.Time = GetTime() + 0.17
-
-			if MB_buffingCounterPriest == TableLength(MB_classList["Priest"]) + 1 then
-						
-				MB_buffingCounterPriest = 1
-			else
-		
-				MB_buffingCounterPriest = MB_buffingCounterPriest + 1
-			end
-		end
-
-		if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
-
-			if mb_spellReady("Fear Ward") then -- Fear Warding 
-
-				mb_priestFearWardAggroedPlayer()
-				mb_meleeBuff("Fear Ward")
-				mb_multiBuff("Fear Ward")
-			end
-		end
-	end
-
-	if GetRealZoneText() == "Naxxramas" then
-
-		if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest)) and MB_myRazuviousBoxStrategy then
-
-			mb_getMCActions()
-			return
-
-		elseif (mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest)) and MB_myFaerlinaBoxStrategy then	
-
-			mb_getMCActions()
-			return
-		end
-
-	elseif GetRealZoneText() == "Ahn\'Qiraj" then --> AOE fear skeram
-		
-		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then ClearTarget() return end -- If your target is still a MC'd target here, clear target
-
-		if mb_isAtSkeram() then -- Fear Skeram
-			
-			if not MB_autoToggleSheeps.Active then
-
-				MB_autoToggleSheeps.Active = true
-				MB_autoToggleSheeps.Time = GetTime() + 3
-
-				if MB_buffingCounterPriest == TableLength(MB_classList["Priest"]) + 1 then
-					
-					MB_buffingCounterPriest = 1
-				else
-
-					MB_buffingCounterPriest = MB_buffingCounterPriest + 1
-				end
-			end
-
-			if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
-					
-				mb_crowdControlMCedRaidMemberSkeramAOE()
-			end
-		end
-	end
-
-	mb_priestFade() -- Fade
-
-	mb_decurse() -- Decurse
-
-	mb_priestHealerDebuffs() -- Buff priest
-
-	-- Jindo damage rotation
-	mb_healerJindoRotation("Smite")
-
-	if mb_tankTarget("Gothik the Harvester") and not IsAltKeyDown() then return end
-
-	mb_priestHeal() -- Healing
-end
-
-function mb_priestHeal() -- Priest healing
-
-	if mb_inCombat("player") then
-		
-		-- Garr dispell
-		if MB_raidLeader and mb_myClassOrder() == 1 and (mb_tankTarget("Garr") or mb_tankTarget("Firesworn")) then
-			if mb_hasBuffOrDebuff("Magma Shackles", MBID[MB_raidLeader], "debuff") then
-				
-				TargetUnit(MBID[MB_raidLeader])
-				CastSpellByName("Dispel Magic")
-				TargetLastTarget()
-			end
-		end
-
-		mb_powerInfusionBuff() -- Power Infusion
-
-		-- Potions
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
-
-		-- Cooldowns
-		if mb_manaDown("player") > 600 then mb_priestCooldowns() end
-
-		if mb_priestManaDrain() then return end -- Drain Mana
-
-		if mb_spellReady("Desperate Prayer") and mb_healthPct("player") < 0.20 then
-			
-			CastSpellByName("Desperate Prayer")
-			return
-		end
-	end
-
-	if (mb_hasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not mb_tankTarget("Anubisath Defender")) then return end -- Don't need to start heals w COT, wait for dispells
-
-	if mb_healLieutenantAQ20() then return end -- Healing for the Rajaxx Fight (Untested 22/05)
-
-	if mb_instructorRazAddsHeal() then return end -- Healers heal adds in Razuvious fight
-
-	if MB_myAssignedHealTarget then -- Assigned Target healing
-		
-		if mb_isAlive(MBID[MB_myAssignedHealTarget]) then
-			
-			mb_priestMTHeals(MB_myAssignedHealTarget)
-			return
-		else
-			
-			MB_myAssignedHealTarget = nil
-			RunLine("/raid My healtarget died, time to ALT-F4.")
-		end
-	end
-
-	for k, BossName in pairs(MB_myPriestMainTankHealingBossList) do -- Specific encounter heals
-
-		if mb_tankTarget(BossName) then
-			
-			mb_priestMTHeals()
-			return
-		end
-	end
-
-	if MB_isMoving.Active then mb_castSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage) end	
-
-	if GetRealZoneText() == "Ahn\'Qiraj" then -- AQ40 sepcific healing
-
-		if mb_tankTarget("Princess Huhuran") then
-			
-			if mb_healthPct("target") <= 0.32 then -- Huhuran is nasty when she goes below 30%
-			
-				if (UnitMana("player") > 855) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 1"), 3) then
-
-					mb_selfBuff("Inner Focus") 
-					CastSpellByName("Prayer of Healing(rank 4)") 
-					return 
-				end
-	
-				MBH_CastHeal("Flash Heal", 4, 6)
-			else
-
-				MBH_CastHeal("Heal") -- H
-			end
-		end
-
-	elseif GetRealZoneText() == "Blackwing Lair" then -- BWL specific healing
-
-		if mb_tankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then -- Vael, use max ranks
-
-			mb_priestCooldowns() -- CD's
-
-			if MB_myVaelastraszPriestHealing and not mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then -- Heal MT
-
-				if myName == MB_myVaelastraszPriestOne then
-					
-					mb_priestMaxRenewAggroedPlayer()
-					mb_priestShieldAggroedPlayer()								
-
-				elseif myName == MB_myVaelastraszPriestTwo and mb_dead(MBID[MB_myVaelastraszPriestOne]) then
-
-					mb_priestMaxRenewAggroedPlayer()
-					mb_priestShieldAggroedPlayer()					
-
-				elseif myName == MB_myVaelastraszPriestThree and mb_dead(MBID[MB_myVaelastraszPriestOne]) and mb_dead(MBID[MB_myVaelastraszPriestTwo]) then
-
-					mb_priestMaxRenewAggroedPlayer()
-					mb_priestShieldAggroedPlayer()						
-				else
-
-					mb_giveShieldToBombFollowTarget() -- Shield the follow target
-				end
-			end
-
-			if (UnitMana("player") > 875) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 1"), 3) then -- Max Prayers
-				
-				mb_selfBuff("Inner Focus") 
-				CastSpellByName("Prayer of Healing(rank 5)") 
-				return
-			end
-	
-			MBH_CastHeal("Flash Heal", 7, 7) -- Flashs
-			return
-
-		elseif mb_tankTarget("Nefarian") then -- Nefarian
-
-			if mb_hasBuffOrDebuff("Corrupted Healing", "player", "debuff") then -- Priest debuff shit
-
-				if mb_imBusy() then
-					
-					SpellStopCasting()
-				end
-
-				if mb_spellReady("Power Word: Shield") then 
-					
-					mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
-				end	
-				
-				mb_castSpellOnRandomRaidMember("Renew", "rank 10", 0.95)
-				return 
-			end
-
-		elseif mb_tankTarget("Chromaggus") and not MB_myHealSpell == "Flash Heal" then
-
-			MB_myHealSpell = "Flash Heal"
-		end
-	end
-
-	if not mb_imBusy() then
-
-		if mb_myGroupClassOrder() == 1 then
-			if (UnitMana("player") > 875) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 5"), 4) then
-				
-				mb_selfBuff("Inner Focus") 
-				CastSpellByName("Prayer of Healing(rank 5)") 
-				return
-				
-			elseif (UnitMana("player") > 825) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 4"), 4) then
-				
-				mb_selfBuff("Inner Focus") 
-				CastSpellByName("Prayer of Healing(rank 4)") 
-				return			
-
-			elseif (UnitMana("player") > 650) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 3"), 4) then 
-				
-				CastSpellByName("Prayer of Healing(rank 3)") 
-				return 
-
-			elseif (UnitMana("player") > 500) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 2"), 4) then 
-				
-				CastSpellByName("Prayer of Healing(rank 2)") 
-				return 
-
-			elseif (UnitMana("player") > 350) and mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank 1"), 4) then 
-				
-				CastSpellByName("Prayer of Healing(rank 1)") 
-				return 
-			end
-		end
-
-		if mb_inCombat("player") then -- No AOE or Hots when not inCombat		
-
-			if mb_spellReady("Power Word: Shield") then 
-
-				mb_priestShieldAggroedPlayer() -- Shield on agro player
-				mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", MB_priestShieldLowRandomPercentage) -- Shield on randoom
-			end
-
-			mb_priestRenewAggroedPlayer() -- Renew on agro player
-			mb_castSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage) -- Renew on random		
-		end
-	end
-
-	-- Healing selector
-	if mb_hasBuffOrDebuff("Inner Focus", "player", "buff") then
-
-		MBH_CastHeal("Flash Heal", 6, 6) -- FH
-
-	elseif MB_myHealSpell == "Greater Heal" or mb_hasBuffOrDebuff("Hazza\'rah\'s Charm of Healing", "player", "buff") then
-		
-		MBH_CastHeal("Greater Heal", 1, 1) -- GH
-		
-	elseif MB_myHealSpell == "Heal" then
-
-		MBH_CastHeal("Heal") -- H
-		
-	elseif MB_myHealSpell == "Flash Heal" then
-
-		MBH_CastHeal("Flash Heal") -- FH
-	else
-
-		MBH_CastHeal("Heal") -- H
-	end
-
-	mb_healerWand() -- Wanding
-end
-
-function mb_priestHealerDebuffs() -- Priest debuffs
-	
-	if MB_mySpecc == "Bitch" then
-		if MB_raidLeader then
-			
-			if (UnitCanAttack("player", MBID[MB_raidLeader].."target") and mb_debuffShadowWeavingAmount() < 5) and mb_isValidEnemyTargetWithin28YardRange(MBID[MB_raidLeader].."target") then
-					
-				AssistUnit(MBID[MB_raidLeader])
-				CastSpellByName("Shadow Word: Pain(rank 1)")
-				return true				
-			else
-
-				AssistUnit(MBID[MB_raidLeader])
-				mb_coolDownCast("Shadow Word: Pain(rank 1)", 17)
-			end
-
-		else
-			if MB_raidInviter then
-
-				if (UnitCanAttack("player", MBID[MB_raidInviter].."target") and mb_debuffShadowWeavingAmount() < 5) and mb_isValidEnemyTargetWithin28YardRange(MBID[MB_raidInviter].."target") then
-					
-					AssistUnit(MBID[MB_raidInviter])
-					CastSpellByName("Shadow Word: Pain(rank 1)")
-					return true
-				else
-				
-					AssistUnit(MBID[MB_raidInviter])
-					mb_coolDownCast("Shadow Word: Pain(rank 1)", 17)
-				end
-			end
-		end
-	end
-	return false
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Loatheb Code! -------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestLoatheb()
-
-	if mb_loathebHealing() then return end
-	
-	if mb_inCombat("player") then
-
-		mb_powerInfusionBuff() -- Power Infusion
-
-		-- Potions
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-
-		-- Cooldowns
-		if mb_manaDown("player") > 600 then mb_priestCooldowns() end
-	end
-
-	mb_healerWand() -- Wanding
-end
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Multi Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestMulti() -- Mluti
-	mb_priestSingle()
-end
-
-------------------------------------------------------------------------------------------------------
----------------------------------------------- AOE Code! ---------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestAOE() -- AOE
-
-	if mb_tankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then -- Maexxna
-
-		if MB_myAssignedHealTarget then -- Assigned healers can stay healing
-		
-			if mb_isAlive(MBID[MB_myAssignedHealTarget]) then
-				
-				mb_priestMTHeals(MB_myAssignedHealTarget)
-				return
-			else
-				
-				MB_myAssignedHealTarget = nil
-				RunLine("/raid My healtarget died, time to ALT-F4.")
-			end
-		end
-
-		-- Heal and Hot the MT
-		if mb_myNameInTable(MB_myMaexxnaPriestHealer) then
-			
-			mb_priestMaxRenewAggroedPlayer()
-			mb_priestMaxShieldAggroedPlayer()
-			return
-		end
-	end
-
-	mb_priestSingle()
-end
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Burst Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestManaDrain() -- Drain mana
-	if (mb_tankTarget("Obsidian Eradicator") or mb_tankTarget("Moam")) and mb_manaPct("target") > 0.1 and not mb_imBusy() then 
-		
-		mb_assistFocus()
-		CastSpellByName("Mana Burn")
-		return true
-	end
-	return false
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Precast Code! -------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestPreCast() -- Precasting
-
-	-- Pop Cooldowns
-	for k, trinket in pairs(MB_casterTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
-			use(13) 
-		end
-
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
-			use(14) 
-		end
-	end
-
-	CastSpellByName("Holy Fire")
-end
-
-------------------------------------------------------------------------------------------------------
-------------------------------------------- Cooldowns Code! ------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestCooldowns() -- Priest Cooldowns
-
-	if mb_imBusy() then return end
-
-	if mb_inCombat("player") then
-
-		mb_selfBuff("Berserking")
-
-		if mb_manaPct("player") <= MB_priestInnerFocusPercentage then
-
-			mb_selfBuff("Inner Focus")
-		end
-
-		mb_healerTrinkets()
-		mb_casterTrinkets()
-	end
-end
-
-function mb_priestFade() -- Fade
-	local aggrox = AceLibrary("Banzai-1.0")
-	if aggrox:GetUnitAggroByUnitId("player") and mb_spellReady("Fade") then 
-		CastSpellByName("Fade")
-	end
-end
-
-function mb_powerInfusionBuff() -- Power Infusion
-
-	if not mb_inCombat("player") then return end
-	if not mb_spellReady("Power Infusion") then return end
-	if mb_imBusy() then return end
-
-	if not MB_autoBuff.Active then
-
-		MB_autoBuff.Active = true
-		MB_autoBuff.Time = GetTime() + 0.2
-
-		if MB_powerInfusionCounter == TableLength(MB_classList["Priest"]) + 1 then
-			
-			MB_powerInfusionCounter = 1
-		else
-
-			MB_powerInfusionCounter = MB_powerInfusionCounter + 1
-		end
-	end
-
-	if MB_powerInfusionCounter == mb_myClassAlphabeticalOrder() then
-		for k, caster in pairs(MB_raidAssist.Priest.PowerInfusionList) do
-			if MBID[caster] then
-				if not mb_hasBuffOrDebuff("Power Infusion", MBID[caster], "buff") and mb_inCombat(MBID[caster]) and mb_isAlive(MBID[caster]) and mb_manaPct(MBID[caster]) < 0.9 and mb_manaPct(MBID[caster]) > 0.1 and mb_in28yardRange(MBID[caster]) then
-					
-					TargetByName(caster)
-					CastSpellByName("Power Infusion")
-					mb_message("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
-					return
-				end
-			end
-		end
-	end
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Healing Code! -------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-local GreaterHeal = { Time = 0, Interrupt = false }
-
--- /run mb_priestMTHeals("Angerissues")
-function mb_priestMTHeals(assignedtarget)
-	
-	if assignedtarget then
-		
-		TargetByName(assignedtarget, 1)
-	else
-		if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-			
-			mb_targetMyAssignedTankToHeal()
-		else
-
-			if not UnitName(MBID[mb_tankName()].."targettarget") then 
-				
-				MBH_CastHeal("Greater Heal", 1, 1)
-			else
-				TargetByName(UnitName(MBID[mb_tankName()].."targettarget"), 1) 
-			end
-		end
-	end
-
-	if GetRealZoneText() == "Blackwing Lair" then -- BWL
-		if mb_hasBuffOrDebuff("Corrupted Healing", "player", "debuff") then -- Priest debuff shit
-
-			if mb_imBusy() then
-				
-				SpellStopCasting()
-			end
-
-			if mb_spellReady("Power Word: Shield") then 
-				
-				mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
-			end	
-			
-			mb_castSpellOnRandomRaidMember("Renew", "rank 10", 0.95)
-			return 
-		end
-	end
-
-	-- Shield MT if needed
-	if (mb_healthPct("target") < 0.5) and mb_spellReady("Power Word: Shield") and not mb_hasBuffOrDebuff("Weakened Soul", "target", "debuff") then
-		
-		CastSpellByName("Power Word: Shield")
-	end
-
-	local GreatHealSpell = "Greater Heal("..MB_myPriestMainTankHealingRank.."\)"
-
-	if mb_tankTarget("Vaelastrasz the Corrupt") then -- Max Ranks for Vael :)
-
-		GreatHealSpell = "Greater Heal"
-	end
-
-	--[[	
-		-- Info
-		local GreatHealCastTime = 2.5
-		local GreatHealTime = GetTime()
-		local GreatHealCooldown = mb_spellCooldown("Greater Heal")
-
-		-- Setup
-		GreatHealStop = GreatHealStop or false
-		GreatHealFinishTime = GreatHealFinishTime or 0
-		GreatHealCastAt = GreatHealCastAt or 0
-		
-		if GreatHealCooldown > 0 then
-
-			GreatHealFinishTime = (GreatHealCooldown + GreatHealCastTime)  -- Finish Timer = SpellCooldown + CastTime
-			GreatHealStop = true
-		end
-
-		if not mb_tankTarget("Vaelastrasz the Corrupt") then
-
-			-- Stop when target is not below HP and is not far into the cast
-			if mb_healthDown("target") < 1800 and (GreatHealTime > (GreatHealFinishTime - 0.2)) and GreatHealStop then
-				
-				SpellStopCasting()
-				GreatHealCastAt = GreatHealFinishTime + 0.1
-				GreatHealStop = false
-			end
-		end
-
-		if GreatHealCooldown <= 0 and GreatHealTime > GreatHealCastAt then
-
-			CastSpellByName(GreatHealSpell)
-		end
-	]]
-
-	if not (mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Maexxna") or mb_tankTarget("Ossirian the Unscarred")) then
-
-		-- Stop when target is not below HP and is not far into the cast
-		if (mb_healthDown("target") <= (GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage)) and (GetTime() > GreaterHeal.Time) and (GetTime() < GreaterHeal.Time + 0.5) and GreaterHeal.Interrupt then
-			
-			SpellStopCasting()			
-			GreaterHeal.Interrupt = false
-			SpellStopCasting()
-		end
-	end
-
-	if not MB_isCasting then
-
-		CastSpellByName(GreatHealSpell)
-		GreaterHeal.Time = GetTime() + 1
-		GreaterHeal.Interrupt = true
-	end
-end
-
-function mb_priestRenewAggroedPlayer() -- Renew Agro player
-	
-	if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then return end
-
-	local aggrox = AceLibrary("Banzai-1.0")
-	local renewTarget
-
-	for i =  1, GetNumRaidMembers() do
-
-		renewTarget = "raid"..i
-
-		if renewTarget and aggrox:GetUnitAggroByUnitId(renewTarget) then
-
-			if mb_isValidFriendlyTarget(renewTarget, "Renew") and mb_healthPct(renewTarget) <= MB_priestRenewAggroedPlayerPercentage and not mb_hasBuffNamed("Renew", renewTarget) then 
-				
-				if UnitIsFriend("player", renewTarget) then
-					ClearTarget()
-				end	
-				
-				CastSpellByName("Renew("..MB_priestRenewAggroedPlayerRank.."\)")
-				SpellTargetUnit(renewTarget)
-				SpellStopTargeting()
-			end
-		end
-	end
-end
-
-function mb_priestFearWardAggroedPlayer() -- Priest FW on agroed player
-
-	local fearWardTarget
-	if MBID[MB_raidLeader] then
-		fearWardTarget = MBID[MB_raidLeader].."targettarget"
-	end
-
-	if fearWardTarget then
-
-		if mb_isValidFriendlyTarget(fearWardTarget, "Fear Ward") and not mb_hasBuffNamed("Fear Ward", fearWardTarget) and UnitPowerType(fearWardTarget) == 1 then 
-			
-			if UnitIsFriend("player", fearWardTarget) then
-				ClearTarget()
-			end	
-			
-			mb_message("Focus Fear Ward on "..UnitName(fearWardTarget), 30)
-
-			CastSpellByName("Fear Ward")
-			SpellTargetUnit(fearWardTarget)
-			SpellStopTargeting()
-			return true
-		end
-	end
-end
-
-function mb_priestShieldAggroedPlayer() -- Shield Agro player
-
-	if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then return end
-	
-	if not mb_inCombat("player") then return end
-
-	local aggrox = AceLibrary("Banzai-1.0")
-	local shieldTarget
-
-	for i =  1, GetNumRaidMembers() do
-
-		shieldTarget = "raid"..i
-
-		if shieldTarget and aggrox:GetUnitAggroByUnitId(shieldTarget) then
-
-			if mb_isValidFriendlyTarget(shieldTarget, "Power Word: Shield") and mb_healthPct(shieldTarget) <= MB_priestShieldAggroedPlayerPercentage and not mb_hasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") and mb_spellReady("Power Word: Shield") then 
-				
-				if UnitIsFriend("player", shieldTarget) then
-					ClearTarget()
-				end	
-				
-				CastSpellByName("Power Word: Shield", false)
-				SpellTargetUnit(shieldTarget)
-				SpellStopTargeting()
-			end
-		end
-	end
-end
-
 function mb_castShieldOnRandomRaidMember(spell, rank) -- Cast shield on random members
 
 	if mb_imBusy() then return end
@@ -11984,63 +11237,6 @@ function GetAverageChainHealValueFromRank(spell, rank, amountOfBounce, multiplie
 	local lowestHeal = baseHeal / (2 ^ amountOfBounce)
 
 	return math.floor(lowestHeal * multiplier)
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Setup Code! ---------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_priestSetup() -- Buffing
-
-	if (UnitMana("player") < 3060) and mb_hasBuffNamed("Drink", "player") then return end
-
-	-- Buffs
-	if not MB_autoBuff.Active then
-
-		MB_autoBuff.Active = true
-		MB_autoBuff.Time = GetTime() + 0.2
-
-		if MB_buffingCounterPriest == TableLength(MB_classList["Priest"]) + 1 then
-					
-			MB_buffingCounterPriest = 1
-		else
-	
-			MB_buffingCounterPriest = MB_buffingCounterPriest + 1
-		end
-	end
-
-	mb_selfBuff("Inner Focus") -- Inner focus to get more buffs out
-
-	if MB_buffingCounterPriest == mb_myClassAlphabeticalOrder() then
-
-		mb_multiBuff("Prayer of Fortitude")
-
-		if not GetRealZoneText() == "Molten Core" then
-			if mb_knowSpell("Prayer of Spirit") then
-				
-				mb_multiBuff("Prayer of Spirit")
-			end
-
-			if not mb_isAtInstructorRazuvious() then 
-				
-				mb_multiBuff("Prayer of Shadow Protection")
-			end
-		end
-
-		if mb_spellReady("Fear Ward") and mb_mobsToFearWard() then -- Fear Warding 
-
-			mb_multiBuff("Fear Ward")
-		end
-	end
-
-	mb_selfBuff("Inner Fire")
-	mb_selfBuff("Shadowform")
-
-	-- Drink
-	if not mb_inCombat("player") and (mb_manaPct("player") < 0.20) and not mb_hasBuffNamed("Drink", "player") then
-		
-		mb_smartDrink()
-	end
 end
 
 ------------------------------------------------------------------------------------------------------
