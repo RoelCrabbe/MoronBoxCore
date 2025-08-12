@@ -29,3 +29,4 @@ Utility\Reagents.lua
 
 Rotation\Priest.lua
 Rotation\Mage.lua
+Rotation\Warrior.lua

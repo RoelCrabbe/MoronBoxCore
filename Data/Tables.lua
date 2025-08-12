@@ -252,6 +252,13 @@ local MB_corruptedTotemsSet = {
     ["Corrupted Fire Nova Totem"] = true
 }
 
+-- Excluded WW Targets
+local MB_excludedTargetsSet = {
+    ["Emperor Vek'lor"] = true,
+    ["Emperor Vek'nilash"] = true,
+    ["The Prophet Skeram"] = true,
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -386,6 +393,12 @@ end
 function mb_corruptedTotems()
     local targetName = UnitName("target")
     return targetName and MB_corruptedTotemsSet[targetName] == true
+end
+
+-- Excluded WW Targets
+function mb_isExcludedWW()
+    local targetName = UnitName("target")
+    return targetName and MB_excludedTargetsSet[targetName] == true
 end
 
 -- Spells to Intterupt --
