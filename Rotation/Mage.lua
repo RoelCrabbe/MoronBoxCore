@@ -6,8 +6,6 @@ local Mage = CreateFrame("Frame", "Mage")
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
-local tName = UnitName("target")
-local myMana = UnitMana("player")
 
 local MageCounter = {
     Cycle = function()
@@ -67,7 +65,7 @@ local function MageSingle()
 		MB_mySpecc = "Frost"
 	end
 
-	if mb_crowdControl() then
+	if mb_crowdControl() then 
         return
     end
 
@@ -81,14 +79,16 @@ local function MageSingle()
         return
     end
 
-	if tName and MB_myCCTarget then
-		if GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
-			mb_crowdControl()
-			return 
-		end
-	elseif tName and mb_crowdControlledMob() then		
-		mb_getTarget()
-		return
+	if UnitName("target") then
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+            if mb_crowdControl() then
+                return
+            end
+        end        
+
+        if mb_crowdControlledMob() then
+            mb_getTarget()
+        end
 	end
 
 	if Instance.AQ40 then
@@ -150,15 +150,11 @@ local function MageSingle()
     end
 
 	if mb_inCombat("player") then
-		mb_mageUseManaGems()
+		Mage:UseManaGems()
 
 		mb_takeManaPotionAndRune()
 		mb_takeManaPotionIfBelowManaPotMana()
 		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
-
-        if mb_manaDown("player") > 750 then
-            Priest:Cooldowns()
-        end
 
 		if MB_isMoving.Active then			
 			mb_selfBuff("Presence of Mind")			
@@ -191,58 +187,27 @@ local function MageSingle()
 
 	if MB_mySpecc == "Fire" then
 
-		if mb_isFireImmune() or not mb_spellReady("Scorch") then			
+		if mb_isFireImmune() then			
 			mb_castSpellOrWand("Frostbolt")
 			return
 		end
 
-		Mage:RollIgnite()
+		Mage:Fire()
 
 	elseif MB_mySpecc == "Frost" then
 
-		if mb_inCombat("player") then			
-			if mb_focusAggro() and mb_healthPct("player") <= 0.20 and not mb_isAtGrobbulus() then			
-				mb_selfBuff("Ice Block")
-				return
-			end
+        if mb_isFrostImmune() then
+            mb_castSpellOrWand("Fireball")
+            return
+        end
 
-			if mb_healthPct("player") >= 0.70 then				
-				mb_selfBuff("Ice Barrier")
-				return
-			end
-		end
-
-		if not mb_spellReady("Frostbolt") then			
-			mb_castSpellOrWand("Fireball")
-		else
-			mb_castSpellOrWand("Frostbolt")
-		end
+        Mage:Frost()
 	end
-end
-
-MB_mySingleList["Mage"] = MageSingle
-
-function Mage:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
-
-    mb_selfBuff("Berserking") 
-		
-    if not mb_hasBuffOrDebuff("Power Infusion", "player", "buff") then
-        mb_selfBuff("Arcane Power")			
-    end
-
-    mb_selfBuff("Combustion")
-    mb_selfBuff("Presence of Mind")
-    
-    mb_healerTrinkets()
-	mb_casterTrinkets()
 end
 
 function Mage:BossSpecificDPS()
 
-	if tName == "Emperor Vek\'nilash" then
+	if UnitName("target") == "Emperor Vek\'nilash" then
         return true
     end
 
@@ -262,7 +227,7 @@ function Mage:BossSpecificDPS()
         and (not mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff")
             or not mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff")) then
 
-        Mage:RollIgnite()
+        Mage:Fire()
         return true
 
     elseif mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff") then
@@ -272,7 +237,7 @@ function Mage:BossSpecificDPS()
 
     elseif mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff") then
 
-        Mage:RollIgnite()
+        Mage:Fire()
         return true
 
     elseif mb_mobsToDetectMagic() or mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
@@ -302,16 +267,21 @@ function Mage:BossSpecificDPS()
 				return true
 			end
 
-			Mage:RollIgnite()
+			Mage:Fire()
 			return true			
 		end
 
-		if tName == "Spawn of Fankriss" then			
+		if UnitName("target") == "Spawn of Fankriss" then			
 			if mb_spellReady("Fireblast") and mb_inMeleeRange() then
 				CastSpellByName("Fire Blast")
 			end
 
-			Mage:RollIgnite()
+            if MB_mySpecc == "Fire" then    
+                Mage:Fire()
+
+            elseif MB_mySpecc == "Frost" then
+                Mage:Frost()
+            end
 			return true
 		end
 
@@ -327,18 +297,18 @@ function Mage:BossSpecificDPS()
 	elseif Instance.MC then
 
 		if mb_tankTarget("Shazzrah") then
-			if MB_mySpecc == "Fire" and not (mb_spellReady("Scorch") or mb_spellReady("Fireball")) then
+			if MB_mySpecc == "Fire" and not mb_spellReady("Fireball") then
 				
-                mb_castSpellOrWand("Frostbolt")
+                Mage:Frost()
 				return true
 			elseif MB_mySpecc == "Frost" and not mb_spellReady("Frostbolt") then
 							
-				mb_castSpellOrWand("Scorch")
+				Mage:Fire()
 				return true				
 			end
 		end
 
-		if tName == "Lava Spawn" and mb_inMeleeRange() then
+		if UnitName("target") == "Lava Spawn" and mb_inMeleeRange() then
             if mb_spellReady("Cone of Cold") then				
                 mb_castSpellOrWand("Cone of Cold")
                 return true
@@ -348,7 +318,7 @@ function Mage:BossSpecificDPS()
 	elseif Instance.ZG then
 
 		if mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
-			if tName == "Shade of Jin\'do" and not mb_dead("target") then
+			if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
 				if mb_spellReady("Fire Blast") then
 					CastSpellByName("Fire Blast") 
 				end 
@@ -358,7 +328,7 @@ function Mage:BossSpecificDPS()
 			end
 		end
 
-		if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not mb_dead("target") then
+		if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not mb_dead("target") then
 			if mb_spellReady("Fire Blast") then				
 				CastSpellByName("Fire Blast")
 			end
@@ -371,11 +341,11 @@ function Mage:BossSpecificDPS()
 
         if mb_hasBuffOrDebuff("Fire Weakness", "target", "debuff") then
         
-            Mage:RollIgnite()
+            Mage:Fire()
             return true
         elseif mb_hasBuffOrDebuff("Frost Weakness", "target", "debuff") then
 
-            mb_castSpellOrWand("Frostbolt")
+            Mage:Frost()
             return true
         elseif mb_hasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
         
@@ -387,7 +357,7 @@ function Mage:BossSpecificDPS()
 	return false
 end
 
-function Mage:RollIgnite()
+function Mage:Fire()
 	local igTick = tonumber(MB_ignite.Amount)
 
     if not MB_ignite.Active then
@@ -420,4 +390,349 @@ function Mage:RollIgnite()
             mb_castSpellOrWand(MB_raidAssist.Mage.SpellToKeepIgniteUp)
         end
     end		
+end
+
+function Mage:Frost()
+    if mb_inCombat("player") then        
+        if mb_manaDown("player") > 600 then
+            Priest:Cooldowns()
+        end
+
+        if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then			
+            mb_selfBuff("Ice Block")
+            return
+        end
+
+        if mb_hasBuffOrDebuff("Ice Block", "player", "buff") and mb_healthPct("player") >= 0.70 then 
+            CancelBuff("Ice Block") 
+            return 
+        end
+
+        if mb_spellReady("Ice Barrier") and mb_healthPct("player") >= 0.65 then				
+            mb_selfBuff("Ice Barrier")
+            return
+        end
+    end
+
+    if not mb_spellReady("Frostbolt") then			
+        mb_castSpellOrWand("Fireball")
+    else
+        mb_castSpellOrWand("Frostbolt")
+    end
+end
+
+MB_mySingleList["Mage"] = MageSingle
+
+--[####################################################################################################]--
+--[########################################## Multi Code! #############################################]--
+--[####################################################################################################]--
+
+MB_myMultiList["Mage"] = MageSingle
+
+--[####################################################################################################]--
+--[########################################### AOE Code! ##############################################]--
+--[####################################################################################################]--
+
+local function MageAOE()
+
+    mb_getTarget()
+
+	if not MB_mySpecc then		
+		mb_message("My specc is fucked. Defaulting to frost.")
+		MB_mySpecc = "Frost"
+	end
+
+	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+		return
+	end
+
+	mb_decurse()
+
+	if mb_tankTarget("Ossirian the Unscarred") then
+        return
+    end
+
+    if mb_inCombat("player") then
+		Mage:UseManaGems()
+
+		mb_takeManaPotionAndRune()
+		mb_takeManaPotionIfBelowManaPotMana()
+		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+
+        if mb_manaDown("player") > 600 then
+            Priest:Cooldowns()
+        end
+	end
+
+	if mb_manaPct("player") < 0.2 and not mb_hasBuffOrDebuff("Clearcasting", "player", "buff") then
+		CastSpellByName("Arcane Explosion(Rank 1)")
+		return
+	end
+
+    if Instance.BWL and GetSubZoneText() == "Halls of Strife" then
+        
+        CastSpellByName("Arcane Explosion(Rank 3)") 
+        return
+    elseif Instance.Naxx and mb_tankTarget("Maexxna") then
+        
+        CastSpellByName("Arcane Explosion(Rank 3)") 
+        return
+    end
+
+    if Instance.Naxx and mb_tankTarget("Plague Beast") then
+        if MB_mySpecc == "Fire" then
+
+            if mb_knowSpell("Blast Wave") and mb_spellReady("Blast Wave") then                
+                CastSpellByName("Blast Wave")
+            end
+        elseif MB_mySpecc == "Frost" then
+
+            if mb_spellReady("Cone of Cold") then                
+                CastSpellByName("Cone of Cold") 
+            end	
+        end
+    end
+
+    if mb_inMeleeRange() then
+        if MB_mySpecc == "Fire" then
+            if mb_isFireImmune() then
+                return
+            end
+
+            if mb_knowSpell("Blast Wave") and mb_spellReady("Blast Wave") then                
+                CastSpellByName("Blast Wave")
+            end
+
+        elseif MB_mySpecc == "Frost" then
+            if mb_isFrostImmune() then
+                return
+            end
+
+            if mb_spellReady("Cone of Cold") then                
+                CastSpellByName("Cone of Cold") 
+            end	
+
+            if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then			
+                mb_selfBuff("Ice Block")
+                return
+            end
+
+            if mb_hasBuffOrDebuff("Ice Block", "player", "buff") and mb_healthPct("player") >= 0.70 then 
+                CancelBuff("Ice Block") 
+                return 
+            end
+
+            if mb_spellReady("Ice Barrier") and mb_healthPct("player") >= 0.65 then				
+                mb_selfBuff("Ice Barrier")
+                return
+            end
+        end
+    end
+
+	CastSpellByName("Arcane Explosion") 
+end
+
+MB_myAOEList["Mage"] = MageAOE
+
+--[####################################################################################################]--
+--[########################################## SETUP Code! #############################################]--
+--[####################################################################################################]--
+
+local function MageSetup()
+	
+	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+        return
+    end
+
+	if UnitMana("player") < 3060 and mb_hasBuffNamed("Drink", "player") then
+		return
+	end
+
+	if IsAltKeyDown() then		
+		Mage:ConjureManaGems()
+		return
+	end
+
+	if mb_mageWater() > 100 or MB_isMoving.Active then		
+        if not MB_autoBuff.Active then
+            MB_autoBuff.Active = true
+            MB_autoBuff.Time = GetTime() + 0.25
+            MageCounter.Cycle()
+        end
+
+		if mb_myClassAlphabeticalOrder() == MB_buffingCounterMage then			
+			mb_multiBuff("Arcane Brilliance")
+
+			if mb_mobsToDampenMagic() then	
+				mb_multiBuff("Dampen Magic")			
+			
+            elseif mb_mobsToAmplifyMagic() then				
+				if mb_tankTarget("Gluth") then	
+					mb_multiBuff("Amplify Magic")
+				end
+	
+				mb_tankBuff("Amplify Magic")
+			end
+		end
+	else
+		mb_makeWater()
+	end
+
+	mb_selfBuff("Mage Armor")
+	Mage:ConjureManaGems()
+			
+	if not mb_inCombat("player") and mb_manaPct("player") < 0.20 and not mb_hasBuffNamed("Drink", "player") then
+		mb_smartDrink()
+	end
+end
+
+MB_mySetupList["Mage"] = MageSetup
+
+--[####################################################################################################]--
+--[######################################### PRECAST Code! ############################################]--
+--[####################################################################################################]--
+
+local function MagePreCast()
+	for k, trinket in pairs(MB_casterTrinkets) do
+		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
+			use(13) 
+		end
+
+		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
+			use(14) 
+		end
+	end
+
+	if mb_spellReady("Arcane Power") and not mb_hasBuffOrDebuff("Power Infusion", "player", "buff") then
+		CastSpellByName("Arcane Power")
+	end
+
+	if MB_mySpecc == "Fire" then
+
+		if mb_isFireImmune() then			
+			CastSpellByName("Frostbolt")
+		else
+			CastSpellByName("Fireball")
+		end
+	elseif MB_mySpecc == "Frost" then
+
+        if mb_isFrostImmune() then
+            CastSpellByName("Fireball")
+        else
+            CastSpellByName("Frostbolt")
+        end
+	end
+end
+
+MB_myPreCastList["Mage"] = MagePreCast
+
+--[####################################################################################################]--
+--[########################################## Helper Code! ############################################]--
+--[####################################################################################################]--
+
+function Mage:Cooldowns()
+	if mb_imBusy() or not mb_inCombat("player") then
+		return
+	end
+
+    mb_selfBuff("Berserking") 
+		
+    if not mb_hasBuffOrDebuff("Power Infusion", "player", "buff") then
+        mb_selfBuff("Arcane Power")			
+    end
+
+    mb_selfBuff("Combustion")
+    mb_selfBuff("Presence of Mind")
+    
+    mb_healerTrinkets()
+	mb_casterTrinkets()
+end
+
+function Mage:UseManaGems()
+	if mb_imBusy() then
+		return
+	end
+
+	-- Use em
+	if (UnitClassification("target") == "worldboss" or UnitLevel("target") >= 63) then
+
+		if mb_haveInBags("Mana Ruby") and mb_manaDown("player") >= 1200  then
+			
+			UseItemByName("Mana Ruby")
+		end
+
+		if mb_haveInBags("Mana Citrine") and mb_manaDown("player") >= 925 and not mb_haveInBags("Mana Ruby") then
+			
+			UseItemByName("Mana Citrine")
+		end
+
+		if mb_haveInBags("Mana Jade") and mb_manaDown("player") >= 650 and not mb_haveInBags("Mana Citrine") then
+			if not mb_haveInBags("Mana Ruby") then
+				
+				UseItemByName("Mana Jade")
+			end
+		end
+
+		if mb_haveInBags("Mana Agate") and mb_manaDown("player") >= 425 and not mb_haveInBags("Mana Jade") then
+			if not mb_haveInBags("Mana Ruby") and not mb_haveInBags("Mana Citrine") then
+				
+				UseItemByName("Mana Agate")
+			end
+		end
+	end 
+
+	if UnitLevel("target") <= 63 and mb_manaPct("player") < 0.3 then
+
+		if mb_haveInBags("Mana Ruby") and mb_manaDown("player") >= 1200  then
+			
+			UseItemByName("Mana Ruby")
+		end
+
+		if mb_haveInBags("Mana Citrine") and mb_manaDown("player") >= 925 and not mb_haveInBags("Mana Ruby") then
+			
+			UseItemByName("Mana Citrine")
+		end
+
+		if mb_haveInBags("Mana Jade") and mb_manaDown("player") >= 650 and not mb_haveInBags("Mana Citrine") then
+			if not mb_haveInBags("Mana Ruby") then
+				
+				UseItemByName("Mana Jade")
+			end
+		end
+
+		if mb_haveInBags("Mana Agate") and mb_manaDown("player") >= 425 and not mb_haveInBags("Mana Jade") then
+			if not mb_haveInBags("Mana Ruby") and not mb_haveInBags("Mana Citrine") then
+				
+				UseItemByName("Mana Agate")
+			end
+		end
+	end
+	return false
+end
+
+function Mage:ConjureManaGems()
+    if mb_imBusy() then
+		return
+	end
+
+	if mb_getAllContainerFreeSlots() == 0 then		
+		mb_message("My bags are full, can\'t conjure more stuff", 60)
+		return
+	end
+
+	if not mb_haveInBags("Mana Ruby") then		
+		CastSpellByName("Conjure Mana Ruby")
+	end
+
+	if not mb_haveInBags("Mana Citrine") then		
+		CastSpellByName("Conjure Mana Citrine")
+	end
+
+	if not mb_haveInBags("Mana Jade") then		
+		CastSpellByName("Conjure Mana Jade")
+	end
+
+	if not mb_haveInBags("Mana Agate") then		
+		CastSpellByName("Conjure Mana Agate")
+	end
 end

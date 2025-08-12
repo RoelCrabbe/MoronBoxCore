@@ -236,6 +236,14 @@ local MB_fireImmuneSet = {
     ["Flamegor"] = true
 }
 
+-- Frost Immunity Set
+local MB_frostImmuneSet = {
+    ["Ras Frostwhisper"] = true,
+    ["Frostmaul Giant"] = true,
+    ["Ice Thistle Yeti"] = true,
+    ["Highborne Lichling"] = true
+}
+
 -- Corrupted Totems Set
 local MB_corruptedTotemsSet = {
     ["Corrupted Healing Stream Totem"] = true,
@@ -366,6 +374,12 @@ end
 function mb_isFireImmune()
     local targetName = UnitName("target")
     return targetName and MB_fireImmuneSet[targetName] == true
+end
+
+-- Frost Immunity Functions
+function mb_isFrostImmune()
+    local targetName = UnitName("target")
+    return targetName and MB_frostImmuneSet[targetName] == true
 end
 
 -- Corrupted Totems Functions

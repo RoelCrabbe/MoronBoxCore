@@ -6,8 +6,6 @@ local Priest = CreateFrame("Frame", "Priest")
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
-local tName = UnitName("target")
-local myMana = UnitMana("player")
 
 local PriestCounter = {
     Cycle = function()
@@ -131,7 +129,7 @@ end
 
 function Priest:BossSpecificDPS()
 
-	if tName == "Emperor Vek\'nilash" then
+	if UnitName("target") == "Emperor Vek\'nilash" then
         return true
     end
 
@@ -159,7 +157,7 @@ function Priest:BossSpecificDPS()
 		return true
 	end
 
-    if Instance.IsWorldBoss() and tName ~= "Nefarian" then
+    if Instance.IsWorldBoss() and UnitName("target") ~= "Nefarian" then
 		if not mb_hasBuffOrDebuff("Vampiric Embrace", "target", "debuff") then
 			CastSpellByName("Vampiric Embrace")
 		end
@@ -554,6 +552,18 @@ local function PriestSingle()
         return
     end
 
+	if UnitName("target") then
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+            if mb_crowdControl() then
+                return
+            end
+        end        
+
+        if mb_crowdControlledMob() then
+            mb_getTarget()
+        end
+	end
+
 	if Instance.Naxx then
 
         if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
@@ -641,7 +651,7 @@ MB_myAOEList["Priest"] = PriestAOE
 
 local function PriestSetup()
 
-	if myMana < 3060 and mb_hasBuffNamed("Drink", "player") then
+	if UnitMana("player") < 3060 and mb_hasBuffNamed("Drink", "player") then
 		return
 	end
 
@@ -681,7 +691,7 @@ end
 MB_mySetupList["Priest"] = PriestSetup
 
 --[####################################################################################################]--
---[########################################## SETUP Code! #############################################]--
+--[######################################### PRECAST Code! ############################################]--
 --[####################################################################################################]--
 
 local function PriestPreCast()
@@ -735,11 +745,12 @@ function Priest:PrayerOfHealingCheck(manaRank, checkRank, minTargets, focus)
 		checkRank = manaRank
 	end
 
-    if myMana >= cost then
+    if UnitMana("player") >= cost then
         if mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank), minTargets) then
             if focus then
                 mb_selfBuff("Inner Focus")
             end
+
             CastSpellByName("Prayer of Healing (Rank "..manaRank..")")
             return true
         end

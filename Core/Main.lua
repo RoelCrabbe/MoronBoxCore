@@ -43,7 +43,7 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 	local MB_myInterruptTarget = nil
 	local MB_myOTTarget = nil
 	
-	local MB_doInterrupt = { Active = false, Time = 0 }
+	MB_doInterrupt = { Active = false, Time = 0 }
 
 	local MB_myAssignedHealTarget = nil
 
@@ -135,15 +135,15 @@ local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 
 	-- Ignite
 
-	local MB_ignite = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
+	MB_ignite = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
 
-	local MB_buffingCounterWarlock = 1
-	local MB_ssCounterWarlock = 1
-	local MB_buffingCounterDruid = 1
-	local MB_buffingCounterMage = 1
+	MB_buffingCounterWarlock = 1
+	MB_ssCounterWarlock = 1
+	MB_buffingCounterDruid = 1
+	MB_buffingCounterMage = 1
 	MB_buffingCounterPriest = 1
-	local MB_buffingCounterPaladin = 1
-	local MB_powerInfusionCounter = 1
+	MB_buffingCounterPaladin = 1
+	MB_powerInfusionCounter = 1
 
 	-- NPC and Trade globals / locals --
 
@@ -1567,9 +1567,16 @@ function mb_clearTargetIfNotAggroed()
 end
 
 function mb_crowdControlledMob()
-	if (mb_hasBuffOrDebuff("Shackle Undead", "target", "debuff") or mb_hasBuffOrDebuff("Polymorph", "target", "debuff") or mb_hasBuffOrDebuff("Banish", "target", "debuff")) then
-		return true
-	end
+    if (mb_hasBuffOrDebuff("Shackle Undead", "target", "debuff")
+        or mb_hasBuffOrDebuff("Polymorph", "target", "debuff")
+        or mb_hasBuffOrDebuff("Banish", "target", "debuff")) then
+        
+        Print("Crowd controlled: true")
+        return true
+    else
+        Print("Crowd controlled: false")
+        return false
+    end
 end
 
 function mb_inCombat(unit)
@@ -5367,27 +5374,25 @@ function mb_single() -- Single Code
 			
 			if myName == MB_myOnyxiaMainTank then
 
-				if myClass == "Mage" then mb_mageSingle() return end
 				if myClass == "Shaman" then mb_shamanSingle() return end
-				if myClass == "Priest" then MB_mySingleList[myClass]() return end
 				if myClass == "Rogue" then mb_rogueSingle() return end
 				if myClass == "Warrior" then mb_warriorSingle() return end
 				if myClass == "Warlock" then mb_warlockSingle() return end
 				if myClass == "Druid" then mb_druidSingle() return end
 				if myClass == "Hunter" then mb_hunterSingle() return end
 				if myClass == "Paladin" then mb_paladinSingle() return end
+				MB_mySingleList[myClass]()
 				return
 			end
 			
-			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_mySingleList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidSingle() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinSingle() return end
+			MB_mySingleList[myClass]()
 		end
 						
 	elseif GetRealZoneText() == "Ahn\'Qiraj" then -- AQ40 Mode
@@ -5396,43 +5401,40 @@ function mb_single() -- Single Code
 
 			if IsAltKeyDown() and mb_imHealer() then return end -- Stop healers when ALT down
 
-			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_mySingleList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidSingle() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinSingle() return end
+			MB_mySingleList[myClass]()
 		end
 
 	elseif GetRealZoneText() == "Naxxramas" then -- Naxx Mode
 
 		if mb_isAtLoatheb() then
 
-			if myClass == "Mage" then mb_mageSingle() return end
 			--if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidLoatheb() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinLoatheb() return end
+			MB_mySingleList[myClass]()
 		end 
 	end
 
 	-- Normal Single
-	if myClass == "Mage" then mb_mageSingle() return end
 	if myClass == "Shaman" then mb_shamanSingle() return end
-	if myClass == "Priest" then MB_mySingleList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueSingle() return end
 	if myClass == "Warrior" then mb_warriorSingle() return end
 	if myClass == "Warlock" then mb_warlockSingle() return end
 	if myClass == "Druid" then mb_druidSingle() return end
 	if myClass == "Hunter" then mb_hunterSingle() return end
 	if myClass == "Paladin" then mb_paladinSingle() return end
+	MB_mySingleList[myClass]()
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -5499,15 +5501,14 @@ function mb_multi() -- Multi Code
 
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then 
 
-			if myClass == "Mage" then mb_mageSingle() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidSingle() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinSingle() return end
+			MB_myMultiList[myClass]()
 			return
 		end	
 
@@ -5517,27 +5518,25 @@ function mb_multi() -- Multi Code
 
 			if mb_iamFocus() then mb_warriorSingle() return end -- Tank keep doing single, rest do multi
 
-			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
 			if myClass == "Druid" then mb_druidMulti() return end
 			if myClass == "Hunter" then mb_hunterMulti() return end
 			if myClass == "Paladin" then mb_paladinMulti() return end
+			MB_myMultiList[myClass]()
 
 		elseif mb_isAtLoatheb() then
 
-			if myClass == "Mage" then mb_mageSingle() return end
 			--if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidLoatheb() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinLoatheb() return end
+			MB_myMultiList[myClass]()
 		end 
 
 	elseif GetRealZoneText() == "Ahn\'Qiraj" then -- AQ40 Mode
@@ -5546,15 +5545,14 @@ function mb_multi() -- Multi Code
 
 			if IsAltKeyDown() and mb_imHealer() then return end -- Stop healers when ALT down
 
-			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
 			if myClass == "Druid" then mb_druidMulti() return end
 			if myClass == "Hunter" then mb_hunterMulti() return end
 			if myClass == "Paladin" then mb_paladinMulti() return end
+			MB_myMultiList[myClass]()
 		end
 
 	elseif GetRealZoneText() == "Blackwing Lair" then
@@ -5563,28 +5561,26 @@ function mb_multi() -- Multi Code
 
 			if mb_imTank() then mb_warriorSingle() return end
 			
-			if myClass == "Mage" then mb_mageMulti() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueMulti() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockMulti() return end
 			if myClass == "Druid" then mb_druidMulti() return end
 			if myClass == "Hunter" then mb_hunterMulti() return end
 			if myClass == "Paladin" then mb_paladinMulti() return end
+			MB_myMultiList[myClass]()
 		end
 	end
 
 	-- Normal Multi
-	if myClass == "Mage" then mb_mageMulti() return end
 	if myClass == "Shaman" then mb_shamanMulti() return end
-	if myClass == "Priest" then MB_myMultiList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueMulti() return end
 	if myClass == "Warrior" then mb_warriorMulti() return end
 	if myClass == "Warlock" then mb_warlockMulti() return end
 	if myClass == "Druid" then mb_druidMulti() return end
 	if myClass == "Hunter" then mb_hunterMulti() return end
 	if myClass == "Paladin" then mb_paladinMulti() return end
+	MB_myMultiList[myClass]()
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -5653,15 +5649,14 @@ function mb_AOE() -- AOE Code
 
 			if mb_iamFocus() then mb_warriorSingle() return end -- Tank keep doing single, rest do multi or AOE
 
-			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanMulti() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorMulti() return end
 			if myClass == "Warlock" then mb_warlockAOE() return end
 			if myClass == "Druid" then mb_druidMulti() return end
 			if myClass == "Hunter" then mb_hunterMulti() return end
 			if myClass == "Paladin" then mb_paladinMulti() return end
+			MB_myAOEList[myClass]()
 		end
 
 	elseif GetRealZoneText() == "Ahn\'Qiraj" then -- AQ40 Mode
@@ -5670,43 +5665,40 @@ function mb_AOE() -- AOE Code
 
 			if IsAltKeyDown() and mb_imHealer() then return end -- Stop healers when ALT down
 
-			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanAOE() return end
-			if myClass == "Priest" then MB_myAOEList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueAOE() return end
 			if myClass == "Warrior" then mb_warriorAOE() return end
 			if myClass == "Warlock" then mb_warlockAOE() return end
 			if myClass == "Druid" then mb_druidAOE() return end
 			if myClass == "Hunter" then mb_hunterAOE() return end
 			if myClass == "Paladin" then mb_paladinAOE() return end
+			MB_myAOEList[myClass]()
 		end
 
 	elseif GetRealZoneText() == "Zul\'Gurub" then -- ZG Mode
 
 		if mb_isAtJindo() then -- When @ Jindo
 
-			if myClass == "Mage" then mb_mageAOE() return end
 			if myClass == "Shaman" then mb_shamanSingle() return end
-			if myClass == "Priest" then MB_myMultiList[myClass]() return end
 			if myClass == "Rogue" then mb_rogueSingle() return end
 			if myClass == "Warrior" then mb_warriorSingle() return end
 			if myClass == "Warlock" then mb_warlockSingle() return end
 			if myClass == "Druid" then mb_druidSingle() return end
 			if myClass == "Hunter" then mb_hunterSingle() return end
 			if myClass == "Paladin" then mb_paladinSingle() return end
+			MB_myAOEList[myClass]()
 		end
 	end
 
 	-- Normal AOE
-	if myClass == "Mage" then mb_mageAOE() return end
 	if myClass == "Shaman" then mb_shamanAOE() return end
-	if myClass == "Priest" then MB_myAOEList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueAOE() return end
 	if myClass == "Warrior" then mb_warriorAOE() return end
 	if myClass == "Warlock" then mb_warlockAOE() return end
 	if myClass == "Druid" then mb_druidAOE() return end
 	if myClass == "Hunter" then mb_hunterAOE() return end
 	if myClass == "Paladin" then mb_paladinAOE() return end
+	MB_myAOEList[myClass]()
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -5728,12 +5720,11 @@ function mb_preCast() -- Precasting
 	if not UnitName("target") then return end -- If not target don't do anything
 
 	-- Normal Precast
-	if myClass == "Mage" then mb_magePreCast() return end
 	if myClass == "Shaman" then mb_shamanPreCast() return end
-	if myClass == "Priest" then MB_myPreCastList[myClass]() return end
 	if myClass == "Warlock" then mb_warlockPreCast() return end
 	if myClass == "Druid" then mb_druidPreCast() return end
 	if myClass == "Hunter" then mb_hunterPreCast() return end
+	MB_myPreCastList[myClass]()
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -5775,17 +5766,16 @@ function mb_healAndTank()
 
 				if myClass == "Warrior" then mb_warriorSingle() return end
 
-				--if myClass == "Shaman" then mb_shamanSingle() return end
-				if myClass == "Priest" then MB_myLoathebList[myClass]() return end
 				if myClass == "Druid" then mb_druidLoatheb() return end
 				if myClass == "Paladin" then mb_paladinLoatheb() return end
+				MB_myLoathebList[myClass]()
 
 			elseif mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
 
-				if myClass == "Mage" then mb_mageSingle() return end
 				if myClass == "Rogue" then mb_rogueSingle() return end
 				if myClass == "Warrior" then mb_warriorSingle() return end
 				if myClass == "Warlock" then mb_warlockSingle() return end
+				MB_mySingleList[myClass]()
 			end
 			return
 		end
@@ -6082,15 +6072,14 @@ function mb_setup()
 	end
 
 	-- Normal Setup
-	if myClass == "Mage" then mb_mageSetup() return end
 	if myClass == "Shaman" then mb_shamanSetup() return end
-	if myClass == "Priest" then MB_mySetupList[myClass]() return end
 	if myClass == "Rogue" then mb_rogueSetup() return end
 	if myClass == "Warrior" then return end
 	if myClass == "Warlock" then mb_warlockSetup() return end
 	if myClass == "Druid" then mb_druidSetup() return end
 	if myClass == "Hunter" then mb_hunterSetup() return end
 	if myClass == "Paladin" then mb_paladinSetup() return end
+	MB_mySetupList[myClass]()
 end
 
 ------------------------------------------------------------------------------------------------------
@@ -8995,288 +8984,8 @@ function mb_isItemUnboundBOE(b, s)
 end
 
 ------------------------------------------------------------------------------------------------------
------------------------------------------- START MAGE CODE! ------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Multi Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_mageMulti() -- Multi
-	mb_mageSingle()
-end
-
-------------------------------------------------------------------------------------------------------
----------------------------------------------- AOE Code! ---------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_mageAOE() -- AOE
-
-	mb_getTarget() -- Gettarget
-	
-	mb_decurse() -- Decurse
-
-	if not (GetRealZoneText() == "Blackwing Lair" and GetSubZoneText() == "Halls of Strife") then
-		
-		if MB_mySpecc == "Fire" then -- Fire AOE
-			
-			if mb_inMeleeRange() or mb_tankTarget("Plague Beast") then -- Special for the AOE
-
-				if mb_isFireImmune() then return end
-			
-				if mb_knowSpell("Blast Wave") and mb_spellReady("Blast Wave") then
-					
-					CastSpellByName("Blast Wave")
-				end
-			end
-
-		elseif MB_mySpecc == "Frost" then -- Frost AOE
-
-			if mb_inMeleeRange() or mb_tankTarget("Plague Beast") then -- Special for the AOE
-
-				if mb_spellReady("Cone of Cold") then 
-					
-					CastSpellByName("Cone of Cold") 
-				end	
-			
-				if mb_knowSpell("Ice Block") and mb_spellReady("Ice Block") and mb_healthPct("player") < 0.20 then 
-					
-					CastSpellByName("Ice Block") 
-					return 
-				end
-
-				if mb_hasBuffOrDebuff("Ice Block", "player", "buff") and (mb_healthPct("player") > 0.7) then 
-					
-					CancelBuff("Ice Block") 
-					return 
-				end
-			end
-		end
-	end
-
-	if mb_manaPct("player") < 0.2 and not mb_hasBuffOrDebuff("Clearcasting", "player", "buff") then -- If ur OOM do r1 explotions untill Clearcasting
-		
-		CastSpellByName("Arcane Explosion(Rank 1)")
-		return
-	end
-
-	if (GetRealZoneText() == "Blackwing Lair" and GetSubZoneText() == "Halls of Strife") or mb_tankTarget("Maexxna") then
-
-		CastSpellByName("Arcane Explosion(Rank 3)") 
-	else
-		CastSpellByName("Arcane Explosion(Rank 6)") 
-	end
-
-	mb_casterTrinkets()
-end
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Burst Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Precast Code! -------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_magePreCast() -- Pre casting
-
-	-- Pop Cooldowns
-	for k, trinket in pairs(MB_casterTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
-			use(13) 
-		end
-
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
-			use(14) 
-		end
-	end
-
-	if mb_knowSpell("Arcane Power") and not (mb_hasBuffOrDebuff("Arcane Power", "player", "buff") or mb_hasBuffOrDebuff("Power Infusion", "player", "buff")) then
-		
-		CastSpellByName("Arcane Power")
-	end
-
-	-- Shooting
-	if MB_mySpecc == "Fire" then
-
-		if mb_isFireImmune() then
-			
-			CastSpellByName("Frostbolt")
-		else
-
-			CastSpellByName("Fireball")
-		end
-
-	elseif MB_mySpecc == "Frost" then
-
-		CastSpellByName("Frostbolt")
-	end
-end
-
-------------------------------------------------------------------------------------------------------
-------------------------------------------- Cooldowns Code! ------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-
-
-function mb_conjureManaGems() -- Make gems
-
-	if mb_getAllContainerFreeSlots() == 0 then
-		
-		mb_message("My bags are full, can\'t conjure more stuff", 60)
-		return
-	end
-
-	if not mb_haveInBags("Mana Ruby") then
-		
-		CastSpellByName("Conjure Mana Ruby")
-	end
-
-	if not mb_haveInBags("Mana Citrine") then
-		
-		CastSpellByName("Conjure Mana Citrine")
-	end
-
-	if not mb_haveInBags("Mana Jade") then
-		
-		CastSpellByName("Conjure Mana Jade")
-	end
-
-	if not mb_haveInBags("Mana Agate") then
-		
-		CastSpellByName("Conjure Mana Agate")
-	end
-end
-
-function mb_mageUseManaGems() -- Use mage gems
-
-	if mb_imBusy() then return end
-
-	-- Use em
-	if (UnitClassification("target") == "worldboss" or UnitLevel("target") >= 63) then
-
-		if mb_haveInBags("Mana Ruby") and mb_manaDown("player") >= 1200  then
-			
-			UseItemByName("Mana Ruby")
-		end
-
-		if mb_haveInBags("Mana Citrine") and mb_manaDown("player") >= 925 and not mb_haveInBags("Mana Ruby") then
-			
-			UseItemByName("Mana Citrine")
-		end
-
-		if mb_haveInBags("Mana Jade") and mb_manaDown("player") >= 650 and not mb_haveInBags("Mana Citrine") then
-			if not mb_haveInBags("Mana Ruby") then
-				
-				UseItemByName("Mana Jade")
-			end
-		end
-
-		if mb_haveInBags("Mana Agate") and mb_manaDown("player") >= 425 and not mb_haveInBags("Mana Jade") then
-			if not mb_haveInBags("Mana Ruby") and not mb_haveInBags("Mana Citrine") then
-				
-				UseItemByName("Mana Agate")
-			end
-		end
-	end 
-
-	if UnitLevel("target") <= 63 and mb_manaPct("player") < 0.3 then
-
-		if mb_haveInBags("Mana Ruby") and mb_manaDown("player") >= 1200  then
-			
-			UseItemByName("Mana Ruby")
-		end
-
-		if mb_haveInBags("Mana Citrine") and mb_manaDown("player") >= 925 and not mb_haveInBags("Mana Ruby") then
-			
-			UseItemByName("Mana Citrine")
-		end
-
-		if mb_haveInBags("Mana Jade") and mb_manaDown("player") >= 650 and not mb_haveInBags("Mana Citrine") then
-			if not mb_haveInBags("Mana Ruby") then
-				
-				UseItemByName("Mana Jade")
-			end
-		end
-
-		if mb_haveInBags("Mana Agate") and mb_manaDown("player") >= 425 and not mb_haveInBags("Mana Jade") then
-			if not mb_haveInBags("Mana Ruby") and not mb_haveInBags("Mana Citrine") then
-				
-				UseItemByName("Mana Agate")
-			end
-		end
-	end
-	return false
-end
-
-------------------------------------------------------------------------------------------------------
 -------------------------------------------- Setup Code! ---------------------------------------------
 ------------------------------------------------------------------------------------------------------
-
-function mb_mageSetup() -- Buffing
-	
-	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then return end -- Stop when Evocade
-
-	if (UnitMana("player") < 3400) and mb_hasBuffNamed("Drink", "player") then return end
-
-	if IsAltKeyDown() then
-		
-		mb_conjureManaGems()
-		return
-	end
-
-	if (mb_mageWater() > 100) or MB_isMoving.Active then -- Buff and make water
-		
-		if not MB_autoBuff.Active then
-
-			MB_autoBuff.Active = true
-			MB_autoBuff.Time = GetTime() + 0.2
-
-			if MB_buffingCounterMage == TableLength(MB_classList["Mage"]) + 1 then
-			
-				MB_buffingCounterMage = 1
-			else
-	
-				MB_buffingCounterMage = MB_buffingCounterMage + 1
-			end
-		end
-
-		if MB_buffingCounterMage == mb_myClassAlphabeticalOrder() then
-			
-			mb_multiBuff("Arcane Brilliance")
-
-			if mb_mobsToDampenMagic() then
-				
-				mb_multiBuff("Dampen Magic")
-			end
-			
-			if mb_mobsToAmplifyMagic() then
-				
-				if mb_tankTarget("Gluth") then
-	
-					mb_multiBuff("Amplify Magic")
-				end
-	
-				mb_tankBuff("Amplify Magic")
-			end
-		end
-	else
-
-		mb_makeWater()
-	end
-
-	-- Make gems and buff Mage Armor
-	mb_selfBuff("Mage Armor")
-	mb_conjureManaGems()
-			
-	if not mb_inCombat("player") and (mb_manaPct("player") < 0.15) and not mb_hasBuffNamed("Drink", "player") then
-		
-		mb_smartDrink()
-	end
-end
-
 
 function mb_makeWater()
 
