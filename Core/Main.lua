@@ -1570,13 +1570,9 @@ function mb_crowdControlledMob()
     if (mb_hasBuffOrDebuff("Shackle Undead", "target", "debuff")
         or mb_hasBuffOrDebuff("Polymorph", "target", "debuff")
         or mb_hasBuffOrDebuff("Banish", "target", "debuff")) then
-        
-        Print("Crowd controlled: true")
         return true
-    else
-        Print("Crowd controlled: false")
-        return false
-    end
+	end
+	return false
 end
 
 function mb_inCombat(unit)
