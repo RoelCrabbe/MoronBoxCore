@@ -119,7 +119,7 @@ local function MageSingle()
 
         if not MB_autoToggleSheeps.Active then
             MB_autoToggleSheeps.Active = true
-            MB_autoToggleSheeps.Time = GetTime() + 2
+            MB_autoToggleSheeps.Time = GetTime() + 3
             MageCounter.Cycle()
         end
 

@@ -259,6 +259,15 @@ local MB_excludedTargetsSet = {
     ["The Prophet Skeram"] = true,
 }
 
+-- Tranq Shot Targets
+local MB_useTranquilizingShotSet = {
+    ["Gluth"] = true,
+    ["Princess Huhuran"] = true,
+    ["Flamegor"] = true,
+    ["Chromaggus"] = true,
+    ["Magmadar"] = true,
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -399,6 +408,11 @@ end
 function mb_isExcludedWW()
     local targetName = UnitName("target")
     return targetName and MB_excludedTargetsSet[targetName] == true
+end
+
+-- Tranq Shot Functions
+function mb_useTranquilizingShot()
+    return mb_tankTargetInSet(MB_useTranquilizingShotSet)
 end
 
 -- Spells to Intterupt --

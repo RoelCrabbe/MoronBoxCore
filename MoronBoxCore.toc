@@ -27,6 +27,7 @@ Utility\Professions.lua
 Utility\Macros.lua
 Utility\Reagents.lua
 
+Rotation\Main.lua
 Rotation\Priest.lua
 Rotation\Mage.lua
 Rotation\Warrior.lua
