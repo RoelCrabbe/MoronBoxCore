@@ -1,4 +1,3 @@
-
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 local tName = UnitName("target")

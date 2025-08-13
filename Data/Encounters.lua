@@ -346,10 +346,12 @@
         "Midavellir",
     }
 
-    MB_myVaelastraszDruidHealing = true -- (Regrowth / Rejuvenation MT)
-    MB_myVaelastraszDruidOne = "Pyqmi" -- "Jahetsu"
-    MB_myVaelastraszDruidTwo = "Smalheal" -- "Kursch"
-    MB_myVaelastraszDruidThree = "Osaurus" -- "Droodish"
+    MB_myVaelastraszDruidHealing = true
+    MB_myVaelastraszDruids = {
+        "Smalheal",
+        "Pyqmi",
+        "Maxvoldson",
+    }
 
 -------------------------------------------- Vaelastrasz ---------------------------------------------
 

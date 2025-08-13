@@ -11,7 +11,7 @@
 ..\Ace2\Banzai-1.0\Banzai-1.0.lua
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
-Rotation\Global.lua
+Global\Rotation.lua
 
 Utility\Localization.lua
 Data\WeaverData.lua
@@ -27,7 +27,14 @@ Utility\Professions.lua
 Utility\Macros.lua
 Utility\Reagents.lua
 
-Rotation\Main.lua
-Rotation\Priest.lua
+Rotation\Druid.lua
+Rotation\Hunter.lua
 Rotation\Mage.lua
+Rotation\Paladin.lua
+Rotation\Priest.lua
+Rotation\Rogue.lua
+Rotation\Shaman.lua
+Rotation\Warlock.lua
 Rotation\Warrior.lua
+
+Rotation\Main.lua
