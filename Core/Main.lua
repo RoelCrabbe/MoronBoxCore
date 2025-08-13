@@ -1483,6 +1483,8 @@ end
 function mb_imRangedDPS() -- Who is ranged
 	if (myClass == "Hunter" or myClass == "Warlock" or myClass == "Mage") then
 		return true
+	elseif myClass == "Priest" and MB_mySpecc == "Shadow" then
+		return true
 	end
 end
 
@@ -1508,18 +1510,18 @@ function mb_imTank() -- Tanks
 end
 
 function mb_imHealer() -- Healers
-	if myClass == "Paladin" then
-		return true
+    if myClass == "Paladin" then
+        return true
 
-	elseif myClass == "Druid" and (MB_mySpecc == "Swiftmend" or MB_mySpecc == "Resto") then
-		return true
+    elseif myClass == "Druid" and (MB_mySpecc == "Swiftmend" or MB_mySpecc == "Resto") then
+        return true
 
-	elseif myClass == "Shaman" then
-		return true
+    elseif myClass == "Shaman" then
+        return true
 
-	elseif myClass == "Priest" then
-		return true
-	end
+    elseif myClass == "Priest" and MB_mySpecc ~= "Shadow" then
+        return true
+    end
 end
 
 function mb_iamFocus() -- Focus

@@ -173,6 +173,8 @@ function Priest:BossSpecificDPS()
 
 	elseif Instance.Ony and mb_tankTarget("Onyxia") then
 		mb_coolDownCast("Shadow Word: Pain", 24)
+	elseif not UnitInRaid("player") and mb_debuffShadowWeavingAmount() > 5 then
+		mb_coolDownCast("Shadow Word: Pain", 24)
 	end
 	
 	return false

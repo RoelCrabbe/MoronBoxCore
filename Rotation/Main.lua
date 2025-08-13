@@ -93,9 +93,9 @@ function mb_single()
         CastSpellByName("War Stomp")
     end
 					
-    local singleRotation = MB_mySingleList[myClass]
-    if singleRotation and type(singleRotation) == "function" then
-        singleRotation()
+    local SingleRotation = MB_mySingleList[myClass]
+    if SingleRotation and type(SingleRotation) == "function" then
+        SingleRotation()
     else
         mb_message("I don\'t know what to do.", 500)
     end
@@ -168,9 +168,9 @@ function mb_multi()
         CastSpellByName("War Stomp")
     end
 
-    local multiRotation = MB_myMultiList[myClass]
-    if multiRotation and type(multiRotation) == "function" then
-        multiRotation()
+    local MultiRotation = MB_myMultiList[myClass]
+    if MultiRotation and type(MultiRotation) == "function" then
+        MultiRotation()
     else
         mb_message("I don\'t know what to do.", 500)
     end
@@ -586,14 +586,14 @@ function mb_healAndTank()
         end
 	end
 
-    local singleRotation = MB_mySingleList[myClass]
-    if not (singleRotation and type(singleRotation) == "function") then
+    local SingleRotation = MB_mySingleList[myClass]
+    if not (SingleRotation and type(SingleRotation) == "function") then
         mb_message("I don\'t know what to do.", 500)
         return
     end
 
 	if mb_imTank() then
-        singleRotation()
+        SingleRotation()
 
 	elseif mb_imHealer() then
 		if myClass == "Druid" then
@@ -603,6 +603,6 @@ function mb_healAndTank()
 			end
         end
 
-        singleRotation()		
+        SingleRotation()		
 	end
 end
