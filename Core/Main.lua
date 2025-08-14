@@ -1326,13 +1326,6 @@ function MMB:OnUpdate()
         end
     end
 
-	if MB_autoBuySunfruit.Active then
-        if GetTime() > MB_autoBuySunfruit.Time then
-
-			mb_buyBlessedSunfruits()
-        end
-    end
-
 	if MB_hunterFeign.Active then
         if GetTime() > MB_hunterFeign.Time then
 
@@ -3810,16 +3803,6 @@ function mb_cooldowns() -- Cooldowns
 		end
 	end
 end
-
-function mb_craftCooldowns()
-	
-	if not MB_raidLeader and (TableLength(MBID) > 1) then Print("WARNING: You have not chosen a raid leader") end -- No RaidLeader Alert
-
-	if mb_dead("player") then return end -- Stop when ur dead
-
-	mb_tradeCooldownMaterialsToLeader()
-	mb_useTradeCooldowns()
-end	
 
 function mb_tankShoot() -- Tank Shoot
 
@@ -7285,4 +7268,25 @@ function mb_loathebHealing()
 		return true
 	end
 	return false
+end
+
+function mb_hasItem(item)
+    local count = 0
+
+    for bag = 0, 4 do
+        for slot = 1, GetContainerNumSlots(bag) do 
+            local texture, itemCount, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot) 
+            if texture then
+                link = GetContainerItemLink(bag, slot)
+                if string.find(link, item) then
+                    count = count + itemCount
+                end
+            end
+        end
+    end
+    
+    if count == 0 then 
+        mb_message("I'm out of "..item)
+    end
+    return count
 end

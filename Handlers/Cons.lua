@@ -2,6 +2,67 @@
 --[######################################## Raid Consumables ##########################################]--
 --[####################################################################################################]--
 
+local myClass = UnitClass("player")
+
+function mb_buyReagentsAndArrows()
+    local MB_reagentsList = {
+        ["Jagged Arrow"] = "Warrior",
+        ["Flash Powder"] = "Rogue",
+        ["Wild Thornroot"] = "Druid",
+        ["Ironwood Seed"] = "Druid",
+        ["Sacred Candle"] = "Priest",
+        ["Ankh"] = "Shaman",
+        ["Arcane Powder"] = "Mage",
+        ["Rune of Portals"] = "Mage",
+        ["Symbol of Kings"] = "Paladin",
+        ["Symbol of Divinity"] = "Paladin"
+    }
+
+    local MB_reagentsLimit = {
+        ["Jagged Arrow"] = { 1, 2 },
+        ["Flash Powder"] = { 80, 1 },
+        ["Wild Thornroot"] = { 200, 1 },
+        ["Ironwood Seed"] = { 20, 1 },
+        ["Sacred Candle"] = { 200, 1 },
+        ["Ankh"] = { 10, 1 },
+        ["Arcane Powder"] = { 160, 1 },
+        ["Rune of Portals"] = { 10, 1 },
+        ["Symbol of Kings"] = { 5, 1 },
+        ["Symbol of Divinity"] = { 10, 1 }
+    }
+    
+    for item, class in pairs(MB_reagentsList) do
+        if myClass == class then 
+            local myCurrentItems = mb_hasItem(item) / MB_reagentsLimit[item][2]
+            local myNeededItems
+
+            if item == "Symbol of Kings" then
+                myNeededItems = ((MB_reagentsLimit[item][1] * 100) - myCurrentItems) / MB_reagentsLimit[item][2]
+            else
+                myNeededItems = (MB_reagentsLimit[item][1] - myCurrentItems) / MB_reagentsLimit[item][2]
+            end
+
+            if myNeededItems > 0 then 
+                if item == "Symbol of Kings" then
+                    myNeededItems = math.floor(myNeededItems / 20)
+                end
+
+                for itemID = 1, 40 do
+                    local merchantItemLink = GetMerchantItemLink(itemID)
+                    if merchantItemLink then 
+                        if string.find(merchantItemLink, item) then 
+                            Print("Buying "..myNeededItems.." "..merchantItemLink)
+                            BuyMerchantItem(itemID, myNeededItems)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    MB_autoBuyReagents.Active = false
+end
+
 function mb_takeManaPotionAndRune()
     if not mb_bossIShouldUseRunesAndManapotsOn() or not mb_inCombat("player") then
         return
@@ -116,3 +177,4 @@ function mb_useFrozenRuneOnFaerlina()
 
 	mb_useFromBags("Frozen Rune")
 end
+

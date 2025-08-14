@@ -23,9 +23,7 @@ Core\Config.lua
 Data\Tables.lua
 Data\Healing.lua
 
-Utility\Professions.lua
 Utility\Macros.lua
-Utility\Reagents.lua
 
 Handlers\Chat.lua
 Handlers\Buffs.lua

@@ -286,79 +286,27 @@ function mb_deleteSuperMacros()
 end
 
 ------------------------------------------------------------------------------------------------------
--------------------------------------- Diable / Enable Addon's! --------------------------------------
+-------------------------------------- Disable / Enable Addon's! --------------------------------------
 ------------------------------------------------------------------------------------------------------
 
 local EnableDisableAddons = {
-    ["MoronBoxDecursive"] = {
-        ["Priest"]  = true,
-        ["Shaman"]  = true,
-        ["Paladin"] = true,
-        ["Druid"]   = true,
-        ["Mage"]    = true,
-        ["Warrior"] = false,
-        ["Hunter"]  = false,
-        ["Rogue"]   = false,
-        ["Warlock"]   = false,
-    },
-    ["MoronBoxHeal"] = {
-        ["Priest"]  = true,
-        ["Shaman"]  = true,
-        ["Paladin"] = true,
-        ["Druid"]   = true,
-        ["Mage"]    = false,
-        ["Warrior"] = false,
-        ["Hunter"]  = false,
-        ["Rogue"]   = false,
-        ["Warlock"]   = false,
-    },
-	["Thaliz"] = {
-        ["Priest"]  = true,
-        ["Shaman"]  = true,
-        ["Paladin"] = true,
-        ["Druid"]   = true,
-        ["Mage"]    = false,
-        ["Warrior"] = false,
-        ["Hunter"]  = false,
-        ["Rogue"]   = false,
-        ["Warlock"]   = false,
-    },
-    ["MoronBoxSummon"] = {
-        ["Priest"]  = false,
-        ["Shaman"]  = false,
-        ["Paladin"] = false,
-        ["Druid"]   = false,
-        ["Mage"]    = false,
-        ["Warrior"] = false,
-        ["Hunter"]  = false,
-        ["Rogue"]   = false,
-        ["Warlock"]   = true,
-    },
-	["MoronBoxGM"] = {
-        ["Priest"]  = false,
-        ["Shaman"]  = false,
-        ["Paladin"] = false,
-        ["Druid"]   = false,
-        ["Mage"]    = false,
-        ["Warrior"] = false,
-        ["Hunter"]  = false,
-        ["Rogue"]   = false,
-        ["Warlock"]   = false,
-    }
+    ["MoronBoxDecursive"] = function()
+        return (mb_imHealer() or mb_imRangedDPS()) and myClass ~= "Warlock" and myClass ~= "Hunter"
+    end,
+    ["MoronBoxHeal"]     = function() return mb_imHealer() end,
+    ["MoronBoxSummon"]   = function() return myClass == "Warlock" end,
+    ["MoronBoxGM"]       = function() return false end,
 }
 
 function mb_addonsDisableEnable()
+    for addonName, roleCheck in pairs(EnableDisableAddons) do
+        local shouldEnable = roleCheck()
+        local _, _, _, enabled, _, _, _ = GetAddOnInfo(addonName)
 
-    for Name, Class in EnableDisableAddons do
-        if Class[myClass] then
-            local _, _, _, Enabled, _, _, _ = GetAddOnInfo(Name)
-            if not Enabled then
-                EnableAddOn(Name)
-            end
-        else
-            if GetAddOnInfo(Name) then 
-                DisableAddOn(Name) 
-            end
+        if shouldEnable and not enabled then
+            EnableAddOn(addonName)
+        elseif not shouldEnable and enabled then
+            DisableAddOn(addonName)
         end
     end
 
