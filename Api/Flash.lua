@@ -28,7 +28,7 @@ local t4 = LoadTexture("RIGHT", screenH / 20 / scale, nil)
 
 IndicatorFrame:SetPoint("CENTER", 0, 0)
 
-function FlashFrameFlashHandler()
+local function FlashFrameFlashHandler()
 	if IndicatorFrame.FlashTime > GetTime() then
 		for _, tex in ipairs({t1, t2, t3, t4}) do
 			tex:SetTexture(IndicatorFrame.FlashColor.red,
@@ -60,7 +60,16 @@ function FlashFrameFlashHandler()
 	end
 end
 
-local function FlashFrameEventHandler(self, event, arg1)
+local function TableContains(tbl, val)
+    for _, v in ipairs(tbl) do
+        if v == val then
+            return true
+        end
+    end
+    return false
+end
+
+local function FlashFrameEventHandler()
 	if not MB_raidAssist.Frameflash then return end
 
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -77,9 +86,9 @@ local function FlashFrameEventHandler(self, event, arg1)
 			"Target not in line of sight",
 			"Target too close"
 		}
-		if MB_raidLeader and MB_raidLeader ~= myName and tContains(msgs, arg1) then
+		if MB_raidLeader and MB_raidLeader ~= myName and TableContains(msgs, arg1) then
 			IndicatorFrame.FlashTime = GetTime() + 1
-			IndicatorFrame.FlashColor = {red = 1, green = 1, blue = 0, alpha = 0.4}
+			IndicatorFrame.FlashColor = { red = 1, green = 1, blue = 0, alpha = 0.4 }
 		end
 	end
 end
