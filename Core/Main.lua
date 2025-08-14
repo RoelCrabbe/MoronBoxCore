@@ -5203,6 +5203,26 @@ function mb_mySpecc() -- Speccs
 			return 
 		end	
 	end
+
+	if myClass == "Hunter" then
+		_, _, _, _, TalentsIn = GetTalentInfo(2, 14)
+		if TalentsIn > 0 then
+			MB_mySpecc = "Marksmanship"
+			return 
+		end
+
+		_, _, _, _, TalentsIn = GetTalentInfo(3, 15)
+		if TalentsIn > 0 then
+			MB_mySpecc = "Survival"
+			return 
+		end
+
+		_, _, _, _, TalentsIn = GetTalentInfo(1, 13)
+		if TalentsIn > 0 then
+			MB_mySpecc = "BeastMastery"
+			return 
+		end	
+	end
 end
 
 function mb_changeSpecc(specc)
@@ -10775,344 +10795,16 @@ function mb_cancelDruidShapeShift()
 	if mb_isBoomForm() then mb_warriorSetStance(4) return end
 end
 
-------------------------------------------------------------------------------------------------------
------------------------------------------ START HUNTER CODE! -----------------------------------------
-------------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Single Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterSingle() -- Hunter single
-
-	mb_getTarget() -- Gettarget
-
-	if IsControlKeyDown() then -- Cheetah
-		
-		CastSpellByName("Aspect of the Cheetah")
-		return
-	end
-
-	mb_selfBuff("Trueshot Aura") -- Buff Aura
-	
-	if mb_tankTarget("Princess Huhuran") then -- Aspects
-
-		mb_selfBuff("Aspect of the Wild")  
-	else
-
-		mb_selfBuff("Aspect of the Hawk")  
-	end
-
-	if mb_tankTarget("Gluth") then
-		mb_freezingTrap()
-	end
-
-	if not mb_inCombat("target") then return end
-
-	if mb_inCombat("player") then
-
-		-- Cooldowns
-		if mb_manaDown("player") > 600 then mb_hunterCooldowns() end
-	end
-		
-	if mb_tankTarget("Moam") then
-		
-		mb_coolDownCast("Viper Sting", 8)
-	end
-
-	if (mb_tankTarget("Gluth") or mb_tankTarget("Princess Huhuran") or mb_tankTarget("Flamegor") or mb_tankTarget("Chromaggus") or mb_tankTarget("Magmadar")) and mb_spellReady("Tranquilizing Shot") then
-		
-		CastSpellByName("Tranquilizing Shot")
-	end
-
-	if not mb_hasBuffNamed("Hunter\'s Mark", "target", "debuff") then
-			
-		CastSpellByName("Hunter\'s Mark")
-	end	
-
-	mb_hunterPetAttack()
-
-	if mb_inMeleeRange() then
-
-		if not mb_isFireImmune() then
-			mb_explosiveTrap()
-		end
-
-		CastSpellByName("Raptor Strike")
-		CastSpellByName("Mongoose Bite")
-
-		mb_autoAttack()
-		return 
-	end
-
-	local aggrox = AceLibrary("Banzai-1.0")
-	if aggrox:GetUnitAggroByUnitId("player") and mb_spellReady("Feign Death") and not MB_hunterFeign.Active and not mb_imBusy() then
-		
-		MB_hunterFeign.Active = true
-		MB_hunterFeign.Time = GetTime() + 0.2
-
-		CastSpellByName("Feign Death")
-	end
-
-	if mb_healthPct("target") > 0.1 then
-		if mb_knowSpell("Aimed Shot") and mb_spellReady("Aimed Shot") then 
-			
-			CastSpellByName("Aimed Shot") 
-		end	
-	end
-
-	if mb_healthPct("target") < 0.95 then
-		if mb_knowSpell("Multi-Shot") and mb_spellReady("Multi-Shot") then 
-			
-			CastSpellByName("Multi-Shot") 
-		end
-	end
-
-	mb_autoRangedAttack()
-end
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Multi Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterMulti()
-	mb_hunterSingle()
-end
-
-------------------------------------------------------------------------------------------------------
----------------------------------------------- AOE Code! ---------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterAOE()
-	mb_hunterSingle()
-end
-
-------------------------------------------------------------------------------------------------------
---------------------------------------------- Burst Code! --------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_explosiveTrap()
-
-	if not mb_spellReady("Explosive Trap") then 
-		return 
-	end
-
-	PetPassiveMode()
-	PetFollow()
-
-	if mb_inCombat("player") and not MB_hunterFeign.Active then
-
-		MB_hunterFeign.Active = true
-		MB_hunterFeign.Time = GetTime() + 0.2
-
-		CastSpellByName("Feign Death") 
-	else
-
-		CastSpellByName("Explosive Trap")
-	end
-end
-
-function mb_freezingTrap()
-
-	if not mb_spellReady("Frost Trap") then 
-		return 
-	end
-
-	PetPassiveMode()
-	PetFollow()
-
-	if mb_inCombat("player") and not MB_hunterFeign.Active then
-
-		MB_hunterFeign.Active = true
-		MB_hunterFeign.Time = GetTime() + 0.2
-
-		CastSpellByName("Feign Death") 
-	else
-
-		CastSpellByName("Frost Trap")
-	end
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Precast Code! -------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterPreCast() -- Hunter precast
-
-	for k, trinket in pairs(MB_meleeTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
-			use(13) 
-		end
-
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
-			use(14) 
-		end
-	end
-
-	CastSpellByName("Aimed Shot")
-end
-
-
-------------------------------------------------------------------------------------------------------
-------------------------------------------- Cooldowns Code! ------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterCooldowns() -- Hunter cooldowns
-
-	if mb_imBusy() then return end
-
-	if mb_inCombat("player") then 
-
-		mb_meleeTrinkets()
-
-		if not mb_inMeleeRange() then
-		
-			mb_selfBuff("Rapid Fire") 
-		end
-
-		mb_selfBuff("Berserking")
-	end
-end
-
-------------------------------------------------------------------------------------------------------
--------------------------------------------- Setup Code! ---------------------------------------------
-------------------------------------------------------------------------------------------------------
-
-function mb_hunterSetup() -- Hunter buff
-
-	mb_selfBuff("Trueshot Aura") -- Aura
-	
-	mb_selfBuff("Aspect of the Hawk") -- Hawk
-
-	if UnitClassification("target") == "worldboss" then
-
-		mb_getPet() -- Revive pet if needed for the boss
-	else
-		
-		if GetPetHappiness() ~= nil and GetPetHappiness() ~= 3 then
-			if not mb_hasBuffNamed("Feed Pet Effect", "pet") then
-				
-				CastSpellByName("Feed Pet")
-				mb_pickupPetFood()
-			end
-
-			ResetCursor()
-		else
-			CastSpellByName("Dismiss Pet") -- Put pet away
-		end
-	end
-end
-
-function mb_hunterPetAttack()
-
-	--if UnitClassification("target") ~= "worldboss" then return end
-
-	if mb_dead("pet") then return end
-
-	PetAttack("target")
-end
-
-function mb_hunterPetPassive()
-
-	if mb_dead("pet") then return end
-
-	PetPassiveMode()
-	PetFollow()
-end
-
-function mb_pickupPetFood() -- Pet food
-	-- Used to pick up pet food when feeding pet
-	-- Have to pick food type based on hunter name and pet
-	local amount = 0
-
-	for bag = 0,4 do 
-		for slot = 1, GetContainerNumSlots(bag) do 
-		
-		local texture, itemCount, locked, quality, readable, lootable, link = GetContainerItemInfo(bag,slot)
-
-			if texture then
-				link = GetContainerItemLink(bag,slot) 
-				if UnitCreatureFamily("pet") == "Bear" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Cat" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Wolf" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Bat" then
-
-					if string.find(link, "Dried King Bolete") then PickupContainerItem(bag, slot) return end
-					if string.find(link, "Deep Fried Plantains") then PickupContainerItem(bag, slot) return end
-				elseif UnitCreatureFamily("pet") == "Crocolisk" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Raptor" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Spider" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Carrion Bird" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Gorilla" then
-
-					if string.find(link, "Deep Fried Plantains") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Boar" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Turtle" then
-
-					if string.find(link, "Deep Fried Plantains") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Scorpid" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				elseif UnitCreatureFamily("pet") == "Owl" then
-
-					if string.find(link, "Roasted Quail") then PickupContainerItem(bag,slot) return end
-				end
-			end
-		end
-	end
-end
-
-function mb_feedPet() -- Feed it
-	--Hunters:Feed your pet if he's not SUUUUUPER happy.
-	if GetPetHappiness() ~= nil and GetPetHappiness() ~= 3 then
-		if not mb_hasBuffNamed("Feed Pet Effect", "pet") then
-			
-			CastSpellByName("Feed Pet")
-			mb_pickupPetFood()
-		end
-	end
-
-	ResetCursor()
-end
-
-function mb_getPet() -- Summon and ress it
-	
-	if UnitExists("pet") and mb_isAlive("pet") then
-		
-		mb_feedPet()
-	else
-		
-		CastSpellByName("Call Pet")
-		CastSpellByName("Revive Pet")
-	end
-end
-
-function mb_removeFeignDeath()
-
-	CancelBuff("Feign Death")
-	DoEmote("Stand")
-	MB_hunterFeign.Active = false
-end
 
 ------------------------------------------------------------------------------------------------------
 ----------------------------------------- START PALADIN CODE! ----------------------------------------
 ------------------------------------------------------------------------------------------------------
+
+function mb_removeFeignDeath()
+	CancelBuff("Feign Death")
+	DoEmote("Stand")
+	MB_hunterFeign.Active = false
+end
 
 ------------------------------------------------------------------------------------------------------
 -------------------------------------------- Single Code! --------------------------------------------

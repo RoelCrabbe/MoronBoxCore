@@ -7,6 +7,10 @@ local Mage = CreateFrame("Frame", "Mage")
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
+if myClass ~= "Mage" then
+    return
+end
+
 local MageCounter = {
     Cycle = function()
         MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
@@ -61,7 +65,7 @@ local function MageSingle()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to frost.")
+		mb_message("My specc is fucked. Defaulting to Frost.")
 		MB_mySpecc = "Frost"
 	end
 
@@ -438,7 +442,7 @@ local function MageAOE()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to frost.")
+		mb_message("My specc is fucked. Defaulting to Frost.")
 		MB_mySpecc = "Frost"
 	end
 

@@ -434,8 +434,6 @@ function mb_healAndTank()
 	mb_interruptingHealAndTank()
 
 	if myClass == "Hunter" then
-		mb_hunterPetPassive()
-
         if mb_useTranquilizingShot() and mb_spellReady("Tranquilizing Shot") then
             CastSpellByName("Tranquilizing Shot")
         end

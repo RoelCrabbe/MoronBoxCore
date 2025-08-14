@@ -7,6 +7,10 @@ local Priest = CreateFrame("Frame", "Priest")
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
+if myClass ~= "Priest" then
+    return
+end
+
 local PriestCounter = {
     Cycle = function()
         MB_buffingCounterPriest = (MB_buffingCounterPriest >= TableLength(MB_classList["Priest"]))
@@ -285,6 +289,14 @@ function Priest:MaxShieldAggroedPlayer()
         return
     end
 
+	if mb_imBusy() then
+        return
+    end
+
+    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+        return
+    end
+
     local shieldTarget = MBID[MB_raidLeader].."targettarget"
     if not mb_isValidFriendlyTarget(shieldTarget, "Power Word: Shield") then
         return
@@ -313,6 +325,14 @@ end
 
 function Priest:MaxRenewAggroedPlayer()
     if not MBID[MB_raidLeader] then
+        return
+    end
+
+	if mb_imBusy() then
+        return
+    end
+
+    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
         return
     end
 
@@ -402,6 +422,14 @@ end
 function Priest:FearWardAggroedPlayer()
     if not MBID[MB_raidLeader] then
         return false
+    end
+
+	if mb_imBusy() then
+        return
+    end
+
+    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+        return
     end
 
     local fearWardTarget = MBID[MB_raidLeader].."targettarget"

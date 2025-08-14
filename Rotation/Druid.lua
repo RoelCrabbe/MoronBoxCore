@@ -7,6 +7,10 @@ local Druid = CreateFrame("Frame", "Druid")
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
+if myClass ~= "Druid" then
+    return
+end
+
 local DruidCounter = {
     Cycle = function()
         MB_buffingCounterDruid = (MB_buffingCounterDruid >= TableLength(MB_classList["Druid"]))
@@ -1066,6 +1070,12 @@ MB_mySetupList["Druid"] = DruidSetup
 --[####################################################################################################]--
 
 local function DruidPreCast()
+    if MB_mySpecc == "Feral" then
+        mb_selfBuff("Dire Bear Form")
+        mb_cancelDruidShapeShift()
+        return
+    end
+    
 	for k, trinket in pairs(MB_casterTrinkets) do
 		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
 			use(13) 
