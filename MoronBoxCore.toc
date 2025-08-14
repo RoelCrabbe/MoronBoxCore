@@ -27,6 +27,12 @@ Utility\Professions.lua
 Utility\Macros.lua
 Utility\Reagents.lua
 
+Handlers\Chat.lua
+Handlers\Buffs.lua
+Handlers\Cons.lua
+Handlers\Roles.lua
+Handlers\Attacking.lua
+
 Api\Turning.lua
 
 Rotation\Druid.lua
