@@ -27,6 +27,8 @@ Utility\Professions.lua
 Utility\Macros.lua
 Utility\Reagents.lua
 
+Api\Turning.lua
+
 Rotation\Druid.lua
 Rotation\Hunter.lua
 Rotation\Mage.lua

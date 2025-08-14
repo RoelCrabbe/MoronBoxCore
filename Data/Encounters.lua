@@ -330,14 +330,18 @@
     --------------------------------------------------------------------------------------------------
 
     MB_myVaelastraszShamanHealing = true -- (These need to be T1)
-    MB_myVaelastraszShamanOne = "Mvenna"
-    MB_myVaelastraszShamanTwo = "Chimando"
-    MB_myVaelastraszShamanThree = "Azøg"
+    MB_myVaelastraszShamans = {
+        "Shaitan",
+        "Bayo",
+        "Lillifee"
+    }
 
     MB_myVaelastraszPaladinHealing = true -- (These need to be T1)
-    MB_myVaelastraszPaladinOne = "Fatnun"
-    MB_myVaelastraszPaladinTwo = "Breachedhull"
-    MB_myVaelastraszPaladinThree = "Fatnun"
+    MB_myVaelastraszPaladins = {
+        "Fatnun",
+        "Breachedhull",
+        "Fatnun"
+    }
 
     MB_myVaelastraszPriestHealing = true -- (Renew / Shield MT)
     MB_myVaelastraszPriests = {

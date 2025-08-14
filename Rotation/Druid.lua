@@ -668,6 +668,8 @@ function Druid:Balance()
 		mb_cancelDruidShapeShift()
 	end
 
+    mb_decurse()
+
 	if not mb_inCombat("target") then
         return
     end
@@ -890,22 +892,21 @@ local function DruidMulti()
 
         Druid:Balance()
         return
+    end
 
-	elseif (MB_mySpecc == "Resto" or MB_mySpecc == "Swiftmend") then
-        if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
-            if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
-                if mb_imBusy() then
-                    SpellStopCasting()
-                end
-
-                mb_meleeBuff("Abolish Poison")
-                return
+    if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
+        if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
+            if mb_imBusy() then
+                SpellStopCasting()
             end
-        end
 
-		mb_healerJindoRotation("Wrath")
-		DruidHeal()
-	end
+            mb_meleeBuff("Abolish Poison")
+            return
+        end
+    end
+
+    mb_healerJindoRotation("Wrath")
+    DruidHeal()	
 end
 
 MB_myMultiList["Druid"] = DruidMulti
