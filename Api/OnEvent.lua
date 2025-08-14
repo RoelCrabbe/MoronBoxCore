@@ -472,7 +472,7 @@ function MMB:OnEvent()
 
 		elseif arg1 == "Target needs to be in front of you" and Instance.BWL then
 
-			if GetSubZoneText() == "Dragonmaw Garrison" and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+			if mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = true
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Time = GetTime() + 2
 
@@ -482,7 +482,7 @@ function MMB:OnEvent()
 
 		elseif arg1 == "Out of range." then
 			
-            if Instance.BWL and GetSubZoneText() == "Dragonmaw Garrison" and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            if Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 				if (myClass == "Warrior" or myClass == "Rogue") then
                     return
                 end
@@ -497,7 +497,7 @@ function MMB:OnEvent()
 		
 		elseif arg1 == "Target not in line of sight" then
 
-            if Instance.BWL and GetSubZoneText() == "Dragonmaw Garrison" and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            if Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = true
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Time = GetTime() + 2

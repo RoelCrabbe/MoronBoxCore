@@ -1,7 +1,14 @@
+--[####################################################################################################]--
+--[################################### Global Values for Rotation #####################################]--
+--[####################################################################################################]--
+
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 local tName = UnitName("target")
-local myZone = GetRealZoneText()
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 MB_mySpeccList = {}
 MB_mySingleList = {}
@@ -13,13 +20,13 @@ MB_myLoathebList = {}
 MB_myHealList = {}
 
 Instance = {
-    Naxx  = (myZone == "Naxxramas"),
-    AQ40  = (myZone == "Ahn'Qiraj"),
-    AQ20  = (myZone == "Ruins of Ahn'Qiraj"),
-    MC    = (myZone == "Molten Core"),
-    BWL   = (myZone == "Blackwing Lair"),
-    Ony   = (myZone == "Onyxia's Lair"),
-    ZG    = (myZone == "Zul'Gurub");
+    Naxx  = (GetRealZoneText() == "Naxxramas"),
+    AQ40  = (GetRealZoneText() == "Ahn'Qiraj"),
+    AQ20  = (GetRealZoneText() == "Ruins of Ahn'Qiraj"),
+    MC    = (GetRealZoneText() == "Molten Core"),
+    BWL   = (GetRealZoneText() == "Blackwing Lair"),
+    Ony   = (GetRealZoneText() == "Onyxia's Lair"),
+    ZG    = (GetRealZoneText() == "Zul'Gurub");
     IsWorldBoss = function()
         return UnitClassification("target") == "worldboss"
     end

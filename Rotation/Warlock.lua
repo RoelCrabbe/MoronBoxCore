@@ -235,7 +235,7 @@ function Warlock:BossSpecificDPS()
             end
 			return
 
-        elseif Instance.BWL and GetSubZoneText() == "Dragonmaw Garrison" and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+        elseif Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
             local razorgoreTankMap = {
                 [1] = MB_myRazorgoreRightTank,
