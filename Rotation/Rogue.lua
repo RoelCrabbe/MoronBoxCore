@@ -174,10 +174,10 @@ MB_myAOEList["Rogue"] = RogueSingle
 
 local function RogueSetup()
 	if myFaction == "Alliance" then
-		mb_roguePoisonMainHand()
+		Rogue:PoisonMainHand()
 	end
 
-	mb_roguePoisonOffhand()
+	Rogue:PoisonOffhand()
 end
 
 MB_mySetupList["Rogue"] = RogueSetup
@@ -203,12 +203,11 @@ function Rogue:Cooldowns()
     end
 end
 
-function mb_roguePoisonOffhand() -- Poisen OT
+function Rogue:PoisonOffhand()
 	if mb_haveInBags("Instant Poison VI") then
-		has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
+		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
 	
-		if not has_enchant_off then
-			
+		if not has_enchant_off then			
 			UseItemByName("Instant Poison VI")
 			PickupInventoryItem(17)	
 			ClearCursor()
@@ -216,12 +215,11 @@ function mb_roguePoisonOffhand() -- Poisen OT
 	end
 end
 
-function mb_roguePoisonMainHand() -- Poisen MH
+function Rogue:PoisonMainHand()
 	if mb_haveInBags("Instant Poison VI") then
-		has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
+		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
 		
-		if not has_enchant_main then
-			
+		if not has_enchant_main then			
 			UseItemByName("Instant Poison VI")
 			PickupInventoryItem(16)	
 			ClearCursor()

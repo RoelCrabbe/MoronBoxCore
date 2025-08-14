@@ -157,7 +157,7 @@ local function PriestHeal()
 					Priest:MaxRenewAggroedPlayer()
 					Priest:ShieldAggroedPlayer()
 				else
-					mb_giveShieldToBombFollowTarget()
+					Priest:ShieldToBombFollowTarget()
 				end
 			end
 
@@ -455,6 +455,26 @@ function Priest:FearWardAggroedPlayer()
     SpellTargetUnit(fearWardTarget)
     SpellStopTargeting()
     return true
+end
+
+function Priest:ShieldToBombFollowTarget()
+    if mb_imBusy() or mb_tankTarget("Vaelastrasz the Corrupt") then
+        return
+    end
+
+    local targetName = mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
+    local targetID = MBID[targetName]
+
+    if not targetID 
+		or not mb_isAlive(targetID) 
+		or mb_hasBuffOrDebuff("Weakened Soul", targetID, "debuff") 
+		or not mb_spellReady("Power Word: Shield") then
+        return
+    end
+
+    TargetByName(targetName)
+    CastSpellByName("Power Word: Shield")
+    TargetLastTarget()
 end
 
 --[####################################################################################################]--

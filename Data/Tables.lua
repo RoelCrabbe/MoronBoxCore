@@ -268,6 +268,102 @@ local MB_useTranquilizingShotSet = {
     ["Magmadar"] = true,
 }
 
+-- Nature bosses
+local MB_NatureBossSet = {
+    ["The Nature Boss"] = true,
+    ["Princess Yauj"] = true,
+    ["Lord Kri"] = true,
+    ["Vem"] = true,
+    ["Princess Huhuran"] = true,
+    ["Buru the Gorger"] = true,
+    ["High Priestess Mar'li"] = true,
+    ["Spawn of Mar'li"] = true,
+    ["Witherbark Speaker"] = true,
+    ["High Priest Venoxis"] = true,
+    ["Razzashi Cobra"] = true,
+    ["Razzashi Serpent"] = true,
+    ["Razzashi Adder"] = true,
+}
+
+-- Tremor bosses
+local MB_TremorBossSet = {
+    ["The Termor Boss"] = true,
+    ["Magmadar"] = true,
+    ["Emeriss"] = true,
+    ["Taerar"] = true,
+    ["Lethon"] = true,
+    ["Ysondre"] = true,
+    ["Nefarian"] = true,
+    ["Princess Yauj"] = true,
+    ["Lord Kri"] = true,
+    ["Vem"] = true,
+    ["Onyxia"] = true,
+}
+
+-- Grounding bosses
+local MB_GroundingBossSet = {
+    ["The Grounding Boss"] = true,
+    ["Ossirian the Unscarred"] = true,
+}
+
+-- Poison bosses
+local MB_PoisonBossSet = {
+    ["The Poison Boss"] = true,
+    ["Princess Yauj"] = true,
+    ["Lord Kri"] = true,
+    ["Vem"] = true,
+    ["Viscidus"] = true,
+    ["Princess Huhuran"] = true,
+    ["Chromaggus"] = true,
+    ["High Priestess Mar'li"] = true,
+    ["Spawn of Mar'li"] = true,
+    ["Witherbark Speaker"] = true,
+    ["High Priest Venoxis"] = true,
+    ["Razzashi Cobra"] = true,
+    ["Razzashi Serpent"] = true,
+    ["Razzashi Adder"] = true,
+}
+
+-- Fire bosses
+local MB_FireBossSet = {
+    ["The Fire Boss"] = true,
+    ["Death Talon Overseer"] = true,
+    ["Blackwing Spellbinder"] = true,
+    ["Blackwing Technician"] = true,
+    ["Blackwing Warlock"] = true,
+    ["Razorgore the Untamed"] = true,
+    ["Vaelastrasz the Corrupt"] = true,
+    ["Firemaw"] = true,
+    ["Flamegor"] = true,
+    ["Ebonroc"] = true,
+    ["Ancient Core Hound"] = true,
+    ["Firelord"] = true,
+    ["Lava Spawn"] = true,
+    ["Lava Elemental"] = true,
+    ["Firewalker"] = true,
+    ["Flame Imp"] = true,
+    ["Magmadar"] = true,
+    ["Gehennas"] = true,
+    ["Baron Geddon"] = true,
+    ["Sulfuron Harbinger"] = true,
+    ["Golemagg the Incinerator"] = true,
+    ["Majordomo Executus"] = true,
+    ["Ragnaros"] = true,
+    ["High Priestess Jeklik"] = true,
+    ["Grand Widow Faerlina"] = true,
+    ["Naxxramas Follower"] = true,
+    ["Naxxramas Worshipper"] = true,
+    ["Chromatic Dragonspawn"] = true,
+    ["Chromatic Drakonid"] = true,
+    ["Chromatic Elite Guard"] = true,
+    ["Chromatic Whelp"] = true,
+    ["Rage Talon Dragon Guard"] = true,
+    ["Rage Talon Dragonspawn"] = true,
+    ["Death Talon Dragonspawn"] = true,
+    ["Anubisath Warder"] = true,
+    ["Onyxia"] = true,
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -414,6 +510,32 @@ end
 function mb_useTranquilizingShot()
     return mb_tankTargetInSet(MB_useTranquilizingShotSet)
 end
+
+-- Nature Boss Functions
+function mb_isNatureBoss()
+    return mb_tankTargetInSet(MB_NatureBossSet)
+end
+
+-- Tremor Boss Functions
+function mb_isTremorBoss()
+    return mb_tankTargetInSet(MB_TremorBossSet)
+end
+
+-- Grounding Boss Functions
+function mb_isGroundingBoss()
+    return mb_tankTargetInSet(MB_GroundingBossSet)
+end
+
+-- Poison Boss Functions
+function mb_isPoisonBoss()
+    return mb_tankTargetInSet(MB_PoisonBossSet)
+end
+
+-- Fire Boss Functions
+function mb_isFireBoss()
+    return mb_tankTargetInSet(MB_FireBossSet)
+end
+
 
 -- Spells to Intterupt --
 

@@ -219,7 +219,7 @@ function Druid:MTHeals(assignedTarget)
 	end
 
 	if mb_hasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then			
-		CastSpellByName("Healing Wave")
+		CastSpellByName("Healing Touch")
 		return
 	end
 
@@ -638,22 +638,21 @@ local function DruidSingle()
 
         Druid:Balance()
         return
-
-	elseif (MB_mySpecc == "Resto" or MB_mySpecc == "Swiftmend") then
-        if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
-            if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
-                if mb_imBusy() then
-                    SpellStopCasting()
-                end
-
-                mb_meleeBuff("Abolish Poison")
-                return
+    end
+	
+    if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
+        if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
+            if mb_imBusy() then
+                SpellStopCasting()
             end
-        end
 
-		mb_healerJindoRotation("Wrath")
-		DruidHeal()
-	end
+            mb_meleeBuff("Abolish Poison")
+            return
+        end
+    end
+
+    mb_healerJindoRotation("Wrath")
+    DruidHeal()
 end
 
 MB_mySingleList["Druid"] = DruidSingle
