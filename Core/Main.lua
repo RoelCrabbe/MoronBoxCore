@@ -14,8 +14,6 @@ MBx = CreateFrame("Frame")
 	Print(MBx.ACE.Banzai)
 	MBx.ACE.HealComm = AceLibrary("HealComm-1.0")
 	Print(MBx.ACE.HealComm)
-	
-MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 
 ------------------------------------------------------------------------------------------------------
 ----------------------------------------------- Locals! ----------------------------------------------
@@ -207,7 +205,6 @@ MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
 	local myName = UnitName("player")
 	local myRace = UnitRace("player")
 
-	MMB_Post_Init.Timer = GetTime()
 	MB_anubAlertCD = GetTime()
 
 	MB_msgCD = GetTime()
