@@ -804,7 +804,7 @@ function Priest:PrayerOfHealingCheck(manaRank, checkRank, minTargets, focus)
 	end
 
     if UnitMana("player") >= cost then
-        if mb_partyHurt(GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank), minTargets) then
+        if Priest:PartyHurt(GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank), minTargets) then
             if focus then
                 mb_selfBuff("Inner Focus")
             end
@@ -871,6 +871,26 @@ function Priest:PowerInfusion()
 				end
 			end
 		end
+	end
+end
+
+function Priest:PartyHurt(hurt, num_party_hurt)
+	local numHurt = 0
+	local myHurt = mb_healthDown("player")
+
+	if myHurt > hurt then 
+		numHurt = numHurt + 1 
+	end
+
+    for i = 1, GetNumPartyMembers() do
+        local guysHurt = UnitHealthMax("party"..i) - UnitHealth("party"..i)
+        if guysHurt > hurt and mb_in28yardRange("party"..i) and not mb_dead("party"..i) then 
+            numHurt = numHurt + 1 
+        end
+    end
+
+	if numHurt >= num_party_hurt then 
+		return numHurt 
 	end
 end
 

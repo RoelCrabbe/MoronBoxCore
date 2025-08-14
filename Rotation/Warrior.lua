@@ -247,7 +247,7 @@ end
 
 function Warrior:TankSingle()
 
-	if mb_findInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
@@ -405,7 +405,7 @@ function Warrior:TankSingle()
     local shouldTaunt = tName ~= "" 
         and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
         and UnitIsEnemy("player", "target") 
-        and not mb_findInTable(MB_raidTanks, tOfTarget)
+        and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
         if MB_myOTTarget then
@@ -636,7 +636,7 @@ end
 
 function Warrior:TankMulti()
 
-	if mb_findInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
@@ -794,7 +794,7 @@ function Warrior:TankMulti()
     local shouldTaunt = tName ~= "" 
         and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
         and UnitIsEnemy("player", "target") 
-        and not mb_findInTable(MB_raidTanks, tOfTarget)
+        and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
         if MB_myOTTarget then

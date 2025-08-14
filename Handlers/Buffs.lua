@@ -449,7 +449,7 @@ function MultiBuffBlessing(spell)
 			if (spell == "Greater Blessing of Salvation") then
 				if mb_isValidFriendlyTarget("raid"..j)
                     and not mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
-                    and not mb_findInTable(MB_raidTanks, UnitName("raid"..j)) then
+                    and not FindInTable(MB_raidTanks, UnitName("raid"..j)) then
 				
 					ClearTarget()
 					CastSpellByName(spell, false)

@@ -3,7 +3,7 @@
 --[####################################################################################################]--
 
 local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
-local MMB_Post_Init.Timer = GetTime()
+MMB_Post_Init.Timer = GetTime()
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")

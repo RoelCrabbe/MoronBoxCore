@@ -229,7 +229,7 @@ function Paladin:BOPLowRandom()
 
 		if BOPTarget
 			and aggrox:GetUnitAggroByUnitId(BOPTarget)
-			and not mb_findInTable(MB_raidTanks, UnitName(BOPTarget))
+			and not FindInTable(MB_raidTanks, UnitName(BOPTarget))
 			and mb_isValidFriendlyTarget(BOPTarget, "Blessing of Protection")
 			and mb_healthPct(BOPTarget) <= blastNSatThisPercentage
 			and not mb_hasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then

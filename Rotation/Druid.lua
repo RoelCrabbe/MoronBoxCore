@@ -776,7 +776,7 @@ end
 
 function Druid:TankSingle()
 
-	if mb_findInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
@@ -818,7 +818,7 @@ function Druid:TankSingle()
     local shouldTaunt = tName ~= "" 
         and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
         and UnitIsEnemy("player", "target") 
-        and not mb_findInTable(MB_raidTanks, tOfTarget)
+        and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
         if MB_myOTTarget then
@@ -917,7 +917,7 @@ MB_myMultiList["Druid"] = DruidMulti
 
 function Druid:TankMulti()
 
-	if mb_findInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
@@ -959,7 +959,7 @@ function Druid:TankMulti()
     local shouldTaunt = tName ~= "" 
         and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
         and UnitIsEnemy("player", "target") 
-        and not mb_findInTable(MB_raidTanks, tOfTarget)
+        and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
         if MB_myOTTarget then

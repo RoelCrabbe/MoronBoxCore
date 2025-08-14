@@ -13,6 +13,8 @@
 
 Global\Rotation.lua
 
+Utility\Helpers.lua
+
 Utility\Localization.lua
 Data\WeaverData.lua
 Data\Encounters.lua
@@ -43,7 +45,10 @@ Rotation\Warrior.lua
 
 Rotation\Main.lua
 
+Api\Helpers\Helpers.lua
+
 Api\Flash.lua
 Api\Turning.lua
 Api\OnUpdate.lua
 Api\OnEvent.lua
+Api\Target.lua

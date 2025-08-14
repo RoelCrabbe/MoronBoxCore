@@ -639,7 +639,7 @@ function Shaman:CastTotem(totem)
         }
 	}
 
-	if mb_findInTable(MB_totemTypes.noBuff, totem) then
+	if FindInTable(MB_totemTypes.noBuff, totem) then
 		mb_coolDownCast(totem, duration)
 	else
 		if totem and not mb_hasBuffOrDebuff(totem, "player", "buff") then 

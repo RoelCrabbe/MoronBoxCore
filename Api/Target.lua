@@ -2,6 +2,12 @@
 --[####################################### AUTO TARGET HANDLER ########################################]--
 --[####################################################################################################]--
 
+function mb_iamFocus()
+	if MB_raidLeader == myName then
+		return true
+	end
+end
+
 function mb_getTarget()
 		
 	if (mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank)) and not mb_tankTarget("Razorgore the Untamed") then
@@ -13,8 +19,7 @@ function mb_getTarget()
         return
     end
 
-	if Instance.BWL and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy
-
+	if Instance.BWL and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then
 		if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             return
         end
@@ -54,7 +59,6 @@ function mb_getTarget()
         end		
 
 	elseif Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
-	
         if not mb_imTank() then
             return
         end
@@ -209,60 +213,61 @@ function mb_getTarget()
 			end
 		end
 
-	elseif GetRealZoneText() == "Ahn\'Qiraj" then -- Targetting for AQ40
-
-		if mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then -- Skeram
-			
-			if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramRightTank)) then --> Targetting for main tanks Razorgore fight
-								
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+	elseif Instance.AQ40 then
+		if mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then			
+			if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramRightTank)) then		
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+			elseif mb_imTank() then				
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imMeleeDPS() then -- Melee's focus down YOUR focus tank
-
-				if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then ClearTarget() end -- Assist focus when MC'd target is still your target
+			elseif mb_imMeleeDPS() then
+				if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+					ClearTarget()
+				end
 
 				mb_assistFocus()
 				return
 
-			elseif mb_imRangedDPS() then --> Ranged dps assit on focus
-
-				if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then ClearTarget() end -- Assist focus when MC'd target is still your target
+			elseif mb_imRangedDPS() then
+				if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+					ClearTarget()
+				end
 
 				mb_assistFocus()
 				return
 			end
 			return
 
-		elseif mb_tankTarget("Fankriss the Unyielding") and MB_myFankrissBoxStrategy then -- Fankriss
+		elseif mb_tankTarget("Fankriss the Unyielding") and MB_myFankrissBoxStrategy then
+			if mb_imTank() then				
+				if mb_myNameInTable(MB_myFankrissOFFTANKS) then
+					if mb_lockOnTarget("Fankriss the Unyielding") then
+						return
+					end
 
-			if mb_imTank() then --> Tanks that are not focus, do add stuff
-				
-				if mb_myNameInTable(MB_myFankrissOFFTANKS) then -- My offtank that needs to taunt sometimes loses his target this locks him back on
-
-					if mb_lockOnTarget("Fankriss the Unyielding") then return end -- LockonBoss
-
-					if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+					if not UnitName("target") or mb_dead("target") then
+						mb_assistFocus()
+					end
 					return
 				end
 				
-				mb_getTargetNotOnTank() -- Get target not on tanks
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imMeleeDPS() and myClass == "Warrior" then --> Assist Boss
-
-				if mb_lockOnTarget("Fankriss the Unyielding") then return end -- LockonBoss
+			elseif mb_imMeleeDPS() and myClass == "Warrior" then
+				if mb_lockOnTarget("Fankriss the Unyielding") then
+					return
+				end
 	
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 
-			elseif mb_imMeleeDPS() and myClass == "Rogue" then --> Assist Boss, Switch to snakes in meleeRange
-
+			elseif mb_imMeleeDPS() and myClass == "Rogue" then
 				if mb_assistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne)) then 
 					mb_debugger(MB_raidAssist.Debugger.Rogue, "Rogues assisting "..mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne).." on Spawn of Fankriss!") 
 					return 
@@ -273,13 +278,16 @@ function mb_getTarget()
 					return 
 				end
 
-				if mb_lockOnTarget("Fankriss the Unyielding") then return end -- LockonBoss
+				if mb_lockOnTarget("Fankriss the Unyielding") then
+					return
+				end
 	
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 
-			elseif mb_imRangedDPS() then --> Targetting those worms and assisting the worm tanks
-
+			elseif mb_imRangedDPS() then
 				if mb_assistSpecificTargetFromPlayer("Spawn of Fankriss", mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne)) then 
 					mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne).." on Spawn of Fankriss!") 
 					return 
@@ -290,13 +298,16 @@ function mb_getTarget()
 					return 
 				end
 
-				if mb_lockOnTarget("Fankriss the Unyielding") then return end -- LockonBoss
+				if mb_lockOnTarget("Fankriss the Unyielding") then
+					return
+				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 
-			elseif mb_imHealer() then -- Attempt to warstomp snakes if possible
-
+			elseif mb_imHealer() then
 				if mb_assistSpecificTargetFromPlayer("Spawn of Fankriss", mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne)) then 
 					mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne).." on Spawn of Fankriss!") 
 					return 
@@ -307,106 +318,107 @@ function mb_getTarget()
 					return 
 				end
 
-				if mb_lockOnTarget("Fankriss the Unyielding") then return end -- LockonBoss
+				if mb_lockOnTarget("Fankriss the Unyielding") then
+					return
+				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 			return
 				
 		elseif mb_tankTarget("Anubisath Defender") then
-
-			if mb_imTank() then -- Tanks
+			if mb_imTank() then
 				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+				mb_getTargetNotOnTank()
 				return
 
-			elseif (mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer()) then -- Ranged and Focus focus down the totems and shades
+			elseif (mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer()) then
 
 				for i = 1, 4 do
-					if UnitName("target") == "Anubisath Swarmguard" and not mb_dead("target") then return end
-					if UnitName("target") == "Anubisath Warrior" and not mb_dead("target") then return end
+					if UnitName("target") == "Anubisath Swarmguard" and not mb_dead("target") then
+						return
+					end
+
+					if UnitName("target") == "Anubisath Warrior" and not mb_dead("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 		end
 
-	elseif GetRealZoneText() == "Blackwing Lair" then -- BWL targetting 
-		
-		if mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then -- Razorgore room
-			
-			if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then return end -- Don't do shit when you are the fucking ORB tank
+	elseif Instance.BWL then		
+		if mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then			
+			if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+				return
+			end
 
-			if mb_isAtRazorgorePhase() then -- Tank is Controlling the orb
-
-				if (myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) or myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) then --> Targetting for main tanks Razorgore fight
+			if mb_isAtRazorgorePhase() then
+				if (myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) or myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) then
 					
-					if not MB_targetNearestDistanceChanged then
-						
+					if not MB_targetNearestDistanceChanged then						
 						SetCVar("targetNearestDistance", "15")
 						MB_targetNearestDistanceChanged = true
 					end
 
-					if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
-					
+					if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then					
 						TargetNearestEnemy()
 						MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
 						return
 					end
 					
-					if (UnitName("target") == nil or mb_dead("target")) then
-						
+					if (UnitName("target") == nil or mb_dead("target")) then						
 						TargetNearestEnemy()
 						return
 					end
 					return
 
-				elseif mb_imTank() then --> Targetting for OT tanks Razorgore fight
-					
-					if not MB_targetNearestDistanceChanged then
-						
+				elseif mb_imTank() then					
+					if not MB_targetNearestDistanceChanged then						
 						SetCVar("targetNearestDistance", "10")
 						MB_targetNearestDistanceChanged = true
 					end
 
-					if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
-					
+					if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then					
 						TargetNearestEnemy()
 						MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
 						return
 					end
 					
-					mb_getTargetNotOnTank() -- Get target not on tanks
+					mb_getTargetNotOnTank()
 					return
 
-				elseif mb_imMeleeDPS() then -- Melee focus your assist tank
-
+				elseif mb_imMeleeDPS() then
 					if mb_myNameInTable(MB_myRazorgoreLeftDPSERS) then
-
 						AssistByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank))
 						return
 					end
 
 					if mb_myNameInTable(MB_myRazorgoreRightDPSERS) then
-
 						AssistByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank))
 						return
 					end
 					return
 
-				elseif mb_imRangedDPS() then --> Ranged dps targetting Razorgore
-
-					if MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active then -- Get a new target
-						
+				elseif mb_imRangedDPS() then
+					if MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active then						
 						TargetNearestEnemy()
 						MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = false
 						return
 					end
 
-					if not mb_dead("target") then return end
+					if not mb_dead("target") then
+						return
+					end
 
 					if mb_assistSpecificTargetFromPlayer("Blackwing Mage", mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) then 
 						mb_debugger(MB_raidAssist.Debugger.Mage, "All casters assisting "..mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) 
@@ -438,199 +450,220 @@ function mb_getTarget()
 						return 
 					end
 
-					if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+					if not UnitName("target") or mb_dead("target") then
+						mb_assistFocus()
+					end
 					return
 				end
 				return true				
 			end
 
-		elseif GetSubZoneText() == "Shadow Wing Lair" then -- Vael
+		elseif GetSubZoneText() == "Shadow Wing Lair" then
 
-			if MB_raidLeader and mb_dead(MBID[MB_raidLeader]) then mb_lockOnTarget("Vaelastrasz the Corrupt") return end
-		end
-		
-	elseif GetRealZoneText() == "Molten Core" then
-
-	elseif GetRealZoneText() == "Onyxia\'s Lair" then
-
-		if mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
-
-			if mb_imTank() then
-
-				mb_getTargetNotOnTank()
+			if MB_raidLeader and mb_dead(MBID[MB_raidLeader]) then
+				mb_lockOnTarget("Vaelastrasz the Corrupt")
 				return
+			end
+		end
 
-			elseif mb_imMeleeDPS() then
+	elseif Instance.Ony and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
 
-				if MB_targetWrongWayOrTooFar.Active then -- Switching
-					
-					TargetNearestEnemy()
-					MB_targetWrongWayOrTooFar.Active = false
+		if mb_imTank() then
+			mb_getTargetNotOnTank()
+			return
+
+		elseif mb_imMeleeDPS() then
+			if MB_targetWrongWayOrTooFar.Active then				
+				TargetNearestEnemy()
+				MB_targetWrongWayOrTooFar.Active = false
+				return
+			end
+
+			for i = 1, 3 do
+				if UnitName("target") == "Onyxian Whelp" and not mb_dead("target") then
 					return
 				end
 
-				for i = 1, 3 do -- Picking a target
-					if UnitName("target") == "Onyxian Whelp" and not mb_dead("target") then return end
-					TargetNearestEnemy()
-				end
+				TargetNearestEnemy()
+			end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
-				return
+			if not UnitName("target") or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return
 
-			elseif mb_imRangedDPS() then
-
-				if mb_assistSpecificTargetFromPlayer("Onyxia", MB_myOnyxiaMainTank) then return end
-
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+		elseif mb_imRangedDPS() then
+			if mb_assistSpecificTargetFromPlayer("Onyxia", MB_myOnyxiaMainTank) then
 				return
 			end
+
+			if not UnitName("target") or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return
 		end
 
-	elseif GetRealZoneText() == "Zul\'Gurub" then --> ZG
-
-		if mb_isAtJindo() then --> Jindo
-
-			if mb_imTank() then -- Tanks
-				
+	elseif Instance.ZG then
+		if mb_isAtJindo() then
+			if mb_imTank() then				
 				mb_getTargetNotOnTank() -- Get Targets not on tanks
 				return
 
-			elseif mb_imMeleeDPS() then
-				
+			elseif mb_imMeleeDPS() then				
 				for i = 1, 4 do
-					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then return end
+					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 				
-			elseif mb_imRangedDPS() then -- Ranged and Focus focus down the totems and shades
-
+			elseif mb_imRangedDPS() then
 				for i = 1, 4 do
-					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then return end
-					if UnitName("target") == "Powerful Healing Ward" and not mb_dead("target") then return end
-					if UnitName("target") == "Brain Wash Totem" and not mb_dead("target") then return end
+					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
+						return
+					end
+
+					if UnitName("target") == "Powerful Healing Ward" and not mb_dead("target") then
+						return
+					end
+
+					if UnitName("target") == "Brain Wash Totem" and not mb_dead("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 
-		elseif mb_tankTarget("High Priestess Mar\'li") then -- Spider
-
-			if mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+		elseif mb_tankTarget("High Priestess Mar\'li") then
+			if mb_imTank() then				
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imMeleeDPS() then -- Melee focus on boss
-				
+			elseif mb_imMeleeDPS() then				
 				mb_assistFocus()
 				return
 
-			elseif mb_imRangedDPS() then -- Ranged focus the adds
-
+			elseif mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Spawn of Mar\'li" and not mb_dead("target") then return end
-					if UnitName("target") == "Witherbark Speaker" and not mb_dead("target") then return end
+					if UnitName("target") == "Spawn of Mar\'li" and not mb_dead("target") then
+						return
+					end
+
+					if UnitName("target") == "Witherbark Speaker" and not mb_dead("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 
-		elseif mb_tankTarget("High Priestess Jeklik") then -- Bat
-
-			if mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+		elseif mb_tankTarget("High Priestess Jeklik") then
+			if mb_imTank() then				
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imRangedDPS() then -- Melee and casters nuke bats
-
+			elseif mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Bloodseeker Bat" and mb_inCombat("target") and not mb_dead("target") then return end
+					if UnitName("target") == "Bloodseeker Bat" and mb_inCombat("target") and not mb_dead("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 
-		elseif mb_tankTarget("High Priest Venoxis") then -- Snake boss
-
-			if mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
+		elseif mb_tankTarget("High Priest Venoxis") then
+			if mb_imTank() then				
+				mb_getTargetNotOnTank()
 				return
 
-			elseif mb_imMeleeDPS() or mb_imRangedDPS() then  -- Melee and casters nuke snakes
-
+			elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Razzashi Cobra" and not mb_dead("target") and not GetRaidTargetIndex("target") then return end
+					if UnitName("target") == "Razzashi Cobra" and not mb_dead("target") and not GetRaidTargetIndex("target") then
+						return
+					end
+
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
+				if not UnitName("target") or mb_dead("target") then
+					mb_assistFocus()
+				end
 				return
 			end
 		end
 					
-	elseif GetRealZoneText() == "Ruins of Ahn\'Qiraj" then
+	elseif Instance.AQ20 and mb_tankTarget("Ayamiss the Hunter") and not mb_dead("target") then
 
-		if mb_tankTarget("Ayamiss the Hunter") and not mb_dead("target") then -- Ayamiss
+		if mb_imTank() then			
+			mb_getTargetNotOnTank()
+			return
 
-			if mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
-				return
-
-			elseif mb_imMeleeDPS() or mb_imRangedDPS() then -- Melee and casters nuke the larva
-
-				for i = 1,5 do
-					if UnitName("target") == "Hive\'Zara Larva" and not mb_dead("target") then return end
-					TargetNearestEnemy()
+		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
+			for i = 1,5 do
+				if UnitName("target") == "Hive\'Zara Larva" and not mb_dead("target") then
+					return
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
-				return
+				TargetNearestEnemy()
 			end
+
+			if not UnitName("target") or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return
 		end
 		
-	elseif GetRealZoneText() == "Blackrock Spire" then
+	elseif GetRealZoneText() == "Blackrock Spire" and mb_tankTarget("Lord Valthalak") and not mb_dead("target") then
+		if mb_imTank() then			
+			mb_getTargetNotOnTank()
+			return
 
-		if mb_tankTarget("Lord Valthalak") and not mb_dead("target") then -- Valthalak
+		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 
-			if mb_imTank() then -- Tanks
-				
-				mb_getTargetNotOnTank() -- Get Targets not on tanks
-				return
-
-			elseif mb_imMeleeDPS() or mb_imRangedDPS() then -- Melee and casters focus the adds
-
-				for i = 1,5 do
-					if UnitName("target") == "Spectral Assassin" and not mb_dead("target") then return end
-					TargetNearestEnemy()
+			for i = 1,5 do
+				if UnitName("target") == "Spectral Assassin" and not mb_dead("target") then
+					return
 				end
 
-				if not UnitName("target") or mb_dead("target") then mb_assistFocus() end
-				return
+				TargetNearestEnemy()
 			end
+
+			if not UnitName("target") or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return
 		end
 	end
 
-	local focid = MBID[MB_raidLeader]
-	if not focid then
-
+	local focId = MBID[MB_raidLeader]
+	if not focId then
 		mb_assistFocus()
 
-	elseif UnitName(focid.."target") then
-		
-		TargetUnit(focid.."target")
-
+	elseif UnitName(focId.."target") then		
+		TargetUnit(focId.."target")
 	else
 		if not UnitIsEnemy("player","target") then
 			TargetNearestEnemy()
@@ -638,13 +671,11 @@ function mb_getTarget()
 	end
 
 	if mb_imTank() and not MB_myOTTarget then
-
 		mb_getTargetNotOnTank()
 		return
 	end
 
 	if MB_myInterruptTarget then
-
 		mb_getMyInterruptTarget()
 		return
 	end
@@ -652,4 +683,596 @@ function mb_getTarget()
 	if not MB_myOTTarget then
 		mb_assistFocus()
 	end
+end
+
+--[####################################################################################################]--
+--[####################################### AUTO TARGET HELPERS ########################################]--
+--[####################################################################################################]--
+
+function mb_tankTarget(mobName)
+    local focusId = MBID[MB_raidLeader]
+    if not focusId then
+        return false
+    end
+    
+    local targetOfFocus = UnitName(focusId .. "target")
+    if not targetOfFocus then
+        return false
+    end
+    
+    return targetOfFocus == mobName
+end
+
+function mb_tankTargetInSet(mobSet)
+    local focusId = MBID[MB_raidLeader]
+    if not focusId then
+        return false
+    end
+    
+    local tankTargetName = UnitName(focusId .. "target")
+    if not tankTargetName then
+        return false
+    end
+    
+    return mobSet[tankTargetName] == true
+end
+
+function mb_playerWithAgroFromSpecificTarget(target, player)
+    local playerId = MBID[player]
+    if not playerId then
+        return false
+    end
+    
+    local playerTargetTarget = UnitName(playerId .. "targettarget")
+    if not playerTargetTarget then
+        return false
+    end
+    
+    local playerTarget = UnitName(playerId .. "target")
+    if not playerTarget then
+        return false
+    end
+    
+    local targetFound = string.find(playerTarget, target)
+    if targetFound then
+        return true
+    end
+    
+    return false
+end
+
+function mb_targetHealthFromRaidleader(mobName, percentage)
+    local raidLeaderId = MBID[MB_raidLeader]
+    if not raidLeaderId then
+        return false
+    end
+    
+    local isTargetingMob = mb_tankTarget(mobName)
+    if not isTargetingMob then
+        return false
+    end
+    
+    local targetHealthPercentage = mb_healthPct(raidLeaderId .. "target")
+    return (targetHealthPercentage <= percentage)
+end
+
+function mb_targetHealthFromSpecificPlayer(mobName, percentage, player)
+    local isPlayerTargetingMob = mb_targetFromSpecificPlayer(mobName, player)
+    if not isPlayerTargetingMob then
+        return false
+    end
+    
+    local playerId = MBID[player]
+    if not playerId then
+        return false
+    end
+    
+    local targetHealthPercentage = mb_healthPct(playerId .. "target")
+    return (targetHealthPercentage <= percentage)
+end
+
+function mb_focusAggro()
+    local raidLeaderId = MBID[MB_raidLeader]
+    if not raidLeaderId then
+        return false
+    end
+    
+    local raidLeaderTargetTarget = UnitName(raidLeaderId .. "targettarget")
+    if not raidLeaderTargetTarget then
+        return false
+    end
+    
+    local isTargetingMe = string.find(raidLeaderTargetTarget, myName)
+    if isTargetingMe then
+        return true
+    end
+    
+    return false
+end
+
+function mb_tankTargetHealth()
+    if not MB_raidLeader then
+        return nil
+    end
+    
+    local raidLeaderId = MBID[MB_raidLeader]
+    if not raidLeaderId then
+        return nil
+    end
+    
+    local targetId = raidLeaderId .. "target"
+    if not targetId then
+        return nil
+    end
+    
+    local isDead = mb_dead(targetId)
+    if isDead then
+        return 0
+    end
+    
+    return mb_healthPct(targetId)
+end
+
+function mb_isAtJindo()
+    local targetName = UnitName("target")
+    
+    if mb_tankTarget("Powerful Healing Ward") then
+        return true
+    end
+    
+    if mb_tankTarget("Shade of Jin'do") then
+        return true
+    end
+    
+    if mb_tankTarget("Jin'do the Hexxer") then
+        return true
+    end
+    
+    if tankTmb_tankTarget("Brain Wash Totem") then
+        return true
+    end
+    
+    if not targetName then
+        return false
+    end
+    
+    if targetName == "Powerful Healing Ward" then
+        return true
+    end
+    
+    if targetName == "Shade of Jin'do" then
+        return true
+    end
+    
+    if targetName == "Jin'do the Hexxer" then
+        return true
+    end
+    
+    if targetName == "Brain Wash Totem" then
+        return true
+    end
+    
+    return false
+end
+
+function mb_isAtNoth()
+    local targetName = UnitName("target")
+    
+    if mb_tankTarget("Noth the Plaguebringer") then
+        return true
+    end
+    
+    if mb_tankTarget("Plagued Warrior") then
+        return true
+    end
+    
+    if mb_tankTarget("Plagued Champion") then
+        return true
+    end
+    
+    if mb_tankTarget("Plagued Guardian") then
+        return true
+    end
+    
+    if mb_tankTarget("Plagued Skeletons") then
+        return true
+    end
+    
+    if not targetName then
+        return false
+    end
+    
+    if targetName == "Noth the Plaguebringer" then
+        return true
+    end
+    
+    if targetName == "Plagued Warrior" then
+        return true
+    end
+    
+    if targetName == "Plagued Champion" then
+        return true
+    end
+    
+    if targetName == "Plagued Guardian" then
+        return true
+    end
+    
+    if targetName == "Plagued Skeletons" then
+        return true
+    end
+    
+    return false
+end
+
+function mb_isAtMonstrosity()
+    local targetName = UnitName("target")
+    
+    if mb_tankTarget("Living Monstrosity") then
+        return true
+    end
+    
+    if mb_tankTarget("Mad Scientist") then
+        return true
+    end
+    
+    if mb_tankTarget("Surgical Assistant") then
+        return true
+    end
+    
+    if not targetName then
+        return false
+    end
+    
+    if targetName == "Living Monstrosity" then
+        return true
+    end
+    
+    if targetName == "Mad Scientist" then
+        return true
+    end
+    
+    if targetName == "Surgical Assistant" then
+        return true
+    end
+    
+    return false
+end
+
+function mb_isAtGrobbulus()
+   local targetName = UnitName("target")
+   
+   if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankOne) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankTwo) then
+       return true
+   end
+   
+   if mb_tankTarget("Grobbulus") then
+       return true
+   end
+   
+   if mb_tankTarget("Fallout Slime") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Grobbulus" then
+       return true
+   end
+   
+   if targetName == "Fallout Slime" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtLoatheb()
+   local targetName = UnitName("target")
+   
+   if mb_targetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Spore", MB_myLoathebMainTank) then
+       return true
+   end
+   
+   if mb_tankTarget("Loatheb") then
+       return true
+   end
+   
+   if mb_tankTarget("Spore") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Loatheb" then
+       return true
+   end
+   
+   if targetName == "Spore" then
+       return true
+   end
+   
+   return false
+end
+
+local function IsOrbControlled()
+	for i = 1, GetNumRaidMembers() do
+		if mb_hasBuffOrDebuff("Mind Exhaustion", "raid"..i, "debuff") then
+			return true
+		end
+	end
+	return false
+end
+
+function mb_isAtRazorgorePhase()
+   local targetName = UnitName("target")
+   
+   if IsOrbControlled() then
+       return true
+   end
+   
+   if mb_tankTarget("Blackwing Mage") then
+       return true
+   end
+   
+   if mb_tankTarget("Blackwing Legionnaire") then
+       return true
+   end
+   
+   if mb_tankTarget("Death Talon Dragonspawn") then
+       return true
+   end
+   
+   local leftTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+   if mb_targetFromSpecificPlayer("Blackwing Mage", leftTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Blackwing Legionnaire", leftTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", leftTank) then
+       return true
+   end
+   
+   local rightTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+   if mb_targetFromSpecificPlayer("Blackwing Mage", rightTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Blackwing Legionnaire", rightTank) then
+       return true
+   end
+   
+   if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", rightTank) then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Blackwing Mage" then
+       return true
+   end
+   
+   if targetName == "Blackwing Legionnaire" then
+       return true
+   end
+   
+   if targetName == "Death Talon Dragonspawn" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtInstructorRazuvious()
+   local targetName = UnitName("target")
+   
+   if mb_tankTarget("Instructor Razuvious") then
+       return true
+   end
+   
+   if mb_tankTarget("Deathknight Understudy") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Instructor Razuvious" then
+       return true
+   end
+   
+   if targetName == "Deathknight Understudy" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtSartura()
+   local targetName = UnitName("target")
+   
+   if mb_tankTarget("Battleguard Sartura") then
+       return true
+   end
+   
+   if mb_tankTarget("Sartura's Royal Guard") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Battleguard Sartura" then
+       return true
+   end
+   
+   if targetName == "Sartura's Royal Guard" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtNefarianPhase()
+   local targetName = UnitName("target")
+   
+   if mb_tankTarget("Red Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Blue Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Green Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Black Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Bronze Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Chromatic Drakonid") then
+       return true
+   end
+   
+   if mb_tankTarget("Lord Victor Nefarius") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Red Drakonid" then
+       return true
+   end
+   
+   if targetName == "Blue Drakonid" then
+       return true
+   end
+   
+   if targetName == "Green Drakonid" then
+       return true
+   end
+   
+   if targetName == "Black Drakonid" then
+       return true
+   end
+   
+   if targetName == "Bronze Drakonid" then
+       return true
+   end
+   
+   if targetName == "Chromatic Drakonid" then
+       return true
+   end
+   
+   if targetName == "Lord Victor Nefarius" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtSkeram()
+   local targetName = UnitName("target")
+   
+   if mb_tankTarget("The Prophet Skeram") then
+       return true
+   end
+   
+   local leftTank = mb_returnPlayerInRaidFromTable(MB_mySkeramLeftTank)
+   if mb_targetFromSpecificPlayer("The Prophet Skeram", leftTank) then
+       return true
+   end
+   
+   local middleTank = mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank)
+   if mb_targetFromSpecificPlayer("The Prophet Skeram", middleTank) then
+       return true
+   end
+   
+   local rightTank = mb_returnPlayerInRaidFromTable(MB_mySkeramRightTank)
+   if mb_targetFromSpecificPlayer("The Prophet Skeram", rightTank) then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "The Prophet Skeram" then
+       return true
+   end
+   
+   return false
+end
+
+function mb_isAtTwinsEmps()
+   local targetName = UnitName("target")
+   
+   if mb_tankTarget("Qiraji Scarab") then
+       return true
+   end
+   
+   if mb_tankTarget("Qiraji Scorpion") then
+       return true
+   end
+   
+   if mb_tankTarget("Emperor Vek'lor") then
+       return true
+   end
+   
+   if mb_tankTarget("Emperor Vek'nilash") then
+       return true
+   end
+   
+   if not targetName then
+       return false
+   end
+   
+   if targetName == "Qiraji Scarab" then
+       return true
+   end
+   
+   if targetName == "Qiraji Scorpion" then
+       return true
+   end
+   
+   if targetName == "Emperor Vek'lor" then
+       return true
+   end
+   
+   if targetName == "Emperor Vek'nilash" then
+       return true
+   end
+   
+   return false
 end

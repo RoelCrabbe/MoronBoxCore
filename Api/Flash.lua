@@ -49,7 +49,7 @@ local function FlashFrameFlashHandler()
 
 	local leaderID = MBID[MB_raidLeader]
 	if leaderID and UnitName(leaderID.."targettarget") == myName and UnitIsEnemy("target", "player") then
-		if mb_findInTable(MB_tankList, myName) then
+		if FindInTable(MB_tankList, myName) then
 			for _, tex in ipairs({t1, t2, t3, t4}) do
 				tex:SetTexture(1.0, 1.0, 1.0, 0.4)
 			end
