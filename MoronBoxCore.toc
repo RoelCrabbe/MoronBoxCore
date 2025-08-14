@@ -31,9 +31,6 @@ Handlers\Cons.lua
 Handlers\Roles.lua
 Handlers\Attacking.lua
 
-Api\Flash.lua
-Api\Turning.lua
-
 Rotation\Druid.lua
 Rotation\Hunter.lua
 Rotation\Mage.lua
@@ -45,3 +42,8 @@ Rotation\Warlock.lua
 Rotation\Warrior.lua
 
 Rotation\Main.lua
+
+Api\Flash.lua
+Api\Turning.lua
+Api\OnUpdate.lua
+Api\OnEvent.lua

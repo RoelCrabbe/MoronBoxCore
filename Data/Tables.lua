@@ -364,6 +364,23 @@ local MB_FireBossSet = {
     ["Onyxia"] = true,
 }
 
+local MB_reagentVendorsSet = {
+    ["Khur Hornstriker"] = true,
+    ["Barim Jurgenstaad"] = true,
+    ["Rekkul"] = true,
+    ["Trak'gen"] = true,
+    ["Horthus"] = true,
+    ["Hannah Akeley"] = true,
+    ["Alyssa Eva"] = true,
+    ["Thomas Mordan"] = true
+}
+
+local MB_sunfruitVendorsSet = {
+    ["Quartermaster Miranda Breechlock"] = true,
+    ["Argent Quartermaster Lightspark"] = true,
+    ["Argent Quartermaster Hasana"] = true
+}
+
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------ Functions ------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -536,6 +553,15 @@ function mb_isFireBoss()
     return mb_tankTargetInSet(MB_FireBossSet)
 end
 
+function mb_reagentVendors()
+    local targetName = UnitName("target")
+    return targetName and MB_reagentVendorsSet[targetName] == true
+end
+
+function mb_sunfruitVendors()
+    local targetName = UnitName("target")
+    return targetName and MB_sunfruitVendorsSet[targetName] == true
+end
 
 -- Spells to Intterupt --
 
