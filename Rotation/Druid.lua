@@ -52,6 +52,14 @@ local function DruidSpecc()
     MB_mySpecc = nil
 end
 
+local function ImprovedRegrowthCheck()
+	local _, _, _, _, TalentsIn = GetTalentInfo(3, 14)
+	if TalentsIn > 2 then
+		return true
+	end
+	return false
+end
+
 MB_mySpeccList["Druid"] = DruidSpecc
 
 --[####################################################################################################]--
@@ -287,14 +295,6 @@ function Druid:HealerDebuffs()
         CastSpellByName("Faerie Fire")
         TargetLastTarget()
     end
-end
-
-local function ImprovedRegrowthCheck()
-	local _, _, _, _, TalentsIn = GetTalentInfo(3, 14)
-	if TalentsIn > 2 then
-		return true
-	end
-	return false
 end
 
 function Druid:Innervate()
