@@ -53,3 +53,5 @@ Api\OnUpdate.lua
 Api\OnEvent.lua
 Api\Target.lua
 Api\CrowdControl.lua
+Api\AddonMessage.lua
+Api\Decurse.lua

@@ -239,9 +239,6 @@ function MMB:OnEvent()
 
 		elseif arg1 == MB_RAID and arg2 == "MB_REPORTCOOLDOWNS" then			
 			mb_reportMyCooldowns()
-			
-		elseif arg1 == MB_RAID.."MB_REPORTREP" then
-			mb_reputationReport(arg2)
 		
 		elseif arg1 == MB_RAID and arg2 == "MB_AQBOOKS" then
 			mb_missingSpellsReport()
@@ -687,6 +684,10 @@ end
 
 MMB:SetScript("OnEvent", MMB.OnEvent) 
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function MMB_Post_Init:OnUpdate()
 	if GetTime() - MMB_Post_Init.Timer < 2.5 then
         return
@@ -706,5 +707,161 @@ function MMB_Post_Init:OnUpdate()
 
 	MMB_Post_Init:SetScript("OnUpdate", nil)
 	MMB_Post_Init.Timer = nil
-	MMB_Post_Init.onUpdate = nil
+	MMB_Post_Init.OnUpdate = nil
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function mb_initializeClasslists()
+
+	MBID = {}
+	MB_toonsInGroup = {}
+	MB_offTanks = {}
+	MB_raidTanks = {}
+	MB_noneDruidTanks = {}
+	MB_fireMages = {}
+	MB_frostMages = {}
+		MB_classList = { 
+		Warrior = {},
+		Mage = {},
+		Shaman = {},
+		Paladin = {},
+		Priest = {},
+		Rogue = {},
+		Druid = {},
+		Hunter = {},
+		Warlock = {}
+	}
+
+	for i = 1, 8 do
+		MB_toonsInGroup[i] = {}
+	end
+	
+	if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
+		return
+	end
+	
+	if UnitInRaid("player") then		
+		for i = 1, GetNumRaidMembers() do
+			local name, _, subgroup, _, class = GetRaidRosterInfo(i)
+
+			if not name then
+				return
+			end
+
+			if name and class and UnitIsConnected("raid"..i) and UnitExists("raid"..i) then
+				table.insert(MB_classList[class], name)
+				MBID[name] = "raid"..i
+				table.insert(MB_toonsInGroup[subgroup], name)
+				MB_groupID[name] = subgroup
+			end
+		end
+	else		
+		for i = 1, GetNumPartyMembers() + 1 do
+			local id
+
+			if i == GetNumPartyMembers() + 1 then
+				id = "player"
+			else
+				id = "party"..i
+			end
+
+			local name =  UnitName(id)
+			local class = UnitClass(id)
+
+			MBID[name] = id
+			if not name or not class then
+				break
+			end
+
+			table.insert(MB_classList[class], name)
+			table.insert(MB_toonsInGroup[1], name)
+			MB_groupID[name] = 1
+		end
+	end
+
+	for k, tank in pairs(MB_tankList) do
+		if MBID[tank] then
+			if UnitInParty(MBID[tank]) then
+				if UnitClass(MBID[tank]) == "Druid" then					
+					MB_druidTankInParty = true
+				end
+
+				if UnitClass(MBID[tank]) == "Warrior" then					
+					MB_warriorTankInParty = true
+				end
+			end
+
+			if tank ~= myName then 
+				table.insert(MB_offTanks, tank)
+			end
+
+			table.insert(MB_raidTanks, tank)
+		end
+	end
+
+	for _, guest in pairs(MB_extraTanks) do
+		if not FindInTable(MB_raidTanks, guest) then
+			table.insert(MB_raidTanks, guest)
+		end
+	end
+
+	for _, dru in pairs(MB_classList["Druid"]) do
+		if not FindInTable(MB_raidTanks, dru) then
+			table.insert(MB_noneDruidTanks, dru)
+		end
+	end
+
+	for _, mage in pairs(MB_classList["Mage"]) do
+		if FindInTable(MB_raidAssist.Mage.FireMages, mage) then
+			table.insert(MB_fireMages, mage)
+		end
+	end
+
+	for _, mage in pairs(MB_classList["Mage"]) do
+		if FindInTable(MB_raidAssist.Mage.FrostMages, mage) then
+			table.insert(MB_frostMages, mage)
+		end
+	end 
+end
+
+function mb_mySpecc()
+	local GetMySpecc = MB_mySpeccList[myClass]
+    if GetMySpecc and type(GetMySpecc) == "function" then
+        GetMySpecc()
+    else
+        mb_message("I don\'t know what to do.", 500)
+    end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function mb_taxi()
+	local time = GetTime()
+	if mb_iamFocus() then
+		return
+	end
+
+	if MB_raidAssist.FollowTheLeaderTaxi and MB_taxi.Time > time then
+		for i = 1, NumTaxiNodes() do
+			if TaxiNodeName(i) == MB_taxi.Node then
+				original_TakeTaxiNode(i)
+				break
+			end
+		end
+	end	
+end
+
+function mb_takeTaxiNode(index)
+	if UnitInRaid("player") then
+		SendAddonMessage(MB_RAID.."_flyTaxi", TaxiNodeName(index), "RAID")
+		original_TakeTaxiNode(index)
+	elseif UnitInParty("player") then
+		SendAddonMessage(MB_RAID.."_flyTaxi", TaxiNodeName(index), "PARTY")
+		original_TakeTaxiNode(index)		
+	end
 end

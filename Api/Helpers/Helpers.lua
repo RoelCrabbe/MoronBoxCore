@@ -740,6 +740,15 @@ function mb_reportRunes()
 	mb_message("I\'ve got "..count.." runes!")
 end
 
+function mb_reportManapots()
+	if not mb_imHealer() then
+		return
+	end
+
+	local count = mb_hasItem("Major Mana Potion") or 0
+	mb_message("I\'ve got "..count.." pots!")
+end
+
 function mb_partyIsPoisoned()	
 	if mb_tankTarget("Princess Huhuran") or mb_isAtGrobbulus() then
 		return false
@@ -809,4 +818,225 @@ function mb_partyIsDiseased()
 			return true 
 		end
 	end
+end
+
+function mb_hasItem(item)
+    local count = 0
+
+    for bag = 0, 4 do
+        for slot = 1, GetContainerNumSlots(bag) do 
+            local texture, itemCount, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot) 
+            if texture then
+                link = GetContainerItemLink(bag, slot)
+                if string.find(link, item) then
+                    count = count + itemCount
+                end
+            end
+        end
+    end
+    
+    if count == 0 then 
+        mb_message("I'm out of "..item)
+    end
+    return count
+end
+
+local MB_hasAnAtieshEquipped = nil
+function mb_reEquipAtieshIfNoAtieshBuff()
+	if (myClass == "Warrior" or myClass == "Rogue" or (myClass == "Druid" and MB_raidAssist.Druid.PrioritizePriestsAtieshBuff))  then
+		return
+	end
+
+	local atiesh = "Atiesh\, Greatstaff of the Guardian"
+	if mb_itemNameOfEquippedSlot(16) == atiesh then 
+		MB_hasAnAtieshEquipped = true
+	end
+
+	if mb_itemNameOfEquippedSlot(16) == atiesh and not mb_hasBuffOrDebuff("Atiesh", "player", "buff") and mb_isAlive("player") then
+		if mb_getAllContainerFreeSlots() >= 1 then
+			PickupInventoryItem(16)
+			PutItemInBackpack()
+			ClearCursor()
+		else
+			mb_message("I don\'t have bagspace to requip Atiesh, sort it!")
+		end
+	end
+
+	if MB_hasAnAtieshEquipped and mb_itemNameOfEquippedSlot(16) == nil and mb_isAlive("player") then
+		UseItemByName(atiesh)
+	end
+end
+
+function mb_numManapots()
+	local pots = 0
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local link = GetContainerItemLink(bag, slot)
+			if link == nil then
+				link = ""
+			end
+			if string.find(link, "Major Mana Potion") then
+				pots = pots + 1
+			end
+		end
+	end
+	return pots
+end
+
+function mb_numSands()
+	local sands = 0
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local link = GetContainerItemLink(bag, slot)
+			if link == nil then
+				link = ""
+			end
+			if string.find(link, "Hourglass Sand") then
+				sands = sands + 1
+			end
+		end
+	end
+	return sands
+end
+
+function mb_anubisathAlert()
+    if mb_iamFocus() then
+		return
+	end
+
+    if UnitName("target") ~= "Anubisath Sentinel" then
+		return
+	end
+
+    local timeout = 5
+    local now = GetTime()
+
+    if MB_anubAlertCD + timeout > now then
+		return
+	end
+
+    MB_anubAlertCD = now
+
+    local alerts = {
+        ["Shadow Storm"]              = "/yell SHADOW STORM, BACK ME UP",
+        ["Mana Burn"]                  = "/yell MANA BURN, BACK ME UP",
+        ["Thunderclap"]                = "/yell THUNDERCLAP, BACK ME UP",
+        ["Thorns"]                     = "/say This guy has Thorns",
+        ["Mortal Strike"]              = "/say This guy has Mortal Strike",
+        ["Shadow and Frost Reflect"]   = "/say This guy has Shadow and Frost Reflect",
+        ["Fire and Arcane Reflect"]    = "/say This guy has Fire and Arcane Reflect",
+        ["Mending"]                    = "/say This guy has Mending",
+        ["Periodic Knock Away"]        = "/say This guy has Knockaway"
+    }
+
+    for buff, message in pairs(alerts) do
+        if mb_hasBuffOrDebuff(buff, "target", "buff") then
+            RunLine(message)
+        end
+    end
+end
+
+function GetColors(note)
+    local classColors = {
+        ["Warrior"] = "|cffC79C6E",
+        ["Hunter"] = "|cffABD473",
+        ["Mage"] = "|cff69CCF0",
+        ["Rogue"] = "|cffFFF569",
+        ["Warlock"] = "|cff9482C9",
+        ["Druid"] = "|cffFF7D0A",
+        ["Shaman"] = "|cff0070DE",
+        ["Priest"] = "|cffFFFFFF",
+        ["Paladin"] = "|cffF58CBA"
+    }
+    
+    local function getColoredText(color, text)
+        return color .. text .. "|r"
+    end
+    
+    local function getUnitClassColor(unit)
+        local unitClass = UnitClass(unit)
+        if unitClass and classColors[unitClass] then
+            return getColoredText(classColors[unitClass], note)
+        end
+        return nil
+    end
+    
+    if note == myName then
+        return getUnitClassColor("player")
+    end
+    
+    if UnitInRaid("player") then
+        for i = 1, GetNumRaidMembers() do
+            local raidUnit = "raid" .. i
+            local raidMemberName = UnitName(raidUnit)
+            if raidMemberName == note then
+                return getUnitClassColor(raidUnit)
+            end
+        end
+    end
+
+    if UnitInParty("player") then
+        for i = 1, GetNumPartyMembers() do
+            local partyUnit = "party" .. i
+            local partyMemberName = UnitName(partyUnit)
+            if partyMemberName == note then
+                return getUnitClassColor(partyUnit)
+            end
+        end
+    end
+    
+    local targetName = UnitName("target")
+    if targetName == note then
+        return getUnitClassColor("target")
+    end
+    
+    local raidMarkers = {
+        ["Skull"] = "|cffFFFFFF",
+        ["Cross"] = "|cffFF0000",
+        ["Square"] = "|cff00B4FF",
+        ["Moon"] = "|cffCEECF5",
+        ["Triangle"] = "|cff66FF00",
+        ["Diamond"] = "|cffCC00FF",
+        ["Circle"] = "|cffFF9900",
+        ["Star"] = "|cffFFFF00"
+    }
+    
+    local missingItems = {
+        ["Missing Arcane Crystal"] = "|cffFFFF00",
+        ["Missing Thorium Bar"] = "|cff00B4FF",
+        ["Missing Thorium Bar and Arcane Crystal"] = "|cffFF0000",
+        ["Missing Essence of Earth"] = "|cff66FF00",
+        ["Missing Essence of Undeath"] = "|cffCC00FF",
+        ["Missing Deeprock Salt"] = "|cffC79C6E",
+        ["Missing Salt Shaker"] = "|cffFFFFFF",
+        ["Missing Deeprock Salt and Salt Shaker"] = "|cffFF0000",
+        ["Missing Felcloth"] = "|cff9482C9"
+    }
+    
+    local cooldownMessages = {
+        ["Recklessness on CD"] = "|cffC79C6E",
+        ["Death Wish on CD"] = "|cffC79C6E",
+        ["Recklessness and Death Wish on CD"] = "|cffC79C6E",
+        ["Last Stand on CD"] = "|cffC79C6E",
+        ["Shield Wall on CD"] = "|cffC79C6E",
+        ["Shield Wall and Last Stand on CD"] = "|cffC79C6E",
+        ["Adrenaline Rush on CD"] = "|cffFFF569",
+        ["Evocation on CD"] = "|cff69CCF0",
+        ["Soulstone on CD"] = "|cff9482C9",
+        ["Incarnation on CD"] = "|cff0070DE",
+        ["Innervate on CD"] = "|cffFF7D0A"
+    }
+    
+    local statusMessages = {
+        ["We're recking!"] = "|cff66FF00",
+        ["Target out of range or behind me, targetting my nearest enemy!"] = "|cff66FF00"
+    }
+    
+    local allMappings = {raidMarkers, missingItems, cooldownMessages, statusMessages}
+    for _, mapping in ipairs(allMappings) do
+        if mapping[note] then
+            return getColoredText(mapping[note], note)
+        end
+    end
+    return note
 end

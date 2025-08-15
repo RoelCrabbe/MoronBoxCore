@@ -606,10 +606,10 @@ function Priest:ShadowWeaving()
         AssistUnit(MBID[focusUnit])
         
         if canCastDirectly then
-            CastSpellByName("Shadow Word: Pain(rank 1)")
+            CastSpellByName("Shadow Word: Pain(Rank 1)")
             return true
         else
-            mb_coolDownCast("Shadow Word: Pain(rank 1)", 24)
+            mb_coolDownCast("Shadow Word: Pain(Rank 1)", 24)
         end
     end	
 	return false

@@ -554,6 +554,64 @@ function mb_sunfruitVendors()
     return targetName and MB_sunfruitVendorsSet[targetName] == true
 end
 
+function mb_stunnableMob()
+    local targetName = UnitName("target")
+    if not targetName then
+        return false
+    end
+
+    local stunDebuffs = {
+        "Kidney Shot",
+        "Blackout",
+        "Hammer of Justice",
+        "Mace Stun",
+        "Concussion Blow",
+        "Bash",
+        "War Stomp"
+    }
+
+    for _, debuff in ipairs(stunDebuffs) do
+        if mb_hasBuffOrDebuff(debuff, "target", "debuff") then
+            return false
+        end
+    end
+
+    local alwaysStun = {
+        "Gurubashi Blood Drinker",
+        "Gurubashi Axe Thrower",
+        "Hakkari Priest",
+        "Gurubashi Champion",
+        "Gurubashi Headhunter",
+        "Shade of Naxxramas",
+        "Spirit of Naxxramas",
+        "Plagued Construct",
+        "Deathknight Servant",
+        "Sartura's Royal Guard",
+        "Battleguard Sartura",
+        "Deathchill Servant"
+    }
+
+    for _, name in ipairs(alwaysStun) do
+        if targetName == name then return true end
+    end
+
+    local hp60 = { "Plagued Champion", "Plagued Guardian" }
+    if mb_healthPct("target") < 0.6 then
+        for _, name in ipairs(hp60) do
+            if targetName == name then return true end
+        end
+    end
+
+    local hp40 = { "Infectious Ghoul", "Spawn of Fankriss", "Plagued Ghoul" }
+    if mb_healthPct("target") < 0.4 then
+        for _, name in ipairs(hp40) do
+            if targetName == name then return true end
+        end
+    end
+
+    return false
+end
+
 -- Spells to Intterupt --
 
 MB_spellsToInt = { -- These spells will automatically be interrupted

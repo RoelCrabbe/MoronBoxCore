@@ -596,7 +596,7 @@ function mb_healAndTank()
 	elseif mb_imHealer() then
 		if myClass == "Druid" then
 			if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then			
-				CastSpellByName("Hibernate(rank 1)")
+				CastSpellByName("Hibernate(Rank 1)")
 				return true
 			end
         end
@@ -1022,4 +1022,408 @@ function mb_healerFollow()
 	if mb_imHealer() then		
 		mb_followFocus()
 	end
+end
+
+--[####################################################################################################]--
+--[###################################### Some Tank Macros! ###########################################]--
+--[####################################################################################################]--
+
+function mb_tankShoot()
+	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+    end
+
+	if mb_dead("player") then
+		return
+	end
+
+	if myClass == "Warrior" and mb_imTank() and MB_myOTTarget then
+		local rangedWep = mb_returnEquippedItemType(18)
+
+		if rangedWep and mb_spellExists("Shoot "..rangedWep) then			
+			CastSpellByName("Shoot "..rangedWep)
+		end
+	end
+end
+
+function mb_manualTaunt()
+	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+    end
+
+	if mb_dead("player") then
+		return
+	end
+
+	if Instance.ZG then
+		if mb_mandokirGaze() then
+			return
+		end
+	end
+	
+	if mb_imTank() then 		
+		if myClass == "Warrior" and mb_spellReady("Taunt") then			
+			CastSpellByName("Taunt")
+
+		elseif myClass == "Druid" and mb_spellReady("Growl") then
+			CastSpellByName("Growl")
+		end
+	end
+end
+
+--[####################################################################################################]--
+--[########################################## Ress Macros! ############################################]--
+--[####################################################################################################]--
+
+function mb_ress()
+	if mb_imHealer() then
+		if UnitMana("player") < 1368 and myClass == "Shaman" then 			
+			mb_smartDrink()
+		end
+
+		if UnitMana("player") < 1090 and myClass == "Priest" then 			
+			mb_smartDrink()
+		end
+
+		if UnitMana("player") < 1209 and myClass == "Paladin" then			
+			mb_smartDrink()
+		end
+
+		MBH_Resurrection()
+	end
+
+	if mb_imRangedDPS() then		
+		mb_smartDrink()
+	end
+end
+
+--[####################################################################################################]--
+--[############################################### GTFO! ##############################################]--
+--[####################################################################################################]--
+
+function mb_GTFO()
+	if not MB_raidAssist.GTFO.Active then
+        return
+    end
+
+	mb_useSandsOnChromaggus()
+
+    if mb_iamFocus() then
+        return
+    end
+
+    if Instance.Ony and MB_myOnyxiaBoxStrategy then
+        if mb_tankTarget("Onyxia") and (mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then            
+            if mb_focusAggro() then
+                if myClass == "Paladin" and mb_spellReady("Divine Shield") then                     
+                    CastSpellByName("Divine Shield") 
+                    return 
+                end
+
+                if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)]) then
+                    FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia), 1)
+                end
+            else
+                if MBID[MB_myOnyxiaFollowTarget] and mb_unitInRange(MBID[MB_myOnyxiaFollowTarget]) then                        
+                    if not CheckInteractDistance(MBID[MB_myOnyxiaFollowTarget], 3) then
+                        FollowByName(MB_myOnyxiaFollowTarget, 1)
+                    end
+                end
+            end
+        end	
+    end
+		
+    if not mb_haveAggro() then
+        if Instance.Naxx and MB_myGrobbulusBoxStrategy then
+            if mb_isAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
+                if mb_hasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
+                    if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
+                        FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
+                    end
+                else
+                    if MBID[MB_myGrobbulusFollowTarget] and mb_unitInRange(MBID[MB_myGrobbulusFollowTarget]) then                        
+                        if not CheckInteractDistance(MBID[MB_myGrobbulusFollowTarget], 3) then
+                            FollowByName(MB_myGrobbulusFollowTarget, 1)
+                        end
+                    else
+                        if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
+                            FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
+                        end
+                    end
+                end
+            end
+            
+            mb_useFrozenRuneOnFaerlina()
+        
+        elseif Instance.BWL and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+        
+            if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
+                CastSpellByName("Divine Shield") 
+                return 
+            end
+
+            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)]) then
+                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
+            end            
+
+        elseif Instance.MC and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then
+ 
+            if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
+                CastSpellByName("Divine Shield") 
+                return 
+            end
+        
+            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)]) then
+                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron), 1)
+            end
+        end
+    end
+end
+
+--[####################################################################################################]--
+--[######################################## Inviting Party! ###########################################]--
+--[####################################################################################################]--
+
+function mb_requestInviteSummon()
+	if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then		
+		if MB_raidInviter == myName then			
+			SetLootMethod("freeforall", myName)
+			
+			if GetNumPartyMembers() > 0 and not UnitInRaid("player") then 				
+				ConvertToRaid()
+			end
+			return
+		end
+
+		if MB_raidInviter then
+			if not (mb_isInRaid(MB_raidInviter) or mb_isInGroup(MB_raidInviter)) then			
+				mb_disbandRaid()
+				SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidInviter);
+			end
+		end
+		return
+	end
+
+	if IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown() then		
+		if MB_raidLeader then
+			if UnitInRaid("player") then				
+				if not mb_unitInRange("raid"..mb_getRaidIndexForPlayerName(MB_raidLeader)) then					
+					mb_message("123", 10)
+					return 
+				end
+			else
+				if not mb_unitInRange("party"..mb_getRaidIndexForPlayerName(MB_raidLeader)) then					
+					mb_message("123", 10)
+					return 
+				end
+			end
+		end
+	end
+
+	if IsControlKeyDown() and not IsShiftKeyDown() and not IsAltKeyDown() then		
+		mb_promoteEveryone()
+		return 
+	end
+end
+
+function mb_disbandRaid()
+	if UnitInRaid("player") then
+		for i = 1, 40 do
+			local _, rank = GetRaidRosterInfo(i);
+			if rank ~= 2 then
+				UninviteFromParty("raid"..i)
+			end
+		end	
+	else
+		for i = 1, GetNumPartyMembers() do
+			UninviteFromParty("party"..i)
+		end
+	end
+
+	LeaveParty()
+end
+
+--[####################################################################################################]--
+--[##################################### Interrupt Functions! #########################################]--
+--[####################################################################################################]--
+
+function mb_interruptSpell()	
+	if mb_imTank() then
+        return
+    end
+
+	if not mb_spellReady(MB_myInterruptSpell[myClass]) then
+        return
+    end
+
+    mb_getMyInterruptTarget()
+
+    if myClass == "Warrior" then   
+        if UnitMana("player") >= 10 then                
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+
+    elseif myClass == "Shaman" then
+        if mb_imBusy() then            
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
+
+    elseif myClass == "Rogue" then
+        if UnitMana("player") >= 25 then            
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+
+    elseif myClass == "Mage" then
+        if mb_imBusy() then            
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass])
+    end
+end
+
+function mb_interruptingHealAndTank()	
+	if mb_imTank() then
+        return
+    end
+
+    if not mb_spellReady(MB_myInterruptSpell[myClass]) then
+        return
+    end
+
+	if not MB_doInterrupt.Active then
+        return
+    end
+
+    mb_getMyInterruptTarget()
+
+    if myClass == "Warrior" then		
+        if UnitMana("player") >= 10 then					
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+
+    elseif myClass == "Shaman" then
+        if mb_imBusy() then				
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
+
+    elseif myClass == "Rogue" then
+        if UnitMana("player") >= 25 then				
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+
+    elseif myClass == "Mage" then
+        if not MB_isCastingMyCCSpell then				
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass])
+    end
+
+	MB_doInterrupt.Active = false
+end
+
+--[####################################################################################################]--
+--[######################################## Cleans Totems! ############################################]--
+--[####################################################################################################]--
+
+function mb_cleanseTotem()
+	if myClass == "Shaman" then
+		if mb_partyIsPoisoned() then 			
+			if mb_imBusy() then				
+				SpellStopCasting()
+				return
+			end
+
+			CastSpellByName("Poison Cleansing Totem")
+		elseif mb_partyIsDiseased() then			
+			if mb_imBusy() then				
+				SpellStopCasting()
+				return
+			end
+
+			CastSpellByName("Disease Cleansing Totem")
+		end
+	end
+end
+
+--[####################################################################################################]--
+--[######################################### Break Fears! #############################################]--
+--[####################################################################################################]--
+
+function mb_fearBreak()	
+	if IsShiftKeyDown() then 		
+		mb_cleanseTotem()
+		return 
+	end
+
+	if myClass == "Warrior" then
+		if mb_spellReady("Berserker Rage") then		
+			mb_selfBuff("Berserker Stance")
+			CastSpellByName("Berserker Rage")
+		end
+	end
+
+	if myClass == "Shaman" then		
+		if mb_imBusy() then				
+			SpellStopCasting()
+			return
+		end
+
+		mb_coolDownCast("Tremor Totem", 15)
+	end
+
+	if mb_knowSpell("Will of the Forsaken") then
+		if myClass == "Warrior" then 
+			if mb_spellReady("Will of the Forsaken") and not (mb_hasBuffOrDebuff("Berserker Rage", "player", "buff") and mb_spellReady("Berserker Rage")) then 
+				CastSpellByName("Will of the Forsaken") 
+				return 
+			end
+		else
+			if mb_spellReady("Will of the Forsaken") then 				
+				CastSpellByName("Will of the Forsaken") 
+				return 
+			end
+		end
+	end
+end
+
+--[####################################################################################################]--
+--[########################################## Mount Ups! ##############################################]--
+--[####################################################################################################]--
+
+function mb_mountUp()
+	if myClass == "Druid" and mb_isDruidShapeShifted() and not mb_inCombat("player") then 
+		mb_cancelDruidShapeShift() 
+	end
+
+	if mb_imBusy() then
+        return
+    end
+
+	if Instance.AQ40 then		
+		use(mb_getLink("Resonating"))
+		return
+	end
+		
+	for _, mount in MB_playerMounts do
+		use(mb_getLink(mount))
+	end
+
+	if myClass == "Warlock" and mb_knowSpell("Summon Dreadsteed") then		
+		CastSpellByName("Summon Dreadsteed")
+		return
+	end
+
+	if myClass == "Paladin" and mb_knowSpell("Summon Charger") then		
+		CastSpellByName("Summon Charger")
+		return
+	end	
+
+	CastSpellByName("Summon Felsteed")
+	CastSpellByName("Summon Warhorse")	
 end
