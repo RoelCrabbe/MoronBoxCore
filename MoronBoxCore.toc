@@ -55,3 +55,4 @@ Api\Target.lua
 Api\CrowdControl.lua
 Api\AddonMessage.lua
 Api\Decurse.lua
+Api\Gear.lua
