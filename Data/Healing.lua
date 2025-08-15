@@ -172,6 +172,63 @@ MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- Mages will not use Sco
 
 ----------------------------------------------- Healing ----------------------------------------------
 
+function GetHealBonus()
+	local value = MBx.ACE.ItemBonus:GetBonus("HEAL")
+	return value	
+end
+
+function ExtractRank(str)
+	local num = ""
+	local foundDigit = false
+	for i = 1, string.len(str) do
+		local char = string.sub(str, i, i)
+		if tonumber(char) then
+			num = num .. char
+			foundDigit = true
+		elseif foundDigit then
+			break
+		end
+	end
+	return tonumber(num)
+end
+
+function GetHealValueFromRank(spell, rank)
+	return math.floor(MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus()))
+end
+
+function GetAverageChainHealValueFromRank(spell, rank, amountOfBounce, multiplier)
+    local multiplier = multiplier and (1 + multiplier / 100) or 1
+    local baseHeal = MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus())
+    local lowestHeal = baseHeal / (2 ^ amountOfBounce)
+    return math.floor(lowestHeal * multiplier)
+end
+
+----------------------------------------------- Healing ----------------------------------------------
+
+function mb_assignHealerToName(assignments) -- Assign a healer to a target
+	local _, _, healerName, assignedTarget = string.find(assignments, "(%a+)%s*(%a+)")
+
+	if mb_iamFocus() then
+		if (assignedTarget == "Reset" or assignedTarget == "reset") then
+			mb_message("Unassigned "..healerName.." from healing a specific player.")
+			return
+		end
+		
+		mb_message("Assigned "..healerName.." to heal "..assignedTarget..".")		
+	end
+
+	if myName == healerName then
+		if (assignedTarget == "Reset" or assignedTarget == "reset") then
+			Print("Unassigned myself to focusheal "..MB_myAssignedHealTarget..".")
+			MB_myAssignedHealTarget = nil
+			return
+		end
+
+		MB_myAssignedHealTarget = assignedTarget
+		Print("Assigning myself to focusheal "..MB_myAssignedHealTarget..".")
+	end
+end
+
 function mb_getHealSpell()
 	if myClass == "Shaman" then
 		if mb_equippedSetCount("Earthfury") == 8 then			
@@ -477,4 +534,90 @@ function mb_targetMyAssignedTankToHeal()
 	if not MB_myAssignedHealTarget then
 		MB_myAssignedHealTarget = MB_raidLeader
 	end
+end
+
+function mb_loathebHealing()
+   local HealerCounter = 1
+   
+   if not MB_myLoathebHealer then
+       return false
+   end
+   
+   local currentHealer = MB_myLoathebHealer[HealerCounter]
+   if not currentHealer then
+       return false
+   end
+   
+   local currentHealerId = MBID[currentHealer]
+   if not currentHealerId then
+       return false
+   end
+   
+   local hasCorruptedMind = mb_hasBuffOrDebuff("Corrupted Mind", currentHealerId, "debuff")
+   if hasCorruptedMind then
+       local healerTableLength = TableLength(MB_myLoathebHealer)
+       if HealerCounter == healerTableLength then
+           HealerCounter = 1
+       else
+           HealerCounter = HealerCounter + 1
+       end
+   end
+   
+   local nextHealer = MB_myLoathebHealer[HealerCounter]
+   if not nextHealer then
+       return false
+   end
+   
+   mb_message("Current healer: " .. nextHealer)
+   
+   if myName ~= nextHealer then
+       return false
+   end
+   
+   local mainTank = MB_myLoathebMainTank
+   if not mainTank then
+       return false
+   end
+   
+   local mainTankId = MBID[mainTank]
+   if not mainTankId then
+       return false
+   end
+   
+   local myHealSpell = MB_myLoathebHealSpell[myClass]
+   if not myHealSpell then
+       return false
+   end
+   
+   local myHealRank = MB_myLoathebHealSpellRank[myClass]
+   if not myHealRank then
+       return false
+   end
+   
+   local healValue = GetHealValueFromRank(myHealSpell, myHealRank)
+   if not healValue then
+       return false
+   end
+   
+   local overhealPercentage = MB_myMainTankOverhealingPercentage
+   if not overhealPercentage then
+       return false
+   end
+   
+   local healThreshold = healValue * overhealPercentage
+   
+   mb_coolDownPrint("My heal will start when " .. mainTank .. " is below " .. healThreshold .. " HP")
+   mb_coolDownPrint("Without overhealing my heal would heal for " .. healValue)
+   
+   local healthDown = mb_healthDown(mainTankId)
+   if not healthDown then
+       return false
+   end
+   
+   if healthDown >= healThreshold then
+       TargetByName(mainTank)
+       CastSpellByName(myHealSpell)
+   end
+   
+   return true
 end

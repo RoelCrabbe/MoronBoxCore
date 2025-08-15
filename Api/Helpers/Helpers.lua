@@ -1040,3 +1040,343 @@ function GetColors(note)
     end
     return note
 end
+
+function mb_makeALine()
+	if not UnitInRaid("player") then
+		Print("MakeALine only works in raid")
+		return
+	end
+
+	if mb_iamFocus() then
+		headOfLine = myName
+	else
+		headOfLine = mb_tankName()
+	end
+
+	MB_followList = {}
+	MB_groups = {}
+
+	for g = 1, 8 do
+		MB_groups[g] = {}
+	end
+
+	for i = 1, GetNumRaidMembers() do
+		local name, _, group = GetRaidRosterInfo(i)
+		table.insert(MB_groups[group], name)
+	end
+
+	for g = 1, 8 do
+		table.sort(MB_groups[g])
+	end
+
+	for g = 1, 8 do 
+		for i = 1, 5 do
+			if g == 1 and i == 1 then
+				table.insert(MB_followList, headOfLine)
+				table.insert(MB_followList, MB_groups[g][i])
+			elseif MB_groups[g][i] and MB_groups[g][i] ~= headOfLine then
+				table.insert(MB_followList, MB_groups[g][i])
+			end
+		end 
+	end
+
+	if not IsShiftKeyDown() then
+		local mySpot = FindInTable(MB_followList, myName)
+		if mySpot > 1 then
+			FollowByName(MB_followList[mySpot-1], 1)
+		end
+	else
+		for g = 1, 8 do for i = 1, 5 do
+			if myName == MB_groups[g][i] and i > 1 then FollowByName(MB_groups[g][1], 1) end
+		end end
+	end
+end
+
+function mb_reportMyCooldowns()
+   if mb_inCombat("player") then 
+       return 
+   end
+
+   if myClass == "Warrior" then
+       if MB_mySpecc == "BT" or MB_mySpecc == "MS" then
+           local recklessnessReady = mb_spellReady("Recklessness")
+           local deathWishReady = mb_spellReady("Death Wish")
+           
+           if not recklessnessReady and deathWishReady then
+               mb_message(GetColors("Recklessness on CD", 60))
+               return
+           end
+           
+           if recklessnessReady and not deathWishReady then
+               mb_message(GetColors("Death Wish on CD", 60))
+               return
+           end
+           
+           if not recklessnessReady and not deathWishReady then
+               mb_message(GetColors("Recklessness and Death Wish on CD", 60))
+               return
+           end
+           
+       elseif MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank" then
+           local shieldWallReady = mb_spellReady("Shield Wall")
+           local knowsLastStand = mb_knowSpell("Last Stand")
+           local lastStandReady = mb_spellReady("Last Stand")
+           
+           if shieldWallReady and knowsLastStand and not lastStandReady then
+               mb_message(GetColors("Last Stand on CD", 60))
+               return
+           end
+           
+           if not shieldWallReady and knowsLastStand and lastStandReady then
+               mb_message(GetColors("Shield Wall on CD", 60))
+               return
+           end
+           
+           if not shieldWallReady and knowsLastStand and not lastStandReady then
+               mb_message(GetColors("Shield Wall and Last Stand on CD", 60))
+               return
+           end
+       end
+       
+   elseif myClass == "Rogue" then
+       local knowsAdrenalineRush = mb_knowSpell("Adrenaline Rush")
+       local adrenalineRushReady = mb_spellReady("Adrenaline Rush")
+       
+       if knowsAdrenalineRush and not adrenalineRushReady then
+           mb_message(GetColors("Adrenaline Rush on CD", 60))
+       end
+       
+   elseif myClass == "Mage" then
+       local evocationReady = mb_spellReady("Evocation")
+       
+       if not evocationReady then
+           mb_message(GetColors("Evocation on CD", 60))
+       end
+       
+   elseif myClass == "Warlock" then
+       local soulstoneOnCD = mb_isItemInBagCoolDown("Major Soulstone")
+       
+       if soulstoneOnCD then
+           mb_message(GetColors("Soulstone on CD", 60))
+       end
+       
+   elseif myClass == "Shaman" then
+       local incarnationReady = mb_spellReady("Incarnation")
+       
+       if not incarnationReady then
+           mb_message(GetColors("Incarnation on CD", 60))
+       end
+       
+   elseif myClass == "Druid" then
+       local innervateReady = mb_spellReady("Innervate")
+       
+       if not innervateReady then
+           mb_message(GetColors("Innervate on CD", 60))
+       end
+   end
+end
+
+function mb_missingSpellsReport()
+   if myClass == "Rogue" then
+       if not mb_knowSpell("Eviscerate", "Rank 9") then
+           mb_message("I dont know Eviscerate rank 9.")
+       end
+       
+       if not mb_knowSpell("Backstab", "Rank 9") then
+           mb_message("I dont know Backstab rank 9")
+       end
+       
+       if not mb_knowSpell("Feint", "Rank 5") then
+           mb_message("I dont know Feint rank 5")
+       end
+       return
+       
+   elseif myClass == "Shaman" then
+       if not mb_knowSpell("Healing Wave", "Rank 10") then
+           mb_message("I dont know Healing Wave rank 10")
+       end
+       
+       if not mb_knowSpell("Strength of Earth Totem", "Rank 5") then
+           mb_message("I dont know Strength of Earth Totem rank 5")
+       end
+       
+       if not mb_knowSpell("Grace of Air Totem", "Rank 3") then
+           mb_message("I dont know Grace of Air Totem rank 3")
+       end
+       return
+       
+   elseif myClass == "Warrior" then
+       if not mb_knowSpell("Heroic Strike", "Rank 9") then
+           mb_message("I dont know Heroic Strike rank 9")
+       end
+       
+       if not mb_knowSpell("Battle Shout", "Rank 7") then
+           mb_message("I dont know Battle Shout rank 7")
+       end
+       
+       if not mb_knowSpell("Revenge", "Rank 6") then
+           mb_message("I dont know Revenge rank 6")
+       end
+       return
+       
+   elseif myClass == "Druid" then
+       if not mb_knowSpell("Healing Touch", "Rank 11") then
+           mb_message("I dont know Healing Touch rank 11")
+       end
+       
+       if not mb_knowSpell("Starfire", "Rank 7") then
+           mb_message("I dont know Starfire rank 7")
+       end
+       
+       if not mb_knowSpell("Rejuvenation", "Rank 11") then
+           mb_message("I dont know Rejuvenation rank 11")
+       end
+       
+       if not mb_knowSpell("Gift of the Wild", "Rank 2") then
+           mb_message("I dont know Gift of the Wild rank 2")
+       end
+       return
+       
+   elseif myClass == "Paladin" then
+       if not mb_knowSpell("Blessing of Wisdom", "Rank 6") then
+           mb_message("I dont know Blessing of Wisdom rank 6")
+       end
+       
+       if not mb_knowSpell("Blessing of Might", "Rank 7") then
+           mb_message("I dont know Blessing of Might rank 7")
+       end
+       
+       if not mb_knowSpell("Holy Light", "Rank 9") then
+           mb_message("I dont know Holy Light rank 9")
+       end
+       return
+       
+   elseif myClass == "Mage" then
+       if not mb_knowSpell("Frostbolt", "Rank 11") then
+           mb_message("I dont know Frostbolt rank 11")
+       end
+       
+       if not mb_knowSpell("Fireball", "Rank 12") then
+           mb_message("I dont know Fireball rank 12")
+       end
+       
+       if not mb_knowSpell("Arcane Missiles", "Rank 8") then
+           mb_message("I dont know Arcane Missiles rank 8")
+       end
+       
+       if not mb_knowSpell("Arcane Brilliance", "Rank 1") then
+           mb_message("I dont know Arcane Brilliance rank 1")
+       end
+       return
+       
+   elseif myClass == "Warlock" then
+       if not mb_knowSpell("Shadow Bolt", "Rank 10") then
+           mb_message("I dont know Shadow Bolt rank 10")
+       end
+       
+       if not mb_knowSpell("Immolate", "Rank 8") then
+           mb_message("I dont know Immolate rank 8")
+       end
+       
+       if not mb_knowSpell("Corruption", "Rank 7") then
+           mb_message("I dont know Corruption rank 7")
+       end
+       
+       if not mb_knowSpell("Shadow Ward", "Rank 4") then
+           mb_message("I dont know Shadow Ward rank 4")
+       end
+       return
+       
+   elseif myClass == "Priest" then
+       if not mb_knowSpell("Greater Heal", "Rank 5") then
+           mb_message("I dont know Greater Heal rank 5")
+       end
+       
+       if not mb_knowSpell("Renew", "Rank 10") then
+           mb_message("I dont know Renew rank 10")
+       end
+       
+       if not mb_knowSpell("Prayer of Healing", "Rank 5") then
+           mb_message("I dont know Prayer of Healing rank 5")
+       end
+       
+       if not mb_knowSpell("Prayer of Fortitude", "Rank 2") then
+           mb_message("I dont know Prayer of Fortitude rank 2")
+       end
+       return
+       
+   elseif myClass == "Hunter" then
+       if not mb_knowSpell("Multi-Shot", "Rank 5") then
+           mb_message("I dont know Multi-Shot rank 5")
+       end
+       
+       if not mb_knowSpell("Serpent Sting", "Rank 9") then
+           mb_message("I dont know Serpent Sting rank 9")
+       end
+       
+       if not mb_knowSpell("Aspect of the Hawk", "Rank 7") then
+           mb_message("I dont know Aspect of the Hawk rank 7")
+       end
+       return
+   end
+end
+
+function mb_changeSpecc(specc)
+   if not (myClass == "Warrior" or myClass == "Druid") then
+       Print("Usage /specc only works for druids and warriors")
+       return
+   end
+   
+   if specc == "" then
+       Print("Usage /specc < classname >   < dps or tank >")
+       return
+   end
+   
+   local _, _, firstWord, restOfString = string.find(specc, "(%w+)[%s%p]*(.*)")
+   if not firstWord then
+       Print("Usage /specc < classname >   < dps or tank >")
+       return
+   end
+   
+   local inputClass = string.lower(firstWord)
+   local playerClass = string.lower(UnitClass("player"))
+   local inputSpecc = string.lower(restOfString or "")
+   
+   Print("Your current specc is: " .. MB_mySpecc)
+   
+   if inputClass ~= playerClass then
+       Print("You had the wrong class given.")
+       Print("Usage /specc < classname >   < dps or tank >")
+       return
+   end
+   
+   if playerClass == "warrior" then
+       if inputSpecc == "tank" then
+           mb_tankGear()
+           return
+       end
+       
+       if inputSpecc == "dps" then
+           mb_furyGear()
+           return
+       end
+       
+       Print("Invalid warrior spec. Use 'tank' or 'dps'")
+       return
+   end
+   
+   if playerClass == "druid" then
+       if inputSpecc == "tank" then
+           MB_mySpecc = "Feral"
+           return
+       end
+       
+       if inputSpecc == "dps" then
+           MB_mySpecc = "Kitty"
+           return
+       end
+       
+       Print("Invalid druid spec. Use 'tank' or 'dps'")
+       return
+   end
+end
