@@ -593,3 +593,220 @@ function mb_hasPouch()
 		if GetBagName(bag) and string.find(GetBagName(bag), "Ammo Pouch") then return true end
 	end
 end
+
+function mb_isBearForm()
+	return mb_warriorIsStance(1)
+end
+
+function mb_isSwimForm()
+	return mb_warriorIsStance(2)
+end
+
+function mb_isCatForm()
+	return mb_warriorIsStance(3)
+end
+
+function mb_isTravelForm()
+	return mb_warriorIsStance(4)
+end
+
+function mb_isBoomForm()
+	return mb_warriorIsStance(5)
+end
+
+function mb_isDruidShapeShifted()
+	if myClass ~= "Druid" then
+		return false
+	end
+
+	if mb_isBearForm() then 
+		return true
+	end
+
+	if mb_isSwimForm() then 
+		return true
+	end
+
+	if mb_isCatForm() then 
+		return true
+	end
+
+	if mb_isTravelForm() then 
+		return true
+	end
+
+	if mb_isBoomForm() then 
+		return true
+	end
+end
+
+function mb_cancelDruidShapeShift()
+	if mb_isBearForm() then
+		mb_warriorSetStance(1)
+		return
+	end
+
+	if mb_isSwimForm() then
+		mb_warriorSetStance(2)
+		return
+	end
+
+	if mb_isCatForm() then
+		mb_warriorSetStance(3)
+		return
+	end
+
+	if mb_isTravelForm() then
+		mb_warriorSetStance(4)
+		return
+	end
+	
+	if mb_isBoomForm() then 
+		b_warriorSetStance(5)
+		return
+	end
+end
+
+function mb_warriorIsStance(id)
+	local x0, x1, st, x3 = GetShapeshiftFormInfo(id)
+	return st
+end
+
+function mb_warriorIsBattle()
+	return mb_warriorIsStance(1)
+end
+
+function mb_warriorIsDefensive()
+	return mb_warriorIsStance(2)
+end
+
+function mb_warriorIsBerserker()
+	return mb_warriorIsStance(3)
+end
+
+function mb_warriorSetStance(id)
+	CastShapeshiftForm(id)
+end
+
+function mb_warriorSetBattle()
+	if not mb_warriorIsBattle() then
+		mb_warriorSetStance(1)
+	end
+end
+
+function mb_warriorSetDefensive()
+	if not mb_warriorIsDefensive() then
+		mb_warriorSetStance(2)
+	end
+end
+
+function mb_warriorSetBerserker()
+	if not mb_warriorIsBerserker() then
+		mb_warriorSetStance(3)
+	end
+end
+
+function mb_numShards()
+	local shards = 0
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local link = GetContainerItemLink(bag, slot)
+			if link == nil then
+				link = ""
+			end
+			if string.find(link, "Soul Shard") then
+				shards = shards + 1
+			end
+		end
+	end
+	return shards
+end
+
+function mb_reportShards()
+	if myClass ~= "Warlock" then
+		return
+	end
+
+	local count = mb_numShards() or 0
+	mb_message("I\'ve got "..count.." shards!")
+end
+
+function mb_reportRunes()
+	if not mb_imHealer() then
+		return
+	end
+
+	local count = mb_hasItem("Demonic Rune") or 0
+	mb_message("I\'ve got "..count.." runes!")
+end
+
+function mb_partyIsPoisoned()	
+	if mb_tankTarget("Princess Huhuran") or mb_isAtGrobbulus() then
+		return false
+	end	
+
+	local i, x
+	for i = 1, GetNumPartyMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("party"..i, x, 1)
+			if debuffType == "Poison" then 
+				return true 
+			end
+		end
+	end
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Poison" then 
+			return true 
+		end
+	end
+end
+
+function mb_raidIsPoisoned()
+	if mb_tankTarget("Princess Huhuran") or mb_isAtGrobbulus() then
+		return false
+	end	
+
+	local i, x
+	for i = 1, GetNumRaidMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("raid"..i, x, 1)
+			if debuffType == "Poison" then 
+				return true 
+			end
+		end
+	end
+end
+
+function mb_playerIsPoisoned()
+	if mb_tankTarget("Princess Huhuran") or mb_isAtGrobbulus() then
+		return false
+	end	
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Poison" then 
+			return true 
+		end
+	end
+end
+
+function mb_partyIsDiseased()	
+	local i, x
+	for i = 1, GetNumPartyMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("party"..i, x, 1)
+			if debuffType == "Disease" then 
+				return true 
+			end
+		end
+	end
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Disease" then 
+			return true 
+		end
+	end
+end

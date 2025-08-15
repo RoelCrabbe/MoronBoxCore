@@ -172,143 +172,309 @@ MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- Mages will not use Sco
 
 ----------------------------------------------- Healing ----------------------------------------------
 
-function mb_changeHots(value) -- Change hots if needed	
-	local myClass = UnitClass("player")
+function mb_getHealSpell()
+	if myClass == "Shaman" then
+		if mb_equippedSetCount("Earthfury") == 8 then			
+			MB_myHealSpell = "Healing Wave"
+			return true
 
-	if value == "HIGH" then
-		
-		MB_priestRenewLowRandomPercentage = 0.66
-		MB_priestRenewLowRandomRank = "Rank 10"
-
-		MB_priestRenewAggroedPlayerPercentage = 0.90
-		MB_priestRenewAggroedPlayerRank = "Rank 10"
-
-		MB_priestShieldLowRandomPercentage = 0.45
-		MB_priestShieldAggroedPlayerPercentage = 0.25
-
-		MB_druidRejuvenationLowRandomPercentage = 0.66
-		MB_druidRejuvenationLowRandomRank = "Rank 11"
-
-		MB_druidRejuvenationAggroedPlayerPercentage = 0.9
-		MB_druidRejuvenationAggroedPlayerRank = "Rank 11"
-
-		MB_paladinDivineFavorPercentage = 0.9
-		MB_priestInnerFocusPercentage = 0.66
-
-		-- Swiftmend specced Druids settings:
-		MB_druidSwiftmendRejuvenationLowRandomPercentage = 0.75
-		MB_druidSwiftmendRejuvenationLowRandomRank = "Rank 11"
-
-		MB_druidSwiftmendAtPercentage = 0.5
-		MB_druidSwiftmendRegrowthLowRandomPercentage = 0.3
-
-		MB_druidSwiftmendRegrowthAggroedPlayerPercentage = 0.90
-		MB_druidSwiftmendRegrowthAggroedPlayerRank = "Rank 9"
-
-		if (myClass == "Druid" or myClass == "Priest" or mb_iamFocus()) then 
-			Print("Hots changed to: "..value)
-		end
-		
-	elseif value == "MEDIUM" then
-		
-		MB_priestRenewLowRandomPercentage = 0.66
-		MB_priestRenewLowRandomRank = "Rank 4"
-		
-		MB_priestRenewAggroedPlayerPercentage = 0.90
-		MB_priestRenewAggroedPlayerRank = "Rank 7"
-		
-		MB_priestShieldLowRandomPercentage = 0.33
-		MB_priestShieldAggroedPlayerPercentage = 0.25
-		
-		MB_druidRejuvenationLowRandomPercentage = 0.45
-		MB_druidRejuvenationLowRandomRank = "Rank 5"
-		
-		MB_druidRejuvenationAggroedPlayerPercentage = 0.9
-		MB_druidRejuvenationAggroedPlayerRank = "Rank 9"
-		
-		MB_paladinDivineFavorPercentage = 0.8
-		MB_priestInnerFocusPercentage = 0.4
-
-		-- Swiftmend specced Druids settings:
-		MB_druidSwiftmendRejuvenationLowRandomPercentage = 0.7
-		MB_druidSwiftmendRejuvenationLowRandomRank = "Rank 6"
-		
-		MB_druidSwiftmendAtPercentage = 0.45
-		MB_druidSwiftmendRegrowthLowRandomPercentage = 0.2
-		
-		MB_druidSwiftmendRegrowthAggroedPlayerPercentage = 0.75
-		MB_druidSwiftmendRegrowthAggroedPlayerRank = "Rank 4"
-
-		if (myClass == "Druid" or myClass == "Priest" or mb_iamFocus()) then 
-			Print("Hots changed to: "..value)
+		elseif mb_equippedSetCount("The Ten Storms") >= 3 and mb_equippedSetCount("Stormcaller\'s Garb") == 5 then			
+			MB_myHealSpell = "Chain Heal"
+			return true
+		else			
+			if MB_raidAssist.Shaman.DefaultToHealingWave then				
+				MB_myHealSpell = "Healing Wave"
+				return true
+			else
+				MB_myHealSpell = "Chain Heal"
+			end
 		end
 
-	elseif value == "LOW" then
-		
-		MB_priestRenewLowRandomPercentage = 0.33
-		MB_priestRenewLowRandomRank = "Rank 3"
+	elseif myClass == "Priest" then
+		if mb_myNameInTable(MB_myFlashHealerList) then
+			MB_myHealSpell = "Flash Heal"
+			return true	
 
-		MB_priestRenewAggroedPlayerPercentage = 0.75
-		MB_priestRenewAggroedPlayerRank = "Rank 6"
-
-		MB_priestShieldLowRandomPercentage = 0.2
-		MB_priestShieldAggroedPlayerPercentage = 0.25
-
-		MB_druidRejuvenationLowRandomPercentage = 0.33
-		MB_druidRejuvenationLowRandomRank = "Rank 3"
-
-		MB_druidRejuvenationAggroedPlayerPercentage = 0.75
-		MB_druidRejuvenationAggroedPlayerRank = "Rank 6"
-
-		MB_paladinDivineFavorPercentage = 0.8
-		MB_priestInnerFocusPercentage = 0.3
-
-		-- Swiftmend specced Druids settings:
-		MB_druidSwiftmendRejuvenationLowRandomPercentage = 0.4
-		MB_druidSwiftmendRejuvenationLowRandomRank = "Rank 4"
-
-		MB_druidSwiftmendAtPercentage = 0.33
-		MB_druidSwiftmendRegrowthLowRandomPercentage = 0.2
-
-		MB_druidSwiftmendRegrowthAggroedPlayerPercentage = 0.75
-		MB_druidSwiftmendRegrowthAggroedPlayerRank = "Rank 4"
-
-		if (myClass == "Druid" or myClass == "Priest" or mb_iamFocus()) then 
-			Print("Hots changed to: "..value)
+		elseif mb_equippedSetCount("Vestments of Transcendence") == 8 then			
+			MB_myHealSpell = "Greater Heal"
+			return true
+		else
+			MB_myHealSpell = "Heal"
+			return true
 		end
-		
-	elseif value == "OFF" then
-		
-		MB_priestRenewLowRandomPercentage = 0.01
-		MB_priestRenewLowRandomRank = "Rank 4"
 
-		MB_priestRenewAggroedPlayerPercentage = 0.01
-		MB_priestRenewAggroedPlayerRank = "Rank 7"
+	elseif myClass == "Druid" and mb_equippedSetCount("Dreamwalker Raiment") >= 2 then
+		MB_myHealSpell = "Rejuvenation"
+		return true
+	end
+end
 
-		MB_priestShieldLowRandomPercentage = 0.01
-		MB_priestShieldAggroedPlayerPercentage = 0.01
+function mb_natureSwiftnessLowAggroedPlayer()
+	if not MB_raidAssist.Shaman.NSLowHealthAggroedPlayers then
+		return false
+	end
 
-		MB_druidRejuvenationLowRandomPercentage = 0.01
-		MB_druidRejuvenationLowRandomRank = "Rank 5"
+	if not UnitInRaid("player") then 
+		return false
+	end
 
-		MB_druidRejuvenationAggroedPlayerPercentage = 0.01
-		MB_druidRejuvenationAggroedPlayerRank = "Rank 9"
+	if not mb_inCombat("player") then
+		return false
+	end
 
-		MB_paladinDivineFavorPercentage = 0.8
-		MB_priestInnerFocusPercentage = 0.3
+	if (mb_spellReady("Nature\'s Swiftness") or mb_hasBuffOrDebuff("Nature\'s Swiftness", "player", "buff")) then		
+		local blastNSatThisPercentage = 0.2
+		local instantSpell = "Healing Touch"
 
-		-- Swiftmend specced Druids settings:
-		MB_druidSwiftmendRejuvenationLowRandomPercentage = 0.01
-		MB_druidSwiftmendRejuvenationLowRandomRank = "Rank 6"
-
-		MB_druidSwiftmendAtPercentage = 0.01
-		MB_druidSwiftmendRegrowthLowRandomPercentage = 0.01
-
-		MB_druidSwiftmendRegrowthAggroedPlayerPercentage = 0.01
-		MB_druidSwiftmendRegrowthAggroedPlayerRank = "Rank 4"
-
-		if (myClass == "Druid" or myClass == "Priest" or mb_iamFocus()) then 
-			Print("Hots changed to: "..value)
+		if mb_myClassOrder() == 1 then
+			blastNSatThisPercentage = 0.35
+		elseif mb_myClassOrder() == 2 then
+			blastNSatThisPercentage = 0.30
+		elseif mb_myClassOrder() == 3 then
+			blastNSatThisPercentage = 0.25
+		elseif mb_myClassOrder() == 4 then
+			blastNSatThisPercentage = 0.20
+		elseif mb_myClassOrder() >= 5 then
+			blastNSatThisPercentage = 0.15
 		end
+
+		if myClass == "Shaman" then			
+			instantSpell = "Healing Wave"
+		end
+
+		local aggrox = AceLibrary("Banzai-1.0")
+		for i =  1, GetNumRaidMembers() do
+			local NSTarget = "raid"..i
+
+			if NSTarget and aggrox:GetUnitAggroByUnitId(NSTarget) then				
+				if mb_isValidFriendlyTarget(NSTarget, instantSpell) 
+					and mb_healthPct(NSTarget) <= blastNSatThisPercentage
+					and not mb_hasBuffOrDebuff("Feign Death", NSTarget, "buff") then 
+				
+					if UnitIsFriend("player", NSTarget) then
+						ClearTarget()
+					end
+				
+					if not mb_hasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then						
+						SpellStopCasting()
+					end
+
+					mb_selfBuff("Nature\'s Swiftness")
+				
+					if mb_hasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then		
+						CastSpellByName(instantSpell, false)
+						SpellTargetUnit(NSTarget)
+						SpellStopTargeting()					
+					end
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
+function mb_castSpellOnRandomRaidMember(spell, rank, percentage)
+	if not UnitInRaid("player") then
+        return
+    end
+
+	if mb_imBusy() then
+        return
+    end
+
+    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+        return
+    end
+
+	local n, r, i, j
+	n = mb_GetNumPartyOrRaidMembers()
+	r = math.random(n) - 1
+
+	for i = 1, n do
+		j = i + r
+		if j > n then
+			j = j - n
+		end	
+
+		if mb_healthPct("raid"..j) < percentage
+			and not mb_hasBuffNamed(spell, "raid"..j)
+			and mb_isValidFriendlyTarget("raid"..j, spell) then
+
+			if UnitIsFriend("player", "raid"..j) then
+				ClearTarget()
+			end
+
+			if spell == "Weakened Soul" then
+				CastSpellByName("Power Word: Shield", false)
+			else
+				CastSpellByName(spell.."\("..rank.."\)", false)
+			end
+
+			SpellTargetUnit("raid"..j)
+			SpellStopTargeting()
+			break
+		end
+	end
+end
+
+function mb_castShieldOnRandomRaidMember(spell, rank)
+	if mb_imBusy() then
+		return
+	end
+
+	if not UnitInRaid("player") then
+		return
+	end
+
+	if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+		return
+	end
+	
+	local n, r, i, j
+	n = mb_GetNumPartyOrRaidMembers()
+	r = math.random(n) - 1
+
+	for i = 1, n do
+		j = i + r
+		if j > n then
+			j = j - n
+		end	
+
+		if not mb_hasBuffNamed("Power Word: Shield", "raid"..j) 
+			and not mb_hasBuffNamed("Weakened Soul", "raid"..j)
+			and mb_isValidFriendlyTarget("raid"..j, spell) then
+
+			if UnitIsFriend("player", "raid"..j) then
+				ClearTarget()
+			end
+				
+			CastSpellByName("Power Word: Shield", false)
+			
+			SpellTargetUnit("raid"..j)
+			SpellStopTargeting()
+			break
+		end
+	end
+end
+
+function mb_powerShieldTanks()	
+	if myClass ~= "Priest" then
+		return
+	end
+
+	local i = 1
+	for _, tank in MB_raidTanks do
+		if mb_isAlive(MBID[tank]) then
+			if mb_myClassOrder() == i then				
+				TargetUnit(MBID[tank])
+				CastSpellByName("Power Word: Shield")
+				return
+			end
+
+			i = i + 1
+		end
+	end
+end
+
+function mb_instructorRazAddsHeal()
+    if not UnitInRaid("player") then
+        return false
+    end
+
+    if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myInstructorRazuviousAddHealer) then
+		TargetUnit(MBID[MB_raidLeader].."targettarget")
+
+		if UnitName("target") == "Deathknight Understudy" then
+			local allowedOverHeal, spellToCast
+
+			if myClass == "Shaman" then			
+				allowedOverHeal = GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
+				spellToCast = "Healing Wave("..MB_myShamanMainTankHealingRank.."\)"
+
+			elseif myClass == "Paladin" then				
+				allowedOverHeal = GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
+				spellToCast = "Flash of Light("..MB_myPaladinMainTankHealingRank.."\)"
+
+			elseif myClass == "Priest" then			
+				allowedOverHeal = GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
+				spellToCast = "Greater Heal("..MB_myPriestMainTankHealingRank.."\)"
+
+			elseif myClass == "Druid" then			
+				allowedOverHeal = GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPercentage * 4
+				spellToCast = "Healing Touch("..MB_myDruidMainTankHealingRank.."\)"
+			end
+
+			if mb_isValidFriendlyTarget("target", spellToCast) and mb_healthDown("target") >= allowedOverHeal then				
+				CastSpellByName(spellToCast)
+			end
+			return true
+		end
+    end
+    return false
+end
+
+function mb_healLieutenantAQ20()
+	if not UnitInRaid("player") then
+        return false
+    end
+
+	if MB_lieutenantAndorovIsNotHealable.Active then
+		return false
+	end
+
+	if Instance.AQ20 then
+        TargetByName("Lieutenant General Andorov")
+
+        if UnitName("target") == "Lieutenant General Andorov" then
+            local spellToCast
+
+            if myClass == "Shaman" then
+                spellToCast = "Healing Wave(rank 7)"
+
+            elseif myClass == "Priest" then
+                spellToCast = "Heal"
+
+            elseif myClass == "Druid" then
+                spellToCast = "Healing Touch(rank 3)"
+
+            elseif myClass == "Paladin" then
+                spellToCast = "Flash of Light"
+            end
+
+            if mb_isValidFriendlyTarget("target", spellToCast) and mb_healthPct("target") <= 0.4 then
+                CastSpellByName(spellToCast)
+                return true
+            end
+        else
+            TargetLastTarget()
+        end
+    end
+    return false
+end
+
+function mb_targetMyAssignedTankToHeal()	
+	if mb_myNameInTable(MB_myThreatPWSoakerHealerList) then	
+		TargetByName(MB_myThreatPWSoaker)
+		return
+	end		
+
+	if mb_myNameInTable(MB_myFirstPWSoakerHealerList) then	
+		TargetByName(MB_myFirstPWSoaker)
+		return
+	end	
+	
+	if mb_myNameInTable(MB_mySecondPWSoakerHealerList) then	
+		TargetByName(MB_mySecondPWSoaker)
+		return
+	end	
+
+	if mb_myNameInTable(MB_myThirdPWSoakerHealerList) then	
+		TargetByName(MB_myThirdPWSoaker)
+		return
+	end
+
+	if not MB_myAssignedHealTarget then
+		MB_myAssignedHealTarget = MB_raidLeader
 	end
 end

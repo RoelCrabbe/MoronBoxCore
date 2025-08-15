@@ -33,7 +33,7 @@ local WarlockCounter = {
 function mb_single()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -108,7 +108,7 @@ end
 function mb_multi()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -183,7 +183,7 @@ end
 function mb_AOE()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -258,7 +258,7 @@ end
 function mb_setup()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -333,7 +333,7 @@ end
 function mb_preCast()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -369,7 +369,7 @@ end
 function mb_healAndTank()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        Print("WARNING: You have not chosen a raid leader")
+        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -602,5 +602,424 @@ function mb_healAndTank()
         end
 
         SingleRotation()		
+	end
+end
+
+--[####################################################################################################]--
+--[########################################### Drinking! ##############################################]--
+--[####################################################################################################]--
+
+function mb_makeWater()
+	if myClass ~= "Mage" then
+		return
+	end
+
+	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+		return
+	end
+
+	if mb_imBusy() then
+		return
+	end
+
+	if mb_manaPct("player") > 0.8 and mb_hasBuffNamed("Drink", "player") then		
+		DoEmote("Stand")
+		return
+	end
+
+	if UnitMana("player") < 780 then
+		if mb_spellReady("Evocation") then
+			mb_evoGear()
+			CastSpellByName("Evocation")
+			return
+		end
+
+		mb_mageGear()
+		mb_smartDrink()
+	end
+
+	if mb_getAllContainerFreeSlots() > 0 then		
+		CastSpellByName("Conjure Water")
+	else 
+		mb_message("My bags are full, can\'t conjure more stuff", 60)
+	end
+end
+
+function mb_mageWater()
+	local waterranks = TableInvert(MB_myWater)
+	local bestrank = 1
+	local bestwater = nil
+	local count = 0
+	local bag, slot, link
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+			
+			if texture then
+				link = GetContainerItemLink(bag, slot)
+				_, stack = GetContainerItemInfo(bag, slot)
+				local bsnum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsnum)
+				
+				if FindInTable(MB_myWater, itemName) then
+					if waterranks[itemName] > bestrank then
+						bestwater = itemName
+						bestrank = waterranks[itemName]
+						count = stack
+					elseif waterranks[itemName] == bestrank then
+						count = count + stack
+					end
+				end
+			end
+		end 
+	end
+	return count, bestwater
+end
+
+function mb_pickUpWater()
+	local waterranks = TableInvert(MB_myWater)
+	local amount = 0
+	local mycarriedwater = { }
+	local bestrank = 1
+	local bag, slot, link
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
+			
+			if texture then
+				link = GetContainerItemLink(bag, slot)
+				local bsnum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsnum)
+				if FindInTable(MB_myWater, itemName) then
+					if waterranks[itemName] > bestrank then						
+						bestrank=waterranks[itemName]
+						bestwater=itemName.." "..bag.." "..slot
+					end
+				end
+			end 
+		end 
+	end
+
+	if bestrank > 0 then
+		local _ , _, water, bag, slot = string.find(bestwater, "(Conjured.*Water) (%d+) (%d+)")		
+		mb_coolDownPrint("Found "..water.." in bag "..bag.." in slot "..slot)
+		PickupContainerItem(bag, slot)
+		return water
+	end
+end
+
+function mb_smartDrink() 
+	if IsControlKeyDown() then		
+		mb_sunfruitBuff()
+		return
+	end
+
+	if IsAltKeyDown() then		
+		mb_smartManaPotTrade()
+		return
+	end
+
+	if mb_manaPct("player") > 0.99 and mb_hasBuffNamed("Drink", "player") then		
+		DoEmote("Stand")
+		return
+	end
+
+	if not mb_manaUser() then
+		return
+	end
+
+	if myClass == "Mage" and MB_tradeOpen then
+		if mb_mageWater() > 20 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
+			return 
+		end
+		
+		if mb_mageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then 
+			mb_coolDownPrint("Not enough water to trade!")
+			CancelTrade()
+			return
+		end
+	end
+
+	if myClass ~= "Mage" and not MB_tradeOpen then
+		local waterMage = mb_isMageInGroup()
+		if waterMage then
+			if mb_mageWater() < 1 and mb_manaUser() then				
+				if mb_isAlive(MBID[waterMage]) and mb_inTradeRange(MBID[waterMage]) then					
+					TargetByName(waterMage, 1)
+					
+					if not MB_tradeOpen then
+						InitiateTrade("target")
+					end
+				end
+			end
+		end
+	end
+
+	if myClass == "Mage" and MB_tradeOpen then
+		if mb_mageWater() > 21 and mb_pickUpWater() then			
+			mb_coolDownPrint("Trading Water")
+			ClickTradeButton(1)
+			return
+		end
+	end
+
+	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+		return
+	else
+		if myClass == "Mage" then			
+			mb_mageGear() 
+		end
+	end
+
+	local _, myBest = mb_mageWater()
+	if not mb_hasBuffNamed("Drink", "player") and myBest then
+		if mb_manaUser() and mb_manaDown() > 0 then			
+			mb_useFromBags(myBest)
+		end
+	end
+end
+
+function mb_smartManaPotTrade()
+	if not mb_imHealer() then
+		return
+	end
+
+	if myName == MB_raidAssist.PotionTraders.MajorMana and MB_tradeOpen then
+		if mb_numManapots() > 3 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Major Mana Potion") then
+			return 
+		end
+		
+		if mb_numManapots() < 2 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Major Mana Potion") then 
+			mb_coolDownPrint("Not enough water to trade!")
+			CancelTrade()
+			return
+		end
+	end
+
+	if myName ~= MB_raidAssist.PotionTraders.MajorMana and not MB_tradeOpen then
+		if MB_raidAssist.PotionTraders.MajorMana and mb_unitInRaidOrParty(MB_raidAssist.PotionTraders.MajorMana) then
+			if mb_numManapots() < 1 then				
+				if mb_isAlive(MBID[MB_raidAssist.PotionTraders.MajorMana]) and mb_inTradeRange(MBID[MB_raidAssist.PotionTraders.MajorMana]) then
+					if not MB_tradeOpen then
+						InitiateTrade(MBID[MB_raidAssist.PotionTraders.MajorMana])
+					end
+				end
+			end
+		end
+	end
+
+	if myName == MB_raidAssist.PotionTraders.MajorMana and MB_tradeOpen then
+		if mb_numManapots() > 2 then
+			local i, x = mb_bagSlotOf("Major Mana Potion")
+			PickupContainerItem(i, x)
+			ClickTradeButton(1)
+			return
+		end
+	end
+end
+
+--[####################################################################################################]--
+--[########################################### Following! ##############################################]--
+--[####################################################################################################]--
+
+function mb_followFocus()
+	if Instance.AQ40 then
+		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
+			return
+		end
+	elseif Instance.MC then
+		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
+			return
+		end
+	elseif Instance.Ony then
+		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+			return
+		end
+	end
+
+	if myClass == "Warlock" and mb_hasBuffOrDebuff("Hellfire", "player", "buff") then
+		CastSpellByName("Life Tap(Rank 1)")
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if MB_raidLeader then		
+		FollowByName(MB_raidLeader, 1)
+		SetView(5) 
+	end
+end
+
+function mb_casterFollow()
+	if Instance.AQ40 then
+		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
+			return
+		end
+	elseif Instance.MC then
+		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
+			return
+		end
+	elseif Instance.Ony then
+		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+			return
+		end
+	end
+
+	if myClass == "Warlock" and mb_hasBuffOrDebuff("Hellfire", "player", "buff") then
+		CastSpellByName("Life Tap(Rank 1)")
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if mb_imRangedDPS() then
+		mb_followFocus()
+	end
+end
+
+function mb_meleeFollow()
+	if Instance.AQ40 then
+		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
+			return
+		end
+	elseif Instance.MC then
+		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
+			return
+		end
+	elseif Instance.Ony then
+		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+			return
+		end
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then	
+		if mb_myNameInTable(MB_mySkeramLeftTank) then
+			return
+		end
+
+		if mb_myNameInTable(MB_mySkeramMiddleTank) then
+			return
+		end
+
+		if mb_myNameInTable(MB_mySkeramRightTank) then
+			return
+		end
+	
+		if mb_myNameInTable(MB_mySkeramLeftOFFTANKS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_mySkeramLeftTank), 1)
+			return
+		end
+
+		if mb_myNameInTable(MB_mySkeramMiddleOFFTANKS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank), 1)
+			return
+		end
+
+		if mb_myNameInTable(MB_mySkeramMiddleDPSERS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank), 1)
+			return
+		end
+
+		if mb_myNameInTable(MB_mySkeramRightOFFTANKS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_mySkeramRightTank), 1)
+			return
+		end
+
+		return
+
+	elseif Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+		if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) then
+			return
+		end
+
+		if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank) then
+			return
+		end
+			
+		if mb_myNameInTable(MB_myRazorgoreLeftDPSERS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank), 1)
+			return
+		end
+
+		if mb_myNameInTable(MB_myRazorgoreRightDPSERS) then
+			FollowByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank), 1)
+			return
+		end
+
+		return
+	end
+
+	if mb_imMeleeDPS() then		
+		mb_followFocus()
+	end
+
+	if mb_imTank() and not MB_myOTTarget
+		and not (mb_tankTarget("Instructor Razuvious") or mb_tankTarget("Razorgore the Untamed") 
+		or mb_tankTarget("Chromaggus") or mb_isAtTwinsEmps()) then
+		mb_followFocus()
+	end
+end
+
+function mb_tankFollow()
+	if Instance.AQ40 then
+		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
+			return
+		end
+	elseif Instance.MC then
+		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
+			return
+		end
+	elseif Instance.Ony then
+		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+			return
+		end
+	end
+
+	if myClass == "Warlock" and mb_hasBuffOrDebuff("Hellfire", "player", "buff") then
+		CastSpellByName("Life Tap(Rank 1)")
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if mb_imTank() then		
+		mb_followFocus()
+	end
+end
+
+function mb_healerFollow()
+	if Instance.AQ40 then
+		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
+			return
+		end
+	elseif Instance.MC then
+		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
+			return
+		end
+	elseif Instance.Ony then
+		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+			return
+		end
+	end
+
+	if myClass == "Warlock" and mb_hasBuffOrDebuff("Hellfire", "player", "buff") then
+		CastSpellByName("Life Tap(Rank 1)")
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if mb_imHealer() then		
+		mb_followFocus()
 	end
 end

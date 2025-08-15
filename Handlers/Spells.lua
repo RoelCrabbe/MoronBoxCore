@@ -124,6 +124,87 @@ function mb_imBusy()
 	if MB_isCasting or MB_isChanneling then return true end
 end
 
+function mb_petSpellCooldown(spellName)
+	local index = mb_getPetSpellOnBar(spellName)
+	local timeLeft, _, _ = GetPetActionCooldown(index)
+	return timeLeft
+end
+
+function mb_petSpellReady(spellName)
+	return mb_petSpellCooldown(spellName) == 0
+end
+
+function mb_getPetSpellOnBar(spellName)
+	for i = 1, 10 do
+		local name, _, _, _, _, _, _ = GetPetActionInfo(i)
+		if name == spellName then
+			return i
+		end
+	end
+end
+
+function mb_castPetAction(spellName)
+	if not UnitExists("pet") then
+		return
+	end
+
+	local index = mb_getPetSpellOnBar(spellName)	
+	CastPetAction(index)
+end
+
+function mb_getMCActions()
+	if mb_hasBuffNamed("Mind Control", "player") then
+		return
+	end
+
+	if not UnitExists("pet") then
+		return
+	end
+
+	if UnitName("target") == "Deathknight Understudy"
+		or UnitName("target") == "Naxxramas Worshipper" then		
+		CastSpellByName("Mind Control")
+	end
+end
+
+function mb_doRazuviousActions()
+	if not UnitExists("pet") then
+		return
+	end
+
+	for i = 1, 4 do
+		TargetByName("Instructor Razuvious")
+		PetAttack()
+
+		if mb_petSpellReady("Shield Wall") then
+			mb_castPetAction("Shield Wall")
+			mb_message("Shield Wall!")
+		end			
+	end
+end
+
+function mb_doFaerlinaActions()
+	if not UnitExists("pet") then
+		return
+	end
+
+	for i = 1, 4 do
+		TargetByName("Grand Widow Faerlina")
+		PetAttack("Grand Widow Faerlina")			
+	end
+end
+
+function mb_orbControlling()
+	if not UnitExists("pet") then
+		return
+	end
+
+	for i = 1, 8 do		
+		mb_castPetAction("Destroy Egg")
+		CastPetAction(5)		
+	end
+end
+
 --[####################################################################################################]--
 --[######################################## Trinket Functions #########################################]--
 --[####################################################################################################]--

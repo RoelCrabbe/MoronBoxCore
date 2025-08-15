@@ -141,10 +141,6 @@ local MB_mobsToAutoTurnSet = {
     ["Deathknight"] = true,
 }
 
-local MB_mobsToRootSet = {
-    ["Qiraji Gladiator"] = true,
-}
-
 local MB_mobsToAutoBreakFearSet = {
     ["Deathknight"] = true,
     ["Princess Yauj"] = true
@@ -474,11 +470,6 @@ end
 -- Utility functions
 function mb_mobsToAutoTurn()
     return mb_tankTargetInSet(MB_mobsToAutoTurnSet)
-end
-
-function mb_mobsToRoot()
-    local targetName = UnitName("target")
-    return targetName and MB_mobsToRootSet[targetName] == true
 end
 
 function mb_mobsToAutoBreakFear()

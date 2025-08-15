@@ -260,3 +260,47 @@ function mb_getNameFromPlayerClassInParty(checkClass)
 		end
 	end
 end
+
+function mb_isMageInGroup()
+    local mages = {}
+
+    if UnitInRaid("player") then
+        for i = 1, GetNumRaidMembers() do
+            local name, _, _, _, iClass = GetRaidRosterInfo(i)
+            if iClass == "Mage" then 
+                table.insert(mages, name) 
+            end
+        end
+    else
+        if UnitClass("player") == "Mage" then 
+            table.insert(mages, UnitName("player")) 
+        end
+           
+        for i = 1, 4 do
+            local iClass = UnitClass("party"..i)
+            local name = UnitName("party"..i)
+           
+            if iClass == "Mage" and name then
+                table.insert(mages, name)
+            end
+        end
+    end
+    
+    if TableLength(mages) == 0 then
+        return nil
+    else
+        return mages[math.random(TableLength(mages))]
+    end
+end
+
+function mb_meleeDPSInParty()
+	if mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
+		return true
+	end
+end
+
+function mb_numOfCasterHealerInParty()
+    local total = 0
+    total = mb_numberOfClassInParty("Mage") + mb_numberOfClassInParty("Priest") + mb_numberOfClassInParty("Druid") + mb_numberOfClassInParty("Shaman")
+    return total
+end
