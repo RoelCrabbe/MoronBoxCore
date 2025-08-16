@@ -786,8 +786,6 @@ function mb_initializeClasslists()
 	MB_offTanks = {}
 	MB_raidTanks = {}
 	MB_noneDruidTanks = {}
-	MB_fireMages = {}
-	MB_frostMages = {}
 	MB_groupID = {}
 	MB_classList = { 
 		Warrior = {},
@@ -879,18 +877,6 @@ function mb_initializeClasslists()
 			table.insert(MB_noneDruidTanks, dru)
 		end
 	end
-
-	for _, mage in pairs(MB_classList["Mage"]) do
-		if FindInTable(MB_raidAssist.Mage.FireMages, mage) then
-			table.insert(MB_fireMages, mage)
-		end
-	end
-
-	for _, mage in pairs(MB_classList["Mage"]) do
-		if FindInTable(MB_raidAssist.Mage.FrostMages, mage) then
-			table.insert(MB_frostMages, mage)
-		end
-	end 
 end
 
 function mb_mySpecc()

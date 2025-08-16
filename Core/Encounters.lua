@@ -1,516 +1,413 @@
----------------------------------------------- Patchwerk ---------------------------------------------
-	-- MB_myPatchwerkBoxStrategyHeal => True or False (Work or Not)
+--[####################################################################################################]--
+--[#################################### BOSS ENCOUNTER CONFIGURATIONS ###{#############################]--
+--[####################################################################################################]--
 
-	MB_myPatchwerkBoxStrategy = true
-
-    --------------------------------------- Patchwerk Tactics ----------------------------------------
-    -- MB_myThreatPWSoaker, MB_myFirstPWSoaker !! MUST BE ASSIGNED !! Heal dependent
-    -- MB_mySecondPWSoaker, MB_myThirdPWSoaker !! MUST BE ASSIGNED !! Heal dependent
-    -- Place healers into HealerList and they will heal their tank
-    -- Alliance doesn't need this, they have Divine Intervention
-    --------------------------------------------------------------------------------------------------
-
-    MB_myThreatPWSoaker = "Moron"
-    MB_myThreatPWSoakerHealerList = {
-        "Bogeycrap", -- 8T1 Shaman
-        "Midavellir", -- Priest
-        "Pyqmi" -- Druid
-    }
-
-    MB_myFirstPWSoaker = "Suecia"
-    MB_myFirstPWSoakerHealerList = {
-        "Shamuk", -- 6T3+ Shaman for BUFF
-        "Draub", -- 8T2 Priest
-        "Mvenna", -- 8T1 Shaman
-        "Superkoe", -- 8T1 Shaman	
-    }
+--[[
+    This file contains all boss encounter strategies and player assignments.
     
-    MB_mySecondPWSoaker = "Ajlano"
-    MB_mySecondPWSoakerHealerList = {
-        "Laitelaismo", -- 6T3+ Shaman for BUFF
-        "Ayag", -- 8T2 Priest
-        "Chimando", -- 8T1 Shaman
-        "Smalheal", -- Druid
-    }
-        
-    MB_myThirdPWSoaker = "Almisael"
-    MB_myThirdPWSoakerHealerList = {
-        "Ootskar", -- 6T3+ Shaman for BUFF
-        "Healdealz", -- Priest
-        "Purges", -- 8T1 Shaman
-        "Zwartje"
-    }
-
----------------------------------------------- Patchwerk ---------------------------------------------
-
-
-
------------------------------------------------ Maexxna ----------------------------------------------
-    -- MB_myMaexxnaBoxStrategy => True or False (Work or Not)
-
-    MB_myMaexxnaBoxStrategy = true
-
-    ------------------------------------------ Maexxna Tactics ---------------------------------------
-    -- MB_myMaexxnaMainTank !! MUST BE ASSIGNED !! Will remove certain useless buffs so you stay below
-    -- the readable buff cap. Can be removed to be honest since healers heal TargetOfTarget
-    -- MB_myMaexxnaDruidHealer !! MUST BE ASSIGNED !! Regrowth, Rejuvenation, Abolish
-    -- MB_myMaexxnaPriestHealer !! MUST BE ASSIGNED !! Renew
-    --------------------------------------------------------------------------------------------------
-
-    MB_myMaexxnaMainTank = {
-        -- Horde Team 1
-        "Moron",
-
-        -- Alliance
-        "Alliance Tank 1"
-    }
-
-    MB_myMaexxnaDruidHealer = {        
-        -- Horde Team 1
-        "Smalheal",
-        "Pyqmi",
-
-        -- Alliance
-        "Alliance Druid 1"
-    }
-
-    MB_myMaexxnaPriestHealer = {        
-        -- Horde Team 1
-        "Midavellir",
-
-        -- Alliance
-        "Alliance Priest 1"
-    }
-
------------------------------------------------ Maexxna ----------------------------------------------
-
-
-
---------------------------------------------- Grobbulus ----------------------------------------------
-    -- MB_myGrobbulusBoxStrategy => True or False (Work or Not)
-
-    MB_myGrobbulusBoxStrategy = true 
-
-    ---------------------------------------- Grobbulus Tactics ---------------------------------------
-    -- MB_myGrobbulusMainTank !! MUST BE ASSIGNED !! Targets boss
-    -- MB_myGrobbulusSlimeTankOne !! MUST BE ASSIGNED !! Targets blobs, caster assist
-    -- MB_myGrobbulusSlimeTankTwo !! MUST BE ASSIGNED !! Targets blobs, caster assist
-    --------------------------------------------------------------------------------------------------
-
-    MB_myGrobbulusFollowTarget = "Suecia"
-    MB_myGrobbulusSecondFollowTarget = "Ajlano"
-
-    MB_myGrobbulusMainTank = "Moron"
-    MB_myGrobbulusSlimeTankOne = "Suecia"
-    MB_myGrobbulusSlimeTankTwo = "Ajlano"
-
---------------------------------------------- Grobbulus ----------------------------------------------
-
-
-
------------------------------------------------ Skeram -----------------------------------------------
-    -- MB_mySkeramBoxStrategyFollow => True or False (Work or Not)
-    -- MB_mySkeramBoxStrategyTotem => True or False (Work or Not), Grounding Totem
-    -- MB_mySkeramBoxStrategyWarlock => True or False (Work or Not), Warlock Fear
+    Configuration Structure:
+    - Each boss has strategy toggles (true/false)
+    - Player assignments are organized by role
+    - Comments explain tactics and requirements
+    - Horde/Alliance assignments are clearly separated
     
-    MB_mySkeramBoxStrategyFollow = true
-    MB_mySkeramBoxStrategyTotem = false
-    MB_mySkeramBoxStrategyWarlock = false
+    Note: All variables are global and accessible throughout the addon's
+--]]
 
-    ------------------------------------------- Skeram Tactics ---------------------------------------
-    -- Target Skeram and press Melee follow
-    -- The Left OFFTANKS, Middle DPSERS, Right OFFTANKS will follow their tank
-    -- Place tanks on their platform
-    --------------------------------------------------------------------------------------------------
+--[####################################################################################################]--
+--[############################################ NAXXRAMAS #############################################]--
+--[####################################################################################################]--
 
-    MB_mySkeramLeftTank = {
-        -- Horde
-        "Suecia",
+-- Strategy Configuration
+MB_myPatchwerkBoxStrategy = true
 
-        -- Alliance
-        "Alliance Tank 1"	
-    }
+-- Tank Assignments (REQUIRED - Heal dependent)
+MB_myThreatPWSoaker = "Moron"
+MB_myFirstPWSoaker = "Suecia"
+MB_mySecondPWSoaker = "Ajlano"
+MB_myThirdPWSoaker = "Almisael"
 
-    MB_mySkeramLeftOFFTANKS = { -- To help marking boss        
-        -- Horde
-        "Rows",
+-- Healer Assignments per Tank
+MB_myThreatPWSoakerHealerList = {
+    "Bogeycrap",    -- 8T1 Shaman
+    "Midavellir",   -- Priest
+    "Pyqmi"         -- Druid
+}
 
-        -- Alliance
-        "Alliance Offtank 1"		
-    }
+MB_myFirstPWSoakerHealerList = {
+    "Shamuk",       -- 6T3+ Shaman for BUFF
+    "Draub",        -- 8T2 Priest
+    "Mvenna",       -- 8T1 Shaman
+    "Superkoe"      -- 8T1 Shaman	
+}
 
-    MB_mySkeramMiddleTank = {
-        -- Horde
-        "Moron",
-
-        -- Alliance
-        "Alliance Tank 2"	
-    }
-
-    MB_mySkeramMiddleOFFTANKS = { -- To help marking boss
-        -- Horde
-        "Almisael",
-
-        -- Alliance
-        "Alliance Offtank 2"	
-    }
-
-    MB_mySkeramMiddleDPSERS = {
-        -- Horde DPS
-        "Moonspawn",
-        "Likez",
-        "Angerissues",
-        "Tazmahdingo",
-        "Gogopwranger",
-        "Chabalala",
-        "Weedzy",
-        "Miagi",
-
-        -- Alliance DPS
-        "Alliance Melee 1"
-    }
-
-    MB_mySkeramRightTank = { 
-        -- Horde
-        "Ajlano",
-
-        -- Alliance
-        "Alliance Tank 3"	
-    }
-
-    MB_mySkeramRightOFFTANKS = { -- To help marking boss        
-        -- Horde
-        "Sabo",
-
-        -- Alliance
-        "Alliance Offtank 3"	
-    }
-
------------------------------------------------ Skeram -----------------------------------------------
-
-
-
----------------------------------------------- Fankriss ----------------------------------------------
-    -- MB_myFankrissBoxStrategy => True or False (Work or Not)
-
-    MB_myFankrissBoxStrategy = true -- Active or not
-
-    ----------------------------------------- Fankriss Tactics ---------------------------------------
-    -- MB_myFankrissOFFTANKS !! MUST BE ASSIGNED !! Targets boss (Taunt is manual)
-    -- MB_myFankrissSnakeTankOne !! MUST BE ASSIGNED !! Targets snakes, caster assist
-    -- MB_myFankrissSnakeTankTwo !! MUST BE ASSIGNED !! Targets snakes, caster assist
-    --------------------------------------------------------------------------------------------------
+MB_mySecondPWSoakerHealerList = {
+    "Laitelaismo",  -- 6T3+ Shaman for BUFF
+    "Ayag",         -- 8T2 Priest
+    "Chimando",     -- 8T1 Shaman
+    "Smalheal"      -- Druid
+}
     
-    MB_myFankrissOFFTANKS = {
-        -- Horde
-        "Suecia",
-
-        -- Alliance
-        "Alliance Offtank 1"	
-    }
-
-    MB_myFankrissSnakeTankOne = {
-        -- Horde
-        "Ajlano",
-
-        -- Alliance
-        "Alliance Snake Tank 1"
-    }
-
-    MB_myFankrissSnakeTankTwo = {
-        -- Horde
-        "Almisael",
-
-        -- Alliance
-        "Alliance Snake Tank 2"
-    }
-
----------------------------------------------- Fankriss ----------------------------------------------
-
-
-
----------------------------------------------- Huhuran ----------------------------------------------
-    -- MB_myHuhuranBoxStrategy => True or False (Work or Not)
-
-    MB_myHuhuranBoxStrategy = false -- Active or not
-
-    ----------------------------------------- Huhuran Tactics ----------------------------------------
-    -- MB_myHuhuranMainTank !! MUST BE ASSIGNED !! Buff dependent
-    -- MB_myHuhuranFirstDruidHealer !! MUST BE ASSIGNED !! Regrowth
-    -- MB_myHuhuranMainTank uses SW/LS at MB_myHuhuranTankDefensivePercentage
-    --------------------------------------------------------------------------------------------------
-
-    MB_myHuhuranMainTank = "Moron"
-    MB_myHuhuranTankDefensivePercentage = 0.25
-    MB_myHuhuranFirstDruidHealer = "Smalheal"
-
----------------------------------------------- Huhuran ----------------------------------------------
-
-
-
----------------------------------------------- Razorgore ---------------------------------------------
-    -- MB_myRazorgoreBoxStrategy => True or False (Work or Not)
-    -- MB_myRazorgoreBoxHealerStrategy => True or False (Work or Not), Mana Pots
-
-    MB_myRazorgoreBoxStrategy = true
-    MB_myRazorgoreBoxHealerStrategy = false
-
-    --------------------------------------- Razorgore Tactics ----------------------------------------
-    -- When MB_myRazorgoreORBtank controls the Orb you can split the raid with melee follow
-    -- Further issue here is that 420 used to track the debuff you get when controlling the orb
-    -- This worked fine, BUT
-    -- The orb channel is 90s and the debuff lasts for 60s. (90 - 60 = 30) This means that every 60s
-    -- My DPS stopped on one side for 30s. Now I fixed this by simply tracking the mobs you are fighting
-    -- BUT YOU WILL STILL NEED AN ORB CONTROLLER ASSIGNED (Just for the setup part, can't see mobs for X secs)
-    --------------------------------------------------------------------------------------------------
-
-    MB_myRazorgoreORBtank = {
-        -- Horde
-        "Rows",
-
-        -- Alliance
-        "Alliance Orb Tank 1"
-    }
-
-    MB_myRazorgoreLeftTank = { -- Tank Left
-        -- Horde
-        "Moron",
-
-        -- Alliance
-        "Alliance Tank 1"
-    }
-    MB_myRazorgoreLeftDPSERS = {
-        -- Horde Offtank
-        "Almisael", -- TF Tank
-
-        -- Horde DPS
-        "Invictivus", -- Rogue
-
-        "Angerissues", -- Warr
-        "Xoncharr", -- Warr
-        "Maximumzug", -- Warr
-        "Uzug", -- Warr
-        "Axhole", -- Warr
-        "Kyrielle", -- Warr
-    }
-    
-    MB_myRazorgoreRightTank = { -- Tank Right
-        -- Horde
-        "Suecia",
-
-        -- Alliance
-        "Alliance Tank 2"
-    }
-    MB_myRazorgoreRightDPSERS = {        
-        -- Horde Offtank
-        "Ajlano", -- TF
-
-        -- Horde DPS
-        "Miagi", -- Rogue
-
-        "Chabalala", -- Warr
-        "Gogopwranger", -- Warr
-        "Tazmahdingo", -- Warr
-        "Cornanimal", -- Warr
-        "Rapenaattori", -- Warr
-        "Goodbeef", -- Warr
-    }
-
----------------------------------------------- Razorgore ---------------------------------------------
-
-
-
--------------------------------------------- Vaelastrasz ---------------------------------------------
-    -- MB_myVaelastraszBoxStrategy => True or False (Work or Not)
-
-    MB_myVaelastraszBoxStrategy = true 
-
-    -------------------------------------- Vaelastrasz Tactics ---------------------------------------
-    -- Dedicated healers to heal/HoT the MT
-    --------------------------------------------------------------------------------------------------
-
-    MB_myVaelastraszShamanHealing = true -- (These need to be T1)
-    MB_myVaelastraszShamans = {
-        "Shaitan",
-        "Bayo",
-        "Lillifee"
-    }
-
-    MB_myVaelastraszPaladinHealing = true -- (These need to be T1)
-    MB_myVaelastraszPaladins = {
-        "Fatnun",
-        "Breachedhull",
-        "Fatnun"
-    }
-
-    MB_myVaelastraszPriestHealing = true -- (Renew / Shield MT)
-    MB_myVaelastraszPriests = {
-        "Healdealz",
-        "Corinn",
-        "Midavellir",
-    }
-
-    MB_myVaelastraszDruidHealing = true
-    MB_myVaelastraszDruids = {
-        "Smalheal",
-        "Pyqmi",
-        "Maxvoldson",
-    }
-
--------------------------------------------- Vaelastrasz ---------------------------------------------
-
-
-
----------------------------------------------- Ossirian ----------------------------------------------
-    -- MB_myOssirianBoxStrategy => True or False (Work or Not)
-
-    MB_myOssirianBoxStrategy = true -- Special totem dropping 
-
-    ----------------------------------------- Ossirian Tactics ---------------------------------------
-    -- MB_myOssirianMainTank !! MUST BE ASSIGNED !! Totem dependent
-    -- Shield Wall when low HP when boss is below MB_myOssirianTankDefensivePercentage
-    --------------------------------------------------------------------------------------------------
-
-    MB_myOssirianMainTank = "Moron"
-    MB_myOssirianTankDefensivePercentage = 0.35
-
----------------------------------------------- Ossirian ----------------------------------------------
-
-
----------------------------------------------- Onyxia ----------------------------------------------
-    -- MB_myOnyxiaBoxStrategy => True or False (Work or Not)
-
-    MB_myOnyxiaBoxStrategy = true 
-
-    ----------------------------------------- Onyxia Tactics ---------------------------------------
-    -- MB_myOnyxiaFollowTarget !! MUST BE ASSIGNED !! The follow-back target
-    --------------------------------------------------------------------------------------------------
-
-    MB_myOnyxiaMainTank = "Moron"
-    MB_myOnyxiaFollowTarget = "Ajlano"
-
----------------------------------------------- Onyxia ----------------------------------------------
-
-
-
----------------------------------------------- Razuvious ----------------------------------------------
-    -- MB_myRazuviousBoxStrategy => True or False (Work or Not)
-
-    MB_myRazuviousBoxStrategy = true 
-
-    ----------------------------------------- Razuvious Tactics ---------------------------------------
-    -- MB_myRazuviousPriest !! MUST BE ASSIGNED !! Mind controlling
-    --------------------------------------------------------------------------------------------------
-
-    MB_myRazuviousPriest = {
-        -- Horde Team 1
-        "Trumptvänty",
-        "Ez",		
-
-        -- Alliance
-        "Alliance Priest 1"	
-    }
-
----------------------------------------------- Razuvious ----------------------------------------------
-
-
-
----------------------------------------------- Faerlina ----------------------------------------------
-    -- MB_myFaerlinaBoxStrategy => True or False (Work or Not)
-    -- MB_myFaerlinaRuneStrategy => True or False (Work or Not) Frozen Runes
-
-    MB_myFaerlinaBoxStrategy = true 
-    MB_myFaerlinaRuneStrategy = false
-
-    ----------------------------------------- Faerlina Tactics ---------------------------------------
-    -- MB_myFaerlinaPriest !! MUST BE ASSIGNED !! Mind controlling
-    --------------------------------------------------------------------------------------------------
-
-    MB_myFaerlinaPriest = {		
-        -- Horde Team 1
-        "Midavellir",
-
-        -- Alliance
-        "Alliance Priest 1"
-    }
-
----------------------------------------------- Faerlina ----------------------------------------------
-
-
-
------------------------------------------------ Twins ------------------------------------------------
-    -- MB_myTwinsBoxStrategy => True or False (Work or Not)
-
-    MB_myTwinsBoxStrategy = true 
-
-    ---------------------------------------- Twins Tactics -------------------------------------------
-    -- MB_myTwinsFirstPriest !! MUST BE ASSIGNED !!
-    -- MB_myTwinsSecondPriest
-    --------------------------------------------------------------------------------------------------
-
-    MB_myTwinsWarlockTank = {
-        -- Horde 1
-        "Akaaka",		
-
-		-- Alliance
-        "Alliance Warlock 1"	
-    }
-
------------------------------------------------ Twins ------------------------------------------------
-
-
-
----------------------------------------------- Loatheb ----------------------------------------------
-    -- MB_myLoathebBoxStrategy => True or False (Work or Not)
-
-    MB_myLoathebBoxStrategy = true
-
-    ----------------------------------------- Loatheb Tactics ----------------------------------------
-    -- MB_myLoathebMainTank !! MUST BE ASSIGNED !!
-    -- MB_myLoathebSealPaladin !! MUST BE ASSIGNED !! (Seal of Light/Seal of Wisdom)
-    -- MB_myLoathebHealer !! MUST BE ASSIGNED !! List of healers
-    -- MB_myLoathebHealSpell !! MUST BE ASSIGNED !! Healing spell per class
-    -- MB_myLoathebHealSpellRank !! MUST BE ASSIGNED !! Spell rank per class
-    --------------------------------------------------------------------------------------------------
-
-    MB_myLoathebMainTank = "Klawss"
-    MB_myLoathebSealPaladin = "Bubblebumm"
-
-    MB_myLoathebHealer = {
-        -- Priests
-        "Wiccana",
-        "Nouveele",
-        "Luxic",
-        "Hms",
-        "Murdrum",
-        --"Joulupukki",
-        "Captivity",
-
-        -- Paladins
-        "Bubblebumm",
-        "Breachedhull",
-        "Fatnun",
-        "Candylane",
-        "Adobe",
-
-        -- Druids
-        "Jahetsu",
-        "Kusch",
-        "Droodish"
-    }
-
-    MB_myLoathebHealSpell = {
-        Shaman = "Healing Wave", 
-        Priest = "Greater Heal",
-        Paladin = "Holy Light",
-        Druid = "Healing Touch"
-    }
-
-    MB_myLoathebHealSpellRank = {
-        Shaman = "Rank 10", 
-        Priest = "Rank 5",
-        Paladin = "Rank 9",
-        Druid = "Rank 11"
-    }
-
----------------------------------------------- Loatheb ----------------------------------------------
+MB_myThirdPWSoakerHealerList = {
+    "Ootskar",      -- 6T3+ Shaman for BUFF
+    "Healdealz",    -- Priest
+    "Purges",       -- 8T1 Shaman
+    "Zwartje"
+}
+
+--[[
+    Patchwerk Tactics:
+    - Alliance doesn't need this setup, they have Divine Intervention
+    - Healers will automatically heal their assigned tank
+    - All assignments MUST be configured for proper execution
+--]]
+
+-- Strategy Configuration
+MB_myMaexxnaBoxStrategy = true
+
+-- Tank Assignment (REQUIRED)
+MB_myMaexxnaMainTank = {
+    "Moron",            -- Horde Team 1
+    "Alliance Tank 1"   -- Alliance
+}
+
+-- Healer Assignments (REQUIRED)
+MB_myMaexxnaDruidHealer = {        
+    "Smalheal",         -- Horde Team 1
+    "Pyqmi",            -- Horde Team 1
+    "Alliance Druid 1"  -- Alliance
+}
+
+MB_myMaexxnaPriestHealer = {        
+    "Midavellir",       -- Horde Team 1
+    "Alliance Priest 1" -- Alliance
+}
+
+--[[
+    Maexxna Tactics:
+    - Main tank will remove useless buffs to stay below readable buff cap
+    - Druid healers: Regrowth, Rejuvenation, Abolish
+    - Priest healers: Renew
+    - Healers heal TargetOfTarget automatically
+--]]
+
+-- Strategy Configuration
+MB_myGrobbulusBoxStrategy = true 
+
+-- Tank Assignments (REQUIRED)
+MB_myGrobbulusMainTank = "Moron"        -- Targets boss
+MB_myGrobbulusSlimeTankOne = "Suecia"   -- Targets blobs, caster assist
+MB_myGrobbulusSlimeTankTwo = "Ajlano"   -- Targets blobs, caster assist
+
+-- Follow Targets
+MB_myGrobbulusFollowTarget = "Suecia"
+MB_myGrobbulusSecondFollowTarget = "Ajlano"
+
+--[[
+    Grobbulus Tactics:
+    - Main tank holds boss
+    - Slime tanks handle blob spawns
+    - Casters assist slime tanks
+--]]
+
+-- Strategy Configuration
+MB_myRazuviousBoxStrategy = true 
+
+-- Priest Assignments (REQUIRED - Mind Control)
+MB_myRazuviousPriest = {
+    "Moronpriest",      -- Horde Team 1
+    "Alliance Priest 1" -- Alliance
+}
+
+--[[
+    Razuvious Tactics:
+    - Priests mind control the Understudies
+    - Requires precise timing and positioning
+--]]
+
+-- Strategy Configuration
+MB_myFaerlinaBoxStrategy = true 
+MB_myFaerlinaRuneStrategy = false -- Frozen Runes
+
+-- Priest Assignments (REQUIRED - Mind Control)
+MB_myFaerlinaPriest = {		
+    "Moronpriest",       -- Horde Team 1
+    "Alliance Priest 1" -- Alliance
+}
+
+--[[
+    Faerlina Tactics:
+    - Priests mind control the Worshippers
+    - Optional frozen rune strategy available
+--]]
+
+-- Strategy Configuration
+MB_myLoathebBoxStrategy = true
+
+-- Tank and Paladin Assignments (REQUIRED)
+MB_myLoathebMainTank = "Klawss"
+MB_myLoathebSealPaladin = "Bubblebumm" -- Seal of Light/Wisdom
+
+-- Healer Assignments (REQUIRED)
+MB_myLoathebHealer = {
+    -- Priests
+    "Wiccana", "Nouveele", "Luxic", "Hms", "Murdrum", "Captivity",
+    -- Paladins  
+    "Bubblebumm", "Breachedhull", "Fatnun", "Candylane", "Adobe",
+    -- Druids
+    "Jahetsu", "Kusch", "Droodish"
+}
+
+-- Healing Spell Configuration (REQUIRED)
+MB_myLoathebHealSpell = {
+    Shaman = "Healing Wave", 
+    Priest = "Greater Heal",
+    Paladin = "Holy Light",
+    Druid = "Healing Touch"
+}
+
+MB_myLoathebHealSpellRank = {
+    Shaman = "Rank 10", 
+    Priest = "Rank 5",
+    Paladin = "Rank 9",
+    Druid = "Rank 11"
+}
+
+--[[
+    Loatheb Tactics:
+    - Healing restricted to 4-second windows
+    - Paladin manages seals for raid
+    - Specific spell ranks optimize mana efficiency
+--]]
+
+--[####################################################################################################]--
+--[######################################## TEMPLE OF AHN'QIRAJ #######################################]--
+--[####################################################################################################]--
+
+-- Strategy Configuration
+MB_mySkeramBoxStrategyFollow = true
+MB_mySkeramBoxStrategyWarlock = false -- Warlock Fear
+
+-- Platform Assignments
+MB_mySkeramLeftTank = {
+    "Suecia",           -- Horde
+    "Alliance Tank 1"   -- Alliance
+}
+
+MB_mySkeramLeftOFFTANKS = {
+    "Rows",             -- Horde
+    "Alliance Offtank 1" -- Alliance
+}
+
+MB_mySkeramMiddleTank = {
+    "Moron",            -- Horde
+    "Alliance Tank 2"   -- Alliance
+}
+
+MB_mySkeramMiddleOFFTANKS = {
+    "Almisael",         -- Horde
+    "Alliance Offtank 2" -- Alliance
+}
+
+MB_mySkeramMiddleDPSERS = {
+    -- Horde DPS
+    "Moonspawn", "Likez", "Angerissues", "Tazmahdingo", 
+    "Gogopwranger", "Chabalala", "Weedzy", "Miagi",
+    -- Alliance DPS
+    "Alliance Melee 1"
+}
+
+MB_mySkeramRightTank = { 
+    "Ajlano",           -- Horde
+    "Alliance Tank 3"   -- Alliance
+}
+
+MB_mySkeramRightOFFTANKS = {
+    "Sabo",             -- Horde
+    "Alliance Offtank 3" -- Alliance
+}
+
+--[[
+    Skeram Tactics:
+    - Target Skeram and press Melee follow
+    - Left/Right: Offtanks follow their tank
+    - Middle: DPSers follow middle tank
+    - Platform assignments are critical
+--]]
+
+-- Strategy Configuration
+MB_myFankrissBoxStrategy = true
+
+-- Tank Assignments (REQUIRED)
+MB_myFankrissOFFTANKS = {
+    "Suecia",               -- Horde (Targets boss, manual taunt)
+    "Alliance Offtank 1"    -- Alliance
+}
+
+MB_myFankrissSnakeTankOne = {
+    "Ajlano",              -- Horde (Targets snakes, caster assist)
+    "Alliance Snake Tank 1" -- Alliance
+}
+
+MB_myFankrissSnakeTankTwo = {
+    "Almisael",            -- Horde (Targets snakes, caster assist)  
+    "Alliance Snake Tank 2" -- Alliance
+}
+
+--[[
+    Fankriss Tactics:
+    - Offtanks handle boss taunting manually
+    - Snake tanks manage add spawns
+    - Casters assist snake tanks
+--]]
+
+-- Strategy Configuration
+MB_myHuhuranBoxStrategy = false
+
+-- Tank Assignments (REQUIRED when active)
+MB_myHuhuranTankDefensivePercentage = 0.25 -- SW/LS usage threshold
+
+--[[
+    Huhuran Tactics:
+    - Tank uses defensive abilities at 25% health
+    - Currently disabled - enable when needed
+--]]
+
+-- Strategy Configuration
+MB_myTwinsBoxStrategy = true 
+
+-- Warlock Tank Assignment
+MB_myTwinsWarlockTank = {
+    "Akaaka",           -- Horde 1
+    "Alliance Warlock 1" -- Alliance
+}
+
+--[[
+    Twins Tactics:
+    - Warlock tanks one of the twins
+    - Requires specific positioning and timing
+--]]
+
+--[####################################################################################################]--
+--[####################################### RUINS OF AHN'QIRAJ #########################################]--
+--[####################################################################################################]--
+
+-- Strategy Configuration
+MB_myOssirianBoxStrategy = true -- Special totem dropping 
+
+-- Tank Assignment (REQUIRED)
+MB_myOssirianMainTank = "Moron"
+MB_myOssirianTankDefensivePercentage = 0.35 -- Shield Wall threshold
+
+--[[
+    Ossirian Tactics:
+    - Special totem dropping mechanics
+    - Tank uses Shield Wall at 35% boss health
+    - Weakness rotation management required
+--]]
+
+--[####################################################################################################]--
+--[######################################### BLACKWING LAIR ###########################################]--
+--[####################################################################################################]--
+
+-- Strategy Configuration
+MB_myRazorgoreBoxStrategy = true
+MB_myRazorgoreBoxHealerStrategy = false -- Mana Pots
+
+-- Orb Controller Assignment (REQUIRED)
+MB_myRazorgoreORBtank = {
+    "Rows",             -- Horde
+    "Alliance Orb Tank 1" -- Alliance
+}
+
+-- Left Side Assignments
+MB_myRazorgoreLeftTank = {
+    "Moron",            -- Horde
+    "Alliance Tank 1"   -- Alliance
+}
+
+MB_myRazorgoreLeftDPSERS = {
+    "Almisael",         -- Horde Offtank (TF Tank)
+    "Invictivus",       -- Rogue
+    -- Warriors
+    "Angerissues", "Xoncharr", "Maximumzug", 
+    "Uzug", "Axhole", "Kyrielle"
+}
+
+-- Right Side Assignments  
+MB_myRazorgoreRightTank = {
+    "Suecia",           -- Horde
+    "Alliance Tank 2"   -- Alliance
+}
+
+MB_myRazorgoreRightDPSERS = {        
+    "Ajlano",           -- Horde Offtank (TF)
+    "Miagi",            -- Rogue
+    -- Warriors
+    "Chabalala", "Gogopwranger", "Tazmahdingo", 
+    "Cornanimal", "Rapenaattori", "Goodbeef"
+}
+
+--[[
+    Razorgore Tactics:
+    - Orb controller manages the mind control (90s channel, 60s debuff)
+    - Raid splits left/right with melee follow
+    - DPS tracking handles the 30s gap issue
+    - Orb controller still needed for initial setup
+--]]
+
+-- Strategy Configuration
+MB_myVaelastraszBoxStrategy = true 
+
+-- Healer Class Toggles
+MB_myVaelastraszShamanHealing = true   -- T1 requirement
+MB_myVaelastraszPaladinHealing = true  -- T1 requirement  
+MB_myVaelastraszPriestHealing = true   -- Renew/Shield MT
+MB_myVaelastraszDruidHealing = true
+
+-- Healer Assignments (dedicated MT healers/HoTs)
+MB_myVaelastraszShamans = {
+    "Shaitan", "Bayo", "Lillifee"
+}
+
+MB_myVaelastraszPaladins = {
+    "Fatnun", "Breachedhull", "Fatnun"
+}
+
+MB_myVaelastraszPriests = {
+    "Healdealz", "Corinn", "Midavellir"
+}
+
+MB_myVaelastraszDruids = {
+    "Smalheal", "Pyqmi", "Maxvoldson"
+}
+
+--[[
+    Vaelastrasz Tactics:
+    - Dedicated healers maintain HoTs on MT
+    - T1 gear requirements for Shamans/Paladins
+    - Priests handle Renew and Shield duties
+    - High healing throughput required
+--]]
+
+--[####################################################################################################]--
+--[############################################### ONYXIA'S LAIR ####################################]--
+--[####################################################################################################]--
+
+-- Strategy Configuration
+MB_myOnyxiaBoxStrategy = true 
+
+-- Tank and Follow Assignments (REQUIRED)
+MB_myOnyxiaMainTank = "Moron"
+MB_myOnyxiaFollowTarget = "Ajlano" -- Follow-back target
+
+--[[
+    Onyxia Tactics:
+    - Main tank holds Onyxia
+    - Follow target for air phase positioning
+    - Phase management critical
+--]]
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--

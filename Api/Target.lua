@@ -210,7 +210,7 @@ function mb_getTarget()
 				return
 
 			elseif mb_imMeleeDPS() or mb_imRangedDPS() then
-				if mb_tankTargetHealth() < 0.1 or (mb_tankTargetHealth() < 0.9 and mb_myNameInTable(MB_fireMages)) then
+				if mb_tankTargetHealth() < 0.1 or (mb_tankTargetHealth() < 0.9 and MB_mySpecc == "Fire") then
 					mb_assistFocus()
 					return 
 				end

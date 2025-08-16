@@ -1,10 +1,12 @@
-------------------------------------------------------------------------------------------------------
------------------------------------------------ Config! ----------------------------------------------
-------------------------------------------------------------------------------------------------------
+--[####################################################################################################]--
+--[######################################### CONFIGURATION ############################################]--
+--[####################################################################################################]--
 
 MB_raidInviter = "Moron" -- Handling Raidinvites
-MB_tankList = {}
+MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
+MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
 
+MB_tankList = {}
 MB_raidAssist = { -- Raid tools
 	AutoTurnToTarget = false, -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
 	Frameflash = true, -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
@@ -48,10 +50,6 @@ MB_raidAssist = { -- Raid tools
 		FarmSoulStones = false -- On HealAndTank, warlocks will Drain Soul
 	},
 
-	Rogue = { -- Rogue options
-		SaveEnergyForInterrupt = false, -- Will not use attacks if below 65 energy, to always be ready with Kick on GCD
-	},
-
 	Paladin = { -- Paladin options
 		HolyShockLowHealthAggroedPlayers = true -- Change to nil if you experience lag
 	},
@@ -68,11 +66,6 @@ MB_raidAssist = { -- Raid tools
 			"Trinali",
 			"Akaaka",
 			"Ayaag",
-
-			-- Alliance
-			"Salka",
-			"Bluedabadee",
-			"Trachyt"
 		}
 	},
 
@@ -96,50 +89,6 @@ MB_raidAssist = { -- Raid tools
 		AllowIgniteToDropWhenBadTick = false, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
 		AllowInstantCast = true, -- Indicates whether instant cast spells should be allowed		
-
-		--[[
-			When running multiple different spec mages in one team, the following problems occurred:
-			Your Frost/Arcane mages have more mana than your Fire mages.
-			This caused my Fire mages to do nothing.
-
-			Why? My Fire mages wait for 5 stacks of Scorch before casting Fireball.
-			How it used to work is that the 5 mages with the highest mana would cast Scorch first.
-			With the extra Arcane mages, those 5 will be Frost, and therefore Scorch will never be up.
-
-			This is why there are two tables: FireMages and FrostMages.
-			You will need to fill those in for Fire mages; Frost currently has no usage yet but is there for reference.
-			(Solution to running multiple mage specs)
-
-			(Also tried my best at controlling Ignite, but you can't really do it
-		]]
-
-		FireMages = {
-			-- Horde Main Team --
-			"Thehatter",
-			"Rotonic",
-			"Trinali",
-			"Schoffie",
-			"Mizea",
-
-			-- Alliance Main Team --
-			"Alliance Mage 1",
-		},
-
-		FrostMages = {
-			-- Horde Main Team --
-			"Xlimidrizer",
-			"Kelseran",
-			"Damacon",
-			"Salka",
-			"Umek",
-			"Oxg",
-
-			-- Horde Shatter --
-			"Bluedabadee",
-
-			-- Alliance Main Team --
-			"Alliance Mage 2",
-		}
 	},
 
 	Debugger = { -- Tells me some stuff on X and Y encounters
@@ -195,6 +144,10 @@ MB_furysThatCanTank = { -- DPS warriors with a tank set (create ItemRack sets na
     "Alliance Fury 1"
 }
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function mb_tankList(encounter)
     -- DO NOT PUT OTHER / GUEST TANKS ON HERE, ADD THEM in MB_extraTanks!!
     -- /tanklist <encounter> will trigger this function and run a preset list
@@ -233,7 +186,6 @@ function mb_tankList(encounter)
     mb_initializeClasslists()
 end
 
---------------------------------------------- End Globals! -------------------------------------------
-
-MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
-MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--

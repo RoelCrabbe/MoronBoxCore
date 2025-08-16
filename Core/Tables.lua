@@ -1,6 +1,16 @@
 --[####################################################################################################]--
---[############################################ DATA TABLES ###########################################]--
+--[######################################## ADDON DATA TABLES #########################################]--
 --[####################################################################################################]--
+
+--[[
+    This file contains all data tables and lookup functions for the addon.
+    
+    Structure:
+    - Shared locals (API functions)
+    - Data tables organized by category
+    - Accessor functions for each table
+    - Complex logic functions
+--]]
 
 -- Unit Functions
 local UnitName = UnitName
@@ -66,10 +76,10 @@ local myName = UnitName("player")
 local myRace = UnitRace("player")
 
 --[####################################################################################################]--
---[####################################################################################################]--
+--[############################################ BOSS MECHANICS ########################################]--
 --[####################################################################################################]--
 
--- Boss/General tables
+-- Recklessness Usage Thresholds
 local MB_recklessnessTargetsSet = {
     ["Patchwerk"] = 0.19,
     ["Maexxna"] = 0.19,
@@ -85,6 +95,7 @@ local MB_recklessnessTargetsSet = {
     ["Grand Widow Faerlina"] = 0.19,
 }
 
+-- Bandage Usage by Class
 local MB_bandageBossesForWarlock = {
     ["Patchwerk"] = true,
     ["Lady Blaumeux"] = true,
@@ -100,7 +111,27 @@ local MB_bandageBossesForMage = {
     ["Highlord Alexandros Mograine"] = true,
 }
 
--- Combat/Debuff tables
+-- Healing Interrupt Immunity
+local MB_bossToNeverInterruptHealSet = {
+    ["Vaelastrasz the Corrupt"] = true,
+    ["Maexxna"] = true,
+    ["Ossirian the Unscarred"] = true
+}
+
+-- Tranquilizing Shot Targets
+local MB_useTranquilizingShotSet = {
+    ["Gluth"] = true,
+    ["Princess Huhuran"] = true,
+    ["Flamegor"] = true,
+    ["Chromaggus"] = true,
+    ["Magmadar"] = true,
+}
+
+--[####################################################################################################]--
+--[########################################## COMBAT RESTRICTIONS #####################################]--
+--[####################################################################################################]--
+
+-- Debuff Restrictions
 local MB_mobsNoCursesSet = {
     ["Blackwing Mage"] = true,
     ["Blackwing Legionnaire"] = true,
@@ -128,7 +159,35 @@ local MB_mobsNoSundersSet = {
     ["Plagued Bat"] = true,
 }
 
--- Ward/Protection tables
+-- Blood Fury Blacklist
+local MB_useBloodFuryBlacklistSet = {
+    ["Shade of Naxxramas"] = true,
+    ["Necro Knight"] = true,
+    ["Stoneskin Gargoyle"] = true,
+    ["Shazzrah"] = true,
+    ["Grand Widow Faerlina"] = true,
+    ["Magmadar"] = true,
+    ["Corrupted Green Whelp"] = true,
+    ["Corrupted Red Whelp"] = true,
+    ["Corrupted Bronze Whelp"] = true,
+    ["Corrupted Blue Whelp"] = true,
+    ["Death Talon Hatcher"] = true,
+    ["Princess Huhuran"] = true,
+    ["Blackwing Taskmaster"] = true,
+}
+
+-- Excluded Whirlwind Targets
+local MB_excludedTargetsSet = {
+    ["Emperor Vek'lor"] = true,
+    ["Emperor Vek'nilash"] = true,
+    ["The Prophet Skeram"] = true,
+}
+
+--[####################################################################################################]--
+--[######################################### PROTECTIVE MAGIC #########################################]--
+--[####################################################################################################]--
+
+-- Ward Requirements
 local MB_mobsToFireWardSet = {
     ["High Priestess Jeklik"] = true,
     ["Necro Night"] = true,
@@ -178,7 +237,7 @@ local MB_mobsToFearWardSet = {
     ["Gluth"] = true,
 }
 
--- Magic/Spell tables
+-- Magic Detection/Manipulation
 local MB_mobsToDetectMagicSet = {
     ["Anubisath Sentinel"] = true,
     ["Anubisath Guardian"] = true,
@@ -198,7 +257,11 @@ local MB_mobsToAmplifyMagicSet = {
     ["Maexxna"] = true,
 }
 
--- Utility tables
+--[####################################################################################################]--
+--[####################################### BEHAVIORAL TRIGGERS #######{{###############################]--
+--[####################################################################################################]--
+
+-- Auto-Turn Requirements (fear immunity)
 local MB_mobsToAutoTurnSet = {
     ["Magmadar"] = true,
     ["Ancient Core Hound"] = true,
@@ -206,28 +269,17 @@ local MB_mobsToAutoTurnSet = {
     ["Deathknight"] = true,
 }
 
+-- Auto-Break Fear Requirements
 local MB_mobsToAutoBreakFearSet = {
     ["Deathknight"] = true,
     ["Princess Yauj"] = true
 }
 
-local MB_useBloodFuryBlacklistSet = {
-    ["Shade of Naxxramas"] = true,
-    ["Necro Knight"] = true,
-    ["Stoneskin Gargoyle"] = true,
-    ["Shazzrah"] = true,
-    ["Grand Widow Faerlina"] = true,
-    ["Magmadar"] = true,
-    ["Corrupted Green Whelp"] = true,
-    ["Corrupted Red Whelp"] = true,
-    ["Corrupted Bronze Whelp"] = true,
-    ["Corrupted Blue Whelp"] = true,
-    ["Death Talon Hatcher"] = true,
-    ["Princess Huhuran"] = true,
-    ["Blackwing Taskmaster"] = true,
-}
+--[####################################################################################################]--
+--[########################################## TOTEM MANAGEMENT #####{{{################################]--
+--[####################################################################################################]--
 
--- Totem tables
+-- Totem Restrictions
 local MB_mobsNoTotemsSet = {
     ["Onyxian Warder"] = true,
     ["Corrupted Green Whelp"] = true,
@@ -246,6 +298,7 @@ local MB_mobsNoTotemsSet = {
     ["Shadowforge Flame Keeper"] = true,
 }
 
+-- AoE Totem Requirements
 local MB_mobsToAoeTotemSet = {
     ["Plague Beast"] = true,
     ["Mutated Grub"] = true,
@@ -263,14 +316,19 @@ local MB_mobsToAoeTotemSet = {
     ["Poisonous Skitterer"] = true,
 }
 
--- Bosses no Interrupts
-local MB_bossToNeverInterruptHealSet = {
-    ["Vaelastrasz the Corrupt"] = true,
-    ["Maexxna"] = true,
-    ["Ossirian the Unscarred"] = true
+-- Corrupted Totems (enemies)
+local MB_corruptedTotemsSet = {
+    ["Corrupted Healing Stream Totem"] = true,
+    ["Corrupted Windfury Totem"] = true,
+    ["Corrupted Stoneskin Totem"] = true,
+    ["Corrupted Fire Nova Totem"] = true
 }
 
--- Fire Immunity Set
+--[####################################################################################################]--
+--[######################################## DAMAGE IMMUNITIES ###########{{{{{#########################]--
+--[####################################################################################################]--
+
+-- Fire Immunity
 local MB_fireImmuneSet = {
     ["Baron Geddon"] = true,
     ["Flameguard"] = true,
@@ -297,7 +355,7 @@ local MB_fireImmuneSet = {
     ["Flamegor"] = true
 }
 
--- Frost Immunity Set
+-- Frost Immunity
 local MB_frostImmuneSet = {
     ["Ras Frostwhisper"] = true,
     ["Frostmaul Giant"] = true,
@@ -305,31 +363,11 @@ local MB_frostImmuneSet = {
     ["Highborne Lichling"] = true
 }
 
--- Corrupted Totems Set
-local MB_corruptedTotemsSet = {
-    ["Corrupted Healing Stream Totem"] = true,
-    ["Corrupted Windfury Totem"] = true,
-    ["Corrupted Stoneskin Totem"] = true,
-    ["Corrupted Fire Nova Totem"] = true
-}
+--[####################################################################################################]--
+--[######################################### BOSS CATEGORIES ##########################################]--
+--[####################################################################################################]--
 
--- Excluded WW Targets
-local MB_excludedTargetsSet = {
-    ["Emperor Vek'lor"] = true,
-    ["Emperor Vek'nilash"] = true,
-    ["The Prophet Skeram"] = true,
-}
-
--- Tranq Shot Targets
-local MB_useTranquilizingShotSet = {
-    ["Gluth"] = true,
-    ["Princess Huhuran"] = true,
-    ["Flamegor"] = true,
-    ["Chromaggus"] = true,
-    ["Magmadar"] = true,
-}
-
--- Nature bosses
+-- Elemental Boss Categories
 local MB_NatureBossSet = {
     ["The Nature Boss"] = true,
     ["Princess Yauj"] = true,
@@ -346,46 +384,6 @@ local MB_NatureBossSet = {
     ["Razzashi Adder"] = true,
 }
 
--- Tremor bosses
-local MB_TremorBossSet = {
-    ["The Termor Boss"] = true,
-    ["Magmadar"] = true,
-    ["Emeriss"] = true,
-    ["Taerar"] = true,
-    ["Lethon"] = true,
-    ["Ysondre"] = true,
-    ["Nefarian"] = true,
-    ["Princess Yauj"] = true,
-    ["Lord Kri"] = true,
-    ["Vem"] = true,
-    ["Onyxia"] = true,
-}
-
--- Grounding bosses
-local MB_GroundingBossSet = {
-    ["The Grounding Boss"] = true,
-    ["Ossirian the Unscarred"] = true,
-}
-
--- Poison bosses
-local MB_PoisonBossSet = {
-    ["The Poison Boss"] = true,
-    ["Princess Yauj"] = true,
-    ["Lord Kri"] = true,
-    ["Vem"] = true,
-    ["Viscidus"] = true,
-    ["Princess Huhuran"] = true,
-    ["Chromaggus"] = true,
-    ["High Priestess Mar'li"] = true,
-    ["Spawn of Mar'li"] = true,
-    ["Witherbark Speaker"] = true,
-    ["High Priest Venoxis"] = true,
-    ["Razzashi Cobra"] = true,
-    ["Razzashi Serpent"] = true,
-    ["Razzashi Adder"] = true,
-}
-
--- Fire bosses
 local MB_FireBossSet = {
     ["The Fire Boss"] = true,
     ["Death Talon Overseer"] = true,
@@ -425,6 +423,48 @@ local MB_FireBossSet = {
     ["Onyxia"] = true,
 }
 
+-- Totem-Specific Boss Categories
+local MB_TremorBossSet = {
+    ["The Termor Boss"] = true,
+    ["Magmadar"] = true,
+    ["Emeriss"] = true,
+    ["Taerar"] = true,
+    ["Lethon"] = true,
+    ["Ysondre"] = true,
+    ["Nefarian"] = true,
+    ["Princess Yauj"] = true,
+    ["Lord Kri"] = true,
+    ["Vem"] = true,
+    ["Onyxia"] = true,
+}
+
+local MB_GroundingBossSet = {
+    ["The Grounding Boss"] = true,
+    ["Ossirian the Unscarred"] = true,
+}
+
+local MB_PoisonBossSet = {
+    ["The Poison Boss"] = true,
+    ["Princess Yauj"] = true,
+    ["Lord Kri"] = true,
+    ["Vem"] = true,
+    ["Viscidus"] = true,
+    ["Princess Huhuran"] = true,
+    ["Chromaggus"] = true,
+    ["High Priestess Mar'li"] = true,
+    ["Spawn of Mar'li"] = true,
+    ["Witherbark Speaker"] = true,
+    ["High Priest Venoxis"] = true,
+    ["Razzashi Cobra"] = true,
+    ["Razzashi Serpent"] = true,
+    ["Razzashi Adder"] = true,
+}
+
+--[####################################################################################################]--
+--[############################################ NPC CATEGORIES #######################################]--
+--[####################################################################################################]--
+
+-- Vendor Categories
 local MB_reagentVendorsSet = {
     ["Khur Hornstriker"] = true,
     ["Barim Jurgenstaad"] = true,
@@ -442,11 +482,91 @@ local MB_sunfruitVendorsSet = {
     ["Argent Quartermaster Hasana"] = true
 }
 
-------------------------------------------------------------------------------------------------------
------------------------------------------------- Functions ------------------------------------------
-------------------------------------------------------------------------------------------------------
+--[####################################################################################################]--
+--[########################################## SPELL/ABILITY LISTS ####################################]--
+--[####################################################################################################]--
 
--- Boss/General functions
+-- Spells to Interrupt
+MB_spellsToInt = {
+    -- Basic Damage Spells
+    "Frostbolt",
+    "Shadow Bolt",
+    "Mind Flay",        -- PW trash
+    "Mind Blast",       -- AQ40, Mindslayers
+    "Holy Fire",
+    "Drain Life",       -- Spider ZG
+
+    -- Healing Spells
+    "Greater Heal",
+    "Great Heal",       -- Tiger heal
+    "Heal",
+    "Healing Wave",
+    "Dark Mending",     -- Flamewalker Priest
+
+    -- Crowd Control
+    "Banish",
+    "Polymorph",
+
+    -- Debuffs
+    "Cripple",
+
+    -- Instance-Specific Spells
+    "Healing Circle",   -- Suppression Room
+    "Flamestrike",      -- Suppression Room
+    "Demon Portal",     -- Blackwing Warlock
+    "Rain of Fire",     -- Blackwing Warlock
+    "Arcane Explosion", -- Razorgore First Phase
+    "Fireball",         -- Razorgore First Phase
+
+    -- AoE Spells
+    "Fireball Volley",      -- Packs behind Vaelastrasz
+    "Shadow Bolt Volley",
+    "Frostbolt Volley",
+    "Venom Spit",          -- Snake AOE
+}
+
+-- Auto-Trade Items
+MB_itemToAutoTrade = {
+    -- Crafting Materials
+    "Arcanite Bar",
+    "Mooncloth",
+    "Refined Deeprock Salt",
+    "Deeprock Salt",
+    "Cured Rugged Hide",
+    "Arcane Crystal",
+    "Thorium Bar",
+    "Hourglass Sand",
+    "Felcloth",
+
+    -- Essences
+    "Essence of Air",
+    "Essence of Undeath",
+    "Living Essence",
+    "Essence of Water",
+    "Essence of Earth",
+
+    -- Consumables
+    "Major Mana Potion",
+    "Elixir of the Mongoose",
+    "Greater Stoneshield Potion",
+    "Greater Nature Protection Potion",
+    "Greater Shadow Protection Potion",
+    "Gift of Arthas",
+
+    -- Food & Drink
+    "Conjured.*Water",
+    "Rumsey Rum Black Label",
+    "Dirge\'s Kickin\' Chimaerok Chops",
+
+    -- ZG Items
+    ".*Hakkari Bijou",
+}
+
+--[####################################################################################################]--
+--[######################################### ACCESSOR FUNCTIONS #####################################]--
+--[####################################################################################################]--
+
+-- Boss Mechanics Functions
 function mb_bossIShouldUseRunesAndManapotsOn()
     return mb_targetHealthFromRaidleader("Big Boss", 0.95)
 end
@@ -480,7 +600,7 @@ function mb_bossIShouldUseRecklessnessOn()
     return false
 end
 
--- Combat/Debuff functions
+-- Combat Restriction Functions
 function mb_mobsNoCurses()
     local targetName = UnitName("target")
     return targetName and MB_mobsNoCursesSet[targetName] == true
@@ -495,7 +615,20 @@ function mb_useBloodFury()
     return not mb_tankTargetInSet(MB_useBloodFuryBlacklistSet)
 end
 
--- Ward/Protection functions
+function mb_isExcludedWW()
+    local targetName = UnitName("target")
+    return targetName and MB_excludedTargetsSet[targetName] == true
+end
+
+function mb_bossNeverInterruptHeal()
+    return mb_tankTargetInSet(MB_bossToNeverInterruptHealSet)
+end
+
+function mb_useTranquilizingShot()
+    return mb_tankTargetInSet(MB_useTranquilizingShotSet)
+end
+
+-- Protective Magic Functions
 function mb_mobsToFireWard()
     return mb_tankTargetInSet(MB_mobsToFireWardSet)
 end
@@ -518,7 +651,6 @@ function mb_mobsToFearWard()
     return mb_tankTargetInSet(MB_mobsToFearWardSet)
 end
 
--- Magic/Spell functions
 function mb_mobsToDetectMagic()
     local targetName = UnitName("target")
     return targetName and MB_mobsToDetectMagicSet[targetName] == true
@@ -532,7 +664,7 @@ function mb_mobsToAmplifyMagic()
     return mb_tankTargetInSet(MB_mobsToAmplifyMagicSet)
 end
 
--- Utility functions
+-- Behavioral Functions
 function mb_mobsToAutoTurn()
     return mb_tankTargetInSet(MB_mobsToAutoTurnSet)
 end
@@ -541,7 +673,7 @@ function mb_mobsToAutoBreakFear()
     return mb_tankTargetInSet(MB_mobsToAutoBreakFearSet)
 end
 
--- Totem functions
+-- Totem Functions
 function mb_mobsNoTotems()
     return mb_tankTargetInSet(MB_mobsNoTotemsSet)
 end
@@ -550,65 +682,44 @@ function mb_mobsToAoeTotem()
     return mb_tankTargetInSet(MB_mobsToAoeTotemSet)
 end
 
--- Healing Functions
-function mb_bossNeverInterruptHeal()
-    return mb_tankTargetInSet(MB_bossToNeverInterruptHealSet)
-end
-
--- Fire Immunity Functions
-function mb_isFireImmune()
-    local targetName = UnitName("target")
-    return targetName and MB_fireImmuneSet[targetName] == true
-end
-
--- Frost Immunity Functions
-function mb_isFrostImmune()
-    local targetName = UnitName("target")
-    return targetName and MB_frostImmuneSet[targetName] == true
-end
-
--- Corrupted Totems Functions
 function mb_corruptedTotems()
     local targetName = UnitName("target")
     return targetName and MB_corruptedTotemsSet[targetName] == true
 end
 
--- Excluded WW Targets
-function mb_isExcludedWW()
+-- Immunity Functions
+function mb_isFireImmune()
     local targetName = UnitName("target")
-    return targetName and MB_excludedTargetsSet[targetName] == true
+    return targetName and MB_fireImmuneSet[targetName] == true
 end
 
--- Tranq Shot Functions
-function mb_useTranquilizingShot()
-    return mb_tankTargetInSet(MB_useTranquilizingShotSet)
+function mb_isFrostImmune()
+    local targetName = UnitName("target")
+    return targetName and MB_frostImmuneSet[targetName] == true
 end
 
--- Nature Boss Functions
+-- Boss Category Functions
 function mb_isNatureBoss()
     return mb_tankTargetInSet(MB_NatureBossSet)
 end
 
--- Tremor Boss Functions
 function mb_isTremorBoss()
     return mb_tankTargetInSet(MB_TremorBossSet)
 end
 
--- Grounding Boss Functions
 function mb_isGroundingBoss()
     return mb_tankTargetInSet(MB_GroundingBossSet)
 end
 
--- Poison Boss Functions
 function mb_isPoisonBoss()
     return mb_tankTargetInSet(MB_PoisonBossSet)
 end
 
--- Fire Boss Functions
 function mb_isFireBoss()
     return mb_tankTargetInSet(MB_FireBossSet)
 end
 
+-- Vendor Functions
 function mb_reagentVendors()
     local targetName = UnitName("target")
     return targetName and MB_reagentVendorsSet[targetName] == true
@@ -619,20 +730,21 @@ function mb_sunfruitVendors()
     return targetName and MB_sunfruitVendorsSet[targetName] == true
 end
 
+--[####################################################################################################]--
+--[######################################### COMPLEX LOGIC FUNCTIONS ################################]--
+--[####################################################################################################]--
+
+-- Stunnable Mob Logic
 function mb_stunnableMob()
     local targetName = UnitName("target")
     if not targetName then
         return false
     end
 
+    -- Check if already stunned
     local stunDebuffs = {
-        "Kidney Shot",
-        "Blackout",
-        "Hammer of Justice",
-        "Mace Stun",
-        "Concussion Blow",
-        "Bash",
-        "War Stomp"
+        "Kidney Shot", "Blackout", "Hammer of Justice", "Mace Stun",
+        "Concussion Blow", "Bash", "War Stomp"
     }
 
     for _, debuff in ipairs(stunDebuffs) do
@@ -641,34 +753,30 @@ function mb_stunnableMob()
         end
     end
 
+    -- Always stunnable mobs
     local alwaysStun = {
-        "Gurubashi Blood Drinker",
-        "Gurubashi Axe Thrower",
-        "Hakkari Priest",
-        "Gurubashi Champion",
-        "Gurubashi Headhunter",
-        "Shade of Naxxramas",
-        "Spirit of Naxxramas",
-        "Plagued Construct",
-        "Deathknight Servant",
-        "Sartura's Royal Guard",
-        "Battleguard Sartura",
-        "Deathchill Servant"
+        "Gurubashi Blood Drinker", "Gurubashi Axe Thrower", "Hakkari Priest",
+        "Gurubashi Champion", "Gurubashi Headhunter", "Shade of Naxxramas",
+        "Spirit of Naxxramas", "Plagued Construct", "Deathknight Servant",
+        "Sartura's Royal Guard", "Battleguard Sartura", "Deathchill Servant"
     }
 
     for _, name in ipairs(alwaysStun) do
         if targetName == name then return true end
     end
 
-    local hp60 = { "Plagued Champion", "Plagued Guardian" }
-    if mb_healthPct("target") < 0.6 then
+    -- Health-dependent stunning
+    local targetHealth = mb_healthPct("target")
+    
+    if targetHealth < 0.6 then
+        local hp60 = { "Plagued Champion", "Plagued Guardian" }
         for _, name in ipairs(hp60) do
             if targetName == name then return true end
         end
     end
 
-    local hp40 = { "Infectious Ghoul", "Spawn of Fankriss", "Plagued Ghoul" }
-    if mb_healthPct("target") < 0.4 then
+    if targetHealth < 0.4 then
+        local hp40 = { "Infectious Ghoul", "Spawn of Fankriss", "Plagued Ghoul" }
         for _, name in ipairs(hp40) do
             if targetName == name then return true end
         end
@@ -677,79 +785,6 @@ function mb_stunnableMob()
     return false
 end
 
--- Spells to Intterupt --
-
-MB_spellsToInt = { -- These spells will automatically be interrupted
-
-	-- Normal Spells
-	"Frostbolt",
-	"Shadow Bolt",
-
-	"Mind Flay", -- PW trash
-	"Mind Blast", -- AQ40, Mindslayers
-
-	"Holy Fire",
-	"Drain Life", -- Spider ZG
-
-	-- Heals
-	"Greater Heal",
-	"Great Heal", -- Tiger heal
-	"Heal",
-	"Healing Wave",
-	"Dark Mending", -- Flamewalker Priest
-
-	-- CC's
-	"Banish",
-	"Polymorph",
-
-	-- Slows
-	"Cripple",
-
-	-- Supression Room
-	"Healing Circle",
-	"Flamestrike",
-
-	-- Blackwing Warlock
-	"Shadow Bolt",
-	"Demon Portal",
-	"Rain of Fire",
-
-	-- Razorgore First Phase
-	"Arcane Explosion",
-	"Fireball",
-
-	-- AOE's
-	"Fireball Volley", -- Packs behind Vaelstraz
-	"Shadow Bolt Volley",
-	"Frostbolt Volley",
-	"Venom Spit", -- Snake AOE
-}
-
--- Auto Trader --
-
-MB_itemToAutoTrade = {
-	"Arcanite Bar",
-	"Mooncloth",
-	"Refined Deeprock Salt",
-	"Essence of Air",
-	"Essence of Undeath",
-	"Living Essence",
-	"Essence of Water",
-	"Essence of Earth",
-	"Cured Rugged Hide",
-	"Arcane Crystal",
-	"Thorium Bar",
-	"Hourglass Sand",
-	"Felcloth",
-	"Major Mana Potion",
-	"Elixir of the Mongoose",
-	"Greater Stoneshield Potion",
-	"Gift of Arthas",
-	"Conjured.*Water",
-	"Rumsey Rum Black Label",
-	".*Hakkari Bijou",
-	"Dirge\'s Kickin\' Chimaerok Chops",
-	"Deeprock Salt",
-	"Greater Nature Protection Potion",
-	"Greater Shadow Protection Potion"
-}
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--

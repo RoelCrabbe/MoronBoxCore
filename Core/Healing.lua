@@ -2,6 +2,12 @@
 --[##################################### HEALING GLOBAL VARIABLES ######################################]--
 --[####################################################################################################]--
 
+--[[
+    This file contains all boss encounter healing and player assignments.
+
+    Note: All variables are global and accessible throughout the addon's
+--]]
+
 -- Unit Functions
 local UnitName = UnitName
 local UnitClass = UnitClass
@@ -70,174 +76,163 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 -- Adjust the values below to control when Priests and Druids cast HoTs and Shields.
-MB_priestRenewLowRandomPercentage = 0.66 -- Renew random targets below 66% health.
-MB_priestRenewLowRandomRank = "Rank 4" -- Spell rank for priests to use on random targets.
+MB_priestRenewLowRandomPercentage           		= 0.66
+MB_priestRenewLowRandomRank                 		= "Rank 4"
 
-MB_priestRenewAggroedPlayerPercentage = 0.90 -- Renew player with aggro below 90% health.
-MB_priestRenewAggroedPlayerRank = "Rank 7" -- Spell rank for priests to use on aggroed player.
+MB_priestRenewAggroedPlayerPercentage     			= 0.90
+MB_priestRenewAggroedPlayerRank            			= "Rank 7"
 
-MB_priestShieldLowRandomPercentage = 0.33 -- Shield random targets below 33% health.
-MB_priestShieldAggroedPlayerPercentage = 0.25 -- Shield player with aggro below 25% health.
+MB_priestShieldLowRandomPercentage         			= 0.33
+MB_priestShieldAggroedPlayerPercentage    			= 0.25
 
-MB_druidRejuvenationLowRandomMovingPercentage = 0.75 -- Rejuvenate random targets below 75% health while moving.
-MB_druidRejuvenationLowRandomMovingRank = "Rank 3" -- Spell rank for druids to use on random targets while moving.
+MB_druidRejuvenationLowRandomMovingPercentage 		= 0.75
+MB_druidRejuvenationLowRandomMovingRank       		= "Rank 3"
 
-MB_druidRejuvenationLowRandomPercentage = 0.45 -- Rejuvenate random targets below 45% health.
-MB_druidRejuvenationLowRandomRank = "Rank 5" -- Spell rank for druids to use on random targets.
+MB_druidRejuvenationLowRandomPercentage    			= 0.45
+MB_druidRejuvenationLowRandomRank          			= "Rank 5"
 
-MB_druidRejuvenationAggroedPlayerPercentage = 0.9 -- Rejuvenate player with aggro below 90% health.
-MB_druidRejuvenationAggroedPlayerRank = "Rank 9" -- Spell rank for druids to use on aggroed player.
+MB_druidRejuvenationAggroedPlayerPercentage 		= 0.9
+MB_druidRejuvenationAggroedPlayerRank       		= "Rank 9"
 
-MB_paladinDivineFavorPercentage = 0.8 -- Paladin will self-buff Divine Favor below 80% mana.
-MB_priestInnerFocusPercentage = 0.3 -- Priest will self-buff Inner Focus below 30% mana.
+MB_paladinDivineFavorPercentage            			= 0.8
+MB_priestInnerFocusPercentage              			= 0.3
 
--- Swiftmend-specced Druid settings:
-MB_druidSwiftmendRejuvenationLowRandomPercentage = 0.7 -- Swiftmend druids rejuvenate raid more aggressively.
-MB_druidSwiftmendRejuvenationLowRandomRank = "Rank 6" -- Spell rank for Swiftmend druids on low random targets.
+-- Swiftmend-specced Druid settings
+MB_druidSwiftmendRejuvenationLowRandomPercentage 	= 0.7
+MB_druidSwiftmendRejuvenationLowRandomRank       	= "Rank 6"
 
-MB_druidSwiftmendAtPercentage = 0.7 -- Health percentage to use Swiftmend.
-MB_druidSwiftmendRegrowthLowRandomPercentage = 0.2 -- Cast highest rank of Regrowth if player is below 20% health and druid has 4+ talents in Improved Regrowth.
+MB_druidSwiftmendAtPercentage             			= 0.7
+MB_druidSwiftmendRegrowthLowRandomPercentage 		= 0.2
 
-MB_druidSwiftmendRegrowthAggroedPlayerPercentage = 0.75 -- Regrowth player with aggro below 75% health.
-MB_druidSwiftmendRegrowthAggroedPlayerRank = "Rank 4" -- Spell rank for Swiftmend druids on aggroed player.
+MB_druidSwiftmendRegrowthAggroedPlayerPercentage 	= 0.75
+MB_druidSwiftmendRegrowthAggroedPlayerRank       	= "Rank 4"
 
-MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp = 565 -- Mages will not use Scorch for Ignite if below this spell power.
+MB_lowestSpellDmgFromGearToScorchToKeepIgnitesUp 	= 565
 
------------------------------------------------ Healing ----------------------------------------------
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
-	MB_myInnervateHealerList = { -- Innervate
-		"Draub",
-		"Ayag",
-		"Healdealz",
-		"Corinn",
-		"Midavellir",
-		"Ez",
+MB_myInnervateHealerList = {
+	"Draub",
+	"Ayag",
+	"Midavellir",
+	"Murdrum",
+	"Blaidzy"
+}
 
-		"Murdrum",
-		"Wiccana",
-		"Hms",
-		"Nouveele",
-		"Luxic"
-	}
-
-	MB_myFlashHealerList = { -- Flashhealers default list
-		"Draub",
-		"Ayag",
-		-- "Corinn",
-		-- "Healdealz",
-		"Midavellir",
-		"Moronpriest",
-
-		"Murdrum",
-		-- "Wiccana",
-		-- "Hms",
-		-- "Nouveele",
-		-- "Luxic"
-	}
+MB_myFlashHealerList = {
+	"Draub",
+	"Ayag",
+	"Midavellir",
+	"Murdrum",
+	"Blaidzy"
+}
 	
-	----------------------------------------- Healing Idea's -----------------------------------------
-	-- MainTankHealingTables are for what bossfight the healers will ONLY heal the maintank with precasting.
-	-- MB_instructorRazuviousAddHealer => Healers who heal adds
-	--------------------------------------------------------------------------------------------------
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
-	MB_myInstructorRazuviousAddHealer = {
+MB_myInstructorRazuviousAddHealer = {
 
-		-- Horde
-		"Mvenna", -- 8T1 Shammy
-		"Azøg", -- 8T1 Shammy 
-		"Chimando", -- 8T1 Shammy
-		--"Purges", -- 8T1 Shammy
-		"Superkoe", -- 8T1 Shammy
-		"Bogeycrap", -- 8T1 Shammy
+	-- Horde
+	"Mvenna", -- 8T1 Shammy
+	"Azøg", -- 8T1 Shammy 
+	"Chimando", -- 8T1 Shammy
+	--"Purges", -- 8T1 Shammy
+	"Superkoe", -- 8T1 Shammy
+	"Bogeycrap", -- 8T1 Shammy
 
-		"Laitelaismo", -- 8T3 Shammy
-		"Shamuk", -- 8T3 Shammy
+	"Laitelaismo", -- 8T3 Shammy
+	"Shamuk", -- 8T3 Shammy
 
-		"Corinn", -- 8T2 Priest
-		"Healdealz", -- 8T2 Priest
-		"Draub", -- 8T2 Priest
-		"Ayag", -- T3 Priest
+	"Corinn", -- 8T2 Priest
+	"Healdealz", -- 8T2 Priest
+	"Draub", -- 8T2 Priest
+	"Ayag", -- T3 Priest
 
-		"Smalheal", -- Druid
-		"Drushgor", -- Druid
+	"Smalheal", -- Druid
+	"Drushgor", -- Druid
 
-		-- Alliance
-		"Bubblebumm", -- Pala never oom
-		"Breachedhull", -- Pala never oom
-		"Candylane", -- Pala never oom
-		"Fatnun", -- Pala never oom
+	-- Alliance
+	"Bubblebumm", -- Pala never oom
+	"Breachedhull", -- Pala never oom
+	"Candylane", -- Pala never oom
+	"Fatnun", -- Pala never oom
 
-		"Murdrum", -- 8T3 Priest
-		"Wiccana", -- 8T2 Priest
-		"Nouveele", -- 8T2 Priest
-		"Hms", -- 8T2 Priest
+	"Murdrum", -- 8T3 Priest
+	"Wiccana", -- 8T2 Priest
+	"Nouveele", -- 8T2 Priest
+	"Hms", -- 8T2 Priest
 
-		"Jahetsu", -- Druid
-		"Kusch" -- Druid
-	}
+	"Jahetsu", -- Druid
+	"Kusch" -- Druid
+}
 
-	MB_myMainTankOverhealingPercentage = 0.89 --> 11% overheal
+MB_myMainTankOverhealingPercentage = 0.89 --> 11% overheal
 
-	MB_myDruidMainTankHealingRank = "Rank 7" -- Healing Touch
-	MB_myDruidMainTankHealingBossList = {
-		-- Default bosses
-		"Ossirian the Unscarred",
-		"Patchwerk",
+MB_myDruidMainTankHealingRank = "Rank 7" -- Healing Touch
+MB_myDruidMainTankHealingBossList = {
+	-- Default bosses
+	"Ossirian the Unscarred",
+	"Patchwerk",
 
-		-- Extra bosses
-			-- MC
-			"Magmadar",
-			"Ragnaros",
+	-- Extra bosses
+		-- MC
+		"Magmadar",
+		"Ragnaros",
 
-			-- Naxx
-			"Maexxna",
-			"Gluth",
-			"Heigan the Unclean",
-			"Grobbulus",
+		-- Naxx
+		"Maexxna",
+		"Gluth",
+		"Heigan the Unclean",
+		"Grobbulus",
 
-			-- AQ40
-			"Princess Huhuran",
-			"Fankriss the Unyielding",
+		-- AQ40
+		"Princess Huhuran",
+		"Fankriss the Unyielding",
 
-			-- BWL
-			"Chromaggus",
-			"Firemaw"
-	}
+		-- BWL
+		"Chromaggus",
+		"Firemaw"
+}
 	
-	MB_myPriestMainTankHealingRank = "Rank 1" -- Greater Heal
-	MB_myPriestMainTankHealingBossList = {
-		-- Default bosses
-		"Ossirian the Unscarred",
-		"Patchwerk",
+MB_myPriestMainTankHealingRank = "Rank 1" -- Greater Heal
+MB_myPriestMainTankHealingBossList = {
+	-- Default bosses
+	"Ossirian the Unscarred",
+	"Patchwerk",
 
-		-- Extra bosses
-			-- Naxx
-			"Gluth",
-	}
-	
-	MB_myShamanMainTankHealingRank = "Rank 7" -- Healing Wave
-	MB_myShamanMainTankHealingBossList = {
-		-- Default bosses
-		"Ossirian the Unscarred",
-		"Patchwerk",
+	-- Extra bosses
+		-- Naxx
+		"Gluth",
+}
 
-		-- Extra bosses
-			-- Raidheal other bosses
-	}
-	
-	MB_myPaladinMainTankHealingRank = "Rank 6" -- Flash of Light
-	MB_myPaladinMainTankHealingBossList = {
-		-- Default bosses
-		"Ossirian the Unscarred",
-		"Patchwerk",
+MB_myShamanMainTankHealingRank = "Rank 7" -- Healing Wave
+MB_myShamanMainTankHealingBossList = {
+	-- Default bosses
+	"Ossirian the Unscarred",
+	"Patchwerk",
 
-		-- Extra bosses
-			-- Naxx
-			"Maexxna",
-			"Gluth",
-	}
+	-- Extra bosses
+		-- Raidheal other bosses
+}
 
------------------------------------------------ Healing ----------------------------------------------
+MB_myPaladinMainTankHealingRank = "Rank 6" -- Flash of Light
+MB_myPaladinMainTankHealingBossList = {
+	-- Default bosses
+	"Ossirian the Unscarred",
+	"Patchwerk",
+
+	-- Extra bosses
+		-- Naxx
+		"Maexxna",
+		"Gluth",
+}
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function GetHealBonus()
 	local value = MBx.ACE.ItemBonus:GetBonus("HEAL")
@@ -270,9 +265,11 @@ function GetAverageChainHealValueFromRank(spell, rank, amountOfBounce, multiplie
     return math.floor(lowestHeal * multiplier)
 end
 
------------------------------------------------ Healing ----------------------------------------------
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
-function mb_assignHealerToName(assignments) -- Assign a healer to a target
+function mb_assignHealerToName(assignments)
 	local _, _, healerName, assignedTarget = string.find(assignments, "(%a+)%s*(%a+)")
 
 	if mb_iamFocus() then
@@ -295,6 +292,10 @@ function mb_assignHealerToName(assignments) -- Assign a healer to a target
 		Print("Assigning myself to focusheal "..MB_myAssignedHealTarget..".")
 	end
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_getHealSpell()
 	if myClass == "Shaman" then
@@ -332,6 +333,10 @@ function mb_getHealSpell()
 		return true
 	end
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_natureSwiftnessLowAggroedPlayer()
 	if not MB_raidAssist.Shaman.NSLowHealthAggroedPlayers then
@@ -397,6 +402,10 @@ function mb_natureSwiftnessLowAggroedPlayer()
 	end
 	return false
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_castSpellOnRandomRaidMember(spell, rank, percentage)
 	if not UnitInRaid("player") then
@@ -501,6 +510,10 @@ function mb_powerShieldTanks()
 	end
 end
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function mb_instructorRazAddsHeal()
     if not UnitInRaid("player") then
         return false
@@ -537,6 +550,10 @@ function mb_instructorRazAddsHeal()
     end
     return false
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_healLieutenantAQ20()
 	if not UnitInRaid("player") then
@@ -577,6 +594,10 @@ function mb_healLieutenantAQ20()
     return false
 end
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function mb_targetMyAssignedTankToHeal()	
 	if mb_myNameInTable(MB_myThreatPWSoakerHealerList) then	
 		TargetByName(MB_myThreatPWSoaker)
@@ -602,6 +623,10 @@ function mb_targetMyAssignedTankToHeal()
 		MB_myAssignedHealTarget = MB_raidLeader
 	end
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_loathebHealing()
    local HealerCounter = 1
@@ -688,3 +713,7 @@ function mb_loathebHealing()
    
    return true
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
