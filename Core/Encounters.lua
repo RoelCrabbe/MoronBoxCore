@@ -399,7 +399,7 @@ MB_myOnyxiaBoxStrategy = true
 
 -- Tank and Follow Assignments (REQUIRED)
 MB_myOnyxiaMainTank = "Moron"
-MB_myOnyxiaFollowTarget = "Ajlano" -- Follow-back target
+MB_myOnyxiaFollowTarget = "Suecia" -- Follow-back target
 
 --[[
     Onyxia Tactics:

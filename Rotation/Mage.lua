@@ -158,8 +158,7 @@ local function MageSingle()
         end
 	end
 
-	if Instance.AQ40 then
-		
+	if Instance.AQ40 then		
 		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return

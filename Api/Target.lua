@@ -111,7 +111,8 @@ function mb_assistFocus()
 end
 
 function mb_getTarget()
-		
+	local tName = UnitName("target")
+	
 	if (mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank)) and not mb_tankTarget("Razorgore the Untamed") then
         mb_orbControlling()
         return
@@ -129,7 +130,7 @@ function mb_getTarget()
         if not mb_isAtRazorgorePhase() then
             return
         end
-            
+
         if (myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) 
             or myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) and MB_raidLeader ~= myName then
             MB_raidLeader = myName
@@ -150,22 +151,18 @@ function mb_getTarget()
                 MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
                 return
             end
-            
-            if (UnitName("target") == nil or mb_dead("target")) then                
+
+            if (tName == nil or mb_dead("target")) then                
                 TargetNearestEnemy()
                 return
             end
 
-            mb_coolDownPrint("Focussing Attacks on "..UnitName("target"), 30)
+            mb_coolDownPrint("Focussing Attacks on "..tName, 30)
             return
         end		
 
 	elseif Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
-        if not mb_imTank() then
-            return
-        end
-
-        if UnitName("target") == "The Prophet Skeram" then
+        if tName == "The Prophet Skeram" and mb_imTank() then
             if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramLeftOFFTANKS)) then
                 if not GetRaidTargetIndex("target") then
                     SetRaidTarget("target", 4)							
@@ -185,7 +182,7 @@ function mb_getTarget()
 	end
 
 	if mb_iamFocus() then
-		if not UnitName("target") or UnitIsDead("target") or not UnitIsEnemy("player", "target") and not (mb_isAtSartura() or mb_isAtTwinsEmps()) then 
+		if not tName or UnitIsDead("target") or not UnitIsEnemy("player", "target") and not (mb_isAtSartura() or mb_isAtTwinsEmps()) then 
 			
 			TargetNearestEnemy()
 		end
@@ -200,7 +197,7 @@ function mb_getTarget()
                         return
                     end
 
-					if not UnitName("target") or mb_dead("target") then
+					if not tName or mb_dead("target") then
                         mb_assistFocus()
                     end
 					return
@@ -234,7 +231,7 @@ function mb_getTarget()
                     return
                 end
 
-                if not UnitName("target") or mb_dead("target") then
+                if not tName or mb_dead("target") then
                     mb_assistFocus()
                 end
                 return
@@ -251,14 +248,14 @@ function mb_getTarget()
 
 			elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 				for i = 1, 2 do
-					if UnitName("target") == "Crypt Guard" and not mb_dead("target") then
+					if tName == "Crypt Guard" and not mb_dead("target") then
                         return
                     end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
                     mb_assistFocus()
                 end
 				return
@@ -274,7 +271,7 @@ function mb_getTarget()
                     return
                 end
 	
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
                     mb_assistFocus()
                 end
 				return
@@ -293,18 +290,18 @@ function mb_getTarget()
 				end
 
 				for i = 1, 3 do
-					if UnitName("target") == "Mutated Grub" and not mb_dead("target") then
+					if tName == "Mutated Grub" and not mb_dead("target") then
                         return
                     end
 
-					if UnitName("target") == "Plagued Bat" and not mb_dead("target") then
+					if tName == "Plagued Bat" and not mb_dead("target") then
                         return
                     end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
                     mb_assistFocus()
                 end
 				return
@@ -316,7 +313,7 @@ function mb_getTarget()
 		end
 
 	elseif Instance.AQ40 then
-		if mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then			
+		if mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then	
 			if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramRightTank)) then		
 				mb_getTargetNotOnTank()
 				return
@@ -350,7 +347,7 @@ function mb_getTarget()
 						return
 					end
 
-					if not UnitName("target") or mb_dead("target") then
+					if not tName or mb_dead("target") then
 						mb_assistFocus()
 					end
 					return
@@ -364,7 +361,7 @@ function mb_getTarget()
 					return
 				end
 	
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -384,7 +381,7 @@ function mb_getTarget()
 					return
 				end
 	
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -404,7 +401,7 @@ function mb_getTarget()
 					return
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -424,7 +421,7 @@ function mb_getTarget()
 					return
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -440,18 +437,18 @@ function mb_getTarget()
 			elseif (mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer()) then
 
 				for i = 1, 4 do
-					if UnitName("target") == "Anubisath Swarmguard" and not mb_dead("target") then
+					if tName == "Anubisath Swarmguard" and not mb_dead("target") then
 						return
 					end
 
-					if UnitName("target") == "Anubisath Warrior" and not mb_dead("target") then
+					if tName == "Anubisath Warrior" and not mb_dead("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -478,7 +475,7 @@ function mb_getTarget()
 						return
 					end
 					
-					if (UnitName("target") == nil or mb_dead("target")) then						
+					if (tName == nil or mb_dead("target")) then						
 						TargetNearestEnemy()
 						return
 					end
@@ -552,7 +549,7 @@ function mb_getTarget()
 						return 
 					end
 
-					if not UnitName("target") or mb_dead("target") then
+					if not tName or mb_dead("target") then
 						mb_assistFocus()
 					end
 					return
@@ -582,14 +579,14 @@ function mb_getTarget()
 			end
 
 			for i = 1, 3 do
-				if UnitName("target") == "Onyxian Whelp" and not mb_dead("target") then
+				if tName == "Onyxian Whelp" and not mb_dead("target") then
 					return
 				end
 
 				TargetNearestEnemy()
 			end
 
-			if not UnitName("target") or mb_dead("target") then
+			if not tName or mb_dead("target") then
 				mb_assistFocus()
 			end
 			return
@@ -599,7 +596,7 @@ function mb_getTarget()
 				return
 			end
 
-			if not UnitName("target") or mb_dead("target") then
+			if not tName or mb_dead("target") then
 				mb_assistFocus()
 			end
 			return
@@ -613,36 +610,36 @@ function mb_getTarget()
 
 			elseif mb_imMeleeDPS() then				
 				for i = 1, 4 do
-					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
+					if tName == "Shade of Jin\'do" and not mb_dead("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
 				
 			elseif mb_imRangedDPS() then
 				for i = 1, 4 do
-					if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
+					if tName == "Shade of Jin\'do" and not mb_dead("target") then
 						return
 					end
 
-					if UnitName("target") == "Powerful Healing Ward" and not mb_dead("target") then
+					if tName == "Powerful Healing Ward" and not mb_dead("target") then
 						return
 					end
 
-					if UnitName("target") == "Brain Wash Totem" and not mb_dead("target") then
+					if tName == "Brain Wash Totem" and not mb_dead("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -659,18 +656,18 @@ function mb_getTarget()
 
 			elseif mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Spawn of Mar\'li" and not mb_dead("target") then
+					if tName == "Spawn of Mar\'li" and not mb_dead("target") then
 						return
 					end
 
-					if UnitName("target") == "Witherbark Speaker" and not mb_dead("target") then
+					if tName == "Witherbark Speaker" and not mb_dead("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -683,14 +680,14 @@ function mb_getTarget()
 
 			elseif mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Bloodseeker Bat" and mb_inCombat("target") and not mb_dead("target") then
+					if tName == "Bloodseeker Bat" and mb_inCombat("target") and not mb_dead("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -703,14 +700,14 @@ function mb_getTarget()
 
 			elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 				for i = 1,5 do
-					if UnitName("target") == "Razzashi Cobra" and not mb_dead("target") and not GetRaidTargetIndex("target") then
+					if tName == "Razzashi Cobra" and not mb_dead("target") and not GetRaidTargetIndex("target") then
 						return
 					end
 
 					TargetNearestEnemy()
 				end
 
-				if not UnitName("target") or mb_dead("target") then
+				if not tName or mb_dead("target") then
 					mb_assistFocus()
 				end
 				return
@@ -725,14 +722,14 @@ function mb_getTarget()
 
 		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 			for i = 1,5 do
-				if UnitName("target") == "Hive\'Zara Larva" and not mb_dead("target") then
+				if tName == "Hive\'Zara Larva" and not mb_dead("target") then
 					return
 				end
 
 				TargetNearestEnemy()
 			end
 
-			if not UnitName("target") or mb_dead("target") then
+			if not tName or mb_dead("target") then
 				mb_assistFocus()
 			end
 			return
@@ -746,14 +743,14 @@ function mb_getTarget()
 		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
 
 			for i = 1,5 do
-				if UnitName("target") == "Spectral Assassin" and not mb_dead("target") then
+				if tName == "Spectral Assassin" and not mb_dead("target") then
 					return
 				end
 
 				TargetNearestEnemy()
 			end
 
-			if not UnitName("target") or mb_dead("target") then
+			if not tName or mb_dead("target") then
 				mb_assistFocus()
 			end
 			return
@@ -1407,11 +1404,7 @@ function mb_isAtSkeram()
        return true
    end
    
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "The Prophet Skeram" then
+   if targetName and targetName == "The Prophet Skeram" then
        return true
    end
    

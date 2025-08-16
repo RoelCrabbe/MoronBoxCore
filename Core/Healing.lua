@@ -245,7 +245,7 @@ function ExtractRank(str)
 	for i = 1, string.len(str) do
 		local char = string.sub(str, i, i)
 		if tonumber(char) then
-			num = num .. char
+			num = num..char
 			foundDigit = true
 		elseif foundDigit then
 			break
@@ -660,7 +660,7 @@ function mb_loathebHealing()
        return false
    end
    
-   mb_message("Current healer: " .. nextHealer)
+   mb_message("Current healer: "..nextHealer)
    
    if myName ~= nextHealer then
        return false
@@ -698,8 +698,8 @@ function mb_loathebHealing()
    
    local healThreshold = healValue * overhealPercentage
    
-   mb_coolDownPrint("My heal will start when " .. mainTank .. " is below " .. healThreshold .. " HP")
-   mb_coolDownPrint("Without overhealing my heal would heal for " .. healValue)
+   mb_coolDownPrint("My heal will start when "..mainTank.." is below "..healThreshold.." HP")
+   mb_coolDownPrint("Without overhealing my heal would heal for "..healValue)
    
    local healthDown = mb_healthDown(mainTankId)
    if not healthDown then

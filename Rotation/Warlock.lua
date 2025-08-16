@@ -296,7 +296,6 @@ function Warlock:BossSpecificDPS()
                     return true
                 end
             end
-			return
 
         elseif Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
@@ -309,7 +308,7 @@ function Warlock:BossSpecificDPS()
             local tankName = razorgoreTankMap[myOrder] and mb_returnPlayerInRaidFromTable(razorgoreTankMap[myOrder])
 
             if tankName and mb_targetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
-                local targetID = MBID[tankName] .. "target"
+                local targetID = MBID[tankName].."target"
 
                 if not mb_hasBuffOrDebuff("Curse of Recklessness", targetID, "debuff") then
                     AssistUnit(MBID[tankName])
@@ -317,8 +316,7 @@ function Warlock:BossSpecificDPS()
                     TargetLastTarget()
                     return true
                 end
-            end
-            return            
+            end          
         else
             local curseAssignments = {
                 [1] = "Curse of Recklessness",
@@ -354,7 +352,7 @@ function Warlock:BossSpecificDPS()
 		mb_castSpellOrWand("Immolate")
 		return true
 	
-    elseif mb_mobsToDetectMagic() or mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
+    elseif mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
 
         if mb_imBusy() then
             SpellStopCasting()

@@ -1022,7 +1022,7 @@ function GetColors(note)
     }
     
     local function getColoredText(color, text)
-        return color .. text .. "|r"
+        return color..text.."|r"
     end
     
     local function getUnitClassColor(unit)
@@ -1039,7 +1039,7 @@ function GetColors(note)
     
     if UnitInRaid("player") then
         for i = 1, GetNumRaidMembers() do
-            local raidUnit = "raid" .. i
+            local raidUnit = "raid"..i
             local raidMemberName = UnitName(raidUnit)
             if raidMemberName == note then
                 return getUnitClassColor(raidUnit)
@@ -1049,7 +1049,7 @@ function GetColors(note)
 
     if UnitInParty("player") then
         for i = 1, GetNumPartyMembers() do
-            local partyUnit = "party" .. i
+            local partyUnit = "party"..i
             local partyMemberName = UnitName(partyUnit)
             if partyMemberName == note then
                 return getUnitClassColor(partyUnit)
@@ -1414,7 +1414,7 @@ function mb_changeSpecc(specc)
    local playerClass = string.lower(UnitClass("player"))
    local inputSpecc = string.lower(restOfString or "")
    
-   Print("Your current specc is: " .. MB_mySpecc)
+   Print("Your current specc is: "..MB_mySpecc)
    
    if inputClass ~= playerClass then
        Print("You had the wrong class given.")

@@ -92,8 +92,8 @@ MB_myLoathebList = {}
 
 Instance = {
     Naxx  = (GetRealZoneText() == "Naxxramas"),
-    AQ40  = (GetRealZoneText() == "Ahn'Qiraj"),
-    AQ20  = (GetRealZoneText() == "Ruins of Ahn'Qiraj"),
+    AQ40  = (GetRealZoneText() == "Ahn\'Qiraj"),
+    AQ20  = (GetRealZoneText() == "The Ruins of Ahn\'Qiraj"),
     MC    = (GetRealZoneText() == "Molten Core"),
     BWL   = (GetRealZoneText() == "Blackwing Lair"),
     ONY   = (GetRealZoneText() == "Onyxia's Lair"),
