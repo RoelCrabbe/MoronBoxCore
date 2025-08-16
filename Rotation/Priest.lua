@@ -2,11 +2,74 @@
 --[####################################### START PRIEST CODE! #########################################]--
 --[####################################################################################################]--
 
-local Priest = CreateFrame("Frame", "Priest")
+-- Unit Functions
+local UnitName = UnitName
+local UnitClass = UnitClass
+local UnitRace = UnitRace
+local UnitLevel = UnitLevel
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitMana = UnitMana
+local UnitManaMax = UnitManaMax
+local UnitPowerType = UnitPowerType
+local UnitExists = UnitExists
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitIsConnected = UnitIsConnected
+local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
+local UnitCanAttack = UnitCanAttack
+local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
+local UnitIsVisible = UnitIsVisible
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitCreatureType = UnitCreatureType
+local UnitClassification = UnitClassification
 
+-- Buff/Debuff Functions
+local UnitBuff = UnitBuff
+local UnitDebuff = UnitDebuff
+
+-- Spell Functions
+local CastSpellByName = CastSpellByName
+local GetSpellCooldown = GetSpellCooldown
+local IsCurrentAction = IsCurrentAction
+
+-- Target Functions
+local TargetUnit = TargetUnit
+local TargetByName = TargetByName
+local ClearTarget = ClearTarget
+local AssistUnit = AssistUnit
+
+-- Party/Raid Functions
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local GetRaidRosterInfo = GetRaidRosterInfo
+local IsRaidLeader = IsRaidLeader
+
+-- Player Position/Info Functions
+local GetRealZoneText = GetRealZoneText
+local GetSubZoneText = GetSubZoneText
+
+-- Addon Communication (if supported on your server)
+local SendAddonMessage = SendAddonMessage
+
+-- Misc Utility Functions
+local IsShiftKeyDown = IsShiftKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsAltKeyDown = IsAltKeyDown
+
+-- Common Names
 local myClass = UnitClass("player")
 local myName = UnitName("player")
+local myRace = UnitRace("player")
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local Priest = CreateFrame("Frame", "Priest")
 if myClass ~= "Priest" then
     return
 end
@@ -224,8 +287,6 @@ local function PriestHeal()
 
 	mb_healerWand()
 end
-
-MB_myHealList["Priest"] = PriestHeal
 
 local GreaterHeal = { Time = 0, Interrupt = false }
 function Priest:MTHeals(assignedTarget)
@@ -501,7 +562,7 @@ local function PriestSingle()
         end
 	end
 
-	if Instance.Naxx then
+	if Instance.NAXX then
 
         if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
@@ -659,7 +720,7 @@ function Priest:BossSpecificDPS()
 	elseif Instance.MC then
         mb_coolDownCast("Shadow Word: Pain(Rank 1)", 24)
 
-	elseif Instance.Ony and mb_tankTarget("Onyxia") then
+	elseif Instance.ONY and mb_tankTarget("Onyxia") then
 		mb_coolDownCast("Shadow Word: Pain", 24)
 	elseif not UnitInRaid("player") and mb_debuffShadowWeavingAmount() > 5 then
 		mb_coolDownCast("Shadow Word: Pain", 24)
@@ -723,13 +784,13 @@ local function PriestSetup()
 		mb_selfBuff("Inner Focus")
 		mb_multiBuff("Prayer of Fortitude")
 
-		if Instance.Naxx or Instance.AQ40 then
+		if Instance.NAXX or Instance.AQ40 then
 			if mb_knowSpell("Prayer of Spirit") then				
 				mb_multiBuff("Prayer of Spirit")
 			end
 		end
 
-		if Instance.Naxx and not mb_isAtInstructorRazuvious() then										
+		if Instance.NAXX and not mb_isAtInstructorRazuvious() then										
 			mb_multiBuff("Prayer of Shadow Protection")
 		end
 

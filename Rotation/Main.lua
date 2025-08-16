@@ -2,8 +2,72 @@
 --[####################################### START SINGLE CODE! #########################################]--
 --[####################################################################################################]--
 
+-- Unit Functions
+local UnitName = UnitName
+local UnitClass = UnitClass
+local UnitRace = UnitRace
+local UnitLevel = UnitLevel
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitMana = UnitMana
+local UnitManaMax = UnitManaMax
+local UnitPowerType = UnitPowerType
+local UnitExists = UnitExists
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitIsConnected = UnitIsConnected
+local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
+local UnitCanAttack = UnitCanAttack
+local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
+local UnitIsVisible = UnitIsVisible
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitCreatureType = UnitCreatureType
+local UnitClassification = UnitClassification
+
+-- Buff/Debuff Functions
+local UnitBuff = UnitBuff
+local UnitDebuff = UnitDebuff
+
+-- Spell Functions
+local CastSpellByName = CastSpellByName
+local GetSpellCooldown = GetSpellCooldown
+local IsCurrentAction = IsCurrentAction
+
+-- Target Functions
+local TargetUnit = TargetUnit
+local TargetByName = TargetByName
+local ClearTarget = ClearTarget
+local AssistUnit = AssistUnit
+
+-- Party/Raid Functions
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local GetRaidRosterInfo = GetRaidRosterInfo
+local IsRaidLeader = IsRaidLeader
+
+-- Player Position/Info Functions
+local GetRealZoneText = GetRealZoneText
+local GetSubZoneText = GetSubZoneText
+
+-- Addon Communication (if supported on your server)
+local SendAddonMessage = SendAddonMessage
+
+-- Misc Utility Functions
+local IsShiftKeyDown = IsShiftKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsAltKeyDown = IsAltKeyDown
+
+-- Common Names
 local myClass = UnitClass("player")
 local myName = UnitName("player")
+local myRace = UnitRace("player")
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 local PriestCounter = {
     Cycle = function()
@@ -26,6 +90,39 @@ local WarlockCounter = {
     end
 }
 
+local MageWater = {
+	[60] = "Conjured Crystal Water",
+	[50] = "Conjured Sparkling Water"
+}
+
+local PlayerMounts = {
+	"Reins of the Winterspring Frostsaber",
+	"Deathcharger\'s Reins", 
+	"Black War Tiger", 
+	"Swift Zulian Tiger", 
+	"Swift Razzashi Raptor", 
+	"Swift Blue Raptor", 
+	"Black War Kodo", 
+	"Horn of the ", 
+	"Reins of the Swift ", 
+	"Swift White Steed", 
+	"Swift Brown Steed",
+	"Black Battlestrider",
+	"Warhorse", 
+	" Mare", 
+	"Horse", 
+	"Timber Wolf", 
+	"Kodo", 
+	"Raptor", 
+	" Ram", 
+	" Mechanostrider", 
+	" Bridle", 
+	"Charger", 
+	" Frostsaber", 
+	" Nightsaber", 
+	"Swift Palomino"
+}
+
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
@@ -44,7 +141,7 @@ function mb_single()
         return
     end
 
-    if Instance.Naxx and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -119,7 +216,7 @@ function mb_multi()
         return
     end
 
-    if Instance.Naxx and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -194,7 +291,7 @@ function mb_AOE()
         return
     end
 
-    if Instance.Naxx and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -269,7 +366,7 @@ function mb_setup()
         return
     end
 
-    if Instance.Naxx and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -382,7 +479,7 @@ function mb_healAndTank()
         return
     end
 
-    if Instance.Naxx and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -559,7 +656,7 @@ function mb_healAndTank()
             end
 		end
 
-	elseif Instance.Naxx then
+	elseif Instance.NAXX then
 
         if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
@@ -646,7 +743,7 @@ function mb_makeWater()
 end
 
 function mb_mageWater()
-	local waterranks = TableInvert(MB_myWater)
+	local waterranks = TableInvert(MageWater)
 	local bestrank = 1
 	local bestwater = nil
 	local count = 0
@@ -662,7 +759,7 @@ function mb_mageWater()
 				local bsnum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
 				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsnum)
 				
-				if FindInTable(MB_myWater, itemName) then
+				if FindInTable(MageWater, itemName) then
 					if waterranks[itemName] > bestrank then
 						bestwater = itemName
 						bestrank = waterranks[itemName]
@@ -678,7 +775,7 @@ function mb_mageWater()
 end
 
 function mb_pickUpWater()
-	local waterranks = TableInvert(MB_myWater)
+	local waterranks = TableInvert(MageWater)
 	local amount = 0
 	local mycarriedwater = { }
 	local bestrank = 1
@@ -692,7 +789,7 @@ function mb_pickUpWater()
 				link = GetContainerItemLink(bag, slot)
 				local bsnum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
 				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsnum)
-				if FindInTable(MB_myWater, itemName) then
+				if FindInTable(MageWater, itemName) then
 					if waterranks[itemName] > bestrank then						
 						bestrank=waterranks[itemName]
 						bestwater=itemName.." "..bag.." "..slot
@@ -833,7 +930,7 @@ function mb_followFocus()
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.Ony then
+	elseif Instance.ONY then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -862,7 +959,7 @@ function mb_casterFollow()
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.Ony then
+	elseif Instance.ONY then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -890,7 +987,7 @@ function mb_meleeFollow()
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.Ony then
+	elseif Instance.ONY then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -977,7 +1074,7 @@ function mb_tankFollow()
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.Ony then
+	elseif Instance.ONY then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -1005,7 +1102,7 @@ function mb_healerFollow()
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.Ony then
+	elseif Instance.ONY then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -1112,7 +1209,7 @@ function mb_GTFO()
         return
     end
 
-    if Instance.Ony and MB_myOnyxiaBoxStrategy then
+    if Instance.ONY and MB_myOnyxiaBoxStrategy then
         if mb_tankTarget("Onyxia") and (mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then            
             if mb_focusAggro() then
                 if myClass == "Paladin" and mb_spellReady("Divine Shield") then                     
@@ -1134,7 +1231,7 @@ function mb_GTFO()
     end
 		
     if not mb_haveAggro() then
-        if Instance.Naxx and MB_myGrobbulusBoxStrategy then
+        if Instance.NAXX and MB_myGrobbulusBoxStrategy then
             if mb_isAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
                 if mb_hasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
                     if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
@@ -1410,7 +1507,7 @@ function mb_mountUp()
 		return
 	end
 		
-	for _, mount in MB_playerMounts do
+	for _, mount in PlayerMounts do
 		use(mb_getLink(mount))
 	end
 

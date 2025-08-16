@@ -12,26 +12,19 @@
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
 Global\Rotation.lua
-
-Utility\Helpers.lua
-
-Utility\Localization.lua
-Data\WeaverData.lua
 Data\Encounters.lua
-
-Core\Main.lua
 Core\Config.lua
-
 Data\Tables.lua
 Data\Healing.lua
 
-Utility\Macros.lua
+Utility\Helpers.lua
 
 Handlers\Chat.lua
 Handlers\Buffs.lua
 Handlers\Cons.lua
 Handlers\Roles.lua
 Handlers\Attacking.lua
+Handlers\Spells.lua
 
 Rotation\Druid.lua
 Rotation\Hunter.lua
@@ -42,11 +35,9 @@ Rotation\Rogue.lua
 Rotation\Shaman.lua
 Rotation\Warlock.lua
 Rotation\Warrior.lua
-
 Rotation\Main.lua
 
 Api\Helpers\Helpers.lua
-
 Api\Flash.lua
 Api\Turning.lua
 Api\OnUpdate.lua
@@ -56,3 +47,6 @@ Api\CrowdControl.lua
 Api\AddonMessage.lua
 Api\Decurse.lua
 Api\Gear.lua
+
+Utility\Macros.lua
+Utility\Slash.lua

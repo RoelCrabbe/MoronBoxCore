@@ -233,3 +233,6 @@ function mb_tankList(encounter)
 end
 
 --------------------------------------------- End Globals! -------------------------------------------
+
+MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
+MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.

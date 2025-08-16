@@ -2,11 +2,74 @@
 --[####################################### START SHAMAN CODE! #########################################]--
 --[####################################################################################################]--
 
-local Shaman = CreateFrame("Frame", "Shaman")
+-- Unit Functions
+local UnitName = UnitName
+local UnitClass = UnitClass
+local UnitRace = UnitRace
+local UnitLevel = UnitLevel
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitMana = UnitMana
+local UnitManaMax = UnitManaMax
+local UnitPowerType = UnitPowerType
+local UnitExists = UnitExists
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitIsConnected = UnitIsConnected
+local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
+local UnitCanAttack = UnitCanAttack
+local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
+local UnitIsVisible = UnitIsVisible
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitCreatureType = UnitCreatureType
+local UnitClassification = UnitClassification
 
+-- Buff/Debuff Functions
+local UnitBuff = UnitBuff
+local UnitDebuff = UnitDebuff
+
+-- Spell Functions
+local CastSpellByName = CastSpellByName
+local GetSpellCooldown = GetSpellCooldown
+local IsCurrentAction = IsCurrentAction
+
+-- Target Functions
+local TargetUnit = TargetUnit
+local TargetByName = TargetByName
+local ClearTarget = ClearTarget
+local AssistUnit = AssistUnit
+
+-- Party/Raid Functions
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local GetRaidRosterInfo = GetRaidRosterInfo
+local IsRaidLeader = IsRaidLeader
+
+-- Player Position/Info Functions
+local GetRealZoneText = GetRealZoneText
+local GetSubZoneText = GetSubZoneText
+
+-- Addon Communication (if supported on your server)
+local SendAddonMessage = SendAddonMessage
+
+-- Misc Utility Functions
+local IsShiftKeyDown = IsShiftKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsAltKeyDown = IsAltKeyDown
+
+-- Common Names
 local myClass = UnitClass("player")
 local myName = UnitName("player")
+local myRace = UnitRace("player")
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local Shaman = CreateFrame("Frame", "Shaman")
 if myClass ~= "Shaman" then
     return
 end
@@ -148,8 +211,6 @@ local function ShamanHeal()
     MBH_CastHeal("Healing Wave", 3)
 end
 
-MB_myHealList["Shaman"] = ShamanHeal
-
 local HealWave = { Time = 0, Interrupt = false }
 function Shaman:MTHeals(assignedTarget)
 	
@@ -224,7 +285,7 @@ local function ShamanSingle()
 		return
 	end	
 
-	if Instance.Naxx and mb_tankTarget("Heigan the Unclean") then		 
+	if Instance.NAXX and mb_tankTarget("Heigan the Unclean") then		 
 		if mb_meleeDPSInParty() and mb_partyIsDiseased() then			
 			if mb_imBusy() then			
 				SpellStopCasting()
@@ -362,7 +423,9 @@ local function ShamanSetup()
 		mb_selfBuff("Lightning Shield")
 	end
 	
-	MBH_CastHeal("Chain Heal", 1, 1)
+	if mb_imHealer() then
+		MBH_CastHeal("Chain Heal", 1, 1)
+	end
 
     if not mb_inCombat("player") and mb_manaPct("player") < 0.20 and not mb_hasBuffNamed("Drink", "player") then
 		mb_smartDrink()
@@ -412,7 +475,7 @@ end
 
 local function ChooseAirTotem()
 
-    if Instance.Naxx then
+    if Instance.NAXX then
         if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
            
             if mb_isInGroup(MB_myFirstPWSoaker) or mb_isInGroup(MB_mySecondPWSoaker) or mb_isInGroup(MB_myThirdPWSoaker) then                
@@ -486,7 +549,7 @@ end
 
 local function ChooseEarthTotem()
 
-    if Instance.Ony and mb_tankTarget("Onyxia") and mb_tankTargetHealth() >= 0.4 then
+    if Instance.ONY and mb_tankTarget("Onyxia") and mb_tankTargetHealth() >= 0.4 then
 
         if MB_druidTankInParty or MB_warriorTankInParty then
             if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end

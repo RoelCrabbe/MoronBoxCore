@@ -2,11 +2,74 @@
 --[######################################## START DRUID CODE! #########################################]--
 --[####################################################################################################]--
 
-local Druid = CreateFrame("Frame", "Druid")
+-- Unit Functions
+local UnitName = UnitName
+local UnitClass = UnitClass
+local UnitRace = UnitRace
+local UnitLevel = UnitLevel
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitMana = UnitMana
+local UnitManaMax = UnitManaMax
+local UnitPowerType = UnitPowerType
+local UnitExists = UnitExists
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitIsConnected = UnitIsConnected
+local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
+local UnitCanAttack = UnitCanAttack
+local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
+local UnitIsVisible = UnitIsVisible
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitCreatureType = UnitCreatureType
+local UnitClassification = UnitClassification
 
+-- Buff/Debuff Functions
+local UnitBuff = UnitBuff
+local UnitDebuff = UnitDebuff
+
+-- Spell Functions
+local CastSpellByName = CastSpellByName
+local GetSpellCooldown = GetSpellCooldown
+local IsCurrentAction = IsCurrentAction
+
+-- Target Functions
+local TargetUnit = TargetUnit
+local TargetByName = TargetByName
+local ClearTarget = ClearTarget
+local AssistUnit = AssistUnit
+
+-- Party/Raid Functions
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local GetRaidRosterInfo = GetRaidRosterInfo
+local IsRaidLeader = IsRaidLeader
+
+-- Player Position/Info Functions
+local GetRealZoneText = GetRealZoneText
+local GetSubZoneText = GetSubZoneText
+
+-- Addon Communication (if supported on your server)
+local SendAddonMessage = SendAddonMessage
+
+-- Misc Utility Functions
+local IsShiftKeyDown = IsShiftKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsAltKeyDown = IsAltKeyDown
+
+-- Common Names
 local myClass = UnitClass("player")
 local myName = UnitName("player")
+local myRace = UnitRace("player")
 
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local Druid = CreateFrame("Frame", "Druid")
 if myClass ~= "Druid" then
     return
 end
@@ -190,8 +253,6 @@ local function DruidHeal()
 
 	MBH_CastHeal("Healing Touch")
 end
-
-MB_myHealList["Druid"] = DruidHeal
 
 local HealTouch = { Time = 0, Interrupt = false }
 function Druid:MTHeals(assignedTarget)
@@ -640,7 +701,7 @@ local function DruidSingle()
         return
     end
 	
-    if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX and UnitFactionGroup("player") == "Alliance" then
         if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
             if mb_imBusy() then
                 SpellStopCasting()
@@ -894,7 +955,7 @@ local function DruidMulti()
         return
     end
 
-    if Instance.Naxx and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX and UnitFactionGroup("player") == "Alliance" then
         if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
             if mb_imBusy() then
                 SpellStopCasting()
