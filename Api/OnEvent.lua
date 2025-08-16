@@ -754,7 +754,7 @@ MMB:SetScript("OnEvent", MMB.OnEvent)
 --[####################################################################################################]--
 
 function MMB_Post_Init:OnUpdate()
-	if GetTime() - MMB_Post_Init.Timer < 2.5 then
+	if GetTime() - MMB_Post_Init.Timer < 1.5 then
         return
     end
 

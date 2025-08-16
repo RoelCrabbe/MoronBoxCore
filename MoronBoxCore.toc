@@ -12,12 +12,13 @@
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
 Global\Rotation.lua
-Data\Encounters.lua
-Core\Config.lua
-Data\Tables.lua
-Data\Healing.lua
+Global\Helpers.lua
 
-Utility\Helpers.lua
+Core\Config.lua
+Core\Keybinds.lua
+Core\Tables.lua
+Core\Encounters.lua
+Core\Healing.lua
 
 Handlers\Chat.lua
 Handlers\Buffs.lua
@@ -25,6 +26,8 @@ Handlers\Cons.lua
 Handlers\Roles.lua
 Handlers\Attacking.lua
 Handlers\Spells.lua
+Handlers\Macros.lua
+Handlers\Slash.lua
 
 Rotation\Druid.lua
 Rotation\Hunter.lua
