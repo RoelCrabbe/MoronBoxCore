@@ -661,6 +661,10 @@ local function DruidSingle()
 		MB_mySpecc = "Resto"
 	end
 
+    if not mb_inCombat("target") then
+        return
+    end
+
 	if MB_mySpecc == "Feral" then
 		if Instance.AQ40 then			
 			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
@@ -696,7 +700,6 @@ local function DruidSingle()
     end
 
     if MB_mySpecc == "Balance" then
-
         Druid:Balance()
         return
     end
@@ -915,6 +918,10 @@ local function DruidMulti()
 		MB_mySpecc = "Resto"
 	end
 
+    if not mb_inCombat("target") then
+        return
+    end
+
 	if MB_mySpecc == "Feral" then
 		if Instance.AQ40 then			
 			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
@@ -950,7 +957,6 @@ local function DruidMulti()
     end
 		
     if MB_mySpecc == "Balance" then
-
         Druid:Balance()
         return
     end

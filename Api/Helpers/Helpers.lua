@@ -733,7 +733,7 @@ function mb_cancelDruidShapeShift()
 	end
 	
 	if mb_isBoomForm() then 
-		b_warriorSetStance(5)
+		mb_warriorSetStance(5)
 		return
 	end
 end

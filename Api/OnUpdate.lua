@@ -72,21 +72,21 @@ local myRace = UnitRace("player")
 function MMB:OnUpdate()
     local currentTime = GetTime()
     
-    if MB_tradeOpenOnUpdate.Active and currentTime > MB_tradeOpenOnUpdate.Time then
+	if MB_tradeOpenOnUpdate.Active and GetTime() > MB_tradeOpenOnUpdate.Time then
         for i = 0, 6 do
             for k, item in pairs(MB_itemToAutoTrade) do
-                if MB_tradeOpen then
-                    local targetLink = GetTradeTargetItemLink(i)
-                    local playerLink = GetTradePlayerItemLink(i)
-                    
-                    if (targetLink and targetLink:find(item)) or (playerLink and playerLink:find(item)) then
-                        AcceptTrade()
-                        return
-                    end
+                if MB_tradeOpen and GetTradeTargetItemLink(i) and string.find(GetTradeTargetItemLink(i), item) then
+                    AcceptTrade() 
+                    return 
+                end
+                
+                if MB_tradeOpen and GetTradePlayerItemLink(i) and string.find(GetTradePlayerItemLink(i), item) then
+                    AcceptTrade() 
+                    return 
                 end
             end
         end
-    end
+	end
     
     if MB_DMFWeek and MB_DMFWeek.Active and currentTime > MB_DMFWeek.Time then
         MB_DMFWeek.Active = false

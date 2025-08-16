@@ -104,7 +104,7 @@ local function ImprovedExposeCheck()
 	return false
 end
 
-MB_mySpeccList["Rogue"] = WarriorSpecc
+MB_mySpeccList["Rogue"] = RogueSpecc
 
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--

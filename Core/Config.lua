@@ -175,6 +175,7 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
     "Almisael",
     "Rows", 
 	"Sabo",
+	"Honeycocaine",
 
     -- Alliance
     "Alliance Tank 1"

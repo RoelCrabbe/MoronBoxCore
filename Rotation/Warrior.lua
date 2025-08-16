@@ -234,7 +234,6 @@ function Warrior:DPSSingle()
     Warrior:Execute()
 
     if MB_mySpecc == "BT" then
-
         if UnitMana("player") >= 30 and mb_spellReady("Bloodthirst") then            
             CastSpellByName("Bloodthirst")
         end
@@ -252,7 +251,6 @@ function Warrior:DPSSingle()
         end
 
     elseif MB_mySpecc == "MS" then
-
         if UnitMana("player") >= 30 and mb_spellReady("Mortal Strike") then            
             CastSpellByName("Mortal Strike")
         end
@@ -316,7 +314,6 @@ function Warrior:TankSingle()
 
 	if mb_inCombat("player") then
         if Instance.NAXX then
-
             if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 if mb_healthPct("target") <= 0.05 then
                     mb_selfBuff("Last Stand")
@@ -346,8 +343,7 @@ function Warrior:TankSingle()
                 end
             end
 
-        elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") then
-            
+        elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") then            
             if mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
                 mb_selfBuff("Last Stand")
 
@@ -357,7 +353,6 @@ function Warrior:TankSingle()
             end
 
         elseif Instance.BWL then
-
             if mb_tankTarget("Vaelastrasz the Corrupt") and mb_inMeleeRange() then         
                 mb_selfBuff("Death Wish") 	
                 
@@ -371,7 +366,6 @@ function Warrior:TankSingle()
                 end
 
             elseif mb_tankTarget("Firemaw") then
-
                 if mb_haveInBags("Juju Ember") and not mb_isItemInBagCoolDown("Juju Ember") and not mb_hasBuffOrDebuff("Juju Ember", "player", "buff") then 
                     TargetUnit("player")
                     UseItemByName("Juju Ember")
@@ -387,7 +381,6 @@ function Warrior:TankSingle()
                 end
 
             elseif mb_tankTarget("Chromaggus") and mb_healthPct("target") <= 0.07 and mb_healthPct("player") <= 0.3 then
-
                 mb_selfBuff("Last Stand")
 
                 if Warrior:HasShield() then                     
@@ -498,7 +491,7 @@ function Warrior:TankSingle()
         CastSpellByName("Bloodrage")
     end
 
-    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") then
+    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") and Warrior:HasShield() then
         if UnitMana("player") >= 10 then
             if mb_imBusy() then		
                 SpellStopCasting()
@@ -652,7 +645,6 @@ function Warrior:DPSMulti()
     Warrior:Execute()
     
     if MB_mySpecc == "BT" then
-
         if not mb_isExcludedWW() then
             if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
                 if not mb_spellReady("Bloodthirst") then
@@ -672,7 +664,6 @@ function Warrior:DPSMulti()
         end
         
     elseif MB_mySpecc == "MS" then
-
         if not mb_isExcludedWW() then
             if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
                 if not mb_spellReady("Bloodthirst") then
@@ -705,7 +696,6 @@ function Warrior:TankMulti()
 
 	if mb_inCombat("player") then
         if Instance.NAXX then
-
             if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 if mb_healthPct("target") <= 0.05 then
                     mb_selfBuff("Last Stand")
@@ -736,7 +726,6 @@ function Warrior:TankMulti()
             end
 
         elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") then
-            
             if mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
                 mb_selfBuff("Last Stand")
 
@@ -746,7 +735,6 @@ function Warrior:TankMulti()
             end
 
         elseif Instance.BWL then
-
             if mb_tankTarget("Vaelastrasz the Corrupt") and mb_inMeleeRange() then         
                 mb_selfBuff("Death Wish") 	
                 
@@ -760,7 +748,6 @@ function Warrior:TankMulti()
                 end
 
             elseif mb_tankTarget("Firemaw") then
-
                 if mb_haveInBags("Juju Ember") and not mb_isItemInBagCoolDown("Juju Ember") and not mb_hasBuffOrDebuff("Juju Ember", "player", "buff") then 
                     TargetUnit("player")
                     UseItemByName("Juju Ember")
@@ -776,7 +763,6 @@ function Warrior:TankMulti()
                 end
 
             elseif mb_tankTarget("Chromaggus") and mb_healthPct("target") <= 0.07 and mb_healthPct("player") <= 0.3 then
-
                 mb_selfBuff("Last Stand")
 
                 if Warrior:HasShield() then                     
@@ -887,7 +873,7 @@ function Warrior:TankMulti()
         CastSpellByName("Bloodrage")
     end
 
-    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") then
+    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") and Warrior:HasShield() then
         if UnitMana("player") >= 10 then
             if mb_imBusy() then		
                 SpellStopCasting()
@@ -906,15 +892,14 @@ function Warrior:TankMulti()
     end
 
     if Instance.NAXX and mb_isAtNoth() then
-
         WarriorTankSingleRotation()
         return
+
     elseif Instance.BWL and mb_tankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-        
         WarriorTankSingleRotation()
         return
-    elseif Instance.ONY and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
 
+    elseif Instance.ONY and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
         WarriorTankSingleRotation()
         return
     end 

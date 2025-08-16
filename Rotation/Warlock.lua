@@ -572,7 +572,7 @@ MB_myPreCastList["Warlock"] = WarlockPreCast
 --[########################################## Helper Code! ############################################]--
 --[####################################################################################################]--
 
-function Mage:Cooldowns()
+function Warlock:Cooldowns()
 	if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end

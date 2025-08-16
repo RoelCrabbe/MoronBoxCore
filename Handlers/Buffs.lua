@@ -586,7 +586,7 @@ function mb_multiBuff(spell)
         end
 
 		if (spell == "Prayer of Spirit" or spell == "Prayer of Fortitude" or spell == "Prayer of Shadow Protection" or spell == "Fear Ward") then
-            mb_multiBuffPriest(spell)
+            MultiBuffPriest(spell)
             return
         end
 		
