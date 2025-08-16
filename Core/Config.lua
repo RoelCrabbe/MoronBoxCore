@@ -8,7 +8,7 @@ MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that
 
 MB_tankList = {}
 MB_raidAssist = { -- Raid tools
-	AutoTurnToTarget = false, -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
+	AutoTurnToTarget = true, -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
 	Frameflash = true, -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
 	Use40yardHealingRangeOnInstants = false, -- Can cause massive lag and freezing if activated and raid is low on health. If nil = 28 yards, if true = 40 yards.
 	FollowTheLeaderTaxi = true, -- Change this to nil if you do not want followers to automatically fly where the raid leader flies.

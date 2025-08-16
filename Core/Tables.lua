@@ -267,6 +267,7 @@ local MB_mobsToAutoTurnSet = {
     ["Ancient Core Hound"] = true,
     ["Onyxia"] = true,
     ["Deathknight"] = true,
+    ["Gurubashi Berserker"] = true,
 }
 
 -- Auto-Break Fear Requirements

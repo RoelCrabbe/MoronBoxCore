@@ -247,7 +247,7 @@ local function DruidHeal()
 		
 		if (regrowthRaidThrottleTimer == nil or GetTime() - regrowthRaidThrottleTimer > 1.5) then 
 			regrowthRaidThrottleTimer = GetTime()
-			Druid:RegrowthLowRandom()()
+			Druid:RegrowthLowRandom()
 		end		
 	end
 
@@ -661,10 +661,6 @@ local function DruidSingle()
 		MB_mySpecc = "Resto"
 	end
 
-    if not mb_inCombat("target") then
-        return
-    end
-
 	if MB_mySpecc == "Feral" then
 		if Instance.AQ40 then			
 			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
@@ -850,6 +846,10 @@ function Druid:TankSingle()
         return
 	end
 
+    if not mb_inCombat("target") then
+        return
+    end
+
 	if mb_inCombat("player") then
 		if mb_healthPct("player") < 0.3 and mb_spellReady("Frenzied Regeneration") then			
 			CastSpellByName("Frenzied Regeneration") 
@@ -917,10 +917,6 @@ local function DruidMulti()
 		mb_message("My specc is fucked. Defaulting to Resto.")
 		MB_mySpecc = "Resto"
 	end
-
-    if not mb_inCombat("target") then
-        return
-    end
 
 	if MB_mySpecc == "Feral" then
 		if Instance.AQ40 then			
@@ -993,6 +989,10 @@ function Druid:TankMulti()
 		mb_cancelDruidShapeShift()
         return
 	end
+
+    if not mb_inCombat("target") then
+        return
+    end
 
 	if mb_inCombat("player") then
 		if mb_healthPct("player") < 0.3 and mb_spellReady("Frenzied Regeneration") then			

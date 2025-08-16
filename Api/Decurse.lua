@@ -70,6 +70,10 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 function mb_decurse()
+	if not MBD then
+		return false
+	end
+
 	if Instance.ZG then		
 		if mb_isAtJindo() and (myClass == "Mage" or myClass == "Druid") then
 			return false
@@ -87,8 +91,8 @@ function mb_decurse()
         or mb_tankTarget("Spore") or mb_tankTarget("Fungal Spore") or mb_tankTarget("Anubisath Guardian")) then
 		return false
 	end
-
-	if not (MBD or MBD.Session.Spells.HasSpells) then 
+	
+	if not MBD.Session.Spells.HasSpells then 
 		return false 
 	end
 

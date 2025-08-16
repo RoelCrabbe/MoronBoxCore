@@ -1524,3 +1524,245 @@ function mb_mountUp()
 	CastSpellByName("Summon Felsteed")
 	CastSpellByName("Summon Warhorse")	
 end
+
+--[####################################################################################################]--
+--[########################################## Drop Totems! ############################################]--
+--[####################################################################################################]--
+
+local function ChooseAirTotem()
+
+    if Instance.NAXX then
+        if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+           
+            if mb_isInGroup(MB_myFirstPWSoaker) or mb_isInGroup(MB_mySecondPWSoaker) or mb_isInGroup(MB_myThirdPWSoaker) then                
+                if mb_myGroupClassOrder() == 1 then return "Grace of Air Totem" end
+                if mb_myGroupClassOrder() == 2 then return "Windfury Totem" end
+            end
+        
+        elseif mb_isAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+            
+            if MB_druidTankInParty or MB_warriorTankInParty then
+                if mb_myGroupClassOrder() == 1 then return "Windfury Totem" end
+                if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+                
+            elseif mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
+                if mb_myGroupClassOrder() == 1 then return "Windfury Totem" end
+                if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+                
+            elseif mb_numberOfClassInParty("Mage") > 0 or mb_numberOfClassInParty("Warlock") > 0 then
+                if mb_myGroupClassOrder() == 1 then return "Nature Resistance Totem" end
+                if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+            end
+        end
+    
+    elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") and mb_tankTargetHealth() <= 0.4 then
+
+        if mb_myGroupClassOrder() == 1 then return "Nature Resistance Totem" end
+
+        if MB_druidTankInParty or MB_warriorTankInParty then
+            if mb_myGroupClassOrder() == 2 then return "Windfury Totem" end
+            if mb_myGroupClassOrder() == 3 then return "Grace of Air Totem" end
+        
+        elseif mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
+            if mb_myGroupClassOrder() == 2 then return "Windfury Totem" end
+            if mb_myGroupClassOrder() == 3 then return "Grace of Air Totem" end
+
+        elseif mb_numberOfClassInParty("Mage") > 0 or mb_numberOfClassInParty("Warlock") > 0 then
+            if mb_myGroupClassOrder() == 2 then return "Tranquil Air Totem" end
+            if mb_myGroupClassOrder() == 3 then return "Grace of Air Totem" end
+        end
+
+    elseif Instance.AQ20 and mb_tankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
+
+        if mb_isInGroup(MB_myOssirianMainTank) then
+            if mb_myGroupClassOrder() == 1 then return "Grounding Totem" end
+            if mb_myGroupClassOrder() == 2 then return "Grounding Totem" end
+            if mb_myGroupClassOrder() == 3 then return "Grace of Air Totem" end
+            if mb_myGroupClassOrder() == 4 then return "Windfury Totem" end
+        end
+    end
+
+	if mb_isNatureBoss() then
+        if mb_myGroupClassOrder() == 2 then return "Nature Resistance Totem" end
+	end
+
+	if MB_druidTankInParty or MB_warriorTankInParty then
+		if mb_myGroupClassOrder() == 1 then return "Windfury Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+
+	elseif mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then		
+		if mb_myGroupClassOrder() == 1 then return "Windfury Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+			
+	elseif mb_numberOfClassInParty("Mage") > 0 or mb_numberOfClassInParty("Warlock") > 0 then		
+		if mb_myGroupClassOrder() == 1 then return "Tranquil Air Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+	end
+
+	if mb_myGroupClassOrder() == 1 then return "Tranquil Air Totem" end
+	if mb_myGroupClassOrder() == 2 then return "Grace of Air Totem" end
+end
+
+local function ChooseEarthTotem()
+
+    if Instance.ONY and mb_tankTarget("Onyxia") and mb_tankTargetHealth() >= 0.4 then
+
+        if MB_druidTankInParty or MB_warriorTankInParty then
+            if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+            if mb_myGroupClassOrder() == 2 then return "Stoneskin Totem" end
+        
+        elseif mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then    
+            if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+            if mb_myGroupClassOrder() == 2 then return "Stoneskin Totem" end
+        
+        elseif mb_numberOfClassInParty("Mage") > 0 or mb_numberOfClassInParty("Warlock") > 0 then    
+            if mb_myGroupClassOrder() == 1 then return "Stoneskin Totem" end
+            if mb_myGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+        end
+    end
+
+	if mb_isTremorBoss() then
+		if mb_myGroupClassOrder() == 1 then return "Tremor Totem" end
+	end
+
+	if MB_druidTankInParty or MB_warriorTankInParty then 
+		if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Stoneskin Totem" end
+	
+	elseif mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
+		if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Stoneskin Totem" end
+	
+	elseif mb_numberOfClassInParty("Mage") > 0 or mb_numberOfClassInParty("Warlock") > 0 then
+		if mb_myGroupClassOrder() == 1 then return "Stoneskin Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+	end
+
+	if mb_myGroupClassOrder() == 1 then return "Stoneskin Totem" end
+	if mb_myGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+end
+
+local function ChooseWaterTotem()
+
+	if mb_isPoisonBoss() then
+	
+        if Instance.AQ40 then
+			if mb_myGroupClassOrder() == 1 then return "Healing Stream Totem" end
+			if mb_myGroupClassOrder() == 2 then return "Mana Spring Totem" end
+
+		elseif Instance.BWL and mb_tankTarget("Chromaggus") then
+			if mb_myGroupClassOrder() == 1 then return "Poison Cleansing Totem" end
+			if mb_myGroupClassOrder() == 2 then return "Mana Spring Totem" end
+		end	
+		
+	elseif mb_isFireBoss() then		
+		if mb_myGroupClassOrder() == 1 then return "Fire Resistance Totem" end
+		if mb_myGroupClassOrder() == 2 then return "Mana Spring Totem" end
+	end
+
+	if mb_myGroupClassOrder() == 1 then return "Mana Spring Totem" end
+	if mb_myGroupClassOrder() == 2 then return "Healing Stream Totem" end
+end
+
+local function ChooseFireTotem()
+	if mb_myGroupClassOrder() == 1 then return "Frost Resistance Totem" end
+end
+
+function mb_dropTotems()
+	
+	if IsShiftKeyDown() then
+		if not mb_hasBuffOrDebuff("Grounding Totem", "player", "buff") then
+			CastSpellByName("Grounding Totem")
+		end
+		if not mb_hasBuffOrDebuff("Stoneskin Totem", "player", "buff") then
+			CastSpellByName("Stoneskin Totem")
+		end
+		if not mb_hasBuffOrDebuff("Healing Stream Totem", "player", "buff") then
+			CastSpellByName("Healing Stream Totem")
+		end	
+		return
+	end
+
+	if GetSubZoneText() == "The Lyceum" then
+		return
+	end
+
+	if GetSubZoneText() == "Halls of Strife" and not (mb_tankTarget("Broodlord Lashlayer") or mb_tankTarget("Firemaw")) then
+		return
+	end
+
+	if MBID[MB_raidLeader] and not UnitName(MBID[MB_raidLeader].."target") then 
+		return 
+	end
+
+	mb_castTotem(ChooseAirTotem())
+
+	if not MB_cooldowns["Tremor Totem"] then
+		mb_castTotem(ChooseEarthTotem())
+	end
+
+	if not MB_cooldowns["Poison Cleansing Totem"] then
+		mb_castTotem(ChooseWaterTotem())
+	end
+
+	if mb_tankTarget("Sapphiron") or mb_tankTarget("Azuregos") then
+		mb_castTotem(ChooseFireTotem())
+	end
+end
+
+function mb_castTotem(totem)
+
+	if mb_mobsNoTotems() then
+        return
+    end
+
+	if mb_hasBuffOrDebuff("Mana Tide Totem", "player", "buff") then 
+		return 
+	end
+
+	if (totem == "Fire Nova Totem" or totem == "Magma Totem") and not (mb_inMeleeRange() or mb_inCombat("player")) then 
+		return 
+	end
+
+	local duration = 15
+	if totem and string.find(totem, "Searing Totem") and not mb_inCombat("player") then 
+		return
+	end
+
+	local MB_totemTypes  = { 
+        buff = {
+            "Grounding Totem", 
+            "Windfury Totem", 
+            "Grace of Air Totem", 
+            "Nature Resistance Totem", 
+            "Tranquil Air Totem", 
+            "Stoneskin Totem", 
+            "Strength of Earth Totem", 
+            "Frost Resistance Totem", 
+            "Fire Resistance Totem", 
+            "Mana Spring Totem", 
+            "Healing Stream Totem", 
+            "Mana Tide Totem"
+        }, 
+        noBuff = {
+            "Sentry Totem", 
+            "Earthbind Totem", 
+            "Stoneclaw Totem", 
+            "Fire Nova Totem", 
+            "Magma Totem", 
+            "Searing Totem", 
+            "Flametongue Totem", 
+            "Tremor Totem", 
+            "Poison Cleansing Totem", 
+            "Disease Cleansing Totem"
+        }
+	}
+
+	if FindInTable(MB_totemTypes.noBuff, totem) then
+		mb_coolDownCast(totem, duration)
+	else
+		if totem and not mb_hasBuffOrDebuff(totem, "player", "buff") then 
+			CastSpellByName(totem) 
+		end
+	end
+end

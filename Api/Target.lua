@@ -1011,7 +1011,7 @@ function mb_isAtJindo()
         return true
     end
     
-    if tankTmb_tankTarget("Brain Wash Totem") then
+    if mb_tankTarget("Brain Wash Totem") then
         return true
     end
     

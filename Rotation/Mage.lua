@@ -462,7 +462,7 @@ end
 function Mage:Frost()
     if mb_inCombat("player") then        
         if mb_manaDown("player") > 600 then
-            Priest:Cooldowns()
+            Mage:Cooldowns()
         end
 
         if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then			
@@ -527,7 +527,7 @@ local function MageAOE()
 		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
         if mb_manaDown("player") > 600 then
-            Priest:Cooldowns()
+            Mage:Cooldowns()
         end
 	end
 

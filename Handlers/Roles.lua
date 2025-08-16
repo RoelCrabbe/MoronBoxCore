@@ -76,6 +76,8 @@ function mb_imRangedDPS()
         return true
     elseif myClass == "Priest" and MB_mySpecc == "Shadow" then
         return true
+	elseif myClass == "Druid" and MB_mySpecc == "Balance" then
+        return true
     end
     return false
 end

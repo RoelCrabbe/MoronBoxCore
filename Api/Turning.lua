@@ -69,7 +69,11 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MB_savedBinding = { Active = false, Time = 0, Binding2 = "SM_MACRO2", Binding3 = "SM_MACRO3" }
+if not MB_raidAssist.AutoTurnToTarget then
+	return
+end
+
+local SavedBinding = { Active = false, Time = 0, Binding2 = "SM_MACRO2", Binding3 = "SM_MACRO3" }
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -77,46 +81,59 @@ local MB_savedBinding = { Active = false, Time = 0, Binding2 = "SM_MACRO2", Bind
 
 local MAT = CreateFrame("Button", "XFTF", UIParent)
 
-for _, event in ipairs({"UI_ERROR_MESSAGE", "AUTOFOLLOW_END"}) do
-    MAT:RegisterEvent(event)
-end
-
-local function HandleFollow(delay)
-	if not mb_iamFocus() and mb_imRangedDPS() and mb_unitInRange(MBID[MB_raidLeader]) then
-		FollowByName(MB_raidLeader, 1)
-		local now = GetTime()
-		MB_savedBinding.Time = now + delay
-		SetBinding("2", "MOVEBACKWARD")
-		SetBinding("3", "MOVEBACKWARD")
-		MB_savedBinding.Active = true
+do
+	for _, event in {
+			"UI_ERROR_MESSAGE",
+			"AUTOFOLLOW_END"
+		} 
+		do MAT:RegisterEvent(event)
 	end
 end
 
-function MAT:OnEvent(event, arg1)
-	if not MB_raidAssist.AutoTurnToTarget then return end
+local function HandleFollow(delay)
+	local now = GetTime()
 
-	if event == "UI_ERROR_MESSAGE" then
-		if arg1 == "Target needs to be in front of you" then
+	if not MB_raidLeader then
+		return
+	end
+
+	if mb_iamFocus() then
+		return
+	end
+
+	if mb_imRangedDPS() and mb_unitInRange(MBID[MB_raidLeader]) then
+		FollowByName(MB_raidLeader, 1)
+		SavedBinding.Time = now + delay
+		SetBinding("2", "MOVEBACKWARD")
+		SetBinding("3", "MOVEBACKWARD")
+		SavedBinding.Active = true
+	end
+end
+
+function MAT:OnEvent()
+	local now = GetTime()
+
+	if (event == "UI_ERROR_MESSAGE") then
+		if (arg1 == "Target needs to be in front of you") then
 			HandleFollow(1.5)
-		elseif arg1 == "Can't do that while moving" then
-			local now = GetTime()
-			if not MB_savedBinding.Active and (now > MB_savedBinding.Time) and (now < MB_savedBinding.Time + 0.5) and mb_unitInRange(MBID[MB_raidLeader]) then
+		elseif (arg1 == "Can't do that while moving" and mb_unitInRange(MBID[MB_raidLeader])) then
+			if not SavedBinding.Active and (now > SavedBinding.Time) and (now < SavedBinding.Time + 0.5) then
 				HandleFollow(0.75)
 			end
 		end
-	elseif event == "AUTOFOLLOW_END" then
-		MB_savedBinding.Time = GetTime() + 0.15
-		MB_savedBinding.Active = true
+	elseif (event == "AUTOFOLLOW_END") then
+		SavedBinding.Time = now + 0.25
+		SavedBinding.Active = true
 	end
 end
 
 function MAT:OnUpdate()
-	if not MB_savedBinding.Active then return end
+	local now = GetTime()
 
-	if GetTime() > MB_savedBinding.Time then
-		SetBinding("2", MB_savedBinding.Binding2)
-		SetBinding("3", MB_savedBinding.Binding3)
-		MB_savedBinding.Active = false
+	if now > SavedBinding.Time then
+		SetBinding("2", SavedBinding.Binding2)
+		SetBinding("3", SavedBinding.Binding3)
+		SavedBinding.Active = false
 	end
 end
 
