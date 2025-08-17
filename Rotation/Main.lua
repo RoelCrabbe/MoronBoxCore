@@ -1252,8 +1252,7 @@ function mb_GTFO()
             
             mb_useFrozenRuneOnFaerlina()
         
-        elseif Instance.BWL and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-        
+        elseif Instance.BWL and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
@@ -1263,8 +1262,7 @@ function mb_GTFO()
                 FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
             end            
 
-        elseif Instance.MC and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then
- 
+        elseif Instance.MC and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then 
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
