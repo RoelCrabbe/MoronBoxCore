@@ -865,12 +865,13 @@ function Priest:PrayerOfHealingCheck(manaRank, checkRank, minTargets, focus)
 	end
 
     if UnitMana("player") >= cost then
-        if Priest:PartyHurt(GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank), minTargets) then
+		local healValue = GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank)
+        if Priest:PartyHurt(healValue, minTargets) then
             if focus then
                 mb_selfBuff("Inner Focus")
             end
-
-            CastSpellByName("Prayer of Healing (Rank "..manaRank..")")
+	
+            CastSpellByName("Prayer of Healing(Rank "..manaRank..")")
             return true
         end
     end
