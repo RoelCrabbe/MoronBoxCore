@@ -117,6 +117,14 @@ local function MageSpecc()
     MB_mySpecc = nil
 end
 
+local function WinterChillCheck()
+	local _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
+	if TalentsIn > 4 then
+		return true
+	end
+	return false
+end
+
 MB_mySpeccList["Mage"] = MageSpecc
 
 --[####################################################################################################]--
@@ -252,7 +260,6 @@ local function MageSingle()
     end
 
 	if MB_mySpecc == "Fire" then
-
 		if mb_isFireImmune() then			
 			mb_castSpellOrWand("Frostbolt")
 			return
@@ -261,7 +268,6 @@ local function MageSingle()
 		Mage:Fire()
 
 	elseif MB_mySpecc == "Frost" then
-
         if mb_isFrostImmune() then
             mb_castSpellOrWand("Fireball")
             return
@@ -289,25 +295,20 @@ function Mage:BossSpecificDPS()
 		return true		
 	end
 
-    if (mb_mobsToDetectMagic() and mb_hasBuffOrDebuff("Detect Magic", "player", "debuff"))
-        and (not mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff")
-            or not mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff")) then
+    if mb_mobsToDetectMagic() then
+        if not mb_hasBuffOrDebuff("Detect Magic", "target", "debuff") then        
+            mb_castSpellOrWand("Frostbolt")
+            return true
+        elseif mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff") and not mb_hasBuffOrDebuff("Immolate", "target", "debuff") then
+            mb_castSpellOrWand("Frostbolt")
+            return true
+        elseif mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff") and mb_hasBuffOrDebuff("Immolate", "target", "debuff") then
+            Mage:Fire()
+            return true
+        end
+    end
 
-        Mage:Fire()
-        return true
-
-    elseif mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff") then
-
-        mb_castSpellOrWand("Frostbolt")
-        return true
-
-    elseif mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff") then
-
-        Mage:Fire()
-        return true
-
-    elseif mb_mobsToDetectMagic() or mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
-
+    if mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
         if mb_imBusy() then
             SpellStopCasting()
         end
@@ -325,8 +326,7 @@ function Mage:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40 then
-		
+	if Instance.AQ40 then		
 		if mb_tankTarget("Viscidus") then			
 			if mb_healthPct("target") <= 0.35 then				
 				CastSpellByName("Frostbolt(Rank 1)")
@@ -351,8 +351,7 @@ function Mage:BossSpecificDPS()
 			return true
 		end
 
-	elseif Instance.BWL and mb_corruptedTotems() and not mb_dead("target") then
-	
+	elseif Instance.BWL and mb_corruptedTotems() and not mb_dead("target") then	
         if mb_spellReady("Fireblast") then
             CastSpellByName("Fire Blast")
         end
@@ -361,7 +360,6 @@ function Mage:BossSpecificDPS()
         return true
 
 	elseif Instance.MC then
-
 		if mb_tankTarget("Shazzrah") then
 			if MB_mySpecc == "Fire" and not mb_spellReady("Fireball") then
 				
@@ -382,7 +380,6 @@ function Mage:BossSpecificDPS()
 		end
 
 	elseif Instance.ZG then
-
 		if mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
 			if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
 				if mb_spellReady("Fire Blast") then
@@ -404,7 +401,6 @@ function Mage:BossSpecificDPS()
 		end
 
 	elseif Instance.AQ20 and mb_tankTarget("Ossirian the Unscarred") then
-
         if mb_hasBuffOrDebuff("Fire Weakness", "target", "debuff") then
         
             Mage:Fire()
@@ -424,66 +420,91 @@ function Mage:BossSpecificDPS()
 end
 
 function Mage:Fire()
-	local igTick = tonumber(MB_ignite.Amount)
+    local igTick = tonumber(MB_ignite.Amount)
 
+    -- No active Ignite: starter just starts it
     if not MB_ignite.Active then
-		if mb_debuffScorchAmount() == 5 then			
-			Mage:Cooldowns()
-		end
+        if mb_debuffScorchAmount() == 5 then
+            Mage:Cooldowns() -- use cooldowns if Scorch stacks full
+        end
 
-		mb_castSpellOrWand("Fireball")
+        mb_castSpellOrWand("Fireball")
         return
     end
 
-    if mb_inMeleeRange() and mb_spellReady("Fire Blast") and MB_raidAssist.Mage.AllowInstantCast then        
-        CastSpellByName("Fire Blast")
-    end
-
+    -- Starter logic
     if MB_ignite.Starter == myName then
-    
+        -- Good Ignite tick
         if igTick > MB_raidAssist.Mage.StarterIgniteTick then
+            mb_selfBuff("Combustion") -- pop Combustion once at start
+
+            -- Fire Blast if allowed, in melee, and ready
+            if MB_raidAssist.Mage.AllowFireBlastDuringIgnite and mb_inMeleeRange() and mb_spellReady("Fire Blast") then
+                CastSpellByName("Fire Blast")
+            end
+
+            -- Main spell to keep Ignite rolling
             mb_castSpellOrWand("Fireball")
         else
-
+            -- Bad tick handling
             if MB_raidAssist.Mage.AllowIgniteToDropWhenBadTick then
                 mb_castSpellOrWand("Frostbolt")
             else
                 mb_castSpellOrWand("Fireball")
             end
         end
+
+    -- Non-starter logic
     else
-        if mb_hasBuffOrDebuff("Ignite", "target", "debuff") then
-            mb_castSpellOrWand(MB_raidAssist.Mage.SpellToKeepIgniteUp)
+        -- Starter has good Ignite tick
+        if igTick > MB_raidAssist.Mage.StarterIgniteTick then
+            if mb_hasBuffOrDebuff("Ignite", "target", "debuff") then
+                mb_castSpellOrWand(MB_raidAssist.Mage.SpellToKeepIgniteUp) -- usually Scorch
+            end
+        else
+            -- Starter tick is bad → non-starters cast Fireball to start next strong Ignite
+            mb_castSpellOrWand("Fireball")
         end
-    end		
+    end
 end
 
 function Mage:Frost()
-    if mb_inCombat("player") then        
+    -- Combat cooldowns
+    if mb_inCombat("player") then
         if mb_manaDown("player") > 600 then
             Mage:Cooldowns()
         end
 
-        if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then			
+        -- Ice Block if low health (except Grobbulus)
+        if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then
             mb_selfBuff("Ice Block")
             return
         end
 
-        if mb_hasBuffOrDebuff("Ice Block", "player", "buff") and mb_healthPct("player") >= 0.70 then 
-            CancelBuff("Ice Block") 
-            return 
+        -- Cancel Ice Block safely
+        if mb_hasBuffOrDebuff("Ice Block", "player", "buff") and mb_healthPct("player") >= 0.70 and mb_threat("player") < 50 then
+            CancelBuff("Ice Block")
+            return
         end
 
-        if mb_spellReady("Ice Barrier") and mb_healthPct("player") >= 0.65 then				
+        -- Ice Barrier
+        if mb_spellReady("Ice Barrier") and mb_healthPct("player") >= 0.65 and not mb_hasBuffOrDebuff("Ice Barrier", "player", "buff") then
             mb_selfBuff("Ice Barrier")
             return
         end
     end
 
-    if not mb_spellReady("Frostbolt") then			
-        mb_castSpellOrWand("Fireball")
-    else
+    -- Winter's Chill opener
+    if WinterChillCheck() and mb_debuffWintersChillAmount() < 3 then
+        CastSpellByName(MB_raidAssist.Mage.SpellToKeepWintersChillUp)
+        return
+    end
+
+    -- Frostbolt rotation (Fireball as backup if GCD)
+    if mb_spellReady("Frostbolt") then
         mb_castSpellOrWand("Frostbolt")
+    else
+        mb_castSpellOrWand("Fireball")
     end
 end
 
@@ -707,7 +728,6 @@ function Mage:Cooldowns()
         mb_selfBuff("Arcane Power")			
     end
 
-    mb_selfBuff("Combustion")
     mb_selfBuff("Presence of Mind")
     
     mb_healerTrinkets()

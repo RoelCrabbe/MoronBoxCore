@@ -85,10 +85,12 @@ MB_raidAssist = { -- Raid tools
 	},
 
 	Mage = {
-		StarterIgniteTick = 500, -- Represents the threshold tick value for the Ignite debuff
-		AllowIgniteToDropWhenBadTick = false, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
+		StarterIgniteTick = 425, -- Represents the threshold tick value for the Ignite debuff
+		AllowIgniteToDropWhenBadTick = true, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
-		AllowInstantCast = true, -- Indicates whether instant cast spells should be allowed		
+		AllowFireBlastDuringIgnite = true, -- Indicates whether instant cast spells should be allowed like fireblast when igniting	
+		-- Forst
+		SpellToKeepWintersChillUp =  "Frostbolt(Rank 4)"
 	},
 
 	Debugger = { -- Tells me some stuff on X and Y encounters
