@@ -242,7 +242,6 @@ local MB_mobsToDetectMagicSet = {
     ["Anubisath Sentinel"] = true,
     ["Anubisath Guardian"] = true,
     ["Anubisath Defender"] = true,
-    ["Death Talon Wyrmguard"] = true,
     ["Shazzrah"] = true,
 }
 

@@ -29,17 +29,6 @@ Handlers\Spells.lua
 Handlers\Macros.lua
 Handlers\Slash.lua
 
-Rotation\Druid.lua
-Rotation\Hunter.lua
-Rotation\Mage.lua
-Rotation\Paladin.lua
-Rotation\Priest.lua
-Rotation\Rogue.lua
-Rotation\Shaman.lua
-Rotation\Warlock.lua
-Rotation\Warrior.lua
-Rotation\Main.lua
-
 Api\Helpers\Helpers.lua
 Api\Flash.lua
 Api\Turning.lua
@@ -53,3 +42,14 @@ Api\Gear.lua
 
 Utility\Macros.lua
 Utility\Slash.lua
+
+Rotation\Druid.lua
+Rotation\Hunter.lua
+Rotation\Mage.lua
+Rotation\Paladin.lua
+Rotation\Priest.lua
+Rotation\Rogue.lua
+Rotation\Shaman.lua
+Rotation\Warlock.lua
+Rotation\Warrior.lua
+Rotation\Main.lua
