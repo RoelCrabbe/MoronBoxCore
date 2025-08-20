@@ -130,7 +130,7 @@ end
 function MAT:OnUpdate()
 	local now = GetTime()
 
-	if now > SavedBinding.Time then
+	if (now > SavedBinding.Time) then
 		SetBinding("2", SavedBinding.Binding2)
 		SetBinding("3", SavedBinding.Binding3)
 		SavedBinding.Active = false

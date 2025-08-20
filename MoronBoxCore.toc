@@ -20,6 +20,8 @@ Core\Tables.lua
 Core\Encounters.lua
 Core\Healing.lua
 
+Handlers\Common\Shared.lua
+
 Handlers\Chat.lua
 Handlers\Buffs.lua
 Handlers\Cons.lua
@@ -28,20 +30,16 @@ Handlers\Attacking.lua
 Handlers\Spells.lua
 Handlers\Macros.lua
 Handlers\Slash.lua
+Handlers\Target.lua
+Handlers\CrowdControl.lua
+Handlers\AddonMessage.lua
+Handlers\Decurse.lua
+Handlers\Gear.lua
 
-Api\Helpers\Helpers.lua
 Api\Flash.lua
 Api\Turning.lua
 Api\OnUpdate.lua
 Api\OnEvent.lua
-Api\Target.lua
-Api\CrowdControl.lua
-Api\AddonMessage.lua
-Api\Decurse.lua
-Api\Gear.lua
-
-Utility\Macros.lua
-Utility\Slash.lua
 
 Rotation\Druid.lua
 Rotation\Hunter.lua
