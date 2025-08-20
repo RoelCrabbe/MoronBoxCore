@@ -36,10 +36,10 @@ Handlers\AddonMessage.lua
 Handlers\Decurse.lua
 Handlers\Gear.lua
 
-Api\Flash.lua
-Api\Turning.lua
-Api\OnUpdate.lua
-Api\OnEvent.lua
+Event\Flash.lua
+Event\Turning.lua
+Event\OnUpdate.lua
+Event\OnEvent.lua
 
 Rotation\Druid.lua
 Rotation\Hunter.lua

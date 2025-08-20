@@ -69,7 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MMB_Post_Init = CreateFrame("Button", "MMB", UIParent)
+local MMB_Post_Init = CreateFrame("Button", "MMBPostInit", UIParent)
 MMB_Post_Init.Timer = GetTime()
 
 local original_TakeTaxiNode = TakeTaxiNode
@@ -145,6 +145,7 @@ function MMB:OnEvent()
 		mb_mySpecc()
 		mb_initializeClasslists()
 		
+		Print("Yes we did it")
 		MMB_Post_Init:SetScript("OnUpdate", MMB_Post_Init.OnUpdate)
 		TakeTaxiNode = mb_takeTaxiNode
 

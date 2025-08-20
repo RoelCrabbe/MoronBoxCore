@@ -88,15 +88,9 @@ local DruidCounter = {
 local function DruidSpecc()
     local TalentsIn, TalentsInA
 
-    _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
+    _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Swiftmend"
-        return 
-    end
-
-    _, _, _, _, TalentsIn = GetTalentInfo(3, 3)
-    if TalentsIn > 4 then
-        MB_mySpecc = "Resto"
+        MB_mySpecc = "Balance"
         return 
     end
 
@@ -106,9 +100,15 @@ local function DruidSpecc()
         return 
     end
 
-    _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
+    _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
     if TalentsIn > 0 then
-        MB_mySpecc = "Balance"
+        MB_mySpecc = "Swiftmend"
+        return 
+    end
+
+    _, _, _, _, TalentsIn = GetTalentInfo(3, 3)
+    if TalentsIn > 4 then
+        MB_mySpecc = "Resto"
         return 
     end
 
@@ -184,6 +184,10 @@ local function DruidHeal()
 	end
 
 	if MB_isMoving.Active then
+        if Instance.ONY and mb_tankTarget("Onyxia") then
+            mb_coolDownCast("Moonfire", 12)            
+        end
+
         mb_castSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomMovingRank, MB_druidRejuvenationLowRandomMovingPercentage)
     end
 
@@ -305,9 +309,7 @@ function Druid:MTHeals(assignedTarget)
 end
 
 function Druid:HealerDebuffs()
-
-	if Instance.BWL then
-		
+	if Instance.BWL then		
 		if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
             return
         end
