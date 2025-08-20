@@ -96,8 +96,8 @@ Instance = {
     AQ20  = (GetRealZoneText() == "The Ruins of Ahn\'Qiraj"),
     MC    = (GetRealZoneText() == "Molten Core"),
     BWL   = (GetRealZoneText() == "Blackwing Lair"),
-    ONY   = (GetRealZoneText() == "Onyxia's Lair"),
-    ZG    = (GetRealZoneText() == "Zul'Gurub");
+    ONY   = (GetRealZoneText() == "Onyxia\'s Lair"),
+    ZG    = (GetRealZoneText() == "Zul\'Gurub");
     IsWorldBoss = function()
         return UnitClassification("target") == "worldboss"
     end

@@ -893,14 +893,14 @@ function mb_targetHealthFromRaidleader(mobName, percentage)
     return (targetHealthPercentage <= percentage)
 end
 
-function mb_targetHealthFromSpecificPlayer(mobName, percentage, player)
-    local isPlayerTargetingMob = mb_targetFromSpecificPlayer(mobName, player)
-    if not isPlayerTargetingMob then
+function mb_targetHealthFromSpecificPlayer(mobName, percentage, playerName)
+	local playerId = MBID[playerName]
+    if not playerId then
         return false
     end
-    
-    local playerId = MBID[player]
-    if not playerId then
+
+    local isPlayerTargetingMob = mb_targetFromSpecificPlayer(mobName, playerName)
+    if not isPlayerTargetingMob then
         return false
     end
     
@@ -908,55 +908,41 @@ function mb_targetHealthFromSpecificPlayer(mobName, percentage, player)
     return (targetHealthPercentage <= percentage)
 end
 
-function mb_targetFromSpecificPlayer(target, player)
-    local playerId = MBID[player]
+function mb_targetFromSpecificPlayer(targetName, playerName)
+	local playerId = MBID[playerName]
     if not playerId then
         return false
     end
-    
+
     local playerTarget = UnitName(playerId.."target")
     if not playerTarget then
         return false
     end
-    
-    local targetFound = string.find(playerTarget, target)
-    if targetFound then
-        return true
-    end
-    
-    return false
+
+    return playerTarget == targetName
 end
 
-function mb_assistSpecificTargetFromPlayer(target, player)
-    if not mb_targetFromSpecificPlayer(target, player) then
+function mb_assistSpecificTargetFromPlayer(targetName, playerName)
+    local playerId = MBID[playerName]
+    if not playerId then
         return false
     end
-    
-    AssistByName(player)
+
+    if not mb_targetFromSpecificPlayer(targetName, playerName) then
+        return false
+    end
+
+    AssistUnit(playerId)
     return true
 end
 
-function mb_assistSpecificTargetFromPlayers(target, playerOne, playerTwo)
-    if mb_targetFromSpecificPlayer(target, playerOne) then
-        AssistByName(playerOne)
-        return true
-    end
-    
-    if mb_targetFromSpecificPlayer(target, playerTwo) then
-        AssistByName(playerTwo)
-        return true
-    end
-    
-    return false
-end
-
-function mb_assistSpecificTargetFromPlayerInMeleeRange(target, player)
-    if not mb_targetFromSpecificPlayer(target, player) then
+function mb_assistSpecificTargetFromPlayerInMeleeRange(targetName, playerName)
+    local playerId = MBID[playerName]
+    if not playerId then
         return false
     end
-    
-    local playerId = MBID[player]
-    if not playerId then
+
+    if not mb_targetFromSpecificPlayer(targetName, playerName) then
         return false
     end
     
@@ -964,7 +950,7 @@ function mb_assistSpecificTargetFromPlayerInMeleeRange(target, player)
         return false
     end
     
-    AssistByName(player)
+    AssistUnit(playerId)
     return true
 end
 

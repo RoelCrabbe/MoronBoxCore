@@ -295,7 +295,7 @@ function Mage:BossSpecificDPS()
 		return true		
 	end
 
-    if mb_mobsToDetectMagic() then
+    if Instance.AQ40 and mb_mobsToDetectMagic() then
         if not mb_hasBuffOrDebuff("Detect Magic", "target", "debuff") then        
             mb_castSpellOrWand("Frostbolt")
             return true
@@ -471,9 +471,17 @@ end
 function Mage:Frost()
     -- Combat cooldowns
     if mb_inCombat("player") then
-        if mb_manaDown("player") > 600 then
-            Mage:Cooldowns()
-        end
+        if Instance.ONY then
+            if mb_tankTarget("Onyxia") and mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4 then
+                if mb_manaDown("player") > 600 then
+                    Mage:Cooldowns()
+                end
+            end
+        else
+            if mb_manaDown("player") > 600 then
+                Mage:Cooldowns()
+            end
+        end            
 
         -- Ice Block if low health (except Grobbulus)
         if mb_spellReady("Ice Block") and mb_healthPct("player") <= 0.22 and not mb_isAtGrobbulus() then

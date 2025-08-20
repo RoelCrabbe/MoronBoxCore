@@ -383,10 +383,7 @@ function Warlock:BossSpecificDPS()
 			
 			CastSpellByName("Searing Pain")
 			return true
-
-        elseif UnitName("target") == "Battleguard Sartura" then
-
-			mb_coolDownCast("Corruption", 18)
+		
         elseif UnitName("target") == "Obsidian Eradicator" and mb_manaPct("target") > 0.7 and not mb_imBusy() then
 			
             CastSpellByName("Drain Mana")			
@@ -414,7 +411,13 @@ function Warlock:BossSpecificDPS()
 
 	elseif Instance.ONY and mb_tankTarget("Onyxia") then
 
-		mb_coolDownCast("Corruption", 18)
+        if MB_isMoving.Active then			
+			mb_coolDownCast("Corruption", 18)
+
+            if mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4 then
+                Warlock:SaveShardShadowBurn(12)
+            end
+		end
 
     elseif Instance.ZG then
 
