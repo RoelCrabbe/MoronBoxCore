@@ -113,20 +113,20 @@ end
 function mb_setAttackButton()
     MB_attackSlot = FindActionSlot("Attack")
     if not MB_attackSlot then
-        mb_message("No Auto-Attack on my bars.")
+        mb_cdMessage("No Auto-Attack on my bars.")
     end
 
     if myClass == "Mage" or myClass == "Warlock" or myClass == "Priest" then
         MB_attackWandSlot = FindActionSlot("Shoot")
 
         if not MB_attackWandSlot then
-            mb_message("No Shoot on my bars.")
+            mb_cdMessage("No Shoot on my bars.")
         end
     elseif myClass == "Hunter" then
         MB_attackRangedSlot = FindActionSlot("Auto Shot")
 
         if not MB_attackRangedSlot then
-            mb_message("No Ranged Auto-Attack on my bars.")
+            mb_cdMessage("No Ranged Auto-Attack on my bars.")
         end
     end
 end

@@ -799,7 +799,7 @@ function mb_reportShards()
 	end
 
 	local count = mb_numShards() or 0
-	mb_message("I\'ve got "..count.." shards!")
+	mb_cdMessage("I\'ve got "..count.." shards!")
 end
 
 function mb_reportRunes()
@@ -808,7 +808,7 @@ function mb_reportRunes()
 	end
 
 	local count = mb_hasItem("Demonic Rune") or 0
-	mb_message("I\'ve got "..count.." runes!")
+	mb_cdMessage("I\'ve got "..count.." runes!")
 end
 
 function mb_reportManapots()
@@ -817,7 +817,7 @@ function mb_reportManapots()
 	end
 
 	local count = mb_hasItem("Major Mana Potion") or 0
-	mb_message("I\'ve got "..count.." pots!")
+	mb_cdMessage("I\'ve got "..count.." pots!")
 end
 
 function mb_partyIsPoisoned()	
@@ -907,7 +907,7 @@ function mb_hasItem(item)
     end
     
     if count == 0 then 
-        mb_message("I'm out of "..item)
+        mb_cdMessage("I'm out of "..item)
     end
     return count
 end
@@ -929,7 +929,7 @@ function mb_reEquipAtieshIfNoAtieshBuff()
 			PutItemInBackpack()
 			ClearCursor()
 		else
-			mb_message("I don\'t have bagspace to requip Atiesh, sort it!")
+			mb_cdMessage("I don\'t have bagspace to requip Atiesh, sort it!")
 		end
 	end
 
@@ -1175,17 +1175,17 @@ function mb_reportMyCooldowns()
            local deathWishReady = mb_spellReady("Death Wish")
            
            if not recklessnessReady and deathWishReady then
-               mb_message(GetColors("Recklessness on CD", 60))
+               mb_cdMessage(GetColors("Recklessness on CD", 60))
                return
            end
            
            if recklessnessReady and not deathWishReady then
-               mb_message(GetColors("Death Wish on CD", 60))
+               mb_cdMessage(GetColors("Death Wish on CD", 60))
                return
            end
            
            if not recklessnessReady and not deathWishReady then
-               mb_message(GetColors("Recklessness and Death Wish on CD", 60))
+               mb_cdMessage(GetColors("Recklessness and Death Wish on CD", 60))
                return
            end
            
@@ -1195,17 +1195,17 @@ function mb_reportMyCooldowns()
            local lastStandReady = mb_spellReady("Last Stand")
            
            if shieldWallReady and knowsLastStand and not lastStandReady then
-               mb_message(GetColors("Last Stand on CD", 60))
+               mb_cdMessage(GetColors("Last Stand on CD", 60))
                return
            end
            
            if not shieldWallReady and knowsLastStand and lastStandReady then
-               mb_message(GetColors("Shield Wall on CD", 60))
+               mb_cdMessage(GetColors("Shield Wall on CD", 60))
                return
            end
            
            if not shieldWallReady and knowsLastStand and not lastStandReady then
-               mb_message(GetColors("Shield Wall and Last Stand on CD", 60))
+               mb_cdMessage(GetColors("Shield Wall and Last Stand on CD", 60))
                return
            end
        end
@@ -1215,35 +1215,35 @@ function mb_reportMyCooldowns()
        local adrenalineRushReady = mb_spellReady("Adrenaline Rush")
        
        if knowsAdrenalineRush and not adrenalineRushReady then
-           mb_message(GetColors("Adrenaline Rush on CD", 60))
+           mb_cdMessage(GetColors("Adrenaline Rush on CD", 60))
        end
        
    elseif myClass == "Mage" then
        local evocationReady = mb_spellReady("Evocation")
        
        if not evocationReady then
-           mb_message(GetColors("Evocation on CD", 60))
+           mb_cdMessage(GetColors("Evocation on CD", 60))
        end
        
    elseif myClass == "Warlock" then
        local soulstoneOnCD = mb_isItemInBagCoolDown("Major Soulstone")
        
        if soulstoneOnCD then
-           mb_message(GetColors("Soulstone on CD", 60))
+           mb_cdMessage(GetColors("Soulstone on CD", 60))
        end
        
    elseif myClass == "Shaman" then
        local incarnationReady = mb_spellReady("Incarnation")
        
        if not incarnationReady then
-           mb_message(GetColors("Incarnation on CD", 60))
+           mb_cdMessage(GetColors("Incarnation on CD", 60))
        end
        
    elseif myClass == "Druid" then
        local innervateReady = mb_spellReady("Innervate")
        
        if not innervateReady then
-           mb_message(GetColors("Innervate on CD", 60))
+           mb_cdMessage(GetColors("Innervate on CD", 60))
        end
    end
 end
@@ -1251,143 +1251,143 @@ end
 function mb_missingSpellsReport()
    if myClass == "Rogue" then
        if not mb_knowSpell("Eviscerate", "Rank 9") then
-           mb_message("I dont know Eviscerate rank 9.")
+           mb_cdMessage("I dont know Eviscerate rank 9.")
        end
        
        if not mb_knowSpell("Backstab", "Rank 9") then
-           mb_message("I dont know Backstab rank 9")
+           mb_cdMessage("I dont know Backstab rank 9")
        end
        
        if not mb_knowSpell("Feint", "Rank 5") then
-           mb_message("I dont know Feint rank 5")
+           mb_cdMessage("I dont know Feint rank 5")
        end
        return
        
    elseif myClass == "Shaman" then
        if not mb_knowSpell("Healing Wave", "Rank 10") then
-           mb_message("I dont know Healing Wave rank 10")
+           mb_cdMessage("I dont know Healing Wave rank 10")
        end
        
        if not mb_knowSpell("Strength of Earth Totem", "Rank 5") then
-           mb_message("I dont know Strength of Earth Totem rank 5")
+           mb_cdMessage("I dont know Strength of Earth Totem rank 5")
        end
        
        if not mb_knowSpell("Grace of Air Totem", "Rank 3") then
-           mb_message("I dont know Grace of Air Totem rank 3")
+           mb_cdMessage("I dont know Grace of Air Totem rank 3")
        end
        return
        
    elseif myClass == "Warrior" then
        if not mb_knowSpell("Heroic Strike", "Rank 9") then
-           mb_message("I dont know Heroic Strike rank 9")
+           mb_cdMessage("I dont know Heroic Strike rank 9")
        end
        
        if not mb_knowSpell("Battle Shout", "Rank 7") then
-           mb_message("I dont know Battle Shout rank 7")
+           mb_cdMessage("I dont know Battle Shout rank 7")
        end
        
        if not mb_knowSpell("Revenge", "Rank 6") then
-           mb_message("I dont know Revenge rank 6")
+           mb_cdMessage("I dont know Revenge rank 6")
        end
        return
        
    elseif myClass == "Druid" then
        if not mb_knowSpell("Healing Touch", "Rank 11") then
-           mb_message("I dont know Healing Touch rank 11")
+           mb_cdMessage("I dont know Healing Touch rank 11")
        end
        
        if not mb_knowSpell("Starfire", "Rank 7") then
-           mb_message("I dont know Starfire rank 7")
+           mb_cdMessage("I dont know Starfire rank 7")
        end
        
        if not mb_knowSpell("Rejuvenation", "Rank 11") then
-           mb_message("I dont know Rejuvenation rank 11")
+           mb_cdMessage("I dont know Rejuvenation rank 11")
        end
        
        if not mb_knowSpell("Gift of the Wild", "Rank 2") then
-           mb_message("I dont know Gift of the Wild rank 2")
+           mb_cdMessage("I dont know Gift of the Wild rank 2")
        end
        return
        
    elseif myClass == "Paladin" then
        if not mb_knowSpell("Blessing of Wisdom", "Rank 6") then
-           mb_message("I dont know Blessing of Wisdom rank 6")
+           mb_cdMessage("I dont know Blessing of Wisdom rank 6")
        end
        
        if not mb_knowSpell("Blessing of Might", "Rank 7") then
-           mb_message("I dont know Blessing of Might rank 7")
+           mb_cdMessage("I dont know Blessing of Might rank 7")
        end
        
        if not mb_knowSpell("Holy Light", "Rank 9") then
-           mb_message("I dont know Holy Light rank 9")
+           mb_cdMessage("I dont know Holy Light rank 9")
        end
        return
        
    elseif myClass == "Mage" then
        if not mb_knowSpell("Frostbolt", "Rank 11") then
-           mb_message("I dont know Frostbolt rank 11")
+           mb_cdMessage("I dont know Frostbolt rank 11")
        end
        
        if not mb_knowSpell("Fireball", "Rank 12") then
-           mb_message("I dont know Fireball rank 12")
+           mb_cdMessage("I dont know Fireball rank 12")
        end
        
        if not mb_knowSpell("Arcane Missiles", "Rank 8") then
-           mb_message("I dont know Arcane Missiles rank 8")
+           mb_cdMessage("I dont know Arcane Missiles rank 8")
        end
        
        if not mb_knowSpell("Arcane Brilliance", "Rank 1") then
-           mb_message("I dont know Arcane Brilliance rank 1")
+           mb_cdMessage("I dont know Arcane Brilliance rank 1")
        end
        return
        
    elseif myClass == "Warlock" then
        if not mb_knowSpell("Shadow Bolt", "Rank 10") then
-           mb_message("I dont know Shadow Bolt rank 10")
+           mb_cdMessage("I dont know Shadow Bolt rank 10")
        end
        
        if not mb_knowSpell("Immolate", "Rank 8") then
-           mb_message("I dont know Immolate rank 8")
+           mb_cdMessage("I dont know Immolate rank 8")
        end
        
        if not mb_knowSpell("Corruption", "Rank 7") then
-           mb_message("I dont know Corruption rank 7")
+           mb_cdMessage("I dont know Corruption rank 7")
        end
        
        if not mb_knowSpell("Shadow Ward", "Rank 4") then
-           mb_message("I dont know Shadow Ward rank 4")
+           mb_cdMessage("I dont know Shadow Ward rank 4")
        end
        return
        
    elseif myClass == "Priest" then
        if not mb_knowSpell("Greater Heal", "Rank 5") then
-           mb_message("I dont know Greater Heal rank 5")
+           mb_cdMessage("I dont know Greater Heal rank 5")
        end
        
        if not mb_knowSpell("Renew", "Rank 10") then
-           mb_message("I dont know Renew rank 10")
+           mb_cdMessage("I dont know Renew rank 10")
        end
        
        if not mb_knowSpell("Prayer of Healing", "Rank 5") then
-           mb_message("I dont know Prayer of Healing rank 5")
+           mb_cdMessage("I dont know Prayer of Healing rank 5")
        end
        
        if not mb_knowSpell("Prayer of Fortitude", "Rank 2") then
-           mb_message("I dont know Prayer of Fortitude rank 2")
+           mb_cdMessage("I dont know Prayer of Fortitude rank 2")
        end
        return
        
    elseif myClass == "Hunter" then
        if not mb_knowSpell("Multi-Shot", "Rank 5") then
-           mb_message("I dont know Multi-Shot rank 5")
+           mb_cdMessage("I dont know Multi-Shot rank 5")
        end
        
        if not mb_knowSpell("Serpent Sting", "Rank 9") then
-           mb_message("I dont know Serpent Sting rank 9")
+           mb_cdMessage("I dont know Serpent Sting rank 9")
        end
        
        if not mb_knowSpell("Aspect of the Hawk", "Rank 7") then
-           mb_message("I dont know Aspect of the Hawk rank 7")
+           mb_cdMessage("I dont know Aspect of the Hawk rank 7")
        end
        return
    end

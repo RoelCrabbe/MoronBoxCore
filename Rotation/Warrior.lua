@@ -203,7 +203,7 @@ function Warrior:DPSSingle()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_coolDownPrint("Interrupting!")
+            mb_cdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end
@@ -498,7 +498,7 @@ function Warrior:TankSingle()
             end
 
 			CastSpellByName("Shield Bash")
-            mb_coolDownPrint("Interrupting!")
+            mb_cdPrint("Interrupting!")
             MB_doInterrupt.Active = false
 		end
 	end
@@ -614,7 +614,7 @@ function Warrior:DPSMulti()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_coolDownPrint("Interrupting!")
+            mb_cdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end
@@ -880,7 +880,7 @@ function Warrior:TankMulti()
             end
 
 			CastSpellByName("Shield Bash")
-            mb_coolDownPrint("Interrupting!")
+            mb_cdPrint("Interrupting!")
             MB_doInterrupt.Active = false
 		end
 	end

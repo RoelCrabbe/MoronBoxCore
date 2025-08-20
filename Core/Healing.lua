@@ -274,11 +274,11 @@ function mb_assignHealerToName(assignments)
 
 	if mb_iamFocus() then
 		if (assignedTarget == "Reset" or assignedTarget == "reset") then
-			mb_message("Unassigned "..healerName.." from healing a specific player.")
+			mb_cdMessage("Unassigned "..healerName.." from healing a specific player.")
 			return
 		end
 		
-		mb_message("Assigned "..healerName.." to heal "..assignedTarget..".")		
+		mb_cdMessage("Assigned "..healerName.." to heal "..assignedTarget..".")		
 	end
 
 	if myName == healerName then
@@ -660,7 +660,7 @@ function mb_loathebHealing()
        return false
    end
    
-   mb_message("Current healer: "..nextHealer)
+   mb_cdMessage("Current healer: "..nextHealer)
    
    if myName ~= nextHealer then
        return false
@@ -698,8 +698,8 @@ function mb_loathebHealing()
    
    local healThreshold = healValue * overhealPercentage
    
-   mb_coolDownPrint("My heal will start when "..mainTank.." is below "..healThreshold.." HP")
-   mb_coolDownPrint("Without overhealing my heal would heal for "..healValue)
+   mb_cdPrint("My heal will start when "..mainTank.." is below "..healThreshold.." HP")
+   mb_cdPrint("Without overhealing my heal would heal for "..healValue)
    
    local healthDown = mb_healthDown(mainTankId)
    if not healthDown then

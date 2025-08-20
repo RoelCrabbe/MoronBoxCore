@@ -659,7 +659,7 @@ local function DruidSingle()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Resto.")
+		mb_cdMessage("My specc is fucked. Defaulting to Resto.")
 		MB_mySpecc = "Resto"
 	end
 
@@ -916,7 +916,7 @@ local function DruidMulti()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Resto.")
+		mb_cdMessage("My specc is fucked. Defaulting to Resto.")
 		MB_mySpecc = "Resto"
 	end
 

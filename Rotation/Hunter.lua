@@ -113,7 +113,7 @@ local function HunterSingle()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Marksmanship.")
+		mb_cdMessage("My specc is fucked. Defaulting to Marksmanship.")
 		MB_mySpecc = "Marksmanship"
 	end
 

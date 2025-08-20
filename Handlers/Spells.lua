@@ -245,7 +245,7 @@ function mb_doRazuviousActions()
 
 		if mb_petSpellReady("Shield Wall") then
 			mb_castPetAction("Shield Wall")
-			mb_message("Shield Wall!")
+			mb_cdMessage("Shield Wall!")
 		end			
 	end
 end

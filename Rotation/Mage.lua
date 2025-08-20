@@ -136,7 +136,7 @@ local function MageSingle()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Frost.")
+		mb_cdMessage("My specc is fucked. Defaulting to Frost.")
 		MB_mySpecc = "Frost"
 	end
 
@@ -250,7 +250,7 @@ local function MageSingle()
         end
 
         CastSpellByName(MB_myInterruptSpell[myClass])
-        mb_coolDownPrint("Interrupting!")
+        mb_cdPrint("Interrupting!")
         MB_doInterrupt.Active = false
         return        
     end
@@ -533,7 +533,7 @@ local function MageAOE()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Frost.")
+		mb_cdMessage("My specc is fucked. Defaulting to Frost.")
 		MB_mySpecc = "Frost"
 	end
 
@@ -810,7 +810,7 @@ function Mage:ConjureManaGems()
 	end
 
 	if mb_getAllContainerFreeSlots() == 0 then		
-		mb_message("My bags are full, can\'t conjure more stuff", 60)
+		mb_cdMessage("My bags are full, can\'t conjure more stuff", 60)
 		return
 	end
 

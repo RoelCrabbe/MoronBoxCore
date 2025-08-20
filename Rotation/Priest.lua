@@ -180,7 +180,7 @@ local function PriestHeal()
 			return
 		else			
 			MB_myAssignedHealTarget = nil
-			mb_message("My healtarget died, time to ALT-F4.")
+			mb_cdMessage("My healtarget died, time to ALT-F4.")
 		end
 	end
 
@@ -510,7 +510,7 @@ function Priest:FearWardAggroedPlayer()
         ClearTarget()
     end
 
-    mb_message("Focus Fear Ward on "..UnitName(fearWardTarget), 30)
+    mb_cdMessage("Focus Fear Ward on "..UnitName(fearWardTarget), 30)
 
     CastSpellByName("Fear Ward")
     SpellTargetUnit(fearWardTarget)
@@ -928,7 +928,7 @@ function Priest:PowerInfusion()
 
 					TargetByName(caster)
 					CastSpellByName("Power Infusion")
-					mb_message("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
+					mb_cdMessage("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
 					return
 				end
 			end

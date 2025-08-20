@@ -71,10 +71,10 @@ local myRace = UnitRace("player")
 
 local MB_msgHistory = {}
 local MB_printHistory = {}
-local MB_maxHistory = 5
+local MB_maxHistory = 10
 
-function mb_message(msg, timer)
-	local coolDown = timer or 10
+function mb_cdMessage(msg, timer)
+	local coolDown = timer or 15
 	local time = GetTime()
 
 	for i = 1, TableLength(MB_msgHistory) do
@@ -97,8 +97,8 @@ function mb_message(msg, timer)
 	end
 end
 
-function mb_coolDownPrint(msg, timer)
-	local coolDown = timer or 10
+function mb_cdPrint(msg, timer)
+	local coolDown = timer or 15
 	local time = GetTime()
 
 	for i = 1, TableLength(MB_printHistory) do

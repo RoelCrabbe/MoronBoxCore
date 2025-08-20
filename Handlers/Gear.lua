@@ -155,7 +155,7 @@ function mb_equippedSetCount(set)
 	for i = 1, 10 do
 		local link = GetInventoryItemLink("player", item_slots[i])
 		if link == nil then 
-			mb_coolDownPrint("Missing gear in slots, can\'t decide proper healspell based on gear.", 30)
+			mb_cdPrint("Missing gear in slots, can\'t decide proper healspell based on gear.", 30)
 			return 0
 		end
 		local _, _, item_name = string.find(link, "%[(.*)%]", 27)
@@ -173,7 +173,7 @@ function mb_equipSet(set)
         return 
     end
 
-    mb_coolDownPrint("No ItemRack Addon Found")
+    mb_cdPrint("No ItemRack Addon Found")
 end
 
 function mb_tankGear()

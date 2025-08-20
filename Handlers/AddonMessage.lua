@@ -101,7 +101,7 @@ end
 
 function mb_cooldowns()
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -121,9 +121,9 @@ function mb_cooldowns()
 	if UnitInRaid("player") then
 		if mb_inCombat("player") then			
 			if not MB_useCooldowns.Active then
-				mb_coolDownPrint("Sending out request to use Cooldowns.")
+				mb_cdPrint("Sending out request to use Cooldowns.")
 			else
-				mb_coolDownPrint("Stop Cooldown Requesting, still "..math.round(MB_useCooldowns.Time - GetTime()).."s remaining")
+				mb_cdPrint("Stop Cooldown Requesting, still "..math.round(MB_useCooldowns.Time - GetTime()).."s remaining")
 			end
 		end
 
@@ -135,7 +135,7 @@ end
 
 function mb_useManualRecklessness()
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -159,9 +159,9 @@ function mb_useManualRecklessness()
 	if UnitInRaid("player") then		
 		if mb_inCombat("player") then			
 			if not MB_useBigCooldowns.Active then
-				mb_coolDownPrint("Sending out request to use Recklessness.")
+				mb_cdPrint("Sending out request to use Recklessness.")
 			else
-				mb_coolDownPrint("Stop Recklessness Requesting, still "..math.round(MB_useBigCooldowns.Time - GetTime()).."s remaining")
+				mb_cdPrint("Stop Recklessness Requesting, still "..math.round(MB_useBigCooldowns.Time - GetTime()).."s remaining")
 			end
 		end
 
@@ -173,7 +173,7 @@ end
 
 function mb_reportCooldowns()
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then

@@ -100,8 +100,8 @@ function mb_crowdControl()
 
 	for i = 1, 10 do
 		if GetRaidTargetIndex("target") == MB_myCCTarget and not UnitIsDead("target") and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-			mb_coolDownPrint("CC spell is: "..MB_myCCSpell[myClass])
-			mb_message(MB_myCCSpell[myClass].."ing "..UnitName("target"))
+			mb_cdPrint("CC spell is: "..MB_myCCSpell[myClass])
+			mb_cdMessage(MB_myCCSpell[myClass].."ing "..UnitName("target"))
 			CastSpellByName(MB_myCCSpell[myClass])
 			return true
 		end
@@ -146,7 +146,7 @@ function mb_assignCrowdControl()
 
             if MB_currentCC.Druid == num_druids then
                 MB_currentCC.Druid = 1
-                mb_message("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
+                mb_cdMessage("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
             else
                 MB_currentCC.Druid = MB_currentCC.Druid + 1
             end
@@ -170,7 +170,7 @@ function mb_assignCrowdControl()
 		
             if MB_currentCC.Warlock == num_locks then
                 MB_currentCC.Warlock = 1
-                mb_message("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
+                mb_cdMessage("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
             else
                 MB_currentCC.Warlock = MB_currentCC.Warlock + 1
             end
@@ -192,7 +192,7 @@ function mb_assignCrowdControl()
 		
             if MB_currentCC.Priest == num_priests then
                 MB_currentCC.Priest = 1
-                mb_message("ALL PRIESTS ASSIGNED, STOP ASSIGNING MORE.")
+                mb_cdMessage("ALL PRIESTS ASSIGNED, STOP ASSIGNING MORE.")
             else
                 MB_currentCC.Priest = MB_currentCC.Priest + 1
             end
@@ -214,7 +214,7 @@ function mb_assignCrowdControl()
 		
             if MB_currentCC.Druid == num_druids then
                 MB_currentCC.Druid = 1
-                mb_message("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
+                mb_cdMessage("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
             else
                 MB_currentCC.Druid = MB_currentCC.Druid + 1
             end
@@ -236,7 +236,7 @@ function mb_assignCrowdControl()
             
             if MB_currentCC.Mage == num_mages then
                 MB_currentCC.Mage = 1
-                mb_message("ALL MAGES ASSIGNED, STOP ASSIGNING MORE.")
+                mb_cdMessage("ALL MAGES ASSIGNED, STOP ASSIGNING MORE.")
             else
                 MB_currentCC.Mage = MB_currentCC.Mage + 1
             end
@@ -253,7 +253,7 @@ function mb_crowdControlFear()
 		if GetRaidTargetIndex("target") == MB_myFearTarget and not UnitIsDead("target") then
 			if UnitName("target") and not mb_hasBuffOrDebuff(MB_myFearSpell[UnitClass("player")], "target", "debuff") then
 				Print("CC spell is : "..MB_myFearSpell[UnitClass("player")])
-				mb_message("Fearing "..UnitName("target"))
+				mb_cdMessage("Fearing "..UnitName("target"))
 				CastSpellByName(MB_myFearSpell[UnitClass("player")])
 				TargetUnit("playertarget")
 				return
@@ -290,7 +290,7 @@ function mb_assignFear()
 
         if MB_currentFear.Warlock == num_locks then 
             MB_currentFear.Warlock = 1
-            mb_message("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
+            mb_cdMessage("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
         else
             MB_currentFear.Warlock = MB_currentFear.Warlock + 1
         end

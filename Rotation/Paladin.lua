@@ -301,7 +301,7 @@ function Paladin:BOPLowRandom()
 			end
 
 			CastSpellByName("Blessing of Protection", false)
-			mb_message("I BOP'd "..GetColors(UnitName(BOPTarget)).." at "..string.sub(mb_healthPct(BOPTarget), 3, 4).."% - "..UnitHealth(BOPTarget).."/"..UnitHealthMax(BOPTarget).." HP.")
+			mb_cdMessage("I BOP'd "..GetColors(UnitName(BOPTarget)).." at "..string.sub(mb_healthPct(BOPTarget), 3, 4).."% - "..UnitHealth(BOPTarget).."/"..UnitHealthMax(BOPTarget).." HP.")
 			SpellTargetUnit(BOPTarget)
 			SpellStopTargeting()
 			return true
@@ -458,7 +458,7 @@ function Paladin:BlessMyAssignedBlessing()
 	end
 
 	if not mb_haveInBags("Symbol of Kings") then
-		mb_message("Out of Symbol of Kings")
+		mb_cdMessage("Out of Symbol of Kings")
 		return
 	end
 

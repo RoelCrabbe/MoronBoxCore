@@ -144,8 +144,7 @@ function MMB:OnEvent()
 
 		mb_mySpecc()
 		mb_initializeClasslists()
-		
-		Print("Yes we did it")
+
 		MMB_Post_Init:SetScript("OnUpdate", MMB_Post_Init.OnUpdate)
 		TakeTaxiNode = mb_takeTaxiNode
 
@@ -328,7 +327,7 @@ function MMB:OnEvent()
 				AssistUnit(MBID[MB_raidLeader])
 
 				if not UnitName("target") then
-					mb_message("Im unable to be assigned to this target.")
+					mb_cdMessage("Im unable to be assigned to this target.")
 					return
 				end
 
@@ -348,7 +347,7 @@ function MMB:OnEvent()
 				AssistUnit(MBID[MB_raidLeader])
 
 				if not UnitName("target") then
-					mb_message("Im unable to be assigned to this target.")
+					mb_cdMessage("Im unable to be assigned to this target.")
 					return
 				end
 
@@ -368,7 +367,7 @@ function MMB:OnEvent()
 				AssistUnit(MBID[MB_raidLeader])
 
 				if not UnitName("target") then
-					mb_message("Im unable to be assigned to this target.")
+					mb_cdMessage("Im unable to be assigned to this target.")
 					return
 				end
 
@@ -388,7 +387,7 @@ function MMB:OnEvent()
 				AssistUnit(MBID[MB_raidLeader])
 
 				if not UnitName("target") then
-					mb_message("Im unable to be assigned to this target.")
+					mb_cdMessage("Im unable to be assigned to this target.")
 					return
 				end
 
@@ -650,7 +649,7 @@ function MMB:OnEvent()
 
 		if CanMerchantRepair() then 
 			if GetRepairAllCost() > GetMoney() then				
-				mb_message("I need gold! Can\'t affort repairs!")
+				mb_cdMessage("I need gold! Can\'t affort repairs!")
 			else				
 				RepairAllItems()
 			end		
@@ -885,7 +884,7 @@ function mb_mySpecc()
     if GetMySpecc and type(GetMySpecc) == "function" then
         GetMySpecc()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 

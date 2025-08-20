@@ -144,7 +144,7 @@ local function RogueSingle()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_coolDownPrint("Interrupting!")
+            mb_cdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end     

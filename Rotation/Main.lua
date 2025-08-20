@@ -130,7 +130,7 @@ local PlayerMounts = {
 function mb_single()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -172,7 +172,7 @@ function mb_single()
 	end
 
 	if mb_itemNameOfEquippedSlot(16) == nil then		
-		mb_message("I don\'t have a weapon equipped.", 500)
+		mb_cdMessage("I don\'t have a weapon equipped.", 500)
 	end
 
 	mb_GTFO()
@@ -194,7 +194,7 @@ function mb_single()
     if SingleRotation and type(SingleRotation) == "function" then
         SingleRotation()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 
@@ -205,7 +205,7 @@ end
 function mb_multi()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -247,7 +247,7 @@ function mb_multi()
 	end
 
 	if mb_itemNameOfEquippedSlot(16) == nil then		
-		mb_message("I don\'t have a weapon equipped.", 500)
+		mb_cdMessage("I don\'t have a weapon equipped.", 500)
 	end
 
 	mb_GTFO()
@@ -269,7 +269,7 @@ function mb_multi()
     if MultiRotation and type(MultiRotation) == "function" then
         MultiRotation()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 
@@ -280,7 +280,7 @@ end
 function mb_AOE()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -322,7 +322,7 @@ function mb_AOE()
 	end
 
 	if mb_itemNameOfEquippedSlot(16) == nil then		
-		mb_message("I don\'t have a weapon equipped.", 500)
+		mb_cdMessage("I don\'t have a weapon equipped.", 500)
 	end
 
 	mb_GTFO()
@@ -344,7 +344,7 @@ function mb_AOE()
     if AOERotation and type(AOERotation) == "function" then
         AOERotation()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 
@@ -355,7 +355,7 @@ end
 function mb_setup()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -397,7 +397,7 @@ function mb_setup()
 	end
 
 	if mb_itemNameOfEquippedSlot(16) == nil then		
-		mb_message("I don\'t have a weapon equipped.", 500)
+		mb_cdMessage("I don\'t have a weapon equipped.", 500)
 	end
 
 	mb_GTFO()
@@ -419,7 +419,7 @@ function mb_setup()
     if SetupRotation and type(SetupRotation) == "function" then
         SetupRotation()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 
@@ -430,7 +430,7 @@ end
 function mb_preCast()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -455,7 +455,7 @@ function mb_preCast()
     if PreCastRotation and type(PreCastRotation) == "function" then
         PreCastRotation()
     else
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 
@@ -466,7 +466,7 @@ end
 function mb_healAndTank()
 
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -510,7 +510,7 @@ function mb_healAndTank()
 	end
 
 	if mb_itemNameOfEquippedSlot(16) == nil then		
-		mb_message("I don\'t have a weapon equipped.", 500)
+		mb_cdMessage("I don\'t have a weapon equipped.", 500)
 	end
 
 	mb_GTFO()
@@ -683,7 +683,7 @@ function mb_healAndTank()
 
     local SingleRotation = MB_mySingleList[myClass]
     if not (SingleRotation and type(SingleRotation) == "function") then
-        mb_message("I don\'t know what to do.", 500)
+        mb_cdMessage("I don\'t know what to do.", 500)
         return
     end
 
@@ -738,7 +738,7 @@ function mb_makeWater()
 	if mb_getAllContainerFreeSlots() > 0 then		
 		CastSpellByName("Conjure Water")
 	else 
-		mb_message("My bags are full, can\'t conjure more stuff", 60)
+		mb_cdMessage("My bags are full, can\'t conjure more stuff", 60)
 	end
 end
 
@@ -801,7 +801,7 @@ function mb_pickUpWater()
 
 	if bestrank > 0 then
 		local _ , _, water, bag, slot = string.find(bestwater, "(Conjured.*Water) (%d+) (%d+)")		
-		mb_coolDownPrint("Found "..water.." in bag "..bag.." in slot "..slot)
+		mb_cdPrint("Found "..water.." in bag "..bag.." in slot "..slot)
 		PickupContainerItem(bag, slot)
 		return water
 	end
@@ -833,7 +833,7 @@ function mb_smartDrink()
 		end
 		
 		if mb_mageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then 
-			mb_coolDownPrint("Not enough water to trade!")
+			mb_cdPrint("Not enough water to trade!")
 			CancelTrade()
 			return
 		end
@@ -856,7 +856,7 @@ function mb_smartDrink()
 
 	if myClass == "Mage" and MB_tradeOpen then
 		if mb_mageWater() > 21 and mb_pickUpWater() then			
-			mb_coolDownPrint("Trading Water")
+			mb_cdPrint("Trading Water")
 			ClickTradeButton(1)
 			return
 		end
@@ -889,7 +889,7 @@ function mb_smartManaPotTrade()
 		end
 		
 		if mb_numManapots() < 2 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Major Mana Potion") then 
-			mb_coolDownPrint("Not enough water to trade!")
+			mb_cdPrint("Not enough water to trade!")
 			CancelTrade()
 			return
 		end
@@ -1127,7 +1127,7 @@ end
 
 function mb_tankShoot()
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -1145,7 +1145,7 @@ end
 
 function mb_manualTaunt()
 	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        mb_coolDownPrint("WARNING: You have not chosen a raid leader")
+        mb_cdPrint("WARNING: You have not chosen a raid leader")
     end
 
 	if mb_dead("player") then
@@ -1303,12 +1303,12 @@ function mb_requestInviteSummon()
 		if MB_raidLeader then
 			if UnitInRaid("player") then				
 				if not mb_unitInRange("raid"..mb_getRaidIndexForPlayerName(MB_raidLeader)) then					
-					mb_message("123", 10)
+					mb_cdMessage("123", 10)
 					return 
 				end
 			else
 				if not mb_unitInRange("party"..mb_getRaidIndexForPlayerName(MB_raidLeader)) then					
-					mb_message("123", 10)
+					mb_cdMessage("123", 10)
 					return 
 				end
 			end

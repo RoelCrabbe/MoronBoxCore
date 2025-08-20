@@ -270,7 +270,7 @@ local function ShamanSingle()
 	mb_getTarget()
 
     if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Elemental.")
+		mb_cdMessage("My specc is fucked. Defaulting to Elemental.")
 		MB_mySpecc = "Elemental"
 	end
 
@@ -310,7 +310,7 @@ local function ShamanSingle()
         end
 
         CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
-        mb_coolDownPrint("Interrupting!")
+        mb_cdPrint("Interrupting!")
         MB_doInterrupt.Active = false
         return        
     end

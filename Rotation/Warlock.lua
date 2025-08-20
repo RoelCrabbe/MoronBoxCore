@@ -119,7 +119,7 @@ local function WarlockSingle()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Corruption.")
+		mb_cdMessage("My specc is fucked. Defaulting to Corruption.")
 		MB_mySpecc = "Corruption"
 	end
 
@@ -478,7 +478,7 @@ local function WarlockAOE()
     mb_getTarget()
 
 	if not MB_mySpecc then		
-		mb_message("My specc is fucked. Defaulting to Corruption.")
+		mb_cdMessage("My specc is fucked. Defaulting to Corruption.")
 		MB_mySpecc = "Corruption"
 	end
 
@@ -674,7 +674,7 @@ function Warlock:SoulStone()
                 name = MB_classList["Priest"][i]
 
                 if not mb_hasBuffOrDebuff("Soulstone", id, "buff") and mb_haveInBags("Major Soulstone") then
-                    mb_message("Soulstoning "..GetColors(name))
+                    mb_cdMessage("Soulstoning "..GetColors(name))
                     
                     TargetUnit(id)
                     UseItemByName("Major Soulstone")
@@ -688,7 +688,7 @@ function Warlock:SoulStone()
                 name = MB_classList["Shaman"][i]
 
                 if not mb_hasBuffOrDebuff("Soulstone", id, "buff") and mb_haveInBags("Major Soulstone") then
-                    mb_message("Soulstoning "..GetColors(name))
+                    mb_cdMessage("Soulstoning "..GetColors(name))
                     
                     TargetUnit(id)
                     UseItemByName("Major Soulstone")

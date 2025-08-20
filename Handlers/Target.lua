@@ -146,7 +146,7 @@ local function HandleBWLTargetingPreFocus()
 			return true
 		end
 
-		mb_coolDownPrint("Focussing Attacks on "..tName, 30)
+		mb_cdPrint("Focussing Attacks on "..tName, 30)
 		return true
 	end
 
@@ -722,8 +722,11 @@ function mb_getTarget()
 	end
 
 	if mb_iamFocus() then
-		if not tName or UnitIsDead("target") or (not UnitIsEnemy("player", "target")
-			and not (mb_isAtSartura() or mb_isAtTwinsEmps())) or not mb_inCombat("target") then
+		if tName and mb_inCombat("target") then
+			return
+		end
+
+		if not tName or UnitIsDead("target") or not UnitIsEnemy("player", "target") then
 			TargetNearestEnemy()
 		end
 		return
@@ -1002,7 +1005,7 @@ function mb_debugger(who, msg)
     end
 
 	if myName == who then
-		mb_message(msg, 20)
+		mb_cdMessage(msg, 20)
 	end
 end
 
@@ -1489,7 +1492,7 @@ function mb_offTank()
 			return
 		end
 
-		mb_coolDownPrint("Locked On Target")
+		mb_cdPrint("Locked On Target")
 		return
 	end
 
@@ -1667,7 +1670,7 @@ function mb_crowdControlMCedRaidMemberNefarian()
 				end
 
 				CastSpellByName("Polymorph")
-				mb_message("Sheeping "..UnitName("raid"..i), 30)
+				mb_cdMessage("Sheeping "..UnitName("raid"..i), 30)
 				return true
 			end
 		end

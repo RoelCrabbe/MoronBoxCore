@@ -179,9 +179,9 @@ function mb_tankList(encounter)
     MB_tankList = tanks
 
     if IsRaidLeader() then
-        mb_message(encounter.." Tanklist loaded.")
+        mb_cdMessage(encounter.." Tanklist loaded.")
         for i, tank in ipairs(MB_tankList) do
-            mb_message(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
+            mb_cdMessage(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
         end
     end
 
