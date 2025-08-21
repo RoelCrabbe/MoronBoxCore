@@ -648,7 +648,7 @@ local function MageSetup()
 		return
 	end
 
-	if mb_mageWater() > 100 or MB_isMoving.Active then		
+	if mb_mageWater() > 60 or MB_isMoving.Active then		
         if not MB_autoBuff.Active then
             MB_autoBuff.Active = true
             MB_autoBuff.Time = GetTime() + 0.25
