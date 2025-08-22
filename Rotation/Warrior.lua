@@ -65,14 +65,14 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Warrior" then return end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Warrior = CreateFrame("Frame", "Warrior")
-if myClass ~= "Warrior" then
-    return
-end
 
 --[####################################################################################################]--
 --[########################################## SETUP Code! #############################################]--
@@ -130,10 +130,6 @@ local function WarriorSingle()
         return
     end
 
-	if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
-		mb_selfBuff("Death Wish") 
-	end
-	
     if Instance.AQ40 then
         if mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
             if mb_haveInBags("Greater Nature Protection Potion") and not mb_isItemInBagCoolDown("Greater Nature Protection Potion") then				
@@ -144,15 +140,19 @@ local function WarriorSingle()
         end
     end
 
+    if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
+		mb_selfBuff("Death Wish") 
+	end
+
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then
 		
         if MB_useBigCooldowns.Active then			
-			Warrior:BigCooldowns()
-		end
+            Warrior:BigCooldowns()
+        end
 
-		if MB_useCooldowns.Active then			
-			Warrior:Cooldowns()
-		end
+        if MB_useCooldowns.Active then			
+            Warrior:Cooldowns()
+        end        
 
 		Warrior:DPSSingle()
 		return
@@ -217,20 +217,7 @@ function Warrior:DPSSingle()
         end
     end
 
-    if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) 
-        and (mb_inMeleeRange() or mb_tankTarget("Ragnaros")) then
-
-        if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
-            Warrior:BigCooldowns()
-        end
-
-        if Instance.IsWorldBoss() then
-            Warrior:Cooldowns()
-        end
-
-        mb_meleeTrinkets()
-    end
-
+    Warrior:UseCooldowns()
     Warrior:Execute()
 
     if MB_mySpecc == "BT" then
@@ -530,10 +517,6 @@ local function WarriorMulti()
 	if not mb_inCombat("target") then
         return
     end
-
-	if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
-		mb_selfBuff("Death Wish") 
-	end
 	
     if Instance.AQ40 then
         if mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
@@ -545,15 +528,19 @@ local function WarriorMulti()
         end
     end
 
+    if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
+		mb_selfBuff("Death Wish") 
+	end
+
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then
 		
         if MB_useBigCooldowns.Active then			
-			Warrior:BigCooldowns()
-		end
+            Warrior:BigCooldowns()
+        end
 
-		if MB_useCooldowns.Active then			
-			Warrior:Cooldowns()
-		end
+        if MB_useCooldowns.Active then			
+            Warrior:Cooldowns()
+        end        
 		
 		Warrior:DPSMulti()
 		return
@@ -628,20 +615,7 @@ function Warrior:DPSMulti()
         end
     end
 
-    if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) 
-        and (mb_inMeleeRange() or mb_tankTarget("Ragnaros")) then
-
-        if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
-            Warrior:BigCooldowns()
-        end
-
-        if Instance.IsWorldBoss() then
-            Warrior:Cooldowns()
-        end
-
-        mb_meleeTrinkets()
-    end
-
+    Warrior:UseCooldowns()
     Warrior:Execute()
     
     if MB_mySpecc == "BT" then
@@ -931,32 +905,72 @@ end
 MB_myAOEList["Warrior"] = WarriorMulti
 
 --[####################################################################################################]--
---[########################################## Helper Code! ############################################]--
+--[###################################### Cooldowns Encounters! #######################################]--
 --[####################################################################################################]--
 
-function Warrior:BigCooldowns()
+function Warrior:BigCooldowns(useBloodFury)
 	if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
     mb_selfBuff("Recklessness")
-	Warrior:Cooldowns()
+	Warrior:Cooldowns(useBloodFury)
 end
 
-function Warrior:Cooldowns()
+function Warrior:Cooldowns(useBloodFury)
+    local useBloodFury = useBloodFury ~= false
+
 	if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
     mb_selfBuff("Berserking")
-    mb_selfBuff("Blood Fury") 
+
+    if useBloodFury then
+        mb_selfBuff("Blood Fury")
+    end
 
     if mb_spellReady("Death Wish") and UnitMana("player") >= 10 then        
-        mb_selfBuff("Death Wish") 
+        mb_selfBuff("Death Wish")
     end
 
     mb_meleeTrinkets()
 end
+
+function Warrior:UseCooldowns()
+    if not (mb_inMeleeRange() or mb_tankTarget("Ragnaros")) then
+        return
+    end
+
+    if UnitInRaid("player") and GetNumRaidMembers() > 5 then
+        if mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
+                Warrior:BigCooldowns()
+            end
+
+            if Instance.IsWorldBoss() then
+                Warrior:Cooldowns()
+                return
+            end
+
+            local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
+            if UnitHealth("target") > hpThreshold then
+                Warrior:Cooldowns()
+            end
+        end
+        return
+    end
+
+    if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
+        Warrior:BigCooldowns(false)
+    end
+
+    Warrior:Cooldowns(false)
+end
+
+--[####################################################################################################]--
+--[########################################## Helper Code! ############################################]--
+--[####################################################################################################]--
 
 function Warrior:Annihilator()
     local weavers = MB_raidAssist.Warrior.AnnihilatorWeavers or {}
