@@ -65,14 +65,14 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Priest" then return end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Priest = CreateFrame("Frame", "Priest")
-if myClass ~= "Priest" then
-    return
-end
 
 local PriestCounter = {
     Cycle = function()

@@ -41,6 +41,7 @@ Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
 
+Rotation\Main.lua
 Rotation\Druid.lua
 Rotation\Hunter.lua
 Rotation\Mage.lua
@@ -50,4 +51,3 @@ Rotation\Rogue.lua
 Rotation\Shaman.lua
 Rotation\Warlock.lua
 Rotation\Warrior.lua
-Rotation\Main.lua
