@@ -140,8 +140,12 @@ local MageCounter = {
 
 local CooldownScenarios = {
     ["ONY"] = {
-        Encounter = function() return TankTarget("Onyxia") end,
-        Conditions = function() return TankTargetHealth() <= 0.65 and ManaDown("player") > 600 end
+        Encounter = function()
+            return TankTarget("Onyxia")
+        end,
+        Conditions = function()
+            return TankTargetHealth() <= 0.65 and ManaDown("player") > 600
+        end
     },
 }
 
@@ -711,6 +715,7 @@ MB_mySetupList["Mage"] = MageSetup
 --[####################################################################################################]--
 
 local function MagePreCast()
+
     for k, trinket in pairs(CasterTrinkets) do
         if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then
             use(13)
