@@ -217,7 +217,7 @@ function MMB:OnEvent()
 		
 		elseif arg1 == MB_RAID.."MB_GEAR" then
 			local gearSet = string.upper(arg2)
-			mb_equipSet(gearSet)
+			mb_equipRackSet(gearSet)
 		
 		elseif arg1 == MB_RAID.."MB_ASSIGNHEALER" then			
 			mb_assignHealerToName(arg2)
@@ -767,7 +767,7 @@ function MMB_Post_Init:OnUpdate()
 	DEFAULT_CHAT_FRAME:AddMessage("|cffC71585MoronBox: |r|cff00ff00 Scripts loaded succesfully. Issues? Let me know!",1,1,1)
 
 	if MB_raidAssist.AutoEquipSet.Active then
-		mb_equipSet(MB_raidAssist.AutoEquipSet.Set)
+		mb_equipRackSet(MB_raidAssist.AutoEquipSet.Set)
 	end
 
 	MMB_Post_Init:SetScript("OnUpdate", nil)

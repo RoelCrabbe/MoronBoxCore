@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[####################################### START WARLOCK CODE! ########################################]--
 --[####################################################################################################]--
 
@@ -65,14 +65,66 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Warlock" then return end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local AutoWandAttack = mb_autoWandAttack
+local CasterTrinkets = mb_casterTrinkets
+local CastSpellOrWand = mb_castSpellOrWand
+local CdMessage = mb_cdMessage
+local CoolDownCast = mb_coolDownCast
+local CorruptedTotems = mb_corruptedTotems
+local CrowdControl = mb_crowdControl
+local CrowdControlledMob = mb_crowdControlledMob
+local CrowdControlMCedRaidMemberSkeramFear = mb_crowdControlMCedRaidMemberSkeramFear
+local Dead = mb_dead
+local DebuffShadowBoltAmount = mb_debuffShadowBoltAmount
+local DebuffShadowWeavingAmount = mb_debuffShadowWeavingAmount
+local DebuffsToShadowWard = mb_debuffsToShadowWard
+local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
+local GetTarget = mb_getTarget
+local HasBuffNamed = mb_hasBuffNamed
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HaveInBags = mb_haveInBags
+local HealerTrinkets = mb_healerTrinkets
+local HealthPct = mb_healthPct
+local ImBusy = mb_imBusy
+local InCombat = mb_inCombat
+local IsAtRazorgore = mb_isAtRazorgore
+local IsAtRazorgorePhase = mb_isAtRazorgorePhase
+local IsAtSkeram = mb_isAtSkeram
+local IsItemInBagCoolDown = mb_isItemInBagCoolDown
+local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
+local KnowSpell = mb_knowSpell
+local ManaDown = mb_manaDown
+local ManaPct = mb_manaPct
+local MobsToShadowWard = mb_mobsToShadowWard
+local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
+local MyNameInTable = mb_myNameInTable
+local NumShards = mb_numShards
+local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
+local SelfBuff = mb_selfBuff
+local SmartDrink = mb_smartDrink
+local SomeoneInRaidBuffedWith = mb_someoneInRaidBuffedWith
+local SpellNumber = mb_spellNumber
+local SpellReady = mb_spellReady
+local TakeManaPotionAndRune = mb_takeManaPotionAndRune
+local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
+local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TankTarget = mb_tankTarget
+local TankTargetHealth = mb_tankTargetHealth
+local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
+local TrinketOnCD = mb_trinketOnCD
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Warlock = CreateFrame("Frame", "Warlock")
-if myClass ~= "Warlock" then
-    return
-end
 
 local WarlockCounter = {
     Cycle = function()
@@ -116,71 +168,71 @@ MB_mySpeccList["Warlock"] = WarlockSpecc
 
 local function WarlockSingle()
 
-    mb_getTarget()
+    GetTarget()
 
 	if not MB_mySpecc then		
-		mb_cdMessage("My specc is fucked. Defaulting to Corruption.")
+		CdMessage("My specc is fucked. Defaulting to Corruption.")
 		MB_mySpecc = "Corruption"
 	end
 
-	if mb_crowdControl() then 
+	if CrowdControl() then 
         return
     end
 
-	if mb_manaPct("player") < 0.40 and mb_healthPct("player") > 0.75 then
+	if ManaPct("player") < 0.40 and HealthPct("player") > 0.75 then
 		CastSpellByName("Life Tap")
 		return
 	end
 
-	if mb_hasBuffOrDebuff("Hellfire", "player", "buff") then		
+	if HasBuffOrDebuff("Hellfire", "player", "buff") then		
 		CastSpellByName("Life Tap(Rank 1)")
 		return
 	end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
-            if mb_crowdControl() then
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+            if CrowdControl() then
                 return
             end
         end        
 
-        if mb_crowdControlledMob() then
-            mb_getTarget()
+        if CrowdControlledMob() then
+            GetTarget()
         end
 	end
 
 	if Instance.AQ40 then
 		
-		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
         end
 
-        if mb_isAtSkeram() and MB_mySkeramBoxStrategyWarlock then
+        if IsAtSkeram() and MB_mySkeramBoxStrategyWarlock then
             if not MB_autoToggleSheeps.Active then
                 MB_autoToggleSheeps.Active = true
                 MB_autoToggleSheeps.Time = GetTime() + 2
                 WarlockCounter.Cycle()
             end
 
-			if mb_myClassAlphabeticalOrder() == MB_buffingCounterWarlock then
-				mb_crowdControlMCedRaidMemberSkeramFear()
+			if MyClassAlphabeticalOrder() == MB_buffingCounterWarlock then
+				CrowdControlMCedRaidMemberSkeramFear()
 			end
 		end
     end
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 
-	if mb_inCombat("player") then
+	if InCombat("player") then
 		Warlock:HealthStone()
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-        if mb_knowSpell("Demonic Sacrifice") and not mb_hasBuffOrDebuff("Touch of Shadow", "player", "buff")then
+        if KnowSpell("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff")then
 			Warlock:SumPetAndSac()			
 		end	
 
@@ -188,7 +240,7 @@ local function WarlockSingle()
 			Warlock:TapWhileMoving()		
 		end
 
-        if mb_manaDown("player") > 600 then
+        if ManaDown("player") > 600 then
             Warlock:Cooldowns()
         end
 	end
@@ -197,8 +249,8 @@ local function WarlockSingle()
         return
     end
 
-    if not Instance.IsWorldBoss() and mb_healthPct("target") < 0.2 and mb_numShards() < 60 
-        and mb_getAllContainerFreeSlots() >= 10 and not mb_imBusy() then
+    if not Instance.IsWorldBoss() and HealthPct("target") < 0.2 and NumShards() < 60 
+        and GetAllContainerFreeSlots() >= 10 and not ImBusy() then
         CastSpellByName("Drain Soul(Rank 1)")
         return
     end
@@ -209,17 +261,17 @@ local function WarlockSingle()
         if MB_mySpecc == "Corruption" 
             and UnitMana("player") > MB_classSpellManaCost["Corruption"] 
             and not IsAutoRepeatAction(wndSlot) then
-            mb_coolDownCast("Corruption", 18)
+            CoolDownCast("Corruption", 18)
         end
     end
 
 	if MB_mySpecc == "Shadowburn" and MB_raidAssist.Warlock.ShouldBeWhores then		
 		Warlock:ShadowBoltWhoring()
 	else	
-		mb_castSpellOrWand("Shadow Bolt")
+		CastSpellOrWand("Shadow Bolt")
 
-		if not mb_spellReady("Shadow Bolt") then			
-			mb_castSpellOrWand("Searing Pain")
+		if not SpellReady("Shadow Bolt") then			
+			CastSpellOrWand("Searing Pain")
 		end
 	end
 end
@@ -229,7 +281,7 @@ function Warlock:ShadowBoltWhoring()
 	local SWstacks = 0
 	local gonnaWhore = nil
 
-    if mb_imBusy() then
+    if ImBusy() then
         return 
     end
 
@@ -237,21 +289,21 @@ function Warlock:ShadowBoltWhoring()
         return
     end
 
-    SBstacks = mb_debuffShadowBoltAmount()
-    SWstacks = mb_debuffShadowWeavingAmount()
+    SBstacks = DebuffShadowBoltAmount()
+    SWstacks = DebuffShadowWeavingAmount()
     
     if SWstacks == 5 and SBstacks >= 4 then
         gonnaWhore = true
-        mb_casterTrinkets()
+        CasterTrinkets()
     else
         gonnaWhore = nil
     end
     
-    if gonnaWhore and mb_spellReady("Shadowburn") and mb_numShards() > 12 then
+    if gonnaWhore and SpellReady("Shadowburn") and NumShards() > 12 then
         CastSpellByName("Shadowburn")
-        mb_castSpellOrWand("Shadow Bolt")
+        CastSpellOrWand("Shadow Bolt")
     else
-        mb_castSpellOrWand("Shadow Bolt")
+        CastSpellOrWand("Shadow Bolt")
     end
 end
 
@@ -266,8 +318,8 @@ function Warlock:BossSpecificDPS()
         return true 
     end
 
-	if not mb_hasBuffNamed("Shadow and Frost Reflect", "target") then
-        if Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
+	if not HasBuffNamed("Shadow and Frost Reflect", "target") then
+        if Instance.AQ40 and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
 
             local skeramTankMap = {
                 [1] = MB_mySkeramLeftTank,
@@ -278,16 +330,16 @@ function Warlock:BossSpecificDPS()
                 [6] = MB_mySkeramRightTank
             }
 
-            local myOrder = mb_myClassAlphabeticalOrder()
-            local tankName = skeramTankMap[myOrder] and mb_returnPlayerInRaidFromTable(skeramTankMap[myOrder])
+            local myOrder = MyClassAlphabeticalOrder()
+            local tankName = skeramTankMap[myOrder] and ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
 
-            if tankName and mb_targetFromSpecificPlayer("The Prophet Skeram", tankName) then
+            if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
                 local targetID = MBID[tankName].."target"
 
-                if not mb_hasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
+                if not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
                     AssistUnit(MBID[tankName])
 
-                    if mb_imBusy() then
+                    if ImBusy() then
                         SpellStopCasting()
                     end
 
@@ -297,20 +349,20 @@ function Warlock:BossSpecificDPS()
                 end
             end
 
-        elseif Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+        elseif Instance.BWL and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
             local razorgoreTankMap = {
                 [1] = MB_myRazorgoreRightTank,
                 [2] = MB_myRazorgoreLeftTank
             }
 
-            local myOrder = mb_myClassAlphabeticalOrder()
-            local tankName = razorgoreTankMap[myOrder] and mb_returnPlayerInRaidFromTable(razorgoreTankMap[myOrder])
+            local myOrder = MyClassAlphabeticalOrder()
+            local tankName = razorgoreTankMap[myOrder] and ReturnPlayerInRaidFromTable(razorgoreTankMap[myOrder])
 
-            if tankName and mb_targetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
+            if tankName and TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
                 local targetID = MBID[tankName].."target"
 
-                if not mb_hasBuffOrDebuff("Curse of Recklessness", targetID, "debuff") then
+                if not HasBuffOrDebuff("Curse of Recklessness", targetID, "debuff") then
                     AssistUnit(MBID[tankName])
                     CastSpellByName("Curse of Recklessness")
                     TargetLastTarget()
@@ -327,64 +379,64 @@ function Warlock:BossSpecificDPS()
                 [6] = "Curse of Shadow"
             }
 
-            local myOrder = mb_myClassAlphabeticalOrder()
+            local myOrder = MyClassAlphabeticalOrder()
             local assignedCurse = curseAssignments[myOrder]
 
-            if assignedCurse and not mb_hasBuffOrDebuff(assignedCurse, "target", "debuff") then
+            if assignedCurse and not HasBuffOrDebuff(assignedCurse, "target", "debuff") then
                 CastSpellByName(assignedCurse)
                 return true
             end
 		end
 	end
 
-	if not mb_hasBuffOrDebuff("Shadow Ward", "player", "buff") and mb_spellReady("Shadow Ward") then
-		if mb_mobsToShadowWard() or mb_debuffsToShadowWard() then
-			mb_selfBuff("Shadow Ward")
+	if not HasBuffOrDebuff("Shadow Ward", "player", "buff") and SpellReady("Shadow Ward") then
+		if MobsToShadowWard() or DebuffsToShadowWard() then
+			SelfBuff("Shadow Ward")
 			return true
 		end
 	end
 
-	if mb_hasBuffNamed("Shadow and Frost Reflect", "target") then
-		if mb_spellReady("Soul Fire") and mb_numShards() > 10 then			
-			mb_castSpellOrWand("Soul Fire") 
+	if HasBuffNamed("Shadow and Frost Reflect", "target") then
+		if SpellReady("Soul Fire") and NumShards() > 10 then			
+			CastSpellOrWand("Soul Fire") 
 		end
 
-		mb_castSpellOrWand("Immolate")
+		CastSpellOrWand("Immolate")
 		return true
 	
-    elseif mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
+    elseif HasBuffOrDebuff("Magic Reflection", "target", "buff") then
 
-        if mb_imBusy() then
+        if ImBusy() then
             SpellStopCasting()
         end
 
-        mb_autoWandAttack()
+        AutoWandAttack()
         return true
     end
 
-	if mb_tankTarget("Azuregos") and mb_hasBuffNamed("Magic Shield", "target") then		
-		if mb_imBusy() then 			
+	if TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then		
+		if ImBusy() then 			
 			SpellStopCasting()
 		end
 		
-		mb_selfBuff("Frost Ward")
+		SelfBuff("Frost Ward")
 		return true
 	end
 
 	if Instance.AQ40 then		
-		if UnitName("target") == "Emperor Vek\'lor" and mb_myNameInTable(MB_myTwinsWarlockTank) then
+		if UnitName("target") == "Emperor Vek\'lor" and MyNameInTable(MB_myTwinsWarlockTank) then
 			
-            mb_selfBuff("Shadow Ward")
+            SelfBuff("Shadow Ward")
 			Warlock:SaveShardShadowBurn(3)
 			
-			if mb_healthPct("player") < 0.25 and mb_spellReady("Death Coil") then				
+			if HealthPct("player") < 0.25 and SpellReady("Death Coil") then				
 				CastSpellByName("Death Coil")
 			end
 			
 			CastSpellByName("Searing Pain")
 			return true
 		
-        elseif UnitName("target") == "Obsidian Eradicator" and mb_manaPct("target") > 0.7 and not mb_imBusy() then
+        elseif UnitName("target") == "Obsidian Eradicator" and ManaPct("target") > 0.7 and not ImBusy() then
 			
             CastSpellByName("Drain Mana")			
 			return true
@@ -392,67 +444,67 @@ function Warlock:BossSpecificDPS()
         elseif UnitName("target") == "Spawn of Fankriss" then	
 
 			Warlock:SaveShardShadowBurn(9)
-			mb_castSpellOrWand("Shadow Bolt")
+			CastSpellOrWand("Shadow Bolt")
 			return true
 		end
 
-	elseif Instance.BWL and mb_corruptedTotems() and not mb_dead("target") then
+	elseif Instance.BWL and CorruptedTotems() and not Dead("target") then
 
 		Warlock:SaveShardShadowBurn(12)
-		mb_castSpellOrWand("Searing Pain")
+		CastSpellOrWand("Searing Pain")
 		return true
 
-	elseif Instance.MC and mb_tankTarget("Shazzrah") then
+	elseif Instance.MC and TankTarget("Shazzrah") then
 			
-        if not mb_spellReady("Shadow Bolt") then
-            mb_castSpellOrWand("Immolate")
+        if not SpellReady("Shadow Bolt") then
+            CastSpellOrWand("Immolate")
             return true
         end
 
-	elseif Instance.ONY and mb_tankTarget("Onyxia") then
+	elseif Instance.ONY and TankTarget("Onyxia") then
 
         if MB_isMoving.Active then			
-			mb_coolDownCast("Corruption", 18)
+			CoolDownCast("Corruption", 18)
 
-            if mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4 then
+            if TankTargetHealth() <= 0.65 and TankTargetHealth() >= 0.4 then
                 Warlock:SaveShardShadowBurn(12)
             end
 		end
 
     elseif Instance.ZG then
 
-		if mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
-			if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
+		if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
+			if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
                 Warlock:SaveShardShadowBurn(12)					
-				mb_castSpellOrWand("Searing Pain") 
+				CastSpellOrWand("Searing Pain") 
 				return true
 			end
 		end
 
-		if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not mb_dead("target") then
+		if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not Dead("target") then
             Warlock:SaveShardShadowBurn(12)
-			mb_castSpellOrWand("Searing Pain")
+			CastSpellOrWand("Searing Pain")
 			return true
 		end
 
 	elseif Instance.AQ20 then
 
-		if mb_tankTarget("Moam") and mb_manaPct("target") > 0.75 and not mb_imBusy() then
+		if TankTarget("Moam") and ManaPct("target") > 0.75 and not ImBusy() then
 			CastSpellByName("Drain Mana") 			
 		end
 
-        if mb_tankTarget("Ossirian the Unscarred") then
-            if mb_hasBuffOrDebuff("Fire Weakness", "target", "debuff") then
+        if TankTarget("Ossirian the Unscarred") then
+            if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
             
-                if mb_spellReady("Soul Fire") and mb_numShards() > 10 then 
-					mb_castSpellOrWand("Soul Fire")
+                if SpellReady("Soul Fire") and NumShards() > 10 then 
+					CastSpellOrWand("Soul Fire")
 				end
 
-				mb_castSpellOrWand("Immolate")
+				CastSpellOrWand("Immolate")
                 return true
-            elseif mb_hasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
+            elseif HasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
 
-				mb_castSpellOrWand("Shadow Bolt")
+				CastSpellOrWand("Shadow Bolt")
                 return true
             end
         end
@@ -475,31 +527,31 @@ MB_myMultiList["Warlock"] = WarlockSingle
 
 local function WarlockAOE()
 
-    mb_getTarget()
+    GetTarget()
 
 	if not MB_mySpecc then		
-		mb_cdMessage("My specc is fucked. Defaulting to Corruption.")
+		CdMessage("My specc is fucked. Defaulting to Corruption.")
 		MB_mySpecc = "Corruption"
 	end
 
-	if UnitMana("player") < 1250 and not mb_imBusy() then
+	if UnitMana("player") < 1250 and not ImBusy() then
 		CastSpellByName("Life Tap")
 		return
 	end
 
-	if mb_inCombat("player") then
+	if InCombat("player") then
 		Warlock:HealthStone()
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-        if mb_manaDown("player") > 600 then
+        if ManaDown("player") > 600 then
             Warlock:Cooldowns()
         end
 	end
 
-    if not mb_hasBuffOrDebuff("Hellfire", "player", "buff") then
+    if not HasBuffOrDebuff("Hellfire", "player", "buff") then
 		CastSpellByName("Hellfire") 
 	end
 end
@@ -512,7 +564,7 @@ MB_myAOEList["Warlock"] = WarlockAOE
 
 local function WarlockSetup()
 
-	if UnitMana("player") < 3060 and mb_hasBuffNamed("Drink", "player") then
+	if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
 		return
 	end
 
@@ -523,15 +575,15 @@ local function WarlockSetup()
             WarlockCounter.Cycle()
         end
 
-		if mb_myClassAlphabeticalOrder() == MB_buffingCounterWarlock then
+		if MyClassAlphabeticalOrder() == MB_buffingCounterWarlock then
 			Warlock:SoulStone()
 		end
 	end
 
-	mb_selfBuff("Demon Armor")
+	SelfBuff("Demon Armor")
 	
-	if mb_knowSpell("Demonic Sacrifice") then
-		if not mb_hasBuffOrDebuff("Touch of Shadow", "player", "buff") then			
+	if KnowSpell("Demonic Sacrifice") then
+		if not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then			
 			Warlock:SumPetAndSac()
 		end
 	else
@@ -542,8 +594,8 @@ local function WarlockSetup()
 
 	Warlock:CreateHealthStone()
 
-	if not mb_inCombat("player") and mb_manaPct("player") < 0.20 and not mb_hasBuffNamed("Drink", "player") then
-		mb_smartDrink()
+	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
+		SmartDrink()
 	end
 end
 
@@ -555,11 +607,11 @@ MB_mySetupList["Warlock"] = WarlockSetup
 
 local function WarlockPreCast()
 	for k, trinket in pairs(MB_casterTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
+		if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then 
 			use(13) 
 		end
 
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
+		if ItemNameOfEquippedSlot(14) == trinket and not TrinketOnCD(14) then 
 			use(14) 
 		end
 	end
@@ -574,30 +626,30 @@ MB_myPreCastList["Warlock"] = WarlockPreCast
 --[####################################################################################################]--
 
 function Warlock:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    mb_selfBuff("Berserking") 
+    SelfBuff("Berserking") 
 
-    mb_healerTrinkets()
-	mb_casterTrinkets()
+    HealerTrinkets()
+	CasterTrinkets()
 end
 
 function Warlock:HealthStone()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-	if mb_healthPct("player") > 0.15 then
+	if HealthPct("player") > 0.15 then
 		return
 	end
 
-    if not mb_haveInBags("Major Healthstone") then
+    if not HaveInBags("Major Healthstone") then
 		return
 	end
 
-    if mb_isItemInBagCoolDown("Major Healthstone") then
+    if IsItemInBagCoolDown("Major Healthstone") then
 		return
 	end
 
@@ -606,35 +658,35 @@ function Warlock:HealthStone()
 end
 
 function Warlock:SumPetAndSac()
-	if mb_hasBuffOrDebuff("Touch of Shadow", "player", "buff") then
+	if HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
 		return
 	end
 
-	if UnitCreatureFamily("pet") == "Succubus" and mb_knowSpell("Demonic Sacrifice") then
+	if UnitCreatureFamily("pet") == "Succubus" and KnowSpell("Demonic Sacrifice") then
 		CastSpellByName("Demonic Sacrifice")
 		return
 	end
 
-	if mb_numShards() == 0 then
+	if NumShards() == 0 then
 		return
 	end
 
-	if mb_knowSpell("Summon Succubus") and mb_knowSpell("Fel Domination") and mb_spellReady("Fel Domination") then
+	if KnowSpell("Summon Succubus") and KnowSpell("Fel Domination") and SpellReady("Fel Domination") then
 		CastSpellByName("Fel Domination")
 		return
 	end
 
-	if mb_knowSpell("Summon Succubus") then
+	if KnowSpell("Summon Succubus") then
 		CastSpellByName("Summon Succubus")
 	end
 end
 
 function Warlock:TapWhileMoving()
-	if mb_healthPct("player") < 0.40 or UnitMana("player") == UnitManaMax("player") then
+	if HealthPct("player") < 0.40 or UnitMana("player") == UnitManaMax("player") then
 		return
 	end
 
-	if mb_manaPct("player") < 0.80 and mb_healthPct("player") > 0.55 then
+	if ManaPct("player") < 0.80 and HealthPct("player") > 0.55 then
 		CastSpellByName("Life Tap")
 	end
 end
@@ -642,7 +694,7 @@ end
 function Warlock:SaveShardShadowBurn(shardsToSave)
 	shardsToSave = shardsToSave or 0
 
-	if not mb_spellReady("Shadowburn") or mb_numShards() <= shardsToSave then
+	if not SpellReady("Shadowburn") or NumShards() <= shardsToSave then
 		return
 	end
 
@@ -651,13 +703,13 @@ end
 
 function Warlock:SoulStone()
 	
-    if mb_hasBuffNamed("Drink", "player") or mb_imBusy() then
+    if HasBuffNamed("Drink", "player") or ImBusy() then
         return
     end
 
     Warlock:CreateSoulStone()
 
-    if mb_isItemInBagCoolDown("Major Soulstone") then
+    if IsItemInBagCoolDown("Major Soulstone") then
         return
     end
 
@@ -667,14 +719,14 @@ function Warlock:SoulStone()
         WarlockCounter.Cycle()
     end
     
-    if not mb_someoneInRaidBuffedWith("Soulstone") then
-        if mb_myClassAlphabeticalOrder() == MB_buffingCounterWarlock then 
+    if not SomeoneInRaidBuffedWith("Soulstone") then
+        if MyClassAlphabeticalOrder() == MB_buffingCounterWarlock then 
             for i = 1, TableLength(MB_classList["Priest"]) do
                 id = MBID[MB_classList["Priest"][i]]
                 name = MB_classList["Priest"][i]
 
-                if not mb_hasBuffOrDebuff("Soulstone", id, "buff") and mb_haveInBags("Major Soulstone") then
-                    mb_cdMessage("Soulstoning "..GetColors(name))
+                if not HasBuffOrDebuff("Soulstone", id, "buff") and HaveInBags("Major Soulstone") then
+                    CdMessage("Soulstoning "..GetColors(name))
                     
                     TargetUnit(id)
                     UseItemByName("Major Soulstone")
@@ -687,8 +739,8 @@ function Warlock:SoulStone()
                 id = MBID[MB_classList["Shaman"][i]]
                 name = MB_classList["Shaman"][i]
 
-                if not mb_hasBuffOrDebuff("Soulstone", id, "buff") and mb_haveInBags("Major Soulstone") then
-                    mb_cdMessage("Soulstoning "..GetColors(name))
+                if not HasBuffOrDebuff("Soulstone", id, "buff") and HaveInBags("Major Soulstone") then
+                    CdMessage("Soulstoning "..GetColors(name))
                     
                     TargetUnit(id)
                     UseItemByName("Major Soulstone")
@@ -701,10 +753,10 @@ function Warlock:SoulStone()
 end
 
 function Warlock:CreateHealthStone()
-	if mb_numShards() < 2
-		or mb_getAllContainerFreeSlots() < 1
-		or mb_inCombat("player")
-		or mb_haveInBags("Major Healthstone") then
+	if NumShards() < 2
+		or GetAllContainerFreeSlots() < 1
+		or InCombat("player")
+		or HaveInBags("Major Healthstone") then
 		return
 	end
 
@@ -712,11 +764,11 @@ function Warlock:CreateHealthStone()
 end
 
 function Warlock:CreateSoulStone()
-	local spellId = mb_spellNumber("Create Soulstone.*Major")
+	local spellId = SpellNumber("Create Soulstone.*Major")
 
 	if not spellId
-		or mb_numShards() < 1
-		or mb_haveInBags("Major Soulstone") then
+		or NumShards() < 1
+		or HaveInBags("Major Soulstone") then
 		return
 	end
 

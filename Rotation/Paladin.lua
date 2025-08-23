@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[####################################### START PALADIN CODE! ########################################]--
 --[####################################################################################################]--
 
@@ -65,14 +65,61 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Paladin" then return end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local AssistFocus = mb_assistFocus
+local AutoAttack = mb_autoAttack
+local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
+local CasterTrinkets = mb_casterTrinkets
+local CdMessage = mb_cdMessage
+local Dead = mb_dead
+local Decurse = mb_decurse
+local GetTarget = mb_getTarget
+local HasBuffNamed = mb_hasBuffNamed
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HaveInBags = mb_haveInBags
+local HealerTrinkets = mb_healerTrinkets
+local HealLieutenantAQ20 = mb_healLieutenantAQ20
+local HealthDown = mb_healthDown
+local HealthPct = mb_healthPct
+local ImBusy = mb_imBusy
+local InCombat = mb_inCombat
+local InstructorRazAddsHeal = mb_instructorRazAddsHeal
+local IsAlive = mb_isAlive
+local IsFireBoss = mb_isFireBoss
+local IsValidFriendlyTarget = mb_isValidFriendlyTarget
+local IsValidMeleeTarget = mb_isValidMeleeTarget
+local LoathebHealing = mb_loathebHealing
+local ManaDown = mb_manaDown
+local ManaPct = mb_manaPct
+local MultiBuffBlessing = mb_multiBuffBlessing
+local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
+local MyClassOrder = mb_myClassOrder
+local MyGroupClassOrder = mb_myGroupClassOrder
+local NumberOfClassInParty = mb_numberOfClassInParty
+local PaladinHeal = mb_paladinHeal
+local RaidIsPoisoned = mb_raidIsPoisoned
+local SelfBuff = mb_selfBuff
+local SmartDrink = mb_smartDrink
+local SpellReady = mb_spellReady
+local StunnableMob = mb_stunnableMob
+local TakeManaPotionAndRune = mb_takeManaPotionAndRune
+local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
+local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TankName = mb_tankName
+local TankTarget = mb_tankTarget
+local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Paladin = CreateFrame("Frame", "Paladin")
-if myClass ~= "Paladin" then
-    return
-end
 
 local PaladinCounter = {
     Cycle = function()
@@ -91,39 +138,39 @@ local function PaladinHeal()
         return
     end
 
-    mb_decurse()
+    Decurse()
 
-	if mb_inCombat("player") then	
+	if InCombat("player") then	
 		MB_mySetupList["Paladin"]()
 
-		if mb_healthPct("player") < 0.2 then			
-			mb_selfBuff("Divine Shield")
+		if HealthPct("player") < 0.2 then			
+			SelfBuff("Divine Shield")
 			return 
 		end
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Paladin:Cooldowns()
         end
 	end
 
-	if mb_hasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not mb_tankTarget("Anubisath Defender") then
+	if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
         return
     end
 
-	if mb_healLieutenantAQ20() then
+	if HealLieutenantAQ20() then
         return
     end
 
-	if mb_instructorRazAddsHeal() then
+	if InstructorRazAddsHeal() then
         return
     end
 
 	if MB_myAssignedHealTarget then 
-		if mb_isAlive(MBID[MB_myAssignedHealTarget]) then			
+		if IsAlive(MBID[MB_myAssignedHealTarget]) then			
 			Paladin:MTHeals(MB_myAssignedHealTarget)
 			return
 		else
@@ -133,14 +180,14 @@ local function PaladinHeal()
 	end
 
 	for k, BossName in pairs(MB_myPaladinMainTankHealingBossList) do		
-		if mb_tankTarget(BossName) then			
+		if TankTarget(BossName) then			
 			Paladin:MTHeals()
 			return
 		end
 	end
 
-    if Instance.BWL and mb_tankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-        if mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then	
+    if Instance.BWL and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then	
             MBH_CastHeal("Flash of Light", 6, 6)
             return
         end
@@ -161,7 +208,7 @@ local function PaladinHeal()
 		return		
 	end
 
-	if mb_hasBuffOrDebuff("Blinding Light", "player", "buff") or mb_hasBuffOrDebuff("Divine Favor", "player", "buff") then		
+	if HasBuffOrDebuff("Blinding Light", "player", "buff") or HasBuffOrDebuff("Divine Favor", "player", "buff") then		
 		MBH_CastHeal("Holy Light")
 		return
     end
@@ -175,30 +222,30 @@ function Paladin:MTHeals(assignedTarget)
 	if assignedTarget then		
 		TargetByName(assignedTarget, 1)
 	else
-		if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
-			mb_targetMyAssignedTankToHeal()
+		if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
+			TargetMyAssignedTankToHeal()
 		else
-			if not UnitName(MBID[mb_tankName()].."targettarget") then 				
+			if not UnitName(MBID[TankName()].."targettarget") then 				
 				MBH_CastHeal("Flash of Light", 5, 6)
 			else
-				TargetByName(UnitName(MBID[mb_tankName()].."targettarget"), 1) 
+				TargetByName(UnitName(MBID[TankName()].."targettarget"), 1) 
 			end
 		end
 	end
 
-	if mb_inCombat("player") and mb_manaPct("player") < 0.95 then		
-		mb_selfBuff("Divine Favor")
+	if InCombat("player") and ManaPct("player") < 0.95 then		
+		SelfBuff("Divine Favor")
 	end
 
 	local FlashOfLightSpell = "Flash of Light("..MB_myPaladinMainTankHealingRank.."\)"
-	if mb_tankTarget("Vaelastrasz the Corrupt") then
+	if TankTarget("Vaelastrasz the Corrupt") then
 		FlashOfLightSpell = "Holy Light"
 
-	elseif mb_tankTarget("Ossirian the Unscarred") then		
+	elseif TankTarget("Ossirian the Unscarred") then		
 		FlashOfLightSpell = "Holy Light(rank 5)"
 	end
 
-    if not mb_bossNeverInterruptHeal() and mb_healthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
+    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
 		if GetTime() > FlashOfLight.Time and GetTime() < FlashOfLight.Time + 0.5 and FlashOfLight.Interrupt then
 			SpellStopCasting()			
 			FlashOfLight.Interrupt = false
@@ -206,7 +253,7 @@ function Paladin:MTHeals(assignedTarget)
 		end
 	end
 
-	if not mb_imBusy() then
+	if not ImBusy() then
 		CastSpellByName(FlashOfLightSpell)
 		FlashOfLight.Time = GetTime() + 0.25
 		FlashOfLight.Interrupt = true
@@ -216,13 +263,13 @@ end
 function Paladin:ShockLowAggroedPlayer()
 	if not MB_raidAssist.Paladin.HolyShockLowHealthAggroedPlayers
 		or not UnitInRaid("player")
-		or not mb_inCombat("player")
-		or not mb_spellReady("Holy Shock") then
+		or not InCombat("player")
+		or not SpellReady("Holy Shock") then
 		return false
 	end
 
 	local blastHSatThisPercentage = 0.2
-	local classOrder = mb_myClassOrder()
+	local classOrder = MyClassOrder()
 
 	if classOrder == 1 then
 		blastHSatThisPercentage = 0.50
@@ -241,9 +288,9 @@ function Paladin:ShockLowAggroedPlayer()
 	for i = 1, GetNumRaidMembers() do
 		local holyShockTarget = "raid"..i
 		if holyShockTarget and aggrox:GetUnitAggroByUnitId(holyShockTarget) then
-			if mb_isValidFriendlyTarget(holyShockTarget, "Holy Shock")
-				and mb_healthPct(holyShockTarget) <= blastHSatThisPercentage
-				and not mb_hasBuffNamed("Holy Shock", holyShockTarget) then
+			if IsValidFriendlyTarget(holyShockTarget, "Holy Shock")
+				and HealthPct(holyShockTarget) <= blastHSatThisPercentage
+				and not HasBuffNamed("Holy Shock", holyShockTarget) then
 
 				if UnitIsFriend("player", holyShockTarget) then
 					ClearTarget()
@@ -261,16 +308,16 @@ function Paladin:ShockLowAggroedPlayer()
 end
 
 function Paladin:BOPLowRandom()
-	if mb_tankTarget("Gluth") or mb_tankTarget("Zombie Chow")
+	if TankTarget("Gluth") or TankTarget("Zombie Chow")
 		or not UnitInRaid("player")
-		or not mb_inCombat("player")
-		or mb_imBusy()
-		or not mb_spellReady("Blessing of Protection") then
+		or not InCombat("player")
+		or ImBusy()
+		or not SpellReady("Blessing of Protection") then
 		return false
 	end
 
 	local blastNSatThisPercentage = 0.3
-	local classOrder = mb_myClassOrder()
+	local classOrder = MyClassOrder()
 
 	if classOrder == 1 then
 		blastNSatThisPercentage = 0.45
@@ -292,16 +339,16 @@ function Paladin:BOPLowRandom()
 		if BOPTarget
 			and aggrox:GetUnitAggroByUnitId(BOPTarget)
 			and not FindInTable(MB_raidTanks, UnitName(BOPTarget))
-			and mb_isValidFriendlyTarget(BOPTarget, "Blessing of Protection")
-			and mb_healthPct(BOPTarget) <= blastNSatThisPercentage
-			and not mb_hasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then
+			and IsValidFriendlyTarget(BOPTarget, "Blessing of Protection")
+			and HealthPct(BOPTarget) <= blastNSatThisPercentage
+			and not HasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then
 
 			if UnitIsFriend("player", BOPTarget) then
 				ClearTarget()
 			end
 
 			CastSpellByName("Blessing of Protection", false)
-			mb_cdMessage("I BOP'd "..GetColors(UnitName(BOPTarget)).." at "..string.sub(mb_healthPct(BOPTarget), 3, 4).."% - "..UnitHealth(BOPTarget).."/"..UnitHealthMax(BOPTarget).." HP.")
+			CdMessage("I BOP'd "..GetColors(UnitName(BOPTarget)).." at "..string.sub(HealthPct(BOPTarget), 3, 4).."% - "..UnitHealth(BOPTarget).."/"..UnitHealthMax(BOPTarget).." HP.")
 			SpellTargetUnit(BOPTarget)
 			SpellStopTargeting()
 			return true
@@ -318,32 +365,32 @@ end
 
 local function PaladinSingle()
 	
-	mb_getTarget()
+	GetTarget()
 
-    if Instance.NAXX and mb_raidIsPoisoned() and mb_imBusy() then
-		if mb_tankTarget("Venom Stalker") or mb_tankTarget("Necro Stalker") then
+    if Instance.NAXX and RaidIsPoisoned() and ImBusy() then
+		if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
 			SpellStopCasting()
 		end
     end
 
-	mb_decurse()
+	Decurse()
 
-	if mb_stunnableMob() then
+	if StunnableMob() then
         if not MB_autoBuff.Active then
             MB_autoBuff.Active = true
             MB_autoBuff.Time = GetTime() + 1
             PriestCounter.Cycle()
         end
 
-		if mb_myClassAlphabeticalOrder() == MB_buffingCounterPaladin then
-			if mb_spellReady("Hammer of Justice") then
-                mb_assistFocus()		
+		if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
+			if SpellReady("Hammer of Justice") then
+                AssistFocus()		
 				CastSpellByName("Hammer of Justice")
 			end		
 		end
 	end
 
-	mb_paladinHeal()
+	PaladinHeal()
 	Paladin:SealLight()
 end
 
@@ -367,7 +414,7 @@ MB_myAOEList["Paladin"] = PaladinSingle
 
 local function PaladinSetup()
 
-    if UnitMana("player") < 3060 and mb_hasBuffNamed("Drink", "player") then
+    if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
 		return
 	end
 
@@ -377,14 +424,14 @@ local function PaladinSetup()
         PriestCounter.Cycle()
     end
 
-	if mb_myClassAlphabeticalOrder() == MB_buffingCounterPaladin then
+	if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
 		Paladin:BlessMyAssignedBlessing()
 	end
 
 	Paladin:ChooseAura()
 
-	if not mb_inCombat("player") and mb_manaPct("player") < 0.20 and not mb_hasBuffNamed("Drink", "player") then
-		mb_smartDrink()
+	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
+		SmartDrink()
 	end
 end
 
@@ -396,7 +443,7 @@ MB_mySetupList["Paladin"] = PaladinSetup
 
 function Paladin:GetActiveVaelastraszPaladin()
     for _, paladinName in ipairs(MB_myVaelastraszPaladins) do
-        if not mb_dead(MBID[paladinName]) then
+        if not Dead(MBID[paladinName]) then
             return paladinName
         end
     end
@@ -404,61 +451,61 @@ function Paladin:GetActiveVaelastraszPaladin()
 end
 
 function Paladin:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if not mb_tankTarget("Viscidus") then
-        if mb_manaPct("player") <= MB_paladinDivineFavorPercentage then			
-            mb_selfBuff("Divine Favor")
+    if not TankTarget("Viscidus") then
+        if ManaPct("player") <= MB_paladinDivineFavorPercentage then			
+            SelfBuff("Divine Favor")
         end
     end
 
-	mb_casterTrinkets()
-	mb_healerTrinkets()
+	CasterTrinkets()
+	HealerTrinkets()
 end
 
 function Paladin:ChooseAura()
-	if mb_tankTarget("Sapphiron") or mb_tankTarget("Azuregos") then
-		mb_selfBuff("Frost Resistance Aura")
+	if TankTarget("Sapphiron") or TankTarget("Azuregos") then
+		SelfBuff("Frost Resistance Aura")
 		return
 	end
 
-	if mb_myGroupClassOrder() == 1 then
-		if mb_isFireBoss() then
-			mb_selfBuff("Fire Resistance Aura")
+	if MyGroupClassOrder() == 1 then
+		if IsFireBoss() then
+			SelfBuff("Fire Resistance Aura")
 			return
 		end
 
 		if MB_druidTankInParty or MB_warriorTankInParty
-			or mb_numberOfClassInParty("Warrior") > 0
-			or mb_numberOfClassInParty("Rogue") > 0 then
-			mb_selfBuff("Devotion Aura")
+			or NumberOfClassInParty("Warrior") > 0
+			or NumberOfClassInParty("Rogue") > 0 then
+			SelfBuff("Devotion Aura")
 			return
 		end
 
-		mb_selfBuff("Concentration Aura")
+		SelfBuff("Concentration Aura")
 		return
 	end
 
-	if mb_myGroupClassOrder() == 2 then
-		mb_selfBuff("Concentration Aura")
+	if MyGroupClassOrder() == 2 then
+		SelfBuff("Concentration Aura")
 		return
 	end
 
-	if mb_myGroupClassOrder() == 3 then
-		mb_selfBuff("Retribution Aura")
+	if MyGroupClassOrder() == 3 then
+		SelfBuff("Retribution Aura")
 		return
 	end
 end
 
 function Paladin:BlessMyAssignedBlessing()
-	if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") or mb_tankTarget("Maexxna") then
+	if TankTarget("Garr") or TankTarget("Firesworn") or TankTarget("Maexxna") then
 		return
 	end
 
-	if not mb_haveInBags("Symbol of Kings") then
-		mb_cdMessage("Out of Symbol of Kings")
+	if not HaveInBags("Symbol of Kings") then
+		CdMessage("Out of Symbol of Kings")
 		return
 	end
 
@@ -471,26 +518,26 @@ function Paladin:BlessMyAssignedBlessing()
 		[6] = "Greater Blessing of Wisdom"
 	}
 
-	local assignedBlessing = blessings[mb_myClassAlphabeticalOrder()]
+	local assignedBlessing = blessings[MyClassAlphabeticalOrder()]
 	if assignedBlessing then
-		mb_multiBuffBlessing(assignedBlessing)
+		MultiBuffBlessing(assignedBlessing)
 	end
 end
 
 function Paladin:SealLight()
-	if not mb_isValidMeleeTarget("target") then
+	if not IsValidMeleeTarget("target") then
 		return
 	end
 
-	mb_assistFocus()
+	AssistFocus()
 
-	if mb_hasBuffOrDebuff("Judgement of Light", "target", "debuff") then
+	if HasBuffOrDebuff("Judgement of Light", "target", "debuff") then
 		return
 	end
 
-	mb_autoAttack()
+	AutoAttack()
 
-	if not mb_hasBuffOrDebuff("Seal of Light", "player", "buff") then
+	if not HasBuffOrDebuff("Seal of Light", "player", "buff") then
 		CastSpellByName("Seal of Light")
 		return
 	end
@@ -499,19 +546,19 @@ function Paladin:SealLight()
 end
 
 function Paladin:SealWisdom()
-	if not mb_isValidMeleeTarget("target") then
+	if not IsValidMeleeTarget("target") then
 		return
 	end
 
-	mb_assistFocus()
+	AssistFocus()
 
-	if mb_hasBuffOrDebuff("Judgement of Light", "target", "debuff") then
+	if HasBuffOrDebuff("Judgement of Light", "target", "debuff") then
 		return
 	end
 
-	mb_autoAttack()
+	AutoAttack()
 
-	if not mb_hasBuffOrDebuff("Seal of Wisdom", "player", "buff") then
+	if not HasBuffOrDebuff("Seal of Wisdom", "player", "buff") then
 		CastSpellByName("Seal of Wisdom")
 		return
 	end
@@ -525,37 +572,37 @@ end
 
 local function PriestLoathebHeal()
 
-	if mb_loathebHealing() then
+	if LoathebHealing() then
 		return
 	end
 
     AssistByName(MB_myLoathebMainTank)
 	
-	if mb_inCombat("player") then	
+	if InCombat("player") then	
 		MB_mySetupList["Paladin"]()
 
-		if mb_healthPct("player") < 0.2 then			
-			mb_selfBuff("Divine Shield")
+		if HealthPct("player") < 0.2 then			
+			SelfBuff("Divine Shield")
 			return 
 		end
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Paladin:Cooldowns()
         end
 	end
 
-    mb_autoAttack()
+    AutoAttack()
 
-    if myName == MB_myLoathebSealPaladin and not mb_hasBuffOrDebuff("Seal of Light", "target", "debuff") then
+    if myName == MB_myLoathebSealPaladin and not HasBuffOrDebuff("Seal of Light", "target", "debuff") then
 		Paladin:SealLight()
 		return
 	end
 
-    if not mb_hasBuffOrDebuff("Seal of Righteousness", "player", "buff") then
+    if not HasBuffOrDebuff("Seal of Righteousness", "player", "buff") then
 		CastSpellByName("Seal of Righteousness")
 	end
 end

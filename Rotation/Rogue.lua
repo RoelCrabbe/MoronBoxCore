@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[######################################## START ROGUE CODE! #########################################]--
 --[####################################################################################################]--
 
@@ -65,14 +65,37 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Rogue" then return end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local AutoAttack = mb_autoAttack
+local CdPrint = mb_cdPrint
+local DebuffSunderAmount = mb_debuffSunderAmount
+local GetMyInterruptTarget = mb_getMyInterruptTarget
+local GetTarget = mb_getTarget
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HaveInBags = mb_haveInBags
+local HealthPct = mb_healthPct
+local ImBusy = mb_imBusy
+local InCombat = mb_inCombat
+local InMeleeRange = mb_inMeleeRange
+local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
+local MeleeTrinkets = mb_meleeTrinkets
+local SelfBuff = mb_selfBuff
+local SpellReady = mb_spellReady
+local StunnableMob = mb_stunnableMob
+local TankTarget = mb_tankTarget
+local TrinketOnCD = mb_trinketOnCD
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Rogue = CreateFrame("Frame", "Rogue")
-if myClass ~= "Rogue" then
-    return
-end
 
 --[####################################################################################################]--
 --[########################################## SETUP Code! #############################################]--
@@ -112,9 +135,9 @@ MB_mySpeccList["Rogue"] = RogueSpecc
 
 local function RogueSingle()
 
-	mb_getTarget()
+	GetTarget()
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 
@@ -122,29 +145,29 @@ local function RogueSingle()
 		Rogue:Cooldowns()
 	end
 
-	mb_autoAttack()
+	AutoAttack()
 
-	if mb_inCombat("player") and UnitMana("player") <= 40 then		
-		if mb_itemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not mb_trinketOnCD(13) then 
+	if InCombat("player") and UnitMana("player") <= 40 then		
+		if ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(13) then 
 			use(13)
 
-		elseif mb_itemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not mb_trinketOnCD(14) then 
+		elseif ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(14) then 
 			use(14)
 		end
 	end
 
-    if MB_doInterrupt.Active and mb_spellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
         if UnitMana("player") >= 25 then
             if MB_myInterruptTarget then
-                mb_getMyInterruptTarget()
+                GetMyInterruptTarget()
             end
 
-            if mb_imBusy() then			
+            if ImBusy() then			
                 SpellStopCasting() 
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_cdPrint("Interrupting!")
+            CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end     
@@ -152,45 +175,45 @@ local function RogueSingle()
 
     local aggrox = AceLibrary("Banzai-1.0")
 	if aggrox:GetUnitAggroByUnitId("player") then
-        if mb_healthPct("player") < 0.8 and mb_spellReady("Evasion") then 		
+        if HealthPct("player") < 0.8 and SpellReady("Evasion") then 		
             
             CastSpellByName("Evasion") 
             return
         
-        elseif mb_healthPct("player") < 0.45 and mb_spellReady("Vanish") then 
+        elseif HealthPct("player") < 0.45 and SpellReady("Vanish") then 
 		
             CastSpellByName("Vanish") 
             return
         end
 	end
 
-	if not mb_inMeleeRange() then
+	if not InMeleeRange() then
 		return
     end
 
     local cp = GetComboPoints("target")
-    if mb_spellReady("Kidney Shot") and cp >= 3 and mb_stunnableMob() then			
+    if SpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then			
         CastSpellByName("Kidney Shot")
     end
 
-    if mb_spellReady("Blade Flurry") and mb_hasBuffOrDebuff("Slice and Dice", "player", "buff") then			
+    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then			
         CastSpellByName("Blade Flurry") 
     end
 
-    if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) 
-        and (mb_inMeleeRange() or mb_tankTarget("Ragnaros")) then
+    if (DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")) 
+        and (InMeleeRange() or TankTarget("Ragnaros")) then
 
         if Instance.IsWorldBoss() then
             Rogue:Cooldowns()
         end
 
-        mb_meleeTrinkets()
+        MeleeTrinkets()
     end
 
     local hasImprovedEA = ImprovedExposeCheck()
-    if not mb_hasBuffOrDebuff("Slice and Dice", "player", "buff") then
+    if not HasBuffOrDebuff("Slice and Dice", "player", "buff") then
         if hasImprovedEA then
-            if cp == 2 and mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then                
+            if cp == 2 and HasBuffOrDebuff("Expose Armor", "target", "debuff") then                
                 CastSpellByName("Slice and Dice")
             end
         else
@@ -249,24 +272,24 @@ MB_mySetupList["Rogue"] = RogueSetup
 --[####################################################################################################]--
 
 function Rogue:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if mb_spellReady("Blade Flurry") and mb_hasBuffOrDebuff("Slice and Dice", "player", "buff") then 
+    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then 
         CastSpellByName("Blade Flurry") 
     end
 
-    mb_selfBuff("Berserking")
-    mb_selfBuff("Blood Fury") 
+    SelfBuff("Berserking")
+    SelfBuff("Blood Fury") 
 
-    if mb_spellReady("Adrenaline Rush") then			
+    if SpellReady("Adrenaline Rush") then			
         CastSpellByName("Adrenaline Rush")
     end
 end
 
 function Rogue:PoisonOffhand()
-	if mb_haveInBags("Instant Poison VI") then
+	if HaveInBags("Instant Poison VI") then
 		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
 	
 		if not has_enchant_off then			
@@ -278,7 +301,7 @@ function Rogue:PoisonOffhand()
 end
 
 function Rogue:PoisonMainHand()
-	if mb_haveInBags("Instant Poison VI") then
+	if HaveInBags("Instant Poison VI") then
 		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
 		
 		if not has_enchant_main then			

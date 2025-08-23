@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[####################################### START PRIEST CODE! #########################################]--
 --[####################################################################################################]--
 
@@ -72,6 +72,67 @@ if myClass ~= "Priest" then return end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local AutoWandAttack = mb_autoWandAttack
+local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
+local CasterTrinkets = mb_casterTrinkets
+local CastSpellOnRandomRaidMember = mb_castSpellOnRandomRaidMember
+local CastSpellOrWand = mb_castSpellOrWand
+local CdMessage = mb_cdMessage
+local CoolDownCast = mb_coolDownCast
+local CrowdControl = mb_crowdControl
+local CrowdControlledMob = mb_crowdControlledMob
+local CrowdControlMCedRaidMemberSkeramAOE = mb_crowdControlMCedRaidMemberSkeramAOE
+local Dead = mb_dead
+local DebuffShadowWeavingAmount = mb_debuffShadowWeavingAmount
+local Decurse = mb_decurse
+local GetMCActions = mb_getMCActions
+local GetTarget = mb_getTarget
+local HasBuffNamed = mb_hasBuffNamed
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HealerJindoRotation = mb_healerJindoRotation
+local HealerTrinkets = mb_healerTrinkets
+local HealerWand = mb_healerWand
+local HealLieutenantAQ20 = mb_healLieutenantAQ20
+local HealthDown = mb_healthDown
+local HealthPct = mb_healthPct
+local ImBusy = mb_imBusy
+local In28yardRange = mb_in28yardRange
+local InCombat = mb_inCombat
+local InstructorRazAddsHeal = mb_instructorRazAddsHeal
+local IsAlive = mb_isAlive
+local IsAtInstructorRazuvious = mb_isAtInstructorRazuvious
+local IsAtSkeram = mb_isAtSkeram
+local IsValidEnemyTargetWithin28YardRange = mb_isValidEnemyTargetWithin28YardRange
+local IsValidFriendlyTarget = mb_isValidFriendlyTarget
+local IsValidFriendlyTargetWithin28YardRange = mb_isValidFriendlyTargetWithin28YardRange
+local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
+local KnowSpell = mb_knowSpell
+local LoathebHealing = mb_loathebHealing
+local ManaDown = mb_manaDown
+local ManaPct = mb_manaPct
+local MobsToFearWard = mb_mobsToFearWard
+local MultiBuff = mb_multiBuff
+local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
+local MyClassOrder = mb_myClassOrder
+local MyGroupClassOrder = mb_myGroupClassOrder
+local MyNameInTable = mb_myNameInTable
+local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
+local SelfBuff = mb_selfBuff
+local SmartDrink = mb_smartDrink
+local SpellReady = mb_spellReady
+local TakeManaPotionAndRune = mb_takeManaPotionAndRune
+local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
+local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TankName = mb_tankName
+local TankTarget = mb_tankTarget
+local TankTargetHealth = mb_tankTargetHealth
+local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
+local TrinketOnCD = mb_trinketOnCD
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local Priest = CreateFrame("Frame", "Priest")
 
 local PriestCounter = {
@@ -132,9 +193,9 @@ MB_mySpeccList["Priest"] = PriestSpecc
 
 local function PriestHeal()
 
-	if mb_inCombat("player") then
-		if MB_raidLeader and mb_myClassOrder() == 1 and (mb_tankTarget("Garr") or mb_tankTarget("Firesworn")) then
-			if mb_hasBuffOrDebuff("Magma Shackles", MBID[MB_raidLeader], "debuff") then
+	if InCombat("player") then
+		if MB_raidLeader and MyClassOrder() == 1 and (TankTarget("Garr") or TankTarget("Firesworn")) then
+			if HasBuffOrDebuff("Magma Shackles", MBID[MB_raidLeader], "debuff") then
 				
 				TargetUnit(MBID[MB_raidLeader])
 				CastSpellByName("Dispel Magic")
@@ -144,11 +205,11 @@ local function PriestHeal()
 
 		Priest:PowerInfusion()
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Priest:Cooldowns()
         end
 
@@ -156,49 +217,49 @@ local function PriestHeal()
             return
         end
 
-		if mb_spellReady("Desperate Prayer") and mb_healthPct("player") < 0.2 then			
+		if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then			
 			CastSpellByName("Desperate Prayer")
 			return
 		end
 	end
 
-	if mb_hasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not mb_tankTarget("Anubisath Defender") then
+	if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
         return
     end
 
-	if mb_healLieutenantAQ20() then
+	if HealLieutenantAQ20() then
         return
     end
 
-	if mb_instructorRazAddsHeal() then
+	if InstructorRazAddsHeal() then
         return
     end
 
 	if MB_myAssignedHealTarget then		
-		if mb_isAlive(MBID[MB_myAssignedHealTarget]) then			
+		if IsAlive(MBID[MB_myAssignedHealTarget]) then			
 			Priest:MTHeals(MB_myAssignedHealTarget)
 			return
 		else			
 			MB_myAssignedHealTarget = nil
-			mb_cdMessage("My healtarget died, time to ALT-F4.")
+			CdMessage("My healtarget died, time to ALT-F4.")
 		end
 	end
 
 	for k, bossName in pairs(MB_myPriestMainTankHealingBossList) do
-		if mb_tankTarget(bossName) then			
+		if TankTarget(bossName) then			
 			Priest:MTHeals()
 			return
 		end
 	end
 
 	if MB_isMoving.Active then
-        mb_castSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
+        CastSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
     end	
 
-	if Instance.AQ40 and mb_tankTarget("Princess Huhuran") then
+	if Instance.AQ40 and TankTarget("Princess Huhuran") then
 				
-		if mb_tankTargetHealth() <= 0.32 then			
-			if Priest:PrayerOfHealingCheck(4, 1, 3, true) and mb_myGroupClassOrder() == 1 then
+		if TankTargetHealth() <= 0.32 then			
+			if Priest:PrayerOfHealingCheck(4, 1, 3, true) and MyGroupClassOrder() == 1 then
 				return
 			end
 
@@ -209,11 +270,11 @@ local function PriestHeal()
 		MBH_CastHeal("Heal")
 		
 	elseif Instance.BWL then
-		if mb_tankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+		if TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
 
 			Priest:Cooldowns()
 
-			if MB_myVaelastraszPriestHealing and not mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+			if MB_myVaelastraszPriestHealing and not HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
 				local activePriest = Priest:GetActiveVaelastraszPriest()
 				
 				if myName == activePriest then
@@ -224,33 +285,33 @@ local function PriestHeal()
 				end
 			end
 
-			if Priest:PrayerOfHealingCheck(5, 1, 3, true) and mb_myGroupClassOrder() == 1 then
+			if Priest:PrayerOfHealingCheck(5, 1, 3, true) and MyGroupClassOrder() == 1 then
 				return
 			end
 	
 			MBH_CastHeal("Flash Heal", 7, 7)
 			return
 
-		elseif mb_tankTarget("Nefarian") and mb_hasBuffOrDebuff("Corrupted Healing", "player", "debuff") then
+		elseif TankTarget("Nefarian") and HasBuffOrDebuff("Corrupted Healing", "player", "debuff") then
 
-			if mb_imBusy() then					
+			if ImBusy() then					
 				SpellStopCasting()
 			end
 
-			if mb_spellReady("Power Word: Shield") then					
-				mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
+			if SpellReady("Power Word: Shield") then					
+				CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
 			end	
 			
-			mb_castSpellOnRandomRaidMember("Renew", "rank 10", 0.95)		
+			CastSpellOnRandomRaidMember("Renew", "rank 10", 0.95)		
 			return
 
-		elseif mb_tankTarget("Chromaggus") and MB_myHealSpell ~= "Flash Heal" then
+		elseif TankTarget("Chromaggus") and MB_myHealSpell ~= "Flash Heal" then
 			MB_myHealSpell = "Flash Heal"
 		end
 	end
 
-	if not mb_imBusy() then
-		if mb_myGroupClassOrder() == 1 then
+	if not ImBusy() then
+		if MyGroupClassOrder() == 1 then
 			for rank = 5, 1, -1 do
 				local focus = PrayerFocusRanks[rank] or false
 				if Priest:PrayerOfHealingCheck(rank, rank, 4, focus) then
@@ -259,21 +320,21 @@ local function PriestHeal()
 			end
 		end
 
-		if mb_inCombat("player") then
-			if mb_spellReady("Power Word: Shield") then 
+		if InCombat("player") then
+			if SpellReady("Power Word: Shield") then 
 				Priest:ShieldAggroedPlayer()
-				mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", MB_priestShieldLowRandomPercentage)
+				CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", MB_priestShieldLowRandomPercentage)
 			end
 
 			Priest:RenewAggroedPlayer()
-			mb_castSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
+			CastSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
 		end
 	end
 
-	if mb_hasBuffOrDebuff("Inner Focus", "player", "buff") then
+	if HasBuffOrDebuff("Inner Focus", "player", "buff") then
 		MBH_CastHeal("Flash Heal", 6, 6)
 
-	elseif MB_myHealSpell == "Greater Heal" or mb_hasBuffOrDebuff("Hazza\'rah\'s Charm of Healing", "player", "buff") then
+	elseif MB_myHealSpell == "Greater Heal" or HasBuffOrDebuff("Hazza\'rah\'s Charm of Healing", "player", "buff") then
 		MBH_CastHeal("Greater Heal", 1, 1)
 		
 	elseif MB_myHealSpell == "Heal" then
@@ -285,7 +346,7 @@ local function PriestHeal()
 		MBH_CastHeal("Heal")
 	end
 
-	mb_healerWand()
+	HealerWand()
 end
 
 local GreaterHeal = { Time = 0, Interrupt = false }
@@ -294,43 +355,43 @@ function Priest:MTHeals(assignedTarget)
 	if assignedTarget then		
 		TargetByName(assignedTarget, 1)
 	else
-		if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
-			mb_targetMyAssignedTankToHeal()
+		if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
+			TargetMyAssignedTankToHeal()
 		else
-			if not UnitName(MBID[mb_tankName()].."targettarget") then 				
+			if not UnitName(MBID[TankName()].."targettarget") then 				
 				MBH_CastHeal("Greater Heal", 1, 1)
 			else
-				TargetByName(UnitName(MBID[mb_tankName()].."targettarget"), 1) 
+				TargetByName(UnitName(MBID[TankName()].."targettarget"), 1) 
 			end
 		end
 	end
 
-	if Instance.BWL and mb_tankTarget("Nefarian") then
-		if mb_hasBuffOrDebuff("Corrupted Healing", "player", "debuff") then
+	if Instance.BWL and TankTarget("Nefarian") then
+		if HasBuffOrDebuff("Corrupted Healing", "player", "debuff") then
 
-			if mb_imBusy() then					
+			if ImBusy() then					
 				SpellStopCasting()
 			end
 
-			if mb_spellReady("Power Word: Shield") then					
-				mb_castSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
+			if SpellReady("Power Word: Shield") then					
+				CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
 			end	
 			
-			mb_castSpellOnRandomRaidMember("Renew", "rank 10", 0.95)		
+			CastSpellOnRandomRaidMember("Renew", "rank 10", 0.95)		
 			return
 		end
 	end
 
-	if (mb_healthPct("target") < 0.5) and mb_spellReady("Power Word: Shield") and not mb_hasBuffOrDebuff("Weakened Soul", "target", "debuff") then		
+	if (HealthPct("target") < 0.5) and SpellReady("Power Word: Shield") and not HasBuffOrDebuff("Weakened Soul", "target", "debuff") then		
 		CastSpellByName("Power Word: Shield")
 	end
 
 	local GreatHealSpell = "Greater Heal("..MB_myPriestMainTankHealingRank.."\)"
-	if mb_tankTarget("Vaelastrasz the Corrupt") then
+	if TankTarget("Vaelastrasz the Corrupt") then
 		GreatHealSpell = "Greater Heal"
 	end
 
-	if not mb_bossNeverInterruptHeal() and mb_healthDown("target") <= (GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
+	if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
 		if GetTime() > GreaterHeal.Time and GetTime() < GreaterHeal.Time + 0.5 and GreaterHeal.Interrupt then
 			SpellStopCasting()			
 			GreaterHeal.Interrupt = false
@@ -338,7 +399,7 @@ function Priest:MTHeals(assignedTarget)
 		end
 	end
 
-	if not mb_imBusy() then
+	if not ImBusy() then
 		CastSpellByName(GreatHealSpell)
 		GreaterHeal.Time = GetTime() + 1
 		GreaterHeal.Interrupt = true
@@ -350,28 +411,28 @@ function Priest:MaxShieldAggroedPlayer()
         return
     end
 
-	if mb_imBusy() then
+	if ImBusy() then
         return
     end
 
-    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+    if TankTarget("Garr") or TankTarget("Firesworn") then
         return
     end
 
     local shieldTarget = MBID[MB_raidLeader].."targettarget"
-    if not mb_isValidFriendlyTarget(shieldTarget, "Power Word: Shield") then
+    if not IsValidFriendlyTarget(shieldTarget, "Power Word: Shield") then
         return
     end
 
-    if mb_healthPct(shieldTarget) > 0.95 then
+    if HealthPct(shieldTarget) > 0.95 then
         return
     end
 
-    if mb_hasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") then
+    if HasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") then
         return
     end
 
-    if not mb_spellReady("Power Word: Shield") then
+    if not SpellReady("Power Word: Shield") then
         return
     end
 
@@ -389,24 +450,24 @@ function Priest:MaxRenewAggroedPlayer()
         return
     end
 
-	if mb_imBusy() then
+	if ImBusy() then
         return
     end
 
-    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+    if TankTarget("Garr") or TankTarget("Firesworn") then
         return
     end
 
     local renewTarget = MBID[MB_raidLeader].."targettarget"
-    if not mb_isValidFriendlyTarget(renewTarget, "Renew") then
+    if not IsValidFriendlyTarget(renewTarget, "Renew") then
         return
     end
 
-    if mb_healthPct(renewTarget) > 0.95 then
+    if HealthPct(renewTarget) > 0.95 then
         return
     end
 
-    if mb_hasBuffNamed("Renew", renewTarget) then
+    if HasBuffNamed("Renew", renewTarget) then
         return
     end
 
@@ -420,11 +481,11 @@ function Priest:MaxRenewAggroedPlayer()
 end
 
 function Priest:RenewAggroedPlayer()
-    if mb_imBusy() then
+    if ImBusy() then
         return
     end
 
-    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+    if TankTarget("Garr") or TankTarget("Firesworn") then
         return
     end
 
@@ -434,9 +495,9 @@ function Priest:RenewAggroedPlayer()
         local renewTarget = "raid"..i
 
         if aggrox:GetUnitAggroByUnitId(renewTarget)
-           and mb_isValidFriendlyTarget(renewTarget, "Renew")
-           and mb_healthPct(renewTarget) <= MB_priestRenewAggroedPlayerPercentage
-           and not mb_hasBuffNamed("Renew", renewTarget) then
+           and IsValidFriendlyTarget(renewTarget, "Renew")
+           and HealthPct(renewTarget) <= MB_priestRenewAggroedPlayerPercentage
+           and not HasBuffNamed("Renew", renewTarget) then
 
             if UnitIsFriend("player", renewTarget) then
                 ClearTarget()
@@ -450,11 +511,11 @@ function Priest:RenewAggroedPlayer()
 end
 
 function Priest:ShieldAggroedPlayer()
-    if mb_imBusy() then
+    if ImBusy() then
         return
     end
 
-    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+    if TankTarget("Garr") or TankTarget("Firesworn") then
         return
     end
 
@@ -464,10 +525,10 @@ function Priest:ShieldAggroedPlayer()
         local shieldTarget = "raid"..i
 
         if aggrox:GetUnitAggroByUnitId(shieldTarget)
-           and mb_isValidFriendlyTarget(shieldTarget, "Power Word: Shield")
-           and mb_healthPct(shieldTarget) <= MB_priestShieldAggroedPlayerPercentage
-           and not mb_hasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff")
-           and mb_spellReady("Power Word: Shield") then
+           and IsValidFriendlyTarget(shieldTarget, "Power Word: Shield")
+           and HealthPct(shieldTarget) <= MB_priestShieldAggroedPlayerPercentage
+           and not HasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff")
+           and SpellReady("Power Word: Shield") then
 
             if UnitIsFriend("player", shieldTarget) then
                 ClearTarget()
@@ -485,20 +546,20 @@ function Priest:FearWardAggroedPlayer()
         return false
     end
 
-	if mb_imBusy() then
+	if ImBusy() then
         return
     end
 
-    if mb_tankTarget("Garr") or mb_tankTarget("Firesworn") then
+    if TankTarget("Garr") or TankTarget("Firesworn") then
         return
     end
 
     local fearWardTarget = MBID[MB_raidLeader].."targettarget"
-    if not mb_isValidFriendlyTarget(fearWardTarget, "Fear Ward") then
+    if not IsValidFriendlyTarget(fearWardTarget, "Fear Ward") then
         return false
     end
 
-    if mb_hasBuffNamed("Fear Ward", fearWardTarget) then
+    if HasBuffNamed("Fear Ward", fearWardTarget) then
         return false
     end
 
@@ -510,7 +571,7 @@ function Priest:FearWardAggroedPlayer()
         ClearTarget()
     end
 
-    mb_cdMessage("Focus Fear Ward on "..UnitName(fearWardTarget), 30)
+    CdMessage("Focus Fear Ward on "..UnitName(fearWardTarget), 30)
 
     CastSpellByName("Fear Ward")
     SpellTargetUnit(fearWardTarget)
@@ -519,17 +580,17 @@ function Priest:FearWardAggroedPlayer()
 end
 
 function Priest:ShieldToBombFollowTarget()
-    if mb_imBusy() or mb_tankTarget("Vaelastrasz the Corrupt") then
+    if ImBusy() or TankTarget("Vaelastrasz the Corrupt") then
         return
     end
 
-    local targetName = mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
+    local targetName = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
     local targetID = MBID[targetName]
 
     if not targetID 
-		or not mb_isAlive(targetID) 
-		or mb_hasBuffOrDebuff("Weakened Soul", targetID, "debuff") 
-		or not mb_spellReady("Power Word: Shield") then
+		or not IsAlive(targetID) 
+		or HasBuffOrDebuff("Weakened Soul", targetID, "debuff") 
+		or not SpellReady("Power Word: Shield") then
         return
     end
 
@@ -544,54 +605,54 @@ end
 
 local function PriestSingle()
 	
-    mb_getTarget()
+    GetTarget()
 
-	if mb_crowdControl() then
+	if CrowdControl() then
         return
     end
 
 	if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not mb_hasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
-            if mb_crowdControl() then
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+            if CrowdControl() then
                 return
             end
         end        
 
-        if mb_crowdControlledMob() then
-            mb_getTarget()
+        if CrowdControlledMob() then
+            GetTarget()
         end
 	end
 
 	if Instance.NAXX then
 
-        if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
-            (mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
-            mb_getMCActions()
+        if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+            (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+            GetMCActions()
             return
         end
 
 	elseif Instance.AQ40 then
 		
-		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
         end
 
-		if mb_isAtSkeram() then
+		if IsAtSkeram() then
             if not MB_autoToggleSheeps.Active then
                 MB_autoToggleSheeps.Active = true
                 MB_autoToggleSheeps.Time = GetTime() + 3
                 PriestCounter.Cycle()
             end
 
-            if mb_myClassAlphabeticalOrder() == MB_buffingCounterPriest then
-                mb_crowdControlMCedRaidMemberSkeramAOE()
+            if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
+                CrowdControlMCedRaidMemberSkeramAOE()
             end
 		end
 	end
 
 	Priest:Fade()
-	mb_decurse()
+	Decurse()
 
 	if MB_mySpecc == "Bitch" then
         Priest:ShadowWeaving()
@@ -602,7 +663,7 @@ local function PriestSingle()
         return
     end
 
-	mb_healerJindoRotation("Smite")
+	HealerJindoRotation("Smite")
 	PriestHeal()
 end
 
@@ -614,28 +675,28 @@ MB_mySingleList["Priest"] = PriestSingle
 
 function Priest:Shadow()
 
-    mb_selfBuff("Shadowform")
+    SelfBuff("Shadowform")
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 
-    if mb_inCombat("player") then
+    if InCombat("player") then
         if Instance.MC then
-            if mb_tankTarget("Shazzrah") and mb_hasBuffOrDebuff("Deaden Magic", "target", "buff") then
+            if TankTarget("Shazzrah") and HasBuffOrDebuff("Deaden Magic", "target", "buff") then
                 CastSpellByName("Dispel Magic")
             end
         end
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Priest:Cooldowns()
         end
 
-		if mb_spellReady("Desperate Prayer") and mb_healthPct("player") < 0.2 then			
+		if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then			
 			CastSpellByName("Desperate Prayer")
 			return
 		end
@@ -645,15 +706,15 @@ function Priest:Shadow()
         return
     end
 
-    if mb_imBusy() then
+    if ImBusy() then
         return
     end
 
-	if mb_spellReady("Mind Blast") then 
-		mb_castSpellOrWand("Mind Blast") 
+	if SpellReady("Mind Blast") then 
+		CastSpellOrWand("Mind Blast") 
 	end
 
-	mb_castSpellOrWand("Mind Flay") 
+	CastSpellOrWand("Mind Flay") 
 end
 
 function Priest:ShadowWeaving()
@@ -661,8 +722,8 @@ function Priest:ShadowWeaving()
 
     if focusUnit then
         local targetUnit = MBID[focusUnit].."target"
-        local canCastDirectly = (UnitCanAttack("player", targetUnit) and mb_debuffShadowWeavingAmount() < 5) 
-                            and mb_isValidEnemyTargetWithin28YardRange(targetUnit)
+        local canCastDirectly = (UnitCanAttack("player", targetUnit) and DebuffShadowWeavingAmount() < 5) 
+                            and IsValidEnemyTargetWithin28YardRange(targetUnit)
         
         AssistUnit(MBID[focusUnit])
         
@@ -670,7 +731,7 @@ function Priest:ShadowWeaving()
             CastSpellByName("Shadow Word: Pain(Rank 1)")
             return true
         else
-            mb_coolDownCast("Shadow Word: Pain(Rank 1)", 24)
+            CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
         end
     end	
 	return false
@@ -682,48 +743,48 @@ function Priest:BossSpecificDPS()
         return true
     end
 
-	if mb_hasBuffNamed("Shadow and Frost Reflect", "target") then
+	if HasBuffNamed("Shadow and Frost Reflect", "target") then
 
-		mb_autoWandAttack()
+		AutoWandAttack()
 		return true
 
-	elseif mb_hasBuffOrDebuff("Magic Reflection", "target", "buff") then
+	elseif HasBuffOrDebuff("Magic Reflection", "target", "buff") then
 
-		if mb_imBusy() then
+		if ImBusy() then
 			SpellStopCasting()
 		end
 
-		mb_autoWandAttack()
+		AutoWandAttack()
 		return true
 
-	elseif mb_tankTarget("Azuregos") and mb_hasBuffNamed("Magic Shield", "target") then
+	elseif TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
 		
-		if mb_imBusy() then
+		if ImBusy() then
 			SpellStopCasting()
 		end
 
-		mb_autoWandAttack()
+		AutoWandAttack()
 		return true
 	end
 
     if Instance.IsWorldBoss() and UnitName("target") ~= "Nefarian" then
-		if not mb_hasBuffOrDebuff("Vampiric Embrace", "target", "debuff") then
+		if not HasBuffOrDebuff("Vampiric Embrace", "target", "debuff") then
 			CastSpellByName("Vampiric Embrace")
 		end
 	end
 
 	Priest:ManaDrain()
 
-	if Instance.AQ40 and mb_tankTarget("Battleguard Sartura") then			
-		mb_coolDownCast("Shadow Word: Pain", 24)
+	if Instance.AQ40 and TankTarget("Battleguard Sartura") then			
+		CoolDownCast("Shadow Word: Pain", 24)
 	
 	elseif Instance.MC then
-        mb_coolDownCast("Shadow Word: Pain(Rank 1)", 24)
+        CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
 
-	elseif Instance.ONY and mb_tankTarget("Onyxia") then
-		mb_coolDownCast("Shadow Word: Pain", 24)
-	elseif not UnitInRaid("player") and mb_debuffShadowWeavingAmount() > 5 then
-		mb_coolDownCast("Shadow Word: Pain", 24)
+	elseif Instance.ONY and TankTarget("Onyxia") then
+		CoolDownCast("Shadow Word: Pain", 24)
+	elseif not UnitInRaid("player") and DebuffShadowWeavingAmount() > 5 then
+		CoolDownCast("Shadow Word: Pain", 24)
 	end
 	
 	return false
@@ -741,9 +802,9 @@ MB_myMultiList["Priest"] = PriestSingle
 
 local function PriestAOE()
 
-	if mb_tankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
+	if TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
 		if MB_myAssignedHealTarget then		
-			if mb_isAlive(MBID[MB_myAssignedHealTarget]) then			
+			if IsAlive(MBID[MB_myAssignedHealTarget]) then			
 				Priest:MTHeals(MB_myAssignedHealTarget)
 				return
 			else			
@@ -752,7 +813,7 @@ local function PriestAOE()
 			end
 		end
 
-		if mb_myNameInTable(MB_myMaexxnaPriestHealer) then			
+		if MyNameInTable(MB_myMaexxnaPriestHealer) then			
 			Priest:MaxRenewAggroedPlayer()
 			Priest:MaxShieldAggroedPlayer()
 			return
@@ -770,7 +831,7 @@ MB_myAOEList["Priest"] = PriestAOE
 
 local function PriestSetup()
 
-	if UnitMana("player") < 3060 and mb_hasBuffNamed("Drink", "player") then
+	if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
 		return
 	end
 
@@ -780,30 +841,30 @@ local function PriestSetup()
 		PriestCounter.Cycle()
 	end
 
-	if mb_myClassAlphabeticalOrder() == MB_buffingCounterPriest then
-		mb_selfBuff("Inner Focus")
-		mb_multiBuff("Prayer of Fortitude")
+	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
+		SelfBuff("Inner Focus")
+		MultiBuff("Prayer of Fortitude")
 
 		if Instance.NAXX or Instance.AQ40 then
-			if mb_knowSpell("Prayer of Spirit") then				
-				mb_multiBuff("Prayer of Spirit")
+			if KnowSpell("Prayer of Spirit") then				
+				MultiBuff("Prayer of Spirit")
 			end
 		end
 
-		if Instance.NAXX and not mb_isAtInstructorRazuvious() then										
-			mb_multiBuff("Prayer of Shadow Protection")
+		if Instance.NAXX and not IsAtInstructorRazuvious() then										
+			MultiBuff("Prayer of Shadow Protection")
 		end
 
-		if mb_spellReady("Fear Ward") and mb_mobsToFearWard() then
-			mb_multiBuff("Fear Ward")
+		if SpellReady("Fear Ward") and MobsToFearWard() then
+			MultiBuff("Fear Ward")
 		end
 	end
 
-	mb_selfBuff("Inner Fire")
-	mb_selfBuff("Shadowform")
+	SelfBuff("Inner Fire")
+	SelfBuff("Shadowform")
 
-	if not mb_inCombat("player") and mb_manaPct("player") < 0.20 and not mb_hasBuffNamed("Drink", "player") then
-		mb_smartDrink()
+	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
+		SmartDrink()
 	end
 end
 
@@ -815,11 +876,11 @@ MB_mySetupList["Priest"] = PriestSetup
 
 local function PriestPreCast()
 	for k, trinket in pairs(MB_casterTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
+		if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then 
 			use(13) 
 		end
 
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
+		if ItemNameOfEquippedSlot(14) == trinket and not TrinketOnCD(14) then 
 			use(14) 
 		end
 	end
@@ -837,23 +898,23 @@ function Priest:Fade()
 	local aggrox = AceLibrary("Banzai-1.0")
 
 	if aggrox and aggrox:GetUnitAggroByUnitId("player") then
-		mb_selfBuff("Fade")
+		SelfBuff("Fade")
 	end
 end
 
 function Priest:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-	mb_selfBuff("Berserking")
+	SelfBuff("Berserking")
 
-	if mb_manaPct("player") <= MB_priestInnerFocusPercentage then
-		mb_selfBuff("Inner Focus")
+	if ManaPct("player") <= MB_priestInnerFocusPercentage then
+		SelfBuff("Inner Focus")
 	end
 
-	mb_healerTrinkets()
-	mb_casterTrinkets()
+	HealerTrinkets()
+	CasterTrinkets()
 end
 
 function Priest:PrayerOfHealingCheck(manaRank, checkRank, minTargets, focus)
@@ -868,7 +929,7 @@ function Priest:PrayerOfHealingCheck(manaRank, checkRank, minTargets, focus)
 		local healValue = GetHealValueFromRank("Prayer of Healing", "Rank "..checkRank)
         if Priest:PartyHurt(healValue, minTargets) then
             if focus then
-                mb_selfBuff("Inner Focus")
+                SelfBuff("Inner Focus")
             end
 	
             CastSpellByName("Prayer of Healing(Rank "..manaRank..")")
@@ -880,7 +941,7 @@ end
 
 function Priest:GetActiveVaelastraszPriest()
     for _, priestName in ipairs(MB_myVaelastraszPriests) do
-        if not mb_dead(MBID[priestName]) then
+        if not Dead(MBID[priestName]) then
             return priestName
         end
     end
@@ -888,14 +949,14 @@ function Priest:GetActiveVaelastraszPriest()
 end
 
 function Priest:ManaDrain()
-	if mb_imBusy() then
+	if ImBusy() then
 		return false
 	end
 
-	if (Instance.AQ40 and mb_tankTarget("Obsidian Eradicator")) or
-		(Instance.AQ20 and mb_tankTarget("Moam")) then
-		if mb_manaPct("target") > 0.25 then
-			mb_castSpellOrWand("Mana Burn")
+	if (Instance.AQ40 and TankTarget("Obsidian Eradicator")) or
+		(Instance.AQ20 and TankTarget("Moam")) then
+		if ManaPct("target") > 0.25 then
+			CastSpellOrWand("Mana Burn")
 			return true
 		end
 	end
@@ -903,11 +964,11 @@ function Priest:ManaDrain()
 end
 
 function Priest:PowerInfusion()
-	if mb_imBusy() then
+	if ImBusy() then
 		return false
 	end
 
-	if not (mb_inCombat("player") and mb_spellReady("Power Infusion")) then
+	if not (InCombat("player") and SpellReady("Power Infusion")) then
 		return
 	end
 
@@ -917,18 +978,18 @@ function Priest:PowerInfusion()
 		PriestCounter.Cycle()
 	end
 
-	if mb_myClassAlphabeticalOrder() == MB_buffingCounterPriest then
+	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
 		for k, caster in pairs(MB_raidAssist.Priest.PowerInfusionList) do
 			if MBID[caster] then
-				if mb_isValidFriendlyTargetWithin28YardRange(MBID[caster]) 
-					and not mb_hasBuffOrDebuff("Power Infusion", MBID[caster], "buff") 
-					and mb_inCombat(MBID[caster]) 
-					and mb_manaPct(MBID[caster]) < 0.9 
-					and mb_manaPct(MBID[caster]) > 0.1 then
+				if IsValidFriendlyTargetWithin28YardRange(MBID[caster]) 
+					and not HasBuffOrDebuff("Power Infusion", MBID[caster], "buff") 
+					and InCombat(MBID[caster]) 
+					and ManaPct(MBID[caster]) < 0.9 
+					and ManaPct(MBID[caster]) > 0.1 then
 
 					TargetByName(caster)
 					CastSpellByName("Power Infusion")
-					mb_cdMessage("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
+					CdMessage("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
 					return
 				end
 			end
@@ -938,7 +999,7 @@ end
 
 function Priest:PartyHurt(hurt, num_party_hurt)
 	local numHurt = 0
-	local myHurt = mb_healthDown("player")
+	local myHurt = HealthDown("player")
 
 	if myHurt > hurt then 
 		numHurt = numHurt + 1 
@@ -946,7 +1007,7 @@ function Priest:PartyHurt(hurt, num_party_hurt)
 
     for i = 1, GetNumPartyMembers() do
         local guysHurt = UnitHealthMax("party"..i) - UnitHealth("party"..i)
-        if guysHurt > hurt and mb_in28yardRange("party"..i) and not mb_dead("party"..i) then 
+        if guysHurt > hurt and In28yardRange("party"..i) and not Dead("party"..i) then 
             numHurt = numHurt + 1 
         end
     end
@@ -962,18 +1023,18 @@ end
 
 local function PriestLoathebHeal()
 
-	if mb_loathebHealing() then
+	if LoathebHealing() then
 		return
 	end
 	
-	if mb_inCombat("player") then
+	if InCombat("player") then
 		Priest:PowerInfusion()
 
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Priest:Cooldowns()
         end
 
@@ -981,14 +1042,14 @@ local function PriestLoathebHeal()
             return
         end
 
-		if mb_spellReady("Desperate Prayer") and mb_healthPct("player") < 0.2 then			
+		if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then			
 			CastSpellByName("Desperate Prayer")
 			return
 		end
 	end
 
-	mb_coolDownCast("Smite", 8)
-	mb_healerWand()
+	CoolDownCast("Smite", 8)
+	HealerWand()
 end
 
 MB_myLoathebList["Priest"] = PriestLoathebHeal

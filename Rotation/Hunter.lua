@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[####################################### START HUNTER CODE! #########################################]--
 --[####################################################################################################]--
 
@@ -65,14 +65,43 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
+-- Disable File Loading Completely
+if myClass ~= "Hunter" then return end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local AutoAttack = mb_autoAttack
+local AutoRangedAttack = mb_autoRangedAttack
+local CdMessage = mb_cdMessage
+local CoolDownCast = mb_coolDownCast
+local GetTarget = mb_getTarget
+local HasBuffNamed = mb_hasBuffNamed
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HealthPct = mb_healthPct
+local ImBusy = mb_imBusy
+local InCombat = mb_inCombat
+local InMeleeRange = mb_inMeleeRange
+local IsAtNefarianPhase = mb_isAtNefarianPhase
+local IsFireImmune = mb_isFireImmune
+local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
+local ManaDown = mb_manaDown
+local MeleeTrinkets = mb_meleeTrinkets
+local SelfBuff = mb_selfBuff
+local SpellReady = mb_spellReady
+local TakeManaPotionAndRune = mb_takeManaPotionAndRune
+local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
+local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TankTarget = mb_tankTarget
+local TrinketOnCD = mb_trinketOnCD
+local UseTranquilizingShot = mb_useTranquilizingShot
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 local Hunter = CreateFrame("Frame", "Hunter")
-if myClass ~= "Hunter" then
-    return
-end
 
 --[####################################################################################################]--
 --[########################################## SETUP Code! #############################################]--
@@ -110,10 +139,10 @@ MB_mySpeccList["Hunter"] = HunterSpecc
 
 local function HunterSingle()
 
-    mb_getTarget()
+    GetTarget()
 
 	if not MB_mySpecc then		
-		mb_cdMessage("My specc is fucked. Defaulting to Marksmanship.")
+		CdMessage("My specc is fucked. Defaulting to Marksmanship.")
 		MB_mySpecc = "Marksmanship"
 	end
 
@@ -122,113 +151,113 @@ local function HunterSingle()
 		return
 	end
 
-	mb_selfBuff("Trueshot Aura")
+	SelfBuff("Trueshot Aura")
 	
-	if mb_tankTarget("Princess Huhuran") then
-		mb_selfBuff("Aspect of the Wild")  
+	if TankTarget("Princess Huhuran") then
+		SelfBuff("Aspect of the Wild")  
 	else
-		mb_selfBuff("Aspect of the Hawk")  
+		SelfBuff("Aspect of the Hawk")  
 	end
 
-    if Instance.NAXX and mb_tankTarget("Gluth") then
+    if Instance.NAXX and TankTarget("Gluth") then
 
 		Hunter:FreezingTrap()
-    elseif Instance.AQ40 and mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+    elseif Instance.AQ40 and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
 		
         ClearTarget()
         return
-	elseif Instance.BWL and string.find(GetSubZoneText(), "Nefarian.*Lair") and mb_isAtNefarianPhase() then 
+	elseif Instance.BWL and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
 
-        if mb_hasBuffOrDebuff("Shadow Command", "target", "debuff") then
+        if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
             ClearTarget()
             return
         end
-	elseif Instance.ZG and mb_tankTarget("Hakkar") then
+	elseif Instance.ZG and TankTarget("Hakkar") then
 
-        if mb_hasBuffOrDebuff("Mind Control", "target", "debuff") then
+        if HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
             return
         end	
 	end
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 
-    if mb_inCombat("player") then
-		mb_takeManaPotionAndRune()
-		mb_takeManaPotionIfBelowManaPotMana()
-		mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+    if InCombat("player") then
+		TakeManaPotionAndRune()
+		TakeManaPotionIfBelowManaPotMana()
+		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 
-		if mb_manaDown("player") > 600 then
+		if ManaDown("player") > 600 then
             Hunter:Cooldowns()
         end
 	end
 
-	if mb_inMeleeRange() then
-		if not mb_isFireImmune() then
+	if InMeleeRange() then
+		if not IsFireImmune() then
 			Hunter:ExplosiveTrap()
 		end
 
-        mb_autoAttack()
+        AutoAttack()
 
 		CastSpellByName("Raptor Strike")
 		CastSpellByName("Mongoose Bite")
 		return 
 	end
 
-    mb_autoRangedAttack()
+    AutoRangedAttack()
 
     if Hunter:BossSpecificDPS() then
         return
     end
 
-    if mb_imBusy() then
+    if ImBusy() then
         return
     end
 
     if not MB_hunterFeign.Active then
         local aggrox = AceLibrary("Banzai-1.0")
 
-        if aggrox:GetUnitAggroByUnitId("player") and mb_spellReady("Feign Death") then		
+        if aggrox:GetUnitAggroByUnitId("player") and SpellReady("Feign Death") then		
             MB_hunterFeign.Active = true
             MB_hunterFeign.Time = GetTime() + 0.2
             CastSpellByName("Feign Death")
         end
     end
 
-    if mb_healthPct("target") > 0.1 and mb_spellReady("Aimed Shot") then        
+    if HealthPct("target") > 0.1 and SpellReady("Aimed Shot") then        
         CastSpellByName("Aimed Shot")    
 	end
 
-    if mb_healthPct("target") < 0.95 and mb_spellReady("Multi-Shot") then			
+    if HealthPct("target") < 0.95 and SpellReady("Multi-Shot") then			
         CastSpellByName("Multi-Shot") 
     end
 end
 
 function Hunter:BossSpecificDPS()
-    if mb_useTranquilizingShot() and mb_spellReady("Tranquilizing Shot") then
+    if UseTranquilizingShot() and SpellReady("Tranquilizing Shot") then
         CastSpellByName("Tranquilizing Shot")
     end
 
-	if not mb_hasBuffNamed("Hunter\'s Mark", "target", "debuff") then			
+	if not HasBuffNamed("Hunter\'s Mark", "target", "debuff") then			
 		CastSpellByName("Hunter\'s Mark")
 	end
 
 	if Instance.AQ20 then        
-        if mb_tankTarget("Ossirian the Unscarred") then
-            if mb_hasBuffOrDebuff("Nature Weakness", "target", "debuff") then
+        if TankTarget("Ossirian the Unscarred") then
+            if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
 
-                mb_coolDownCast("Serpent Sting", 15)
+                CoolDownCast("Serpent Sting", 15)
                 return true
-            elseif mb_hasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
+            elseif HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
             
                 CastSpellByName("Arcane Shot")
                 return true
             end
 
-        elseif mb_tankTarget("Moam") then
-            mb_coolDownCast("Viper Sting", 8)
+        elseif TankTarget("Moam") then
+            CoolDownCast("Viper Sting", 8)
         end
 	end
 
@@ -255,8 +284,8 @@ MB_myAOEList["Hunter"] = HunterSingle
 
 local function HunterSetup()
 
-	mb_selfBuff("Trueshot Aura")	
-	mb_selfBuff("Aspect of the Hawk")
+	SelfBuff("Trueshot Aura")	
+	SelfBuff("Aspect of the Hawk")
 
     CastSpellByName("Dismiss Pet")
 end
@@ -269,11 +298,11 @@ MB_mySetupList["Hunter"] = HunterSetup
 
 local function HunterPreCast()
 	for k, trinket in pairs(MB_meleeTrinkets) do
-		if mb_itemNameOfEquippedSlot(13) == trinket and not mb_trinketOnCD(13) then 
+		if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then 
 			use(13) 
 		end
 
-		if mb_itemNameOfEquippedSlot(14) == trinket and not mb_trinketOnCD(14) then 
+		if ItemNameOfEquippedSlot(14) == trinket and not TrinketOnCD(14) then 
 			use(14) 
 		end
 	end
@@ -288,29 +317,29 @@ MB_myPreCastList["Hunter"] = HunterPreCast
 --[####################################################################################################]--
 
 function Hunter:Cooldowns()
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    mb_selfBuff("Berserking") 
+    SelfBuff("Berserking") 
 		
-    if not mb_inMeleeRange() then    
-        mb_selfBuff("Rapid Fire") 
+    if not InMeleeRange() then    
+        SelfBuff("Rapid Fire") 
     end
 
-    mb_selfBuff("Combustion")
-    mb_selfBuff("Presence of Mind")
+    SelfBuff("Combustion")
+    SelfBuff("Presence of Mind")
     
-    mb_meleeTrinkets()
+    MeleeTrinkets()
 end
 
 function Hunter:ExplosiveTrap()
 
-	if not mb_spellReady("Explosive Trap") then 
+	if not SpellReady("Explosive Trap") then 
 		return 
 	end
 
-	if mb_inCombat("player") and not MB_hunterFeign.Active then
+	if InCombat("player") and not MB_hunterFeign.Active then
 
 		MB_hunterFeign.Active = true
 		MB_hunterFeign.Time = GetTime() + 0.2
@@ -324,14 +353,14 @@ end
 
 function Hunter:FreezingTrap()
 
-	if not mb_spellReady("Frost Trap") then 
+	if not SpellReady("Frost Trap") then 
 		return 
 	end
 
 	PetPassiveMode()
 	PetFollow()
 
-	if mb_inCombat("player") and not MB_hunterFeign.Active then
+	if InCombat("player") and not MB_hunterFeign.Active then
 
 		MB_hunterFeign.Active = true
 		MB_hunterFeign.Time = GetTime() + 0.2

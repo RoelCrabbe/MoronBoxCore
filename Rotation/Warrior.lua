@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[###################################### START WARRIOR CODE! #########################################]--
 --[####################################################################################################]--
 
@@ -72,6 +72,50 @@ if myClass ~= "Warrior" then return end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local AnubisathAlert = mb_anubisathAlert
+local AutoAttack = mb_autoAttack
+local BossIShouldUseRecklessnessOn = mb_bossIShouldUseRecklessnessOn
+local CdPrint = mb_cdPrint
+local CrowdControlledMob = mb_crowdControlledMob
+local DebuffAmountShatter = mb_debuffAmountShatter
+local DebuffSunderAmount = mb_debuffSunderAmount
+local FuryGear = mb_furyGear
+local GetTarget = mb_getTarget
+local GetWeaverWeapon = mb_getWeaverWeapon
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HaveInBags = mb_haveInBags
+local HealthPct = mb_healthPct
+local IamFocus = mb_iamFocus
+local ImBusy = mb_imBusy
+local InCombat = mb_inCombat
+local InMeleeRange = mb_inMeleeRange
+local IsAtNoth = mb_isAtNoth
+local IsAtSkeram = mb_isAtSkeram
+local IsExcludedWW = mb_isExcludedWW
+local IsItemInBagCoolDown = mb_isItemInBagCoolDown
+local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
+local KnowSpell = mb_knowSpell
+local MeleeTrinkets = mb_meleeTrinkets
+local MobsNoSunders = mb_mobsNoSunders
+local MobsToAutoBreakFear = mb_mobsToAutoBreakFear
+local MyNameInTable = mb_myNameInTable
+local OffTank = mb_offTank
+local SelfBuff = mb_selfBuff
+local SpellReady = mb_spellReady
+local StunnableMob = mb_stunnableMob
+local TankTarget = mb_tankTarget
+local TrinketOnCD = mb_trinketOnCD
+local WarriorIsBattle = mb_warriorIsBattle
+local WarriorIsBerserker = mb_warriorIsBerserker
+local WarriorIsDefensive = mb_warriorIsDefensive
+local WarriorSetBattle = mb_warriorSetBattle
+local WarriorSetBerserker = mb_warriorSetBerserker
+local WarriorSetDefensive = mb_warriorSetDefensive
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local Warrior = CreateFrame("Frame", "Warrior")
 
 --[####################################################################################################]--
@@ -117,31 +161,31 @@ MB_mySpeccList["Warrior"] = WarriorSpecc
 
 local function WarriorSingle()
 	
-	mb_getTarget()
+	GetTarget()
 	
-    if MB_warriorBinds == "Fury" and not mb_inCombat("player") then
-        if mb_myNameInTable(MB_furysThatCanTank) then				
-            mb_furyGear()
+    if MB_warriorBinds == "Fury" and not InCombat("player") then
+        if MyNameInTable(MB_furysThatCanTank) then				
+            FuryGear()
             MB_warriorBinds = nil
         end
     end	
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 
     if Instance.AQ40 then
-        if mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
-            if mb_haveInBags("Greater Nature Protection Potion") and not mb_isItemInBagCoolDown("Greater Nature Protection Potion") then				
+        if TankTarget("Princess Huhuran") and HealthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
+            if HaveInBags("Greater Nature Protection Potion") and not IsItemInBagCoolDown("Greater Nature Protection Potion") then				
                 UseItemByName("Greater Nature Protection Potion")
             end       
-        elseif mb_isAtSkeram() and mb_spellReady("Intimidating Shout") then
+        elseif IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
         end
     end
 
-    if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
-		mb_selfBuff("Death Wish") 
+    if MobsToAutoBreakFear() and InMeleeRange() then
+		SelfBuff("Death Wish") 
 	end
 
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then
@@ -160,11 +204,11 @@ local function WarriorSingle()
 	elseif (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
 
 		if Instance.AQ40 then			
-			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
 
-			mb_anubisathAlert()
+			AnubisathAlert()
 		end
 
 		Warrior:TankSingle()
@@ -180,8 +224,8 @@ MB_mySingleList["Warrior"] = WarriorSingle
 
 function Warrior:DPSSingle()
 
-    if not mb_warriorIsBerserker() then
-        mb_warriorSetBerserker()
+    if not WarriorIsBerserker() then
+        WarriorSetBerserker()
         return
     end
 
@@ -189,45 +233,45 @@ function Warrior:DPSSingle()
         return
     end
 
-    mb_autoAttack()
+    AutoAttack()
     Warrior:Annihilator()
 
-    if mb_spellReady("Bloodrage") and UnitMana("player") < 20 then        
+    if SpellReady("Bloodrage") and UnitMana("player") < 20 then        
         CastSpellByName("Bloodrage")
     end
 
-    if MB_doInterrupt.Active and mb_spellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
         if UnitMana("player") >= 10 then
-            if mb_imBusy() then		
+            if ImBusy() then		
                 SpellStopCasting()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_cdPrint("Interrupting!")
+            CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end
     end
 
-    mb_selfBuff("Battle Shout")
+    SelfBuff("Battle Shout")
 
-    if not mb_mobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
-        if not mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") and mb_debuffSunderAmount() < 5 then
+    if not MobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
+        if not HasBuffOrDebuff("Expose Armor", "target", "debuff") and DebuffSunderAmount() < 5 then
             CastSpellByName("Sunder Armor")
         end
     end
 
-    Warrior:UseCooldowns()
+    Warrior:UseDPSCooldowns()
     Warrior:Execute()
 
     if MB_mySpecc == "BT" then
-        if UnitMana("player") >= 30 and mb_spellReady("Bloodthirst") then            
+        if UnitMana("player") >= 30 and SpellReady("Bloodthirst") then            
             CastSpellByName("Bloodthirst")
         end
 
-        if not mb_isExcludedWW() then
-            if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
-                if not mb_spellReady("Bloodthirst") then
+        if not IsExcludedWW() then
+            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+                if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
@@ -238,13 +282,13 @@ function Warrior:DPSSingle()
         end
 
     elseif MB_mySpecc == "MS" then
-        if UnitMana("player") >= 30 and mb_spellReady("Mortal Strike") then            
+        if UnitMana("player") >= 30 and SpellReady("Mortal Strike") then            
             CastSpellByName("Mortal Strike")
         end
 
-        if not mb_isExcludedWW() then
-            if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
-                if not mb_spellReady("Mortal Strike") then
+        if not IsExcludedWW() then
+            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+                if not SpellReady("Mortal Strike") then
                     CastSpellByName("Whirlwind")
                 end
             end
@@ -268,22 +312,22 @@ end
 
 local function WarriorTankSingleRotation()
     if MB_mySpecc == "Prottank" then
-        if mb_spellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
+        if SpellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
             CastSpellByName("Shield Slam")
         end
 
     elseif MB_mySpecc == "Furytank" then
-        if mb_spellReady("Bloodthirst") and UnitMana("player") >= 30 then            
+        if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
             CastSpellByName("Bloodthirst")
         end	
     end
     
-    if UnitName("target") ~= "Deathknight Understudy" and not mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then        
+    if UnitName("target") ~= "Deathknight Understudy" and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then        
         CastSpellByName("Sunder Armor")
     end
 
-    if mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then
-        if (not mb_spellReady("Bloodthirst") and UnitMana("player") >= 23) or UnitMana("player") >= 43 then
+    if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+        if (not SpellReady("Bloodthirst") and UnitMana("player") >= 23) or UnitMana("player") >= 43 then
             CastSpellByName("Heroic Strike")
         end
     else
@@ -295,149 +339,14 @@ end
 
 function Warrior:TankSingle()
 
-	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
-	if mb_inCombat("player") then
-        if Instance.NAXX then
-            if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                if mb_healthPct("target") <= 0.05 then
-                    mb_selfBuff("Last Stand")
+    Warrior:UseTANKCooldowns()
+	OffTank()
 
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-
-                if mb_haveInBags("Juju Escape") and not mb_isItemInBagCoolDown("Juju Escape") then                    
-                    TargetUnit("player")
-                    UseItemByName("Juju Escape")
-                    TargetLastTarget()
-                end
-
-                if mb_haveInBags("Greater Stoneshield Potion") and not mb_isItemInBagCoolDown("Greater Stoneshield Potion") then                    
-                    UseItemByName("Greater Stoneshield Potion")
-                end
-
-            elseif mb_tankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
-                if mb_myNameInTable(MB_myMaexxnaMainTank) then
-                    for _, buff in ipairs({"Prayer of Spirit", "Arcane Brilliance", "Divine Spirit", "Prayer of Shadow Protection"}) do
-                        if mb_hasBuffOrDebuff(buff, "player", "buff") then
-                            CancelBuff(buff)
-                        end
-                    end
-                end
-            end
-
-        elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") then            
-            if mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
-                mb_selfBuff("Last Stand")
-
-                if Warrior:HasShield() then                     
-                    mb_selfBuff("Shield Wall")
-                end
-            end
-
-        elseif Instance.BWL then
-            if mb_tankTarget("Vaelastrasz the Corrupt") and mb_inMeleeRange() then         
-                mb_selfBuff("Death Wish") 	
-                
-                if mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-
-            elseif mb_tankTarget("Firemaw") then
-                if mb_haveInBags("Juju Ember") and not mb_isItemInBagCoolDown("Juju Ember") and not mb_hasBuffOrDebuff("Juju Ember", "player", "buff") then 
-                    TargetUnit("player")
-                    UseItemByName("Juju Ember")
-                    TargetLastTarget()
-                end
-
-                if mb_healthPct("target") <= 0.15 and mb_healthPct("player") <= 0.3 then
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end                    
-                end
-
-            elseif mb_tankTarget("Chromaggus") and mb_healthPct("target") <= 0.07 and mb_healthPct("player") <= 0.3 then
-                mb_selfBuff("Last Stand")
-
-                if Warrior:HasShield() then                     
-                    mb_selfBuff("Shield Wall")
-                end
-            end
-        
-        elseif Instance.AQ20 and mb_tankTarget("Ossirian the Unscarred") then
-            if mb_healthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
-                if mb_healthPct("player") <= 0.3 then
-                    
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-            end
-        end
-
-		if mb_healthPct("player") <= 0.25 then			
-			if mb_itemNameOfEquippedSlot(13) == "Lifegiving Gem" and not mb_trinketOnCD(13) then 
-				use(13)
-
-			elseif mb_itemNameOfEquippedSlot(14) == "Lifegiving Gem" and not mb_trinketOnCD(14) then 
-				use(14)
-			end
-		end
-
-		if not (mb_tankTarget("Patchwerk") or mb_tankTarget("Maexxna")) then			
-			if mb_healthPct("player") <= 0.2 then				
-				mb_selfBuff("Last Stand") 
-			end
-		end
-
-		if mb_inMeleeRange() then
-			if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) then			
-				mb_meleeTrinkets()
-			end
-
-			if mb_knowSpell("Concussion Blow") and mb_spellReady("Concussion Blow") and mb_stunnableMob() then	
-				CastSpellByName("Concussion Blow")
-			end
-
-            if mb_spellReady("Disarm") and not mb_hasBuffOrDebuff("Disarm", "target", "debuff") then
-                local name = UnitName("target")
-                local hp = mb_healthPct("target")
-
-                if name == "Gurubashi Axe Thrower"
-                    or (hp < 0.5 and (name == "Infectious Ghoul" or name == "Plagued Ghoul"))
-                    or (hp <= 0.21 and (name == "Anubisath Sentinel" or name == "Anubisath Defender")) then
-                    CastSpellByName("Disarm")
-                end
-            end
-
-			if mb_healthPct("player") < 0.85 and UnitMana("player") >= 20 and Warrior:HasShield() then				
-				CastSpellByName("Shield Block") 
-			end
-
-			if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
-				if not mb_hasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and UnitMana("player") >= 20 then					
-					CastSpellByName("Demoralizing Shout")
-				end
-			end
-		end
-	end
-
-	mb_offTank()
-
-	if UnitName("target") and mb_crowdControlledMob() and not myName == MB_raidLeader then
+	if UnitName("target") and CrowdControlledMob() and not myName == MB_raidLeader then
         ClearTarget()
         return
     end
@@ -467,32 +376,32 @@ function Warrior:TankSingle()
 		end
 	end
 
-    if not mb_warriorIsDefensive() then
-        mb_warriorSetDefensive()
+    if not WarriorIsDefensive() then
+        WarriorSetDefensive()
         return
     end
 	
-    mb_autoAttack()
+    AutoAttack()
 
-    if mb_spellReady("Bloodrage") and UnitMana("player") <= 15 then        
+    if SpellReady("Bloodrage") and UnitMana("player") <= 15 then        
         CastSpellByName("Bloodrage")
     end
 
-    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") and Warrior:HasShield() then
+    if MB_doInterrupt.Active and SpellReady("Shield Bash") and Warrior:HasShield() then
         if UnitMana("player") >= 10 then
-            if mb_imBusy() then		
+            if ImBusy() then		
                 SpellStopCasting()
             end
 
 			CastSpellByName("Shield Bash")
-            mb_cdPrint("Interrupting!")
+            CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
 		end
 	end
     
-    mb_selfBuff("Battle Shout")
+    SelfBuff("Battle Shout")
     
-    if UnitMana("player") >= 5 and mb_spellReady("Revenge") then        
+    if UnitMana("player") >= 5 and SpellReady("Revenge") then        
         CastSpellByName("Revenge")
     end
     
@@ -505,31 +414,31 @@ end
 
 local function WarriorMulti()
 
-	mb_getTarget()
+	GetTarget()
 	
-    if MB_warriorBinds == "Fury" and not mb_inCombat("player") then
-        if mb_myNameInTable(MB_furysThatCanTank) then				
-            mb_furyGear()
+    if MB_warriorBinds == "Fury" and not InCombat("player") then
+        if MyNameInTable(MB_furysThatCanTank) then				
+            FuryGear()
             MB_warriorBinds = nil
         end
     end	
 
-	if not mb_inCombat("target") then
+	if not InCombat("target") then
         return
     end
 	
     if Instance.AQ40 then
-        if mb_tankTarget("Princess Huhuran") and mb_healthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
-            if mb_haveInBags("Greater Nature Protection Potion") and not mb_isItemInBagCoolDown("Greater Nature Protection Potion") then				
+        if TankTarget("Princess Huhuran") and HealthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
+            if HaveInBags("Greater Nature Protection Potion") and not IsItemInBagCoolDown("Greater Nature Protection Potion") then				
                 UseItemByName("Greater Nature Protection Potion")
             end       
-        elseif mb_isAtSkeram() and mb_spellReady("Intimidating Shout") then
+        elseif IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
         end
     end
 
-    if mb_mobsToAutoBreakFear() and mb_inMeleeRange() then
-		mb_selfBuff("Death Wish") 
+    if MobsToAutoBreakFear() and InMeleeRange() then
+		SelfBuff("Death Wish") 
 	end
 
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then
@@ -548,11 +457,11 @@ local function WarriorMulti()
 	elseif (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
 
 		if Instance.AQ40 then			
-			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
 
-			mb_anubisathAlert()
+			AnubisathAlert()
 		end
 
 		Warrior:TankMulti()
@@ -572,16 +481,16 @@ function Warrior:DPSMulti()
         return
     end
 
-    mb_autoAttack()
+    AutoAttack()
     Warrior:Annihilator()
 
-    if mb_spellReady("Bloodrage") and UnitMana("player") < 20 then        
+    if SpellReady("Bloodrage") and UnitMana("player") < 20 then        
         CastSpellByName("Bloodrage")
     end
 
-	if MB_mySpecc == "MS" and mb_spellReady("Sweeping Strikes") then
-        if not mb_warriorIsBattle() then
-            mb_warriorSetBattle()
+	if MB_mySpecc == "MS" and SpellReady("Sweeping Strikes") then
+        if not WarriorIsBattle() then
+            WarriorSetBattle()
             return
         end 
 
@@ -589,69 +498,69 @@ function Warrior:DPSMulti()
         return
 	end
 
-    if not mb_warriorIsBerserker() then
-        mb_warriorSetBerserker()
+    if not WarriorIsBerserker() then
+        WarriorSetBerserker()
         return
     end
 
-    if MB_doInterrupt.Active and mb_spellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
         if UnitMana("player") >= 10 then
-            if mb_imBusy() then		
+            if ImBusy() then		
                 SpellStopCasting()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
-            mb_cdPrint("Interrupting!")
+            CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
         end
     end
 
-    mb_selfBuff("Battle Shout")
+    SelfBuff("Battle Shout")
 
-    if not mb_mobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
-        if not mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") and mb_debuffSunderAmount() < 5 then
+    if not MobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
+        if not HasBuffOrDebuff("Expose Armor", "target", "debuff") and DebuffSunderAmount() < 5 then
             CastSpellByName("Sunder Armor")
         end
     end
 
-    Warrior:UseCooldowns()
+    Warrior:UseDPSCooldowns()
     Warrior:Execute()
     
     if MB_mySpecc == "BT" then
-        if not mb_isExcludedWW() then
-            if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
-                if not mb_spellReady("Bloodthirst") then
+        if not IsExcludedWW() then
+            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+                if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
         
-        if not mb_spellReady("Whirlwind") and UnitMana("player") >= 25 then
-            if mb_spellReady("Bloodthirst") and UnitMana("player") >= 30 then            
+        if not SpellReady("Whirlwind") and UnitMana("player") >= 25 then
+            if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
                 CastSpellByName("Bloodthirst")
             end
 
-            if not mb_spellReady("Bloodthirst") then                
+            if not SpellReady("Bloodthirst") then                
                 CastSpellByName("Cleave")
             end
         end
         
     elseif MB_mySpecc == "MS" then
-        if not mb_isExcludedWW() then
-            if UnitMana("player") >= 25 and mb_spellReady("Whirlwind") and mb_inMeleeRange() then
-                if not mb_spellReady("Bloodthirst") then
+        if not IsExcludedWW() then
+            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+                if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
         
-        if not mb_spellReady("Whirlwind") and UnitMana("player") >= 25 then
-            if mb_spellReady("Mortal Strike") and UnitMana("player") >= 30 then        
+        if not SpellReady("Whirlwind") and UnitMana("player") >= 25 then
+            if SpellReady("Mortal Strike") and UnitMana("player") >= 30 then        
                 CastSpellByName("Mortal Strike")
             end
 
-            if not mb_spellReady("Mortal Strike") then                
+            if not SpellReady("Mortal Strike") then                
                 CastSpellByName("Cleave")
             end
         end
@@ -664,149 +573,14 @@ end
 
 function Warrior:TankMulti()
 
-	if FindInTable(MB_raidTanks, myName) and mb_hasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
 	end
 
-	if mb_inCombat("player") then
-        if Instance.NAXX then
-            if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                if mb_healthPct("target") <= 0.05 then
-                    mb_selfBuff("Last Stand")
+    Warrior:UseTANKCooldowns()
+	OffTank()
 
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-
-                if mb_haveInBags("Juju Escape") and not mb_isItemInBagCoolDown("Juju Escape") then                    
-                    TargetUnit("player")
-                    UseItemByName("Juju Escape")
-                    TargetLastTarget()
-                end
-
-                if mb_haveInBags("Greater Stoneshield Potion") and not mb_isItemInBagCoolDown("Greater Stoneshield Potion") then                    
-                    UseItemByName("Greater Stoneshield Potion")
-                end
-
-            elseif mb_tankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
-                if mb_myNameInTable(MB_myMaexxnaMainTank) then
-                    for _, buff in ipairs({"Prayer of Spirit", "Arcane Brilliance", "Divine Spirit", "Prayer of Shadow Protection"}) do
-                        if mb_hasBuffOrDebuff(buff, "player", "buff") then
-                            CancelBuff(buff)
-                        end
-                    end
-                end
-            end
-
-        elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") then
-            if mb_healthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
-                mb_selfBuff("Last Stand")
-
-                if Warrior:HasShield() then                     
-                    mb_selfBuff("Shield Wall")
-                end
-            end
-
-        elseif Instance.BWL then
-            if mb_tankTarget("Vaelastrasz the Corrupt") and mb_inMeleeRange() then         
-                mb_selfBuff("Death Wish") 	
-                
-                if mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-
-            elseif mb_tankTarget("Firemaw") then
-                if mb_haveInBags("Juju Ember") and not mb_isItemInBagCoolDown("Juju Ember") and not mb_hasBuffOrDebuff("Juju Ember", "player", "buff") then 
-                    TargetUnit("player")
-                    UseItemByName("Juju Ember")
-                    TargetLastTarget()
-                end
-
-                if mb_healthPct("target") <= 0.15 and mb_healthPct("player") <= 0.3 then
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end                    
-                end
-
-            elseif mb_tankTarget("Chromaggus") and mb_healthPct("target") <= 0.07 and mb_healthPct("player") <= 0.3 then
-                mb_selfBuff("Last Stand")
-
-                if Warrior:HasShield() then                     
-                    mb_selfBuff("Shield Wall")
-                end
-            end
-        
-        elseif Instance.AQ20 and mb_tankTarget("Ossirian the Unscarred") then
-            if mb_healthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
-                if mb_healthPct("player") <= 0.3 then
-                    
-                    mb_selfBuff("Last Stand")
-
-                    if Warrior:HasShield() then                     
-                        mb_selfBuff("Shield Wall")
-                    end
-                end
-            end
-        end
-
-		if mb_healthPct("player") <= 0.25 then			
-			if mb_itemNameOfEquippedSlot(13) == "Lifegiving Gem" and not mb_trinketOnCD(13) then 
-				use(13)
-
-			elseif mb_itemNameOfEquippedSlot(14) == "Lifegiving Gem" and not mb_trinketOnCD(14) then 
-				use(14)
-			end
-		end
-
-		if not (mb_tankTarget("Patchwerk") or mb_tankTarget("Maexxna")) then			
-			if mb_healthPct("player") <= 0.2 then				
-				mb_selfBuff("Last Stand") 
-			end
-		end
-
-		if mb_inMeleeRange() then
-			if (mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff")) then			
-				mb_meleeTrinkets()
-			end
-
-			if mb_knowSpell("Concussion Blow") and mb_spellReady("Concussion Blow") and mb_stunnableMob() then	
-				CastSpellByName("Concussion Blow")
-			end
-
-            if mb_spellReady("Disarm") and not mb_hasBuffOrDebuff("Disarm", "target", "debuff") then
-                local name = UnitName("target")
-                local hp = mb_healthPct("target")
-
-                if name == "Gurubashi Axe Thrower"
-                    or (hp < 0.5 and (name == "Infectious Ghoul" or name == "Plagued Ghoul"))
-                    or (hp <= 0.21 and (name == "Anubisath Sentinel" or name == "Anubisath Defender")) then
-                    CastSpellByName("Disarm")
-                end
-            end
-
-			if mb_healthPct("player") < 0.85 and UnitMana("player") >= 20 and Warrior:HasShield() then				
-				CastSpellByName("Shield Block") 
-			end
-
-			if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
-				if not mb_hasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and UnitMana("player") >= 20 then					
-					CastSpellByName("Demoralizing Shout")
-				end
-			end
-		end
-	end
-
-	mb_offTank()
-
-	if UnitName("target") and mb_crowdControlledMob() and not myName == MB_raidLeader then
+	if UnitName("target") and CrowdControlledMob() and not myName == MB_raidLeader then
         ClearTarget()
         return
     end
@@ -836,44 +610,44 @@ function Warrior:TankMulti()
 		end
 	end
 
-    if not mb_warriorIsDefensive() then
-        mb_warriorSetDefensive()
+    if not WarriorIsDefensive() then
+        WarriorSetDefensive()
         return
     end
 
-    mb_autoAttack()
+    AutoAttack()
 
-    if mb_spellReady("Bloodrage") and UnitMana("player") < 15 then        
+    if SpellReady("Bloodrage") and UnitMana("player") < 15 then        
         CastSpellByName("Bloodrage")
     end
 
-    if MB_doInterrupt.Active and mb_spellReady("Shield Bash") and Warrior:HasShield() then
+    if MB_doInterrupt.Active and SpellReady("Shield Bash") and Warrior:HasShield() then
         if UnitMana("player") >= 10 then
-            if mb_imBusy() then		
+            if ImBusy() then		
                 SpellStopCasting()
             end
 
 			CastSpellByName("Shield Bash")
-            mb_cdPrint("Interrupting!")
+            CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
 		end
 	end
 
-    mb_selfBuff("Battle Shout")
+    SelfBuff("Battle Shout")
     
-    if UnitMana("player") >= 5 and mb_spellReady("Revenge") then        
+    if UnitMana("player") >= 5 and SpellReady("Revenge") then        
         CastSpellByName("Revenge")
     end
 
-    if Instance.NAXX and mb_isAtNoth() then
+    if Instance.NAXX and IsAtNoth() then
         WarriorTankSingleRotation()
         return
 
-    elseif Instance.BWL and mb_tankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+    elseif Instance.BWL and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
         WarriorTankSingleRotation()
         return
 
-    elseif Instance.ONY and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+    elseif Instance.ONY and TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
         WarriorTankSingleRotation()
         return
     end 
@@ -883,17 +657,17 @@ function Warrior:TankMulti()
     end
     
     if MB_mySpecc == "Prottank" then
-        if mb_spellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
+        if SpellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
             CastSpellByName("Shield Slam")
         end
 
     elseif MB_mySpecc == "Furytank" then
-        if mb_spellReady("Bloodthirst") and UnitMana("player") >= 30 then            
+        if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
             CastSpellByName("Bloodthirst")
         end	
     end
 
-    if UnitName("target") ~= "Deathknight Understudy" and not mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then        
+    if UnitName("target") ~= "Deathknight Understudy" and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then        
         CastSpellByName("Sunder Armor")
     end
 end
@@ -909,42 +683,42 @@ MB_myAOEList["Warrior"] = WarriorMulti
 --[####################################################################################################]--
 
 function Warrior:BigCooldowns(useBloodFury)
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    mb_selfBuff("Recklessness")
+    SelfBuff("Recklessness")
 	Warrior:Cooldowns(useBloodFury)
 end
 
 function Warrior:Cooldowns(useBloodFury)
     local useBloodFury = useBloodFury ~= false
 
-	if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    mb_selfBuff("Berserking")
+    SelfBuff("Berserking")
 
     if useBloodFury then
-        mb_selfBuff("Blood Fury")
+        SelfBuff("Blood Fury")
     end
 
-    if mb_spellReady("Death Wish") and UnitMana("player") >= 10 then        
-        mb_selfBuff("Death Wish")
+    if SpellReady("Death Wish") and UnitMana("player") >= 10 then        
+        SelfBuff("Death Wish")
     end
 
-    mb_meleeTrinkets()
+    MeleeTrinkets()
 end
 
-function Warrior:UseCooldowns()
-    if not (mb_inMeleeRange() or mb_tankTarget("Ragnaros")) then
+function Warrior:UseDPSCooldowns()
+    if not (InMeleeRange() or TankTarget("Ragnaros")) then
         return
     end
 
     if UnitInRaid("player") and GetNumRaidMembers() > 5 then
-        if mb_debuffSunderAmount() == 5 or mb_hasBuffOrDebuff("Expose Armor", "target", "debuff") then
-            if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
+        if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if SpellReady("Recklessness") and BossIShouldUseRecklessnessOn() then
                 Warrior:BigCooldowns()
             end
 
@@ -961,11 +735,160 @@ function Warrior:UseCooldowns()
         return
     end
 
-    if mb_spellReady("Recklessness") and mb_bossIShouldUseRecklessnessOn() then
+    if SpellReady("Recklessness") and BossIShouldUseRecklessnessOn() then
         Warrior:BigCooldowns(false)
     end
 
     Warrior:Cooldowns(false)
+end
+
+function Warrior:UseTANKCooldowns()
+    if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    if not (InMeleeRange() or TankTarget("Ragnaros")) then
+        return
+    end
+
+    if Instance.NAXX then
+        if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            if HealthPct("target") <= 0.05 then
+                SelfBuff("Last Stand")
+
+                if Warrior:HasShield() then                     
+                    SelfBuff("Shield Wall")
+                end
+            end
+
+            if HaveInBags("Juju Escape") and not IsItemInBagCoolDown("Juju Escape") then                    
+                TargetUnit("player")
+                UseItemByName("Juju Escape")
+                TargetLastTarget()
+            end
+
+            if HaveInBags("Greater Stoneshield Potion") and not IsItemInBagCoolDown("Greater Stoneshield Potion") then                    
+                UseItemByName("Greater Stoneshield Potion")
+            end
+
+        elseif TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
+            if MyNameInTable(MB_myMaexxnaMainTank) then
+                for _, buff in ipairs({"Prayer of Spirit", "Arcane Brilliance", "Divine Spirit", "Prayer of Shadow Protection"}) do
+                    if HasBuffOrDebuff(buff, "player", "buff") then
+                        CancelBuff(buff)
+                    end
+                end
+            end
+        end
+
+    elseif Instance.AQ40 and TankTarget("Princess Huhuran") then            
+        if HealthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
+            SelfBuff("Last Stand")
+
+            if Warrior:HasShield() then                     
+                SelfBuff("Shield Wall")
+            end
+        end
+
+    elseif Instance.BWL then
+        if TankTarget("Vaelastrasz the Corrupt") and InMeleeRange() then         
+            SelfBuff("Death Wish") 	
+            
+            if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+
+                SelfBuff("Last Stand")
+
+                if Warrior:HasShield() then                     
+                    SelfBuff("Shield Wall")
+                end
+            end
+
+        elseif TankTarget("Firemaw") then
+            if HaveInBags("Juju Ember") and not IsItemInBagCoolDown("Juju Ember") and not HasBuffOrDebuff("Juju Ember", "player", "buff") then 
+                TargetUnit("player")
+                UseItemByName("Juju Ember")
+                TargetLastTarget()
+            end
+
+            if HealthPct("target") <= 0.15 and HealthPct("player") <= 0.3 then
+                SelfBuff("Last Stand")
+
+                if Warrior:HasShield() then                     
+                    SelfBuff("Shield Wall")
+                end                    
+            end
+
+        elseif TankTarget("Chromaggus") and HealthPct("target") <= 0.07 and HealthPct("player") <= 0.3 then
+            SelfBuff("Last Stand")
+
+            if Warrior:HasShield() then                     
+                SelfBuff("Shield Wall")
+            end
+        end
+    
+    elseif Instance.AQ20 and TankTarget("Ossirian the Unscarred") then
+        if HealthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
+            if HealthPct("player") <= 0.3 then
+                
+                SelfBuff("Last Stand")
+
+                if Warrior:HasShield() then                     
+                    SelfBuff("Shield Wall")
+                end
+            end
+        end
+    end
+
+    if HealthPct("player") <= 0.25 then			
+        if ItemNameOfEquippedSlot(13) == "Lifegiving Gem" and not TrinketOnCD(13) then 
+            use(13)
+
+        elseif ItemNameOfEquippedSlot(14) == "Lifegiving Gem" and not TrinketOnCD(14) then 
+            use(14)
+        end
+    end
+
+    if not (TankTarget("Patchwerk") or TankTarget("Maexxna")) then			
+        if HealthPct("player") <= 0.2 then				
+            SelfBuff("Last Stand") 
+        end
+    end
+
+    if KnowSpell("Concussion Blow") and SpellReady("Concussion Blow") and StunnableMob() then	
+        CastSpellByName("Concussion Blow")
+    end
+
+    if SpellReady("Disarm") and not HasBuffOrDebuff("Disarm", "target", "debuff") then
+        local name = UnitName("target")
+        local hp = HealthPct("target")
+
+        if name == "Gurubashi Axe Thrower"
+            or (hp < 0.5 and (name == "Infectious Ghoul" or name == "Plagued Ghoul"))
+            or (hp <= 0.21 and (name == "Anubisath Sentinel" or name == "Anubisath Defender")) then
+            CastSpellByName("Disarm")
+        end
+    end
+
+    if HealthPct("player") < 0.85 and UnitMana("player") >= 20 and Warrior:HasShield() then				
+        CastSpellByName("Shield Block") 
+    end
+
+    if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
+        if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and UnitMana("player") >= 20 then					
+            CastSpellByName("Demoralizing Shout")
+        end
+    end
+
+    if UnitInRaid("player") and GetNumRaidMembers() > 5 then
+        if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            SelfBuff("Berserking")
+            MeleeTrinkets()
+        end
+        return
+    end
+
+    SelfBuff("Berserking")
+    MeleeTrinkets()
 end
 
 --[####################################################################################################]--
@@ -975,14 +898,14 @@ end
 function Warrior:Annihilator()
     local weavers = MB_raidAssist.Warrior.AnnihilatorWeavers or {}
 
-    if TableLength(weavers) == 0 or not MB_raidAssist.Warrior.Active or mb_isAtSkeram() then
+    if TableLength(weavers) == 0 or not MB_raidAssist.Warrior.Active or IsAtSkeram() then
         return
     end
 	
     local function equipWeapon(slot, targetWeapon)
-        if mb_itemNameOfEquippedSlot(slot) ~= targetWeapon then
-            if mb_itemNameOfEquippedSlot(slot) then
-                RunLine("/unequip "..mb_itemNameOfEquippedSlot(slot))
+        if ItemNameOfEquippedSlot(slot) ~= targetWeapon then
+            if ItemNameOfEquippedSlot(slot) then
+                RunLine("/unequip "..ItemNameOfEquippedSlot(slot))
             end
             RunLine("/equip "..targetWeapon)
         end
@@ -992,16 +915,16 @@ function Warrior:Annihilator()
         if myName == name then
             local mh, oh
             if Instance.IsWorldBoss() then
-                if mb_debuffAmountShatter() == 3 then
-                    mh = mb_getWeaverWeapon(name, "NMH")
-                    oh = mb_getWeaverWeapon(name, "NOH")
+                if DebuffAmountShatter() == 3 then
+                    mh = GetWeaverWeapon(name, "NMH")
+                    oh = GetWeaverWeapon(name, "NOH")
                 else
-                    mh = mb_getWeaverWeapon(name, "BMH")
-                    oh = mb_getWeaverWeapon(name, "BOH")
+                    mh = GetWeaverWeapon(name, "BMH")
+                    oh = GetWeaverWeapon(name, "BOH")
                 end
             else
-                mh = mb_getWeaverWeapon(name, "NMH")
-                oh = mb_getWeaverWeapon(name, "NOH")
+                mh = GetWeaverWeapon(name, "NMH")
+                oh = GetWeaverWeapon(name, "NOH")
             end
 
             equipWeapon(16, mh)
@@ -1027,7 +950,7 @@ function Warrior:Execute()
     end
 
     local targetType = UnitCreatureType("target")
-    local slot13, slot14 = mb_itemNameOfEquippedSlot(13), mb_itemNameOfEquippedSlot(14)
+    local slot13, slot14 = ItemNameOfEquippedSlot(13), ItemNameOfEquippedSlot(14)
 
     local undeadBonus = 0
 
@@ -1046,10 +969,10 @@ function Warrior:Execute()
     local btDamage = apTotal * 0.45
     local impExeValue = ImpExecute() and 900 or 820
 
-    if mb_healthPct("target") < 0.20 then
+    if HealthPct("target") < 0.20 then
         if impExeValue >= btDamage then
             CastSpellByName("Execute")
-        elseif btDamage >= impExeValue and mb_spellReady("Bloodthirst") then
+        elseif btDamage >= impExeValue and SpellReady("Bloodthirst") then
             CastSpellByName("Bloodthirst")
         else
             CastSpellByName("Execute")
@@ -1070,13 +993,13 @@ end
 
 function Warrior:Taunt()
 
-	if mb_spellReady("Taunt") then
-		mb_warriorSetDefensive()
+	if SpellReady("Taunt") then
+		WarriorSetDefensive()
 		CastSpellByName("Taunt")
 		return
 	end
 
-	if mb_iamFocus() then
+	if IamFocus() then
         return
     end
 	
@@ -1084,11 +1007,11 @@ function Warrior:Taunt()
         return
     end
 
-	if mb_spellReady("Mocking Blow") and UnitMana("player") >= 10 then
-		if mb_warriorIsBattle() then
+	if SpellReady("Mocking Blow") and UnitMana("player") >= 10 then
+		if WarriorIsBattle() then
 			CastSpellByName("Mocking Blow")
 		else
-			mb_warriorSetBattle()
+			WarriorSetBattle()
 		end
 	end
 end

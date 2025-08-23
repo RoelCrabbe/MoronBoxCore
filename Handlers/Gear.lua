@@ -166,7 +166,7 @@ function mb_equippedSetCount(set)
 	return count
 end
 
-function mb_equipSet(set)
+function mb_equipRackSet(set)
 	local _, _, _, Enabled = GetAddOnInfo("ItemRack")
 	if Enabled then
         EquipSet(set)
@@ -177,25 +177,25 @@ function mb_equipSet(set)
 end
 
 function mb_tankGear()
-	mb_equipSet("TANK")
+	mb_equipRackSet("TANK")
 	MB_mySpecc = "Furytank"
 	MB_warriorBinds = nil
 end
 
 function mb_furyGear()
-	mb_equipSet("DPS")
+	mb_equipRackSet("DPS")
 	MB_mySpecc = "BT"
 	MB_warriorBinds = "Fury"
 end
 
 function mb_evoGear()
 	MB_evoGear = true
-	mb_equipSet("EVO")
+	mb_equipRackSet("EVO")
 end
 
 function mb_mageGear()
 	MB_evoGear = nil
-	mb_equipSet("DPS")
+	mb_equipRackSet("DPS")
 end
 
 --[####################################################################################################]--
