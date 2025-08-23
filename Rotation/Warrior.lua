@@ -895,23 +895,30 @@ end
 --[########################################## Helper Code! ############################################]--
 --[####################################################################################################]--
 
-function Warrior:Annihilator()
-    local weavers = MB_raidAssist.Warrior.AnnihilatorWeavers or {}
+local lastAnnihilatorTime = 0
 
-    if TableLength(weavers) == 0 or not MB_raidAssist.Warrior.Active or IsAtSkeram() then
+function Warrior:Annihilator()
+    if TableLength(MB_raidAssist.Warrior.AnnihilatorWeavers) == 0 or not MB_raidAssist.Warrior.Active or IsAtSkeram() then
         return
     end
-	
+    
+    local currentTime = GetTime()
+    if currentTime - lastAnnihilatorTime < 1.5 then
+        return
+    end
+    
     local function equipWeapon(slot, targetWeapon)
         if ItemNameOfEquippedSlot(slot) ~= targetWeapon then
             if ItemNameOfEquippedSlot(slot) then
                 RunLine("/unequip "..ItemNameOfEquippedSlot(slot))
             end
-            RunLine("/equip "..targetWeapon)
+
+            local escapedWeapon = string.gsub(targetWeapon, ",", "%%,")
+            RunLine("/equip "..escapedWeapon)
         end
     end
-
-    for _, name in pairs(weavers) do
+    
+    for _, name in pairs(MB_raidAssist.Warrior.AnnihilatorWeavers) do
         if myName == name then
             local mh, oh
             if Instance.IsWorldBoss() then
@@ -926,9 +933,12 @@ function Warrior:Annihilator()
                 mh = GetWeaverWeapon(name, "NMH")
                 oh = GetWeaverWeapon(name, "NOH")
             end
-
+            
             equipWeapon(16, mh)
             equipWeapon(17, oh)
+
+            lastAnnihilatorTime = currentTime
+            break
         end
     end
 end

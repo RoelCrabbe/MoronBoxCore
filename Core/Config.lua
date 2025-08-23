@@ -74,6 +74,7 @@ MB_raidAssist = { -- Raid tools
 		AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
 			-- Horde
 			"Jokamok",
+			"Crymeariver",
 
 			"Suecia", -- Tank
 			"Ajlano", -- Tank
