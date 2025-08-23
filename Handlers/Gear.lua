@@ -212,6 +212,14 @@ local AnnihilatorWeaverWeapons = {
 		["NOH"] = "The Hungering Cold" -- OH
 	},
 
+	["Crymeariver"] = {
+		["BMH"] = "Annihilator", -- HM
+		["BOH"] = "The Hungering Cold", -- OH
+
+		["NMH"] = "Gressil, Dawn of Ruin", -- HM
+		["NOH"] = "The Hungering Cold" -- OH
+	},
+
 	-- Alliance
 	["Alliance Warrior 1"] = {
 		["BMH"] = "Annihilator", -- HM
