@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[########################################### OnUpdate Core ##########################################]--
 --[####################################################################################################]--
 
@@ -69,6 +69,23 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local BuyReagentsAndArrows = mb_buyReagentsAndArrows
+local ImHealer = mb_imHealer
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function RemoveFeignDeath()
+	CancelBuff("Feign Death")
+	DoEmote("Stand")
+	MB_hunterFeign.Active = false
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function MMB:OnUpdate()
     local currentTime = GetTime()
     
@@ -92,7 +109,7 @@ function MMB:OnUpdate()
         MB_DMFWeek.Active = false
         local option1, _, option2 = GetGossipOptions()
        
-        if mb_imHealer() then
+        if ImHealer() then
             if option1 == "Yes" then
                 SelectGossipOption(1)
             elseif option2 == "Turn him over to liege" or option2 == "Show not so quiet defiance" then
@@ -130,11 +147,11 @@ function MMB:OnUpdate()
     end
     
     if MB_autoBuyReagents.Active and currentTime > MB_autoBuyReagents.Time then
-        mb_buyReagentsAndArrows()
+        BuyReagentsAndArrows()
     end
     
     if MB_hunterFeign.Active and currentTime > MB_hunterFeign.Time then
-        mb_removeFeignDeath()
+        RemoveFeignDeath()()
     end
 end
 
@@ -143,9 +160,3 @@ MMB:SetScript("OnUpdate", MMB.OnUpdate)
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
-
-function mb_removeFeignDeath()
-	CancelBuff("Feign Death")
-	DoEmote("Stand")
-	MB_hunterFeign.Active = false
-end

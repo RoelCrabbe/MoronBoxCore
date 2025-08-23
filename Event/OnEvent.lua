@@ -72,8 +72,8 @@ local myRace = UnitRace("player")
 local MMB_Post_Init = CreateFrame("Button", "MMBPostInit", UIParent)
 MMB_Post_Init.Timer = GetTime()
 
-local original_TakeTaxiNode = TakeTaxiNode
-local MB_taxi = {
+local Original_TakeTaxiNode = TakeTaxiNode
+local AutoFlyFollow = {
 	Time = 0, 
 	Node = ""
 }
@@ -318,8 +318,8 @@ function MMB:OnEvent()
 		elseif arg1 == MB_RAID.."_flyTaxi" and arg4 ~= myName then
 			
 			local time = GetTime();
-			MB_taxi.Time = time + 30
-			MB_taxi.Node = arg2
+			AutoFlyFollow.Time = time + 30
+			AutoFlyFollow.Node = arg2
 			mb_taxi()
 
 		elseif arg1 == MB_RAID.."_CC" then
@@ -898,10 +898,10 @@ function mb_taxi()
 		return
 	end
 
-	if MB_raidAssist.FollowTheLeaderTaxi and MB_taxi.Time > time then
+	if MB_raidAssist.FollowTheLeaderTaxi and AutoFlyFollow.Time > time then
 		for i = 1, NumTaxiNodes() do
-			if TaxiNodeName(i) == MB_taxi.Node then
-				original_TakeTaxiNode(i)
+			if TaxiNodeName(i) == AutoFlyFollow.Node then
+				Original_TakeTaxiNode(i)
 				break
 			end
 		end
@@ -911,9 +911,9 @@ end
 function mb_takeTaxiNode(index)
 	if UnitInRaid("player") then
 		SendAddonMessage(MB_RAID.."_flyTaxi", TaxiNodeName(index), "RAID")
-		original_TakeTaxiNode(index)
+		Original_TakeTaxiNode(index)
 	elseif UnitInParty("player") then
 		SendAddonMessage(MB_RAID.."_flyTaxi", TaxiNodeName(index), "PARTY")
-		original_TakeTaxiNode(index)		
+		Original_TakeTaxiNode(index)		
 	end
 end
