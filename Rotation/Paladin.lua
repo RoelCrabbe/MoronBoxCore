@@ -108,9 +108,7 @@ local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SpellReady = mb_spellReady
 local StunnableMob = mb_stunnableMob
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
 local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
@@ -148,9 +146,7 @@ local function PaladinHeal()
 			return 
 		end
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Paladin:Cooldowns()
@@ -586,9 +582,7 @@ local function PriestLoathebHeal()
 			return 
 		end
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Paladin:Cooldowns()

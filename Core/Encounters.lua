@@ -127,7 +127,7 @@ MB_myRazuviousPriest = {
 
 -- Strategy Configuration
 MB_myFaerlinaBoxStrategy = true 
-MB_myFaerlinaRuneStrategy = false -- Frozen Runes
+MB_myFaerlinaFirePotStrategy = true
 
 -- Priest Assignments (REQUIRED - Mind Control)
 MB_myFaerlinaPriest = {		
@@ -143,6 +143,7 @@ MB_myFaerlinaPriest = {
 
 -- Strategy Configuration
 MB_myLoathebBoxStrategy = true
+MB_myLoathebShadowPotStrategy = true
 
 -- Tank and Paladin Assignments (REQUIRED)
 MB_myLoathebMainTank = "Klawss"
@@ -262,7 +263,8 @@ MB_myFankrissSnakeTankTwo = {
 --]]
 
 -- Strategy Configuration
-MB_myHuhuranBoxStrategy = false
+MB_myHuhuranBoxStrategy = true
+MB_myHuhuranNaturePotStrategy = true
 
 -- Tank Assignments (REQUIRED when active)
 MB_myHuhuranTankDefensivePercentage = 0.25 -- SW/LS usage threshold
@@ -312,11 +314,11 @@ MB_myOssirianTankDefensivePercentage = 0.35 -- Shield Wall threshold
 
 -- Strategy Configuration
 MB_myRazorgoreBoxStrategy = true
-MB_myRazorgoreBoxHealerStrategy = false -- Mana Pots
+MB_myRazorgoreBoxHealerStrategy = true -- Mana Pots
 
 -- Orb Controller Assignment (REQUIRED)
 MB_myRazorgoreORBtank = {
-    "Rows",             -- Horde
+    "Kungen",             -- Horde
     "Alliance Orb Tank 1" -- Alliance
 }
 
@@ -327,11 +329,11 @@ MB_myRazorgoreLeftTank = {
 }
 
 MB_myRazorgoreLeftDPSERS = {
-    "Almisael",         -- Horde Offtank (TF Tank)
-    "Invictivus",       -- Rogue
+    "Rows",         -- Horde Offtank (TF Tank)
+    "Miagi",       -- Rogue
     -- Warriors
-    "Angerissues", "Xoncharr", "Maximumzug", 
-    "Uzug", "Axhole", "Kyrielle"
+    "Gogopwranger", "Angerissues", "Moonspawn", 
+    "Opticalfiber", "Maximumzug", "Hornagaur"
 }
 
 -- Right Side Assignments  
@@ -341,11 +343,11 @@ MB_myRazorgoreRightTank = {
 }
 
 MB_myRazorgoreRightDPSERS = {        
-    "Ajlano",           -- Horde Offtank (TF)
-    "Miagi",            -- Rogue
+    "Sabo",           -- Horde Offtank (TF)
+    "Weedzy",            -- Rogue
     -- Warriors
-    "Chabalala", "Gogopwranger", "Tazmahdingo", 
-    "Cornanimal", "Rapenaattori", "Goodbeef"
+    "Chabalala", "Tazmahdingo", "Likez", "Anatomic",
+    "Vandalus", "Xoncharr", "Insanette"
 }
 
 --[[
@@ -358,6 +360,7 @@ MB_myRazorgoreRightDPSERS = {
 
 -- Strategy Configuration
 MB_myVaelastraszBoxStrategy = true 
+MB_myVaelastraszFirePotStrategy = true
 
 -- Healer Class Toggles
 MB_myVaelastraszShamanHealing = true   -- T1 requirement

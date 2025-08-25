@@ -90,9 +90,7 @@ local ManaDown = mb_manaDown
 local MeleeTrinkets = mb_meleeTrinkets
 local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankTarget = mb_tankTarget
 local TrinketOnCD = mb_trinketOnCD
 local UseTranquilizingShot = mb_useTranquilizingShot
@@ -185,9 +183,7 @@ local function HunterSingle()
     end
 
     if InCombat("player") then
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Hunter:Cooldowns()

@@ -69,7 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local BuyReagentsAndArrows = mb_buyReagentsAndArrows
+local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
 local ImHealer = mb_imHealer
 
 --[####################################################################################################]--
@@ -147,7 +147,7 @@ function MMB:OnUpdate()
     end
     
     if MB_autoBuyReagents.Active and currentTime > MB_autoBuyReagents.Time then
-        BuyReagentsAndArrows()
+        BuyReagentsAndConsumables()
     end
     
     if MB_hunterFeign.Active and currentTime > MB_hunterFeign.Time then

@@ -108,9 +108,7 @@ local PartyMana = mb_partyMana
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SpellReady = mb_spellReady
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -178,9 +176,7 @@ local function ShamanHeal()
             end
         end
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Shaman:Cooldowns()
@@ -387,9 +383,7 @@ function Shaman:Elemental()
     end
 
     if InCombat("player") then
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Shaman:Cooldowns()

@@ -120,9 +120,7 @@ local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SpellReady = mb_spellReady
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -205,9 +203,7 @@ local function PriestHeal()
 
 		Priest:PowerInfusion()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Priest:Cooldowns()
@@ -688,9 +684,7 @@ function Priest:Shadow()
             end
         end
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Priest:Cooldowns()
@@ -1030,9 +1024,7 @@ local function PriestLoathebHeal()
 	if InCombat("player") then
 		Priest:PowerInfusion()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Priest:Cooldowns()

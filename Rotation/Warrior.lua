@@ -175,11 +175,9 @@ local function WarriorSingle()
     end
 
     if Instance.AQ40 then
-        if TankTarget("Princess Huhuran") and HealthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
-            if HaveInBags("Greater Nature Protection Potion") and not IsItemInBagCoolDown("Greater Nature Protection Potion") then				
-                UseItemByName("Greater Nature Protection Potion")
-            end       
-        elseif IsAtSkeram() and SpellReady("Intimidating Shout") then
+        mb_useNaturePotsOnHuhuran()
+
+        if IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
         end
     end
@@ -428,11 +426,9 @@ local function WarriorMulti()
     end
 	
     if Instance.AQ40 then
-        if TankTarget("Princess Huhuran") and HealthPct("target") <= 0.3 and MB_myHuhuranBoxStrategy then        
-            if HaveInBags("Greater Nature Protection Potion") and not IsItemInBagCoolDown("Greater Nature Protection Potion") then				
-                UseItemByName("Greater Nature Protection Potion")
-            end       
-        elseif IsAtSkeram() and SpellReady("Intimidating Shout") then
+        mb_useNaturePotsOnHuhuran()
+
+        if IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
         end
     end

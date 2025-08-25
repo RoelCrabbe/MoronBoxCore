@@ -126,9 +126,7 @@ local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SpellReady = mb_spellReady
 local StunnableMob = mb_stunnableMob
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankBuff = mb_tankBuff
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
@@ -210,9 +208,7 @@ local function DruidHeal()
 		Druid:HealerDebuffs()
 		Druid:Innervate()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()
@@ -809,9 +805,7 @@ function Druid:Balance()
 		Druid:HealerDebuffs()
 		Druid:Innervate()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()
@@ -1283,9 +1277,7 @@ local function DruidLoathebHeal()
 		Druid:HealerDebuffs()
 		Druid:Innervate()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()

@@ -117,9 +117,7 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SpellReady = mb_spellReady
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankBuff = mb_tankBuff
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -294,9 +292,7 @@ local function MageSingle()
 	if InCombat("player") then
 		Mage:UseManaGems()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
 		if ManaPct() <= 0.1 and SpellReady("Evocation") then
 			CastSpellByName("Evocation")
@@ -360,7 +356,7 @@ function Mage:BossSpecificDPS()
 		return true
 	end
 
-    if Instance.AQ40 and MobsToDetectMagic() then
+    if (Instance.AQ40 or Instance.AQ20) and MobsToDetectMagic() then
         if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then        
             CastSpellOrWand("Frostbolt")
             return true
@@ -597,9 +593,7 @@ local function MageAOE()
     if InCombat("player") then
 		Mage:UseManaGems()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Mage:Cooldowns()
@@ -716,7 +710,7 @@ MB_mySetupList["Mage"] = MageSetup
 
 local function MagePreCast()
 
-    for k, trinket in pairs(mb_casterTrinkets) do
+    for k, trinket in pairs(MB_casterTrinkets) do
         if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then
             use(13)
         end

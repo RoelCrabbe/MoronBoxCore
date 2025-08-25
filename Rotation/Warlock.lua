@@ -112,9 +112,7 @@ local SmartDrink = mb_smartDrink
 local SomeoneInRaidBuffedWith = mb_someoneInRaidBuffedWith
 local SpellNumber = mb_spellNumber
 local SpellReady = mb_spellReady
-local TakeManaPotionAndRune = mb_takeManaPotionAndRune
-local TakeManaPotionIfBelowManaPotMana = mb_takeManaPotionIfBelowManaPotMana
-local TakeManaPotionIfBelowManaPotManaInRazorgoreRoom = mb_takeManaPotionIfBelowManaPotManaInRazorgoreRoom
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -228,9 +226,7 @@ local function WarlockSingle()
 	if InCombat("player") then
 		Warlock:HealthStone()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if KnowSpell("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff")then
 			Warlock:SumPetAndSac()			
@@ -542,9 +538,7 @@ local function WarlockAOE()
 	if InCombat("player") then
 		Warlock:HealthStone()
 
-		TakeManaPotionAndRune()
-		TakeManaPotionIfBelowManaPotMana()
-		TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+		TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Warlock:Cooldowns()

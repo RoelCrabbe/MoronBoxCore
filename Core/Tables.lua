@@ -473,7 +473,9 @@ local MB_reagentVendorsSet = {
     ["Horthus"] = true,
     ["Hannah Akeley"] = true,
     ["Alyssa Eva"] = true,
-    ["Thomas Mordan"] = true
+    ["Thomas Mordan"] = true,
+    ["Reagents"] = true,
+    ["Consumables"] = true,
 }
 
 local MB_sunfruitVendorsSet = {

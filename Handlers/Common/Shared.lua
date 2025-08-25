@@ -1452,3 +1452,25 @@ function mb_changeSpecc(specc)
        return
    end
 end
+
+function mb_checkCooldown(lastTime, cooldown)
+    return not lastTime or (GetTime() - lastTime) >= cooldown
+end
+
+-- function TestTHIS()
+--     if mb_hasBuffNamed("Fire and Arcane Reflect", "target") then
+--         Print("There is valid reason yes yes")
+--     end
+
+--     if mb_hasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff") then
+--         Print("There is valid reason yes")
+--     end
+
+--     if mb_hasBuffNamed("Shadow and Frost Reflect", "target") then
+--         Print("There is valid reason no no")
+--     end
+
+--     if mb_hasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff") then
+--         Print("There is blood in the water")
+--     end
+-- end

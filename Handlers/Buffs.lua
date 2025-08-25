@@ -117,43 +117,50 @@ function mb_hasWeaponBuff(oBuff, unit)
 end
 
 function mb_hasBuffNamed(oBuff, unit)
-    local c = nil
-	local buff = strlower(oBuff)
-	local tooltip = MMBTooltip
-	local textleft1 = getglobal(tooltip:GetName().."TextLeft1")
-	if not unit then
-		unit  = "player"
-	end
-
-	for i = 1, 32 do
-		tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		tooltip:SetUnitBuff(unit, i)
-		b = textleft1:GetText()
-		tooltip:Hide()
-
-		if ( b and strfind(strlower(b), buff) ) then
-			return "buff", i, b
-		elseif ( c == b ) then
-			break
-		end
-	end
-
-	c = nil
-
-	for i = 1, 16 do
-		tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		tooltip:SetUnitDebuff(unit, i)
-		b = textleft1:GetText()
-		tooltip:Hide()
-
-		if ( b and strfind(strlower(b), buff) ) then
-			return "debuff", i, b
-		elseif ( c == b) then
-			break
-		end
-	end
-
-	tooltip:Hide()
+    local buff = strlower(oBuff)
+    local tooltip = MMBTooltip
+    local textleft1 = getglobal(tooltip:GetName().."TextLeft1")
+    local b -- declare b as local
+    
+    if not unit then
+        unit = "player"
+    end
+    
+    -- Check buffs (1-32)
+    for i = 1, 32 do
+        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+        tooltip:SetUnitBuff(unit, i)
+        b = textleft1:GetText()
+        tooltip:Hide()
+        
+        if not b then -- no more buffs
+            break
+        end
+        
+        if strfind(strlower(b), buff) then
+            return "buff", i, b
+        end
+    end
+    
+    -- Check debuffs (1-16)
+    for i = 1, 16 do
+        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+        tooltip:SetUnitDebuff(unit, i)
+        b = textleft1:GetText()
+        tooltip:Hide()
+        
+        if not b then -- no more debuffs
+            break
+        end
+        
+        if strfind(strlower(b), buff) then
+            return "debuff", i, b
+        end
+    end
+    
+    -- Cleanup and return nil if not found
+    tooltip:Hide()
+    return nil
 end
 
 function mb_hasBuffOrDebuff(spell, target, buffOrDebuff)
@@ -911,7 +918,6 @@ mb_buffData["Spirit of Zanza"] 						 =  "Interface\\Icons\\INV_Potion_30"
 mb_buffData["Recently Bandaged"] 					 =  "Interface\\Icons\\INV_Misc_Bandage_08"
 mb_buffData["First Aid"] 							 =  "Interface\\Icons\\Spell_Holy_Heal"
 mb_buffData["Frozen Rune"]							 =  "Interface\\Icons\\Spell_Fire_MasterOfElements"
-mb_buffData["Shadow Protection Potion"]				 =  "Interface\\Icons\\Spell_Shadow_RagingScream"
 mb_buffData["Shadow Storm"] 				 =  "Interface\\Icons\\Spell_Shadow_ShadowBolt" --aq40 anubisaths BUFF
 mb_buffData["Mana Burn"]					 =  "Interface\\Icons\\Spell_Shadow_ManaBurn" --aq40 anubisaths BUFF
 mb_buffData["Fire and Arcane Reflect"] 		 =  "Interface\\Icons\\Spell_Arcane_Blink" --same icon, 
@@ -934,8 +940,6 @@ mb_buffData["Corrupted Healing"] 			 =  "Interface\\Icons\\Spell_Shadow_Charm" -
 mb_buffData["Delusions of Jin\'do"] 			 =  "Interface\\Icons\\Spell_Shadow_UnholyFrenzy" --Jindo shade debuff, do not decurse.
 mb_buffData["Threatening Gaze"] 			 =  "Interface\\Icons\\Spell_Shadow_Charm" --Broodlord's Threatening gaze.
 mb_buffData["True Fulfillment"] 			 =  "Interface\\Icons\\Spell_Shadow_Charm" --Skerams mindcontrol.
-mb_buffData["Nature Protection Potion"] 	 =  "Interface\\Icons\\Spell_Nature_SpiritArmor"
-mb_buffData["Fire Protection Potion"] 		 =  "Interface\\Icons\\Spell_Fire_FireArmor"
 mb_buffData["Aura of Agony"]				 =  "Interface\\Icons\\Spell_Shadow_CurseOfSargeras"
 mb_buffData["Corruption of the Earth"]		 =  "Interface\\Icons\\Ability_Creature_Cursed_03"
 mb_buffData["Atiesh"] 						 =  "Interface\\Icons\\Spell_Nature_MoonGlow"
@@ -966,3 +970,7 @@ mb_buffData["Increased Stamina"] 				 =  "Interface\\Icons\\INV_Boots_Plate_03"
 mb_buffData["Well Fed"] 				 =  "Interface\\Icons\\INV_Misc_Food"
 mb_buffData["Increased Intellect"] 				 =  "Interface\\Icons\\INV_Misc_Organ_03"
 mb_buffData["Evil Twin"] 				 =  "Interface\\Icons\\Spell_Shadow_Charm"
+
+mb_buffData["Greater Shadow Protection Potion"]				=  "Interface\\Icons\\Spell_Shadow_RagingScream"
+mb_buffData["Greater Nature Protection Potion"] 	 		=  "Interface\\Icons\\Spell_Nature_SpiritArmor"
+mb_buffData["Greater Fire Protection Potion"] 		 		=  "Interface\\Icons\\Spell_Fire_FireArmor"
