@@ -71,6 +71,7 @@ local myRace = UnitRace("player")
 
 local ReagentsList = {
     ["Druid"] = {
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -81,6 +82,7 @@ local ReagentsList = {
         "Wild Thornroot"
     },
     ["Hunter"] = {
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Doomshot",
         "Drakefire Amulet",
@@ -92,6 +94,7 @@ local ReagentsList = {
     },
     ["Mage"] = {
         "Arcane Powder",
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -101,6 +104,7 @@ local ReagentsList = {
         "Rune of Portals"
     },
     ["Paladin"] = {
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -111,6 +115,7 @@ local ReagentsList = {
         "Symbol of Kings"
     },
     ["Priest"] = {
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -120,6 +125,7 @@ local ReagentsList = {
         "Sacred Candle"
     },
     ["Rogue"] = {
+        "Cache of Mau\'ari",
         "Drakefire Amulet",
         "Eternal Quintessence",
         "Flash Powder",
@@ -129,6 +135,7 @@ local ReagentsList = {
     },
     ["Shaman"] = {
         "Ankh",
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -137,6 +144,7 @@ local ReagentsList = {
         "Major Mana Potion"
     },
     ["Warlock"] = {
+        "Cache of Mau\'ari",
         "Demonic Rune",
         "Drakefire Amulet",
         "Eternal Quintessence",
@@ -145,7 +153,8 @@ local ReagentsList = {
         "Major Mana Potion"
     },
     ["Warrior"] = {
-        "Dirge's Kickin' Chimaerok Chops",
+        "Cache of Mau\'ari",
+        "Dirge\'s Kickin\' Chimaerok Chops",
         "Doomshot",
         "Drakefire Amulet",
         "Elixir of the Mongoose",
@@ -166,6 +175,7 @@ local ReagentsLimit = {
     -- All Chars need this!
     ["Drakefire Amulet"] = { 1, 1 },
     ["Eternal Quintessence"] = { 1, 1 },
+    ["Cache of Mau\'ari"] = { 1, 1 },
 
     -- Druid
     ["Ironwood Seed"] = { 20, 1 },
@@ -187,8 +197,8 @@ local ReagentsLimit = {
     ["Sacred Candle"] = { 200, 1 },
 
     -- Protection Consumables
-    ["Greater Nature Protection Potion"] = { 40, 1 },
-    ["Greater Shadow Protection Potion"] = { 60, 1 },
+    ["Greater Nature Protection Potion"] = { 20, 1 },
+    ["Greater Shadow Protection Potion"] = { 50, 1 },
 
     -- Rogue
     ["Flash Powder"] = { 100, 1 },
@@ -201,12 +211,12 @@ local ReagentsLimit = {
     ["Miniature Cannon Balls"] = { 1, 2 },
 
     -- Warrior Consumables
-    ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },
+    ["Dirge\'s Kickin\' Chimaerok Chops"] = { 8, 1 },
     ["Elixir of the Mongoose"] = { 40, 1 },
     ["Gift of Arthas"] = { 10, 1 },
     ["Greater Stoneshield Potion"] = { 40, 1 },
-    ["Juju Might"] = { 20, 1 },
-    ["Juju Power"] = { 20, 1 },
+    ["Juju Might"] = { 40, 1 },
+    ["Juju Power"] = { 40, 1 },
     ["Rumsey Rum Black Label"] = { 20, 1 },
 
     -- Flasks
