@@ -556,7 +556,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function MeleeSpeedRunPots() -- Warrior, Hunter, Rogue
+local function MeleeSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
@@ -564,7 +564,7 @@ local function MeleeSpeedRunPots() -- Warrior, Hunter, Rogue
     UseJujuWhenPossible("Juju Power")
 end
 
-local function CasterSpeedRunPots() -- Priest Should get Ranged & Healer Pots; Mage, Warlock;
+local function CasterSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of Supereme Power")
     UsePotionsWhenPossible("Mageblood Potion")
@@ -583,7 +583,7 @@ local function CasterSpeedRunPots() -- Priest Should get Ranged & Healer Pots; M
     UsePotionsWhenPossible("Elixir of Shadow Power")
 end
 
-local function HealerSpeedRunPots() -- Priest Should get Ranged & Healer Pots; Shaman, Priest, Druid
+local function HealerSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")
