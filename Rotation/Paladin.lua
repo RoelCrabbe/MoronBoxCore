@@ -182,7 +182,7 @@ local function PaladinHeal()
 		end
 	end
 
-    if Instance.BWL and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+    if Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
         if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then	
             MBH_CastHeal("Flash of Light", 6, 6)
             return
@@ -363,7 +363,7 @@ local function PaladinSingle()
 	
 	GetTarget()
 
-    if Instance.NAXX and RaidIsPoisoned() and ImBusy() then
+    if Instance.Naxx() and RaidIsPoisoned() and ImBusy() then
 		if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
 			SpellStopCasting()
 		end

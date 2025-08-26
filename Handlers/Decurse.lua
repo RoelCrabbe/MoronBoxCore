@@ -74,12 +74,12 @@ function mb_decurse()
 		return false
 	end
 
-	if Instance.ZG then		
+	if Instance.ZG() then		
 		if mb_isAtJindo() and (myClass == "Mage" or myClass == "Druid") then
 			return false
 		end
 
-	elseif Instance.BWL then
+	elseif Instance.BWL() then
 		if mb_tankTarget("Chromaggus") and MB_myAssignedHealTarget then
 			return false
 		end

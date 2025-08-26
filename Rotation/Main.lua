@@ -141,7 +141,7 @@ function mb_single()
         return
     end
 
-    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.Naxx() and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -152,18 +152,18 @@ function mb_single()
             return
         end
 
-    elseif Instance.BWL and not mb_tankTarget("Razorgore the Untamed") then
+    elseif Instance.BWL() and not mb_tankTarget("Razorgore the Untamed") then
 	    if mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             mb_orbControlling()
             return
         end
     
-    elseif Instance.ZG and mb_tankTarget("Bloodlord Mandokir") then
+    elseif Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
         if mb_mandokirGaze() then
             return
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Moam") then
+    elseif Instance.AQ20() and mb_tankTarget("Moam") then
         mb_autoAssignBanishOnMoam()
     end
 
@@ -216,7 +216,7 @@ function mb_multi()
         return
     end
 
-    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.Naxx() and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -227,18 +227,18 @@ function mb_multi()
             return
         end
 
-    elseif Instance.BWL and not mb_tankTarget("Razorgore the Untamed") then
+    elseif Instance.BWL() and not mb_tankTarget("Razorgore the Untamed") then
 	    if mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             mb_orbControlling()
             return
         end
     
-    elseif Instance.ZG and mb_tankTarget("Bloodlord Mandokir") then
+    elseif Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
         if mb_mandokirGaze() then
             return
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Moam") then
+    elseif Instance.AQ20() and mb_tankTarget("Moam") then
         mb_autoAssignBanishOnMoam()
     end
 
@@ -291,7 +291,7 @@ function mb_AOE()
         return
     end
 
-    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.Naxx() and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -302,18 +302,18 @@ function mb_AOE()
             return
         end
 
-    elseif Instance.BWL and not mb_tankTarget("Razorgore the Untamed") then
+    elseif Instance.BWL() and not mb_tankTarget("Razorgore the Untamed") then
 	    if mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             mb_orbControlling()
             return
         end
     
-    elseif Instance.ZG and mb_tankTarget("Bloodlord Mandokir") then
+    elseif Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
         if mb_mandokirGaze() then
             return
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Moam") then
+    elseif Instance.AQ20() and mb_tankTarget("Moam") then
         mb_autoAssignBanishOnMoam()
     end
 
@@ -366,7 +366,7 @@ function mb_setup()
         return
     end
 
-    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.Naxx() and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -377,18 +377,18 @@ function mb_setup()
             return
         end
 
-    elseif Instance.BWL and not mb_tankTarget("Razorgore the Untamed") then
+    elseif Instance.BWL() and not mb_tankTarget("Razorgore the Untamed") then
 	    if mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             mb_orbControlling()
             return
         end
     
-    elseif Instance.ZG and mb_tankTarget("Bloodlord Mandokir") then
+    elseif Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
         if mb_mandokirGaze() then
             return
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Moam") then
+    elseif Instance.AQ20() and mb_tankTarget("Moam") then
         mb_autoAssignBanishOnMoam()
     end
 
@@ -481,7 +481,7 @@ function mb_healAndTank()
         return
     end
 
-    if Instance.NAXX and mb_hasBuffNamed("Mind Control", "player") then
+    if Instance.Naxx() and mb_hasBuffNamed("Mind Control", "player") then
         if mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy then
 
             mb_doRazuviousActions()
@@ -492,18 +492,18 @@ function mb_healAndTank()
             return
         end
 
-    elseif Instance.BWL and not mb_tankTarget("Razorgore the Untamed") then
+    elseif Instance.BWL() and not mb_tankTarget("Razorgore the Untamed") then
 	    if mb_isAtRazorgore() and myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             mb_orbControlling()
             return
         end
     
-    elseif Instance.ZG and mb_tankTarget("Bloodlord Mandokir") then
+    elseif Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
         if mb_mandokirGaze() then
             return
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Moam") then
+    elseif Instance.AQ20() and mb_tankTarget("Moam") then
         mb_autoAssignBanishOnMoam()
     end
 
@@ -570,7 +570,7 @@ function mb_healAndTank()
 		MB_mySpecc = "Furytank"
 	end
 
-	if Instance.ZG and myClass == "Mage" and mb_tankTarget("Hakkar") then
+	if Instance.ZG() and myClass == "Mage" and mb_tankTarget("Hakkar") then
 		
         if mb_hasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
@@ -587,7 +587,7 @@ function mb_healAndTank()
             mb_crowdControlMCedRaidMemberHakkar()
         end
 
-	elseif Instance.AQ40 then
+	elseif Instance.AQ40() then
 
 		if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
@@ -639,7 +639,7 @@ function mb_healAndTank()
             end
 		end
 
-    elseif Instance.BWL and string.find(GetSubZoneText(), "Nefarian.*Lair") and mb_isAtNefarianPhase() then 
+    elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and mb_isAtNefarianPhase() then 
 
         if mb_hasBuffOrDebuff("Shadow Command", "target", "debuff") then
             ClearTarget()
@@ -658,7 +658,7 @@ function mb_healAndTank()
             end
 		end
 
-	elseif Instance.NAXX then
+	elseif Instance.Naxx() then
 
         if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
@@ -924,15 +924,15 @@ end
 --[####################################################################################################]--
 
 function mb_followFocus()
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
 			return
 		end
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.ONY then
+	elseif Instance.ONY() then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -953,15 +953,15 @@ function mb_followFocus()
 end
 
 function mb_casterFollow()
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
 			return
 		end
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.ONY then
+	elseif Instance.ONY() then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -981,15 +981,15 @@ function mb_casterFollow()
 end
 
 function mb_meleeFollow()
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
 			return
 		end
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.ONY then
+	elseif Instance.ONY() then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -999,7 +999,7 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then	
+	if Instance.AQ40() and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then	
 		if mb_myNameInTable(MB_mySkeramLeftTank) then
 			return
 		end
@@ -1034,7 +1034,7 @@ function mb_meleeFollow()
 
 		return
 
-	elseif Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+	elseif Instance.BWL() and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 		if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) then
 			return
 		end
@@ -1068,15 +1068,15 @@ function mb_meleeFollow()
 end
 
 function mb_tankFollow()
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
 			return
 		end
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.ONY then
+	elseif Instance.ONY() then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -1096,15 +1096,15 @@ function mb_tankFollow()
 end
 
 function mb_healerFollow()
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		if mb_hasBuffOrDebuff("Plague", "player", "debuff") and mb_tankTarget("Anubisath Defender") then
 			return
 		end
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if mb_tankTarget("Baron Geddon") and mb_myNameInTable(MB_raidAssist.GTFO.Baron) then
 			return
 		end
-	elseif Instance.ONY then
+	elseif Instance.ONY() then
 		if mb_tankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
 			return
 		end
@@ -1154,7 +1154,7 @@ function mb_manualTaunt()
 		return
 	end
 
-	if Instance.ZG then
+	if Instance.ZG() then
 		if mb_mandokirGaze() then
 			return
 		end
@@ -1211,7 +1211,7 @@ function mb_GTFO()
         return
     end
 
-    if Instance.ONY and MB_myOnyxiaBoxStrategy then
+    if Instance.ONY() and MB_myOnyxiaBoxStrategy then
         if mb_tankTarget("Onyxia") and (mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then            
             if mb_focusAggro() then
                 if myClass == "Paladin" and mb_spellReady("Divine Shield") then                     
@@ -1233,7 +1233,7 @@ function mb_GTFO()
     end
 		
     if not mb_haveAggro() then
-        if Instance.NAXX and MB_myGrobbulusBoxStrategy then
+        if Instance.Naxx() and MB_myGrobbulusBoxStrategy then
             if mb_isAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
                 if mb_hasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
                     if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
@@ -1254,7 +1254,7 @@ function mb_GTFO()
             
             mb_useFrozenRuneOnFaerlina()
         
-        elseif Instance.BWL and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
+        elseif Instance.BWL() and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
@@ -1264,7 +1264,7 @@ function mb_GTFO()
                 FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
             end            
 
-        elseif Instance.MC and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then 
+        elseif Instance.MC() and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then 
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
@@ -1502,7 +1502,7 @@ function mb_mountUp()
         return
     end
 
-	if Instance.AQ40 then		
+	if Instance.AQ40() then		
 		use(mb_getLink("Resonating"))
 		return
 	end
@@ -1531,7 +1531,7 @@ end
 
 local function ChooseAirTotem()
 
-    if Instance.NAXX then
+    if Instance.Naxx() then
         if mb_tankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
            
             if mb_isInGroup(MB_myFirstPWSoaker) or mb_isInGroup(MB_mySecondPWSoaker) or mb_isInGroup(MB_myThirdPWSoaker) then                
@@ -1555,7 +1555,7 @@ local function ChooseAirTotem()
             end
         end
     
-    elseif Instance.AQ40 and mb_tankTarget("Princess Huhuran") and mb_tankTargetHealth() <= 0.4 then
+    elseif Instance.AQ40() and mb_tankTarget("Princess Huhuran") and mb_tankTargetHealth() <= 0.4 then
 
         if mb_myGroupClassOrder() == 1 then return "Nature Resistance Totem" end
 
@@ -1572,7 +1572,7 @@ local function ChooseAirTotem()
             if mb_myGroupClassOrder() == 3 then return "Grace of Air Totem" end
         end
 
-    elseif Instance.AQ20 and mb_tankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
+    elseif Instance.AQ20() and mb_tankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
 
         if mb_isInGroup(MB_myOssirianMainTank) then
             if mb_myGroupClassOrder() == 1 then return "Grounding Totem" end
@@ -1605,7 +1605,7 @@ end
 
 local function ChooseEarthTotem()
 
-    if Instance.ONY and mb_tankTarget("Onyxia") and mb_tankTargetHealth() >= 0.4 then
+    if Instance.ONY() and mb_tankTarget("Onyxia") and mb_tankTargetHealth() >= 0.4 then
 
         if MB_druidTankInParty or MB_warriorTankInParty then
             if mb_myGroupClassOrder() == 1 then return "Strength of Earth Totem" end
@@ -1646,11 +1646,11 @@ local function ChooseWaterTotem()
 
 	if mb_isPoisonBoss() then
 	
-        if Instance.AQ40 then
+        if Instance.AQ40() then
 			if mb_myGroupClassOrder() == 1 then return "Healing Stream Totem" end
 			if mb_myGroupClassOrder() == 2 then return "Mana Spring Totem" end
 
-		elseif Instance.BWL and mb_tankTarget("Chromaggus") then
+		elseif Instance.BWL() and mb_tankTarget("Chromaggus") then
 			if mb_myGroupClassOrder() == 1 then return "Poison Cleansing Totem" end
 			if mb_myGroupClassOrder() == 2 then return "Mana Spring Totem" end
 		end	

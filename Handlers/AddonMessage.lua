@@ -108,7 +108,7 @@ function mb_cooldowns()
 		return
 	end
 
-	if Instance.ZG then
+	if Instance.ZG() then
 		if mb_mandokirGaze() then
 			return
 		end
@@ -142,7 +142,7 @@ function mb_useManualRecklessness()
 		return
 	end
 
-	if Instance.ZG then
+	if Instance.ZG() then
 		if mb_mandokirGaze() then
 			return
 		end
@@ -180,7 +180,7 @@ function mb_reportCooldowns()
 		return
 	end
 
-	if Instance.ZG then
+	if Instance.ZG() then
 		if mb_mandokirGaze() then
 			return
 		end

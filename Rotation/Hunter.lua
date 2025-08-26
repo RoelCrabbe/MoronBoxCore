@@ -157,20 +157,20 @@ local function HunterSingle()
 		SelfBuff("Aspect of the Hawk")  
 	end
 
-    if Instance.NAXX and TankTarget("Gluth") then
+    if Instance.Naxx() and TankTarget("Gluth") then
 
 		Hunter:FreezingTrap()
-    elseif Instance.AQ40 and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+    elseif Instance.AQ40() and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
 		
         ClearTarget()
         return
-	elseif Instance.BWL and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
+	elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
 
         if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
             ClearTarget()
             return
         end
-	elseif Instance.ZG and TankTarget("Hakkar") then
+	elseif Instance.ZG() and TankTarget("Hakkar") then
 
         if HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
@@ -240,7 +240,7 @@ function Hunter:BossSpecificDPS()
 		CastSpellByName("Hunter\'s Mark")
 	end
 
-	if Instance.AQ20 then        
+	if Instance.AQ20() then        
         if TankTarget("Ossirian the Unscarred") then
             if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
 

@@ -700,7 +700,7 @@ end
 function mb_getTarget()
 	local tName = UnitName("target")
 	
-	if Instance.BWL and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then		
+	if Instance.BWL() and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then		
 		if myName == mb_returnPlayerInRaidFromTable(MB_myRazorgoreORBtank) and not mb_tankTarget("Razorgore the Untamed") then
         	mb_orbControlling()
 			return
@@ -711,11 +711,11 @@ function mb_getTarget()
         return
     end
 
-	if Instance.AQ40 and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
+	if Instance.AQ40() and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
 		if HandleAQ40TargetingPreFocus() then
 			return
 		end
-	elseif Instance.BWL and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then
+	elseif Instance.BWL() and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then
 		if HandleBWLTargetingPreFocus() then
 			return
 		end	
@@ -732,32 +732,32 @@ function mb_getTarget()
 		return
 	end
 
-	if Instance.NAXX then
+	if Instance.Naxx() then
 		if HandleNAXXTargetingPostFocus() then
 			return
 		end
 
-	elseif Instance.AQ40 then
+	elseif Instance.AQ40() then
 		if HandleAQ40TargetingPostFocus() then
 			return
 		end
 
-	elseif Instance.BWL then		
+	elseif Instance.BWL() then		
 		if HandleBWLTargetingPostFocus() then
 			return
 		end
 
-	elseif Instance.ONY and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+	elseif Instance.ONY() and mb_tankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
 		if HandleONYTargetingPostFocus() then
 			return
 		end
 
-	elseif Instance.ZG then
+	elseif Instance.ZG() then
 		if HandleZGTargetingPostFocus() then
 			return
 		end
 					
-	elseif Instance.AQ20 and mb_tankTarget("Ayamiss the Hunter") and not mb_dead("target") then
+	elseif Instance.AQ20() and mb_tankTarget("Ayamiss the Hunter") and not mb_dead("target") then
 		if HandleAQ20TargetingPostFocus() then
 			return
 		end
@@ -1706,7 +1706,7 @@ function mb_autoAssignBanishOnMoam()
 end
 
 function mb_healerJindoRotation(spellName)
-	if Instance.ZG and mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
+	if Instance.ZG() and mb_hasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
         if UnitName("target") == "Shade of Jin\'do" and not mb_dead("target") then
             CastSpellByName(spellName)
         end

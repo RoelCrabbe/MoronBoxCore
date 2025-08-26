@@ -232,7 +232,7 @@ local function MageSingle()
         end
 	end
 
-	if Instance.AQ40 then		
+	if Instance.AQ40() then		
 		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
@@ -250,7 +250,7 @@ local function MageSingle()
 			end
 		end
 
-	elseif Instance.BWL and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
+	elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
 
         if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
             ClearTarget()
@@ -267,7 +267,7 @@ local function MageSingle()
             CrowdControlMCedRaidMemberNefarian()
         end
 
-	elseif Instance.ZG and TankTarget("Hakkar") then
+	elseif Instance.ZG() and TankTarget("Hakkar") then
 
         if HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
@@ -356,7 +356,7 @@ function Mage:BossSpecificDPS()
 		return true
 	end
 
-    if (Instance.AQ40 or Instance.AQ20) and MobsToDetectMagic() then
+    if (Instance.AQ40() or Instance.AQ20()) and MobsToDetectMagic() then
         if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then        
             CastSpellOrWand("Frostbolt")
             return true
@@ -387,7 +387,7 @@ function Mage:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40 then		
+	if Instance.AQ40() then		
 		if TankTarget("Viscidus") then			
 			if HealthPct("target") <= 0.35 then				
 				CastSpellByName("Frostbolt(Rank 1)")
@@ -412,7 +412,7 @@ function Mage:BossSpecificDPS()
 			return true
 		end
 
-	elseif Instance.BWL and CorruptedTotems() and not Dead("target") then	
+	elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then	
         if SpellReady("Fireblast") then
             CastSpellByName("Fire Blast")
         end
@@ -420,7 +420,7 @@ function Mage:BossSpecificDPS()
         CastSpellOrWand("Scorch")
         return true
 
-	elseif Instance.MC then
+	elseif Instance.MC() then
 		if TankTarget("Shazzrah") then
 			if MB_mySpecc == "Fire" and not SpellReady("Fireball") then				
                 Mage:Frost()
@@ -438,7 +438,7 @@ function Mage:BossSpecificDPS()
             end
 		end
 
-	elseif Instance.ZG then
+	elseif Instance.ZG() then
 		if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
 			if tName == "Shade of Jin\'do" and not Dead("target") then
 				if SpellReady("Fire Blast") then
@@ -459,7 +459,7 @@ function Mage:BossSpecificDPS()
 			return true
 		end
 
-	elseif Instance.AQ20 and TankTarget("Ossirian the Unscarred") then
+	elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
         if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then        
             Mage:Fire()
             return true
@@ -605,10 +605,10 @@ local function MageAOE()
 		return
 	end
 
-    if Instance.BWL and GetSubZoneText() == "Halls of Strife" then        
+    if Instance.BWL() and GetSubZoneText() == "Halls of Strife" then        
         CastSpellByName("Arcane Explosion(Rank 3)") 
         return
-    elseif Instance.NAXX and TankTarget("Maexxna") then        
+    elseif Instance.Naxx() and TankTarget("Maexxna") then        
         CastSpellByName("Arcane Explosion(Rank 3)") 
         return
     end
@@ -757,7 +757,7 @@ function Mage:Cooldowns()
 end
 
 local function CooldownConditions()
-    if Instance.ONY and CooldownScenarios.ONY then
+    if Instance.ONY() and CooldownScenarios.ONY then
         if CooldownScenarios.ONY.Encounter() then
             if CooldownScenarios.ONY.Conditions() then
                 Mage:Cooldowns()

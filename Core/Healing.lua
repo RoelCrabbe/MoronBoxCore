@@ -564,7 +564,7 @@ function mb_healLieutenantAQ20()
 		return false
 	end
 
-	if Instance.AQ20 then
+	if Instance.AQ20() then
         TargetByName("Lieutenant General Andorov")
 
         if UnitName("target") == "Lieutenant General Andorov" then

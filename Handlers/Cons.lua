@@ -73,7 +73,6 @@ local BossIShouldUseManapotsOn = mb_bossIShouldUseManapotsOn
 local BossIShouldUseRunesAndManapotsOn = mb_bossIShouldUseRunesAndManapotsOn
 local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
 local CdPrint = mb_cdPrint
-local CheckCooldown = mb_checkCooldown
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HasItem = mb_hasItem
@@ -239,26 +238,26 @@ local ReagentsLimit = {
     -- ========================================
     
     -- Protection Potions
-    ["Greater Nature Protection Potion"] = { 20, 1 },
-    ["Greater Shadow Protection Potion"] = { 50, 1 },
+    ["Greater Nature Protection Potion"] = { 25, 1 },
+    ["Greater Shadow Protection Potion"] = { 65, 1 },
     
     -- Mana Restoration
-    ["Demonic Rune"] = { 20, 1 },
-    ["Major Mana Potion"] = { 40, 1 },
+    ["Demonic Rune"] = { 40, 1 },
+    ["Major Mana Potion"] = { 60, 1 },
     
     -- Flasks (High-End Consumables)
-    ["Flask of Distilled Wisdom"] = { 5, 1 },
-    ["Flask of Supreme Power"] = { 5, 1 },
-    ["Flask of the Titans"] = { 5, 1 },
+    ["Flask of Distilled Wisdom"] = { 10, 1 },
+    ["Flask of Supreme Power"] = { 10, 1 },
+    ["Flask of the Titans"] = { 10, 1 },
     
     -- Damage/Power Elixirs
     ["Elixir of Frost Power"] = { 20, 1 },
     ["Elixir of Greater Firepower"] = { 20, 1 },
     ["Elixir of Shadow Power"] = { 20, 1 },
-    ["Greater Arcane Elixir"] = { 20, 1 },
+    ["Greater Arcane Elixir"] = { 40, 1 },
     
     -- Utility Potions
-    ["Mageblood Potion"] = { 20, 1 },
+    ["Mageblood Potion"] = { 40, 1 },
     
     -- ========================================
     -- PHYSICAL DPS CONSUMABLES
@@ -274,7 +273,7 @@ local ReagentsLimit = {
     ["Rumsey Rum Black Label"] = { 20, 1 },
     
     -- Tank/Survivability
-    ["Gift of Arthas"] = { 10, 1 },
+    ["Gift of Arthas"] = { 15, 1 },
     ["Greater Stoneshield Potion"] = { 40, 1 },
     
     -- Ammunition/Projectiles (Special Stack Size)
@@ -308,6 +307,12 @@ local function GetCompleteReagentList(className)
 end
 
 function mb_buyReagentsAndConsumables()
+    local freeSlots = mb_getAllContainerFreeSlots()
+    if freeSlots <= 5 then
+        mb_cdMessage("I don't have enough bagspace to buy consumables, sort it!")
+        return
+    end
+
     local classItems = GetCompleteReagentList(myClass)
     
     if classItems then
@@ -383,7 +388,7 @@ local function TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
 		return
 	end
 
-    if Instance.BWL and not IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
+    if Instance.BWL() and not IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
         return
     end
 
@@ -404,7 +409,7 @@ function mb_useSandsOnChromaggus()
 		return
 	end
 
-	if Instance.BWL and not TankTarget("Chromaggus") then
+	if Instance.BWL() and not TankTarget("Chromaggus") then
         return
     end
 
@@ -428,7 +433,7 @@ function mb_useSandsOnChromaggus()
         return
     end
 
-    if CheckCooldown(sandTime, 3) then
+    if (sandTime == nil or GetTime() - sandTime > 3) then
         sandTime = GetTime()
         UseFromBags("Hourglass Sand")
     end
@@ -451,8 +456,8 @@ local function UsePotionsWhenPossible(potion)
         return
     end
 
-    if CheckCooldown(cooldown, 3) then
-        cooldown = GetTime()
+    if (sandTime == nil or GetTime() - sandTime > 3) then
+        sandTime = GetTime()
         UseFromBags(potion)
     end
 end
@@ -466,7 +471,7 @@ function mb_useFrozenRuneOnFaerlina()
 		return
 	end
 
-    if Instance.NAXX and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
+    if Instance.Naxx() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
@@ -482,7 +487,7 @@ function mb_useShadowPotsOnLoatheb()
 		return
 	end
 
-    if Instance.NAXX and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
+    if Instance.Naxx() and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
         return
     end
 
@@ -498,7 +503,7 @@ function mb_useFirePotsOnVaelastrasz()
 		return
 	end
 
-    if Instance.BWL and not (TankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
+    if Instance.BWL() and not (TankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
         return
     end
 
@@ -514,7 +519,7 @@ function mb_useNaturePotsOnHuhuran()
 		return
 	end
 
-    if Instance.AQ40 and not (TankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
+    if Instance.AQ40() and not (TankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
         return
     end
 
@@ -544,8 +549,8 @@ local function UseJujuWhenPossible(juju)
 
     TargetUnit("player")
 
-    if CheckCooldown(cooldown, 3) then
-        cooldown = GetTime()
+    if (sandTime == nil or GetTime() - sandTime > 3) then
+        sandTime = GetTime()
         UseFromBags(juju)
     end
 
@@ -566,7 +571,7 @@ end
 
 local function CasterSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
-    UsePotionsWhenPossible("Flask of Supereme Power")
+    UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
     UsePotionsWhenPossible("Greater Arcane Elixir")
 
@@ -594,13 +599,13 @@ function mb_useSpeedRunPots()
         return
     end
 
+    if not Instance:IsInRaid() then
+        return
+    end
+
     if ImBusy() or InCombat("player") then
 		return
 	end
-
-    if Instance.IsInRaid() then
-        return
-    end
 
     if ImHealer() then
         HealerSpeedRunPots()

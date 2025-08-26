@@ -199,7 +199,7 @@ local function WarlockSingle()
         end
 	end
 
-	if Instance.AQ40 then
+	if Instance.AQ40() then
 		
 		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
@@ -315,7 +315,7 @@ function Warlock:BossSpecificDPS()
     end
 
 	if not HasBuffNamed("Shadow and Frost Reflect", "target") then
-        if Instance.AQ40 and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
+        if Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
 
             local skeramTankMap = {
                 [1] = MB_mySkeramLeftTank,
@@ -345,7 +345,7 @@ function Warlock:BossSpecificDPS()
                 end
             end
 
-        elseif Instance.BWL and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+        elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
             local razorgoreTankMap = {
                 [1] = MB_myRazorgoreRightTank,
@@ -419,7 +419,7 @@ function Warlock:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40 then		
+	if Instance.AQ40() then		
 		if UnitName("target") == "Emperor Vek\'lor" and MyNameInTable(MB_myTwinsWarlockTank) then
 			
             SelfBuff("Shadow Ward")
@@ -444,20 +444,20 @@ function Warlock:BossSpecificDPS()
 			return true
 		end
 
-	elseif Instance.BWL and CorruptedTotems() and not Dead("target") then
+	elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then
 
 		Warlock:SaveShardShadowBurn(12)
 		CastSpellOrWand("Searing Pain")
 		return true
 
-	elseif Instance.MC and TankTarget("Shazzrah") then
+	elseif Instance.MC() and TankTarget("Shazzrah") then
 			
         if not SpellReady("Shadow Bolt") then
             CastSpellOrWand("Immolate")
             return true
         end
 
-	elseif Instance.ONY and TankTarget("Onyxia") then
+	elseif Instance.ONY() and TankTarget("Onyxia") then
 
         if MB_isMoving.Active then			
 			CoolDownCast("Corruption", 18)
@@ -467,7 +467,7 @@ function Warlock:BossSpecificDPS()
             end
 		end
 
-    elseif Instance.ZG then
+    elseif Instance.ZG() then
 
 		if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
 			if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
@@ -483,7 +483,7 @@ function Warlock:BossSpecificDPS()
 			return true
 		end
 
-	elseif Instance.AQ20 then
+	elseif Instance.AQ20() then
 
 		if TankTarget("Moam") and ManaPct("target") > 0.75 and not ImBusy() then
 			CastSpellByName("Drain Mana") 			

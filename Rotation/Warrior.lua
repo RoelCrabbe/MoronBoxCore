@@ -174,7 +174,7 @@ local function WarriorSingle()
         return
     end
 
-    if Instance.AQ40 then
+    if Instance.AQ40() then
         mb_useNaturePotsOnHuhuran()
 
         if IsAtSkeram() and SpellReady("Intimidating Shout") then
@@ -201,7 +201,7 @@ local function WarriorSingle()
 
 	elseif (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
 
-		if Instance.AQ40 then			
+		if Instance.AQ40() then			
 			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
@@ -425,7 +425,7 @@ local function WarriorMulti()
         return
     end
 	
-    if Instance.AQ40 then
+    if Instance.AQ40() then
         mb_useNaturePotsOnHuhuran()
 
         if IsAtSkeram() and SpellReady("Intimidating Shout") then
@@ -452,7 +452,7 @@ local function WarriorMulti()
 
 	elseif (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
 
-		if Instance.AQ40 then			
+		if Instance.AQ40() then			
 			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
@@ -635,15 +635,15 @@ function Warrior:TankMulti()
         CastSpellByName("Revenge")
     end
 
-    if Instance.NAXX and IsAtNoth() then
+    if Instance.Naxx() and IsAtNoth() then
         WarriorTankSingleRotation()
         return
 
-    elseif Instance.BWL and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+    elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
         WarriorTankSingleRotation()
         return
 
-    elseif Instance.ONY and TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+    elseif Instance.ONY() and TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
         WarriorTankSingleRotation()
         return
     end 
@@ -747,7 +747,7 @@ function Warrior:UseTANKCooldowns()
         return
     end
 
-    if Instance.NAXX then
+    if Instance.Naxx() then
         if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
             if HealthPct("target") <= 0.05 then
                 SelfBuff("Last Stand")
@@ -777,7 +777,7 @@ function Warrior:UseTANKCooldowns()
             end
         end
 
-    elseif Instance.AQ40 and TankTarget("Princess Huhuran") then            
+    elseif Instance.AQ40() and TankTarget("Princess Huhuran") then            
         if HealthPct("target") <= MB_myHuhuranTankDefensivePercentage and MB_myHuhuranBoxStrategy then
             SelfBuff("Last Stand")
 
@@ -786,7 +786,7 @@ function Warrior:UseTANKCooldowns()
             end
         end
 
-    elseif Instance.BWL then
+    elseif Instance.BWL() then
         if TankTarget("Vaelastrasz the Corrupt") and InMeleeRange() then         
             SelfBuff("Death Wish") 	
             
@@ -822,7 +822,7 @@ function Warrior:UseTANKCooldowns()
             end
         end
     
-    elseif Instance.AQ20 and TankTarget("Ossirian the Unscarred") then
+    elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
         if HealthPct("target") <= MB_myOssirianTankDefensivePercentage and MB_myOssirianBoxStrategy then
             if HealthPct("player") <= 0.3 then
                 

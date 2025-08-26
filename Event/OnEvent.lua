@@ -532,7 +532,7 @@ function MMB:OnEvent()
 				MB_isMoving.Time = GetTime() + 1
 			end
 
-		elseif arg1 == "Target needs to be in front of you" and Instance.BWL then
+		elseif arg1 == "Target needs to be in front of you" and Instance.BWL() then
 
 			if mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = true
@@ -544,7 +544,7 @@ function MMB:OnEvent()
 
 		elseif arg1 == "Out of range." then
 			
-            if Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            if Instance.BWL() and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 				if (myClass == "Warrior" or myClass == "Rogue") then
                     return
                 end
@@ -552,19 +552,19 @@ function MMB:OnEvent()
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = true
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Time = GetTime() + 2
 
-            elseif Instance.AQ20 and mb_imHealer() and UnitName("target") == "Lieutenant General Andorov" then
+            elseif Instance.AQ20() and mb_imHealer() and UnitName("target") == "Lieutenant General Andorov" then
 				MB_lieutenantAndorovIsNotHealable.Active = true
 				MB_lieutenantAndorovIsNotHealable.Time = GetTime() + 6
 			end
 		
 		elseif arg1 == "Target not in line of sight" then
 
-            if Instance.BWL and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            if Instance.BWL() and mb_isAtRazorgore() and mb_isAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Active = true
 				MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange.Time = GetTime() + 2
 			
-            elseif Instance.AQ20 and mb_imHealer() and UnitName("target") == "Lieutenant General Andorov" then
+            elseif Instance.AQ20() and mb_imHealer() and UnitName("target") == "Lieutenant General Andorov" then
 				MB_lieutenantAndorovIsNotHealable.Active = true
 				MB_lieutenantAndorovIsNotHealable.Time = GetTime() + 6
 			end

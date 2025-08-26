@@ -219,7 +219,7 @@ local function DruidHeal()
         return
     end
 
-	if Instance.MC and TankTarget("Shazzrah") then
+	if Instance.MC() and TankTarget("Shazzrah") then
         return
     end
 
@@ -249,14 +249,14 @@ local function DruidHeal()
 	end
 
 	if MB_isMoving.Active then
-        if Instance.ONY and TankTarget("Onyxia") then
+        if Instance.ONY() and TankTarget("Onyxia") then
             CoolDownCast("Moonfire", 12)            
         end
 
         CastSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomMovingRank, MB_druidRejuvenationLowRandomMovingPercentage)
     end
 
-	if Instance.AQ40 and TankTarget("Princess Huhuran") then
+	if Instance.AQ40() and TankTarget("Princess Huhuran") then
 	
         if MyGroupClassOrder() == 1 and TankTargetHealth() <= 0.32 then
             Druid:MTHeals()
@@ -266,7 +266,7 @@ local function DruidHeal()
 		MBH_CastHeal("Healing Touch")
         return
 
-	elseif Instance.BWL and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+	elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
 
         Druid:Cooldowns()
 
@@ -374,7 +374,7 @@ function Druid:MTHeals(assignedTarget)
 end
 
 function Druid:HealerDebuffs()
-	if Instance.BWL then		
+	if Instance.BWL() then		
 		if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
             return
         end
@@ -729,7 +729,7 @@ local function DruidSingle()
 	end
 
 	if MB_mySpecc == "Feral" then
-		if Instance.AQ40 then			
+		if Instance.AQ40() then			
 			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
@@ -767,7 +767,7 @@ local function DruidSingle()
         return
     end
 	
-    if Instance.NAXX and UnitFactionGroup("player") == "Alliance" then
+    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()
@@ -848,10 +848,10 @@ function Druid:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40 and TankTarget("Battleguard Sartura") then			
+	if Instance.AQ40() and TankTarget("Battleguard Sartura") then			
 		CoolDownCast("Moonfire", 24)
 	
-    elseif Instance.ZG then	
+    elseif Instance.ZG() then	
 
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
 			if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
@@ -865,7 +865,7 @@ function Druid:BossSpecificDPS()
 			return true
 		end
 
-    elseif Instance.AQ20 and TankTarget("Ossirian the Unscarred") then
+    elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
 
         if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then        
             CastSpellOrWand("Wrath")
@@ -984,7 +984,7 @@ local function DruidMulti()
 	end
 
 	if MB_mySpecc == "Feral" then
-		if Instance.AQ40 then			
+		if Instance.AQ40() then			
 			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 TargetByName("The Prophet Skeram")
             end
@@ -1022,7 +1022,7 @@ local function DruidMulti()
         return
     end
 
-    if Instance.NAXX and UnitFactionGroup("player") == "Alliance" then
+    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()

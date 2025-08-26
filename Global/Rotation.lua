@@ -91,18 +91,18 @@ MB_myPreCastList = {}
 MB_myLoathebList = {}
 
 Instance = {
-    Naxx  = (GetRealZoneText() == "Naxxramas"),
-    AQ40  = (GetRealZoneText() == "Ahn\'Qiraj"),
-    AQ20  = (GetRealZoneText() == "The Ruins of Ahn\'Qiraj"),
-    MC    = (GetRealZoneText() == "Molten Core"),
-    BWL   = (GetRealZoneText() == "Blackwing Lair"),
-    ONY   = (GetRealZoneText() == "Onyxia\'s Lair"),
-    ZG    = (GetRealZoneText() == "Zul\'Gurub");
-    IsWorldBoss = function(self)
+    Naxx = function() return GetRealZoneText() == "Naxxramas" end,
+    AQ40 = function() return GetRealZoneText() == "Ahn'Qiraj" end,
+    AQ20 = function() return GetRealZoneText() == "The Ruins of Ahn'Qiraj" end,
+    MC   = function() return GetRealZoneText() == "Molten Core" end,
+    BWL  = function() return GetRealZoneText() == "Blackwing Lair" end,
+    ONY  = function() return GetRealZoneText() == "Onyxia's Lair" end,
+    ZG   = function() return GetRealZoneText() == "Zul'Gurub" end,    
+    IsWorldBoss = function()
         return UnitClassification("target") == "worldboss"
-    end,
+    end,    
     IsInRaid = function(self)
-        return self.Naxx or self.AQ40 or self.AQ20 or self.MC or self.BWL or self.ONY or self.ZG
+        return self.Naxx() or self.AQ40() or self.AQ20() or self.MC() or self.BWL() or self.ONY() or self.ZG()
     end
 }
 

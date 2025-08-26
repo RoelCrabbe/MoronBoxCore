@@ -252,7 +252,7 @@ local function PriestHeal()
         CastSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
     end	
 
-	if Instance.AQ40 and TankTarget("Princess Huhuran") then
+	if Instance.AQ40() and TankTarget("Princess Huhuran") then
 				
 		if TankTargetHealth() <= 0.32 then			
 			if Priest:PrayerOfHealingCheck(4, 1, 3, true) and MyGroupClassOrder() == 1 then
@@ -265,7 +265,7 @@ local function PriestHeal()
 		
 		MBH_CastHeal("Heal")
 		
-	elseif Instance.BWL then
+	elseif Instance.BWL() then
 		if TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
 
 			Priest:Cooldowns()
@@ -362,7 +362,7 @@ function Priest:MTHeals(assignedTarget)
 		end
 	end
 
-	if Instance.BWL and TankTarget("Nefarian") then
+	if Instance.BWL() and TankTarget("Nefarian") then
 		if HasBuffOrDebuff("Corrupted Healing", "player", "debuff") then
 
 			if ImBusy() then					
@@ -619,7 +619,7 @@ local function PriestSingle()
         end
 	end
 
-	if Instance.NAXX then
+	if Instance.Naxx() then
 
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
@@ -627,7 +627,7 @@ local function PriestSingle()
             return
         end
 
-	elseif Instance.AQ40 then
+	elseif Instance.AQ40() then
 		
 		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
@@ -678,7 +678,7 @@ function Priest:Shadow()
     end
 
     if InCombat("player") then
-        if Instance.MC then
+        if Instance.MC() then
             if TankTarget("Shazzrah") and HasBuffOrDebuff("Deaden Magic", "target", "buff") then
                 CastSpellByName("Dispel Magic")
             end
@@ -769,13 +769,13 @@ function Priest:BossSpecificDPS()
 
 	Priest:ManaDrain()
 
-	if Instance.AQ40 and TankTarget("Battleguard Sartura") then			
+	if Instance.AQ40() and TankTarget("Battleguard Sartura") then			
 		CoolDownCast("Shadow Word: Pain", 24)
 	
-	elseif Instance.MC then
+	elseif Instance.MC() then
         CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
 
-	elseif Instance.ONY and TankTarget("Onyxia") then
+	elseif Instance.ONY() and TankTarget("Onyxia") then
 		CoolDownCast("Shadow Word: Pain", 24)
 	elseif not UnitInRaid("player") and DebuffShadowWeavingAmount() > 5 then
 		CoolDownCast("Shadow Word: Pain", 24)
@@ -839,13 +839,13 @@ local function PriestSetup()
 		SelfBuff("Inner Focus")
 		MultiBuff("Prayer of Fortitude")
 
-		if Instance.NAXX or Instance.AQ40 then
+		if Instance.Naxx() or Instance.AQ40() then
 			if KnowSpell("Prayer of Spirit") then				
 				MultiBuff("Prayer of Spirit")
 			end
 		end
 
-		if Instance.NAXX and not IsAtInstructorRazuvious() then										
+		if Instance.Naxx() and not IsAtInstructorRazuvious() then										
 			MultiBuff("Prayer of Shadow Protection")
 		end
 
@@ -947,8 +947,8 @@ function Priest:ManaDrain()
 		return false
 	end
 
-	if (Instance.AQ40 and TankTarget("Obsidian Eradicator")) or
-		(Instance.AQ20 and TankTarget("Moam")) then
+	if (Instance.AQ40() and TankTarget("Obsidian Eradicator")) or
+		(Instance.AQ20() and TankTarget("Moam")) then
 		if ManaPct("target") > 0.25 then
 			CastSpellOrWand("Mana Burn")
 			return true
