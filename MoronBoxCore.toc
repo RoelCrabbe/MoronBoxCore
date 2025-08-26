@@ -24,7 +24,6 @@ Handlers\Common\Shared.lua
 
 Handlers\Chat.lua
 Handlers\Buffs.lua
-Handlers\Cons.lua
 Handlers\Roles.lua
 Handlers\Attacking.lua
 Handlers\Spells.lua
@@ -35,6 +34,7 @@ Handlers\CrowdControl.lua
 Handlers\AddonMessage.lua
 Handlers\Decurse.lua
 Handlers\Gear.lua
+Handlers\Cons.lua
 
 Event\Flash.lua
 Event\Turning.lua

@@ -98,8 +98,11 @@ Instance = {
     BWL   = (GetRealZoneText() == "Blackwing Lair"),
     ONY   = (GetRealZoneText() == "Onyxia\'s Lair"),
     ZG    = (GetRealZoneText() == "Zul\'Gurub");
-    IsWorldBoss = function()
+    IsWorldBoss = function(self)
         return UnitClassification("target") == "worldboss"
+    end,
+    IsInRaid = function(self)
+        return self.Naxx or self.AQ40 or self.AQ20 or self.MC or self.BWL or self.ONY or self.ZG
     end
 }
 

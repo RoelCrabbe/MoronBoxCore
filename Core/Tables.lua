@@ -92,7 +92,7 @@ local MB_recklessnessTargetsSet = {
     ["Heigan the Unclean"] = 0.25,
     ["Magmadar"] = 0.25,
     ["Vaelastrasz the Corrupt"] = 0.11,
-    ["Grand Widow Faerlina"] = 0.19,
+    ["Grand Widow Faerlina"] = 0.19
 }
 
 -- Bandage Usage by Class
@@ -101,14 +101,14 @@ local MB_bandageBossesForWarlock = {
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
     ["Thane Korth\'azz"] = true,
-    ["Highlord Alexandros Mograine"] = true,
+    ["Highlord Alexandros Mograine"] = true
 }
 
 local MB_bandageBossesForMage = {
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
     ["Thane Korth\'azz"] = true,
-    ["Highlord Alexandros Mograine"] = true,
+    ["Highlord Alexandros Mograine"] = true
 }
 
 -- Healing Interrupt Immunity
@@ -124,7 +124,7 @@ local MB_useTranquilizingShotSet = {
     ["Princess Huhuran"] = true,
     ["Flamegor"] = true,
     ["Chromaggus"] = true,
-    ["Magmadar"] = true,
+    ["Magmadar"] = true
 }
 
 --[####################################################################################################]--
@@ -141,7 +141,7 @@ local MB_mobsNoCursesSet = {
     ["Corrupted Blue Whelp"] = true,
     ["Mutated Grub"] = true,
     ["Frenzied Bat"] = true,
-    ["Plagued Bat"] = true,
+    ["Plagued Bat"] = true
 }
 
 local MB_mobsNoSundersSet = {
@@ -156,7 +156,7 @@ local MB_mobsNoSundersSet = {
     ["Mutated Grub"] = true,
     ["Frenzied Bat"] = true,
     ["Plague Beast"] = true,
-    ["Plagued Bat"] = true,
+    ["Plagued Bat"] = true
 }
 
 -- Blood Fury Blacklist
@@ -173,14 +173,14 @@ local MB_useBloodFuryBlacklistSet = {
     ["Corrupted Blue Whelp"] = true,
     ["Death Talon Hatcher"] = true,
     ["Princess Huhuran"] = true,
-    ["Blackwing Taskmaster"] = true,
+    ["Blackwing Taskmaster"] = true
 }
 
 -- Excluded Whirlwind Targets
 local MB_excludedTargetsSet = {
     ["Emperor Vek'lor"] = true,
     ["Emperor Vek'nilash"] = true,
-    ["The Prophet Skeram"] = true,
+    ["The Prophet Skeram"] = true
 }
 
 --[####################################################################################################]--
@@ -199,7 +199,7 @@ local MB_mobsToFireWardSet = {
     ["Blackwing Warlock"] = true,
     ["Blackwing Technician"] = true,
     ["Vaelastrasz the Corrupt"] = true,
-    ["Flame Imp"] = true,
+    ["Flame Imp"] = true
 }
 
 local MB_mobsToShadowWardSet = {
@@ -210,7 +210,7 @@ local MB_mobsToShadowWardSet = {
     ["Spirit of Naxxramas"] = true,
     ["Lord Kazzak"] = true,
     ["Hakkar"] = true,
-    ["Necro Knight"] = true,
+    ["Necro Knight"] = true
 }
 
 local MB_shadowWardDebuffsSet = {
@@ -234,7 +234,7 @@ local MB_mobsToFearWardSet = {
     ["Deathknight"] = true,
     ["High Priestess Jeklik"] = true,
     ["Gurubashi Berserker"] = true,
-    ["Gluth"] = true,
+    ["Gluth"] = true
 }
 
 -- Magic Detection/Manipulation
@@ -242,7 +242,7 @@ local MB_mobsToDetectMagicSet = {
     ["Anubisath Sentinel"] = true,
     ["Anubisath Guardian"] = true,
     ["Anubisath Defender"] = true,
-    ["Shazzrah"] = true,
+    ["Shazzrah"] = true
 }
 
 local MB_mobsToDampenMagicSet = {
@@ -253,7 +253,7 @@ local MB_mobsToAmplifyMagicSet = {
     ["Patchwerk"] = true,
     ["Noth the Plaguebringer"] = true,
     ["Gluth"] = true,
-    ["Maexxna"] = true,
+    ["Maexxna"] = true
 }
 
 --[####################################################################################################]--
@@ -266,7 +266,7 @@ local MB_mobsToAutoTurnSet = {
     ["Ancient Core Hound"] = true,
     ["Onyxia"] = true,
     ["Deathknight"] = true,
-    ["Gurubashi Berserker"] = true,
+    ["Gurubashi Berserker"] = true
 }
 
 -- Auto-Break Fear Requirements
@@ -295,7 +295,7 @@ local MB_mobsNoTotemsSet = {
     ["Vekniss Drone"] = true,
     ["Vekniss Soldier"] = true,
     ["Anvilrage Reservist"] = true,
-    ["Shadowforge Flame Keeper"] = true,
+    ["Shadowforge Flame Keeper"] = true
 }
 
 -- AoE Totem Requirements
@@ -313,7 +313,7 @@ local MB_mobsToAoeTotemSet = {
     ["Corrupted Blue Whelp"] = true,
     ["Death Talon Hatcher"] = true,
     ["Blackwing Taskmaster"] = true,
-    ["Poisonous Skitterer"] = true,
+    ["Poisonous Skitterer"] = true
 }
 
 -- Corrupted Totems (enemies)
@@ -381,7 +381,7 @@ local MB_NatureBossSet = {
     ["High Priest Venoxis"] = true,
     ["Razzashi Cobra"] = true,
     ["Razzashi Serpent"] = true,
-    ["Razzashi Adder"] = true,
+    ["Razzashi Adder"] = true
 }
 
 local MB_FireBossSet = {
@@ -420,7 +420,7 @@ local MB_FireBossSet = {
     ["Rage Talon Dragonspawn"] = true,
     ["Death Talon Dragonspawn"] = true,
     ["Anubisath Warder"] = true,
-    ["Onyxia"] = true,
+    ["Onyxia"] = true
 }
 
 -- Totem-Specific Boss Categories
@@ -435,12 +435,12 @@ local MB_TremorBossSet = {
     ["Princess Yauj"] = true,
     ["Lord Kri"] = true,
     ["Vem"] = true,
-    ["Onyxia"] = true,
+    ["Onyxia"] = true
 }
 
 local MB_GroundingBossSet = {
     ["The Grounding Boss"] = true,
-    ["Ossirian the Unscarred"] = true,
+    ["Ossirian the Unscarred"] = true
 }
 
 local MB_PoisonBossSet = {
@@ -457,7 +457,7 @@ local MB_PoisonBossSet = {
     ["High Priest Venoxis"] = true,
     ["Razzashi Cobra"] = true,
     ["Razzashi Serpent"] = true,
-    ["Razzashi Adder"] = true,
+    ["Razzashi Adder"] = true
 }
 
 --[####################################################################################################]--
@@ -475,7 +475,7 @@ local MB_reagentVendorsSet = {
     ["Alyssa Eva"] = true,
     ["Thomas Mordan"] = true,
     ["Reagents"] = true,
-    ["Consumables"] = true,
+    ["Consumables"] = true
 }
 
 local MB_sunfruitVendorsSet = {

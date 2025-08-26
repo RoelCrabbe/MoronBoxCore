@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[######################################## Raid Consumables ##########################################]--
 --[####################################################################################################]--
 
@@ -69,10 +69,45 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local BossIShouldUseManapotsOn = mb_bossIShouldUseManapotsOn
+local BossIShouldUseRunesAndManapotsOn = mb_bossIShouldUseRunesAndManapotsOn
+local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
+local CdPrint = mb_cdPrint
+local CheckCooldown = mb_checkCooldown
+local HasBuffNamed = mb_hasBuffNamed
+local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HasItem = mb_hasItem
+local HaveInBags = mb_haveInBags
+local HealthPct = mb_healthPct
+local IamFocus = mb_iamFocus
+local ImBusy = mb_imBusy
+local ImHealer = mb_imHealer
+local ImRangedDPS = mb_imRangedDPS
+local ImTank = mb_imTank
+local InCombat = mb_inCombat
+local IsAtRazorgore = mb_isAtRazorgore
+local IsDruidShapeShifted = mb_isDruidShapeShifted
+local IsItemInBagCoolDown = mb_isItemInBagCoolDown
+local ManaDown = mb_manaDown
+local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
+local TankTarget = mb_tankTarget
+local UseFirePotsOnVaelastrasz = mb_useFirePotsOnVaelastrasz
+local UseFromBags = mb_useFromBags
+local UseFrozenRuneOnFaerlina = mb_useFrozenRuneOnFaerlina
+local UseNaturePotsOnHuhuran = mb_useNaturePotsOnHuhuran
+local UseSandsOnChromaggus = mb_useSandsOnChromaggus
+local UseShadowPotsOnLoatheb = mb_useShadowPotsOnLoatheb
+local UseSpeedRunPots = mb_useSpeedRunPots
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local UniversalReagents = {
     "Cache of Mau'ari",
     "Drakefire Amulet", 
-    "Eternal Quintessence"
+    "Eternal Quintessence",
+    "Onyxia Scale Cloak"
 }
 
 local OptionalUniversalReagents = {
@@ -172,6 +207,7 @@ local ReagentsLimit = {
     ["Drakefire Amulet"] = { 1, 1 },
     ["Eternal Quintessence"] = { 1, 1 },
     ["Swiftness of Zanza"] = { 1, 1 },
+    ["Onyxia Scale Cloak"] = { 1, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
@@ -276,7 +312,7 @@ function mb_buyReagentsAndConsumables()
     
     if classItems then
         for _, item in ipairs(classItems) do
-            local myCurrentItems = mb_hasItem(item) / ReagentsLimit[item][2]
+            local myCurrentItems = HasItem(item) / ReagentsLimit[item][2]
             local myNeededItems
             
             if (item == "Doomshot" or item == "Miniature Cannon Balls") and myClass == "Hunter" then
@@ -294,7 +330,7 @@ function mb_buyReagentsAndConsumables()
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then
                         if string.find(merchantItemLink, item) then
-                            mb_cdPrint("Buying "..myNeededItems.." "..merchantItemLink)
+                            CdPrint("Buying "..myNeededItems.." "..merchantItemLink)
                             BuyMerchantItem(itemID, myNeededItems)
                         end
                     end
@@ -317,9 +353,9 @@ local ManaPotsThreshold = {
 }
 
 local function UseManaPotsThresholdPots()
-    local manaDown = mb_manaDown()
+    local manaDown = ManaDown()
     for _, item in ipairs(ManaPotsThreshold) do
-        if manaDown > item.threshold and mb_haveInBags(item.name) and not mb_isItemInBagCoolDown(item.name) then
+        if manaDown > item.threshold and HaveInBags(item.name) and not IsItemInBagCoolDown(item.name) then
             UseItemByName(item.name)
             return
         end
@@ -327,11 +363,11 @@ local function UseManaPotsThresholdPots()
 end
 
 local function TakeManaPotionIfBelowManaPotMana()
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if not mb_bossIShouldUseRunesAndManapotsOn() and not mb_bossIShouldUseManapotsOn() then
+    if not BossIShouldUseRunesAndManapotsOn() and not BossIShouldUseManapotsOn() then
         return
     end
 
@@ -343,11 +379,11 @@ local function TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if Instance.BWL and not mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then
+    if Instance.BWL and not IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
         return
     end
 
@@ -364,37 +400,37 @@ end
 --[####################################################################################################]--
 
 function mb_useSandsOnChromaggus()
-    if mb_imBusy() or not mb_inCombat("player") then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-	if Instance.BWL and not mb_tankTarget("Chromaggus") then
+	if Instance.BWL and not TankTarget("Chromaggus") then
         return
     end
 
-	if not mb_imTank() then
+	if not ImTank() then
         return
     end
 
-    if not mb_iamFocus() then
+    if not IamFocus() then
         return
     end
 
-	if not mb_hasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
+	if not HasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
         return
     end
 
-	if mb_hasBuffNamed("Time Stop", "player") then
+	if HasBuffNamed("Time Stop", "player") then
         return
     end
 
-    if mb_isDruidShapeShifted() then
+    if IsDruidShapeShifted() then
         return
     end
 
-    if mb_checkCooldown(sandTime, 3) then
+    if CheckCooldown(sandTime, 3) then
         sandTime = GetTime()
-        mb_useFromBags("Hourglass Sand")
+        UseFromBags("Hourglass Sand")
     end
 end
 
@@ -403,21 +439,21 @@ end
 --[####################################################################################################]--
 
 local function UsePotionsWhenPossible(potion)
-    if not mb_haveInBags(potion) and not mb_isItemInBagCoolDown(potion) then
+    if not HaveInBags(potion) and not IsItemInBagCoolDown(potion) then
         return
     end
 
-    if mb_hasBuffOrDebuff(potion, "player", "buff") then
+    if HasBuffOrDebuff(potion, "player", "buff") then
         return
     end
 
-    if mb_isDruidShapeShifted() then
+    if IsDruidShapeShifted() then
         return
     end
 
-    if mb_checkCooldown(cooldown, 3) then
+    if CheckCooldown(cooldown, 3) then
         cooldown = GetTime()
-        mb_useFromBags(potion)
+        UseFromBags(potion)
     end
 end
 
@@ -426,11 +462,11 @@ function mb_useFrozenRuneOnFaerlina()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if Instance.NAXX and not (mb_tankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
+    if Instance.NAXX and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
@@ -442,11 +478,11 @@ function mb_useShadowPotsOnLoatheb()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if Instance.NAXX and not (mb_tankTarget("Loatheb") or UnitName("target") == "Loatheb") then
+    if Instance.NAXX and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
         return
     end
 
@@ -458,11 +494,11 @@ function mb_useFirePotsOnVaelastrasz()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if Instance.BWL and not (mb_tankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
+    if Instance.BWL and not (TankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
         return
     end
 
@@ -474,15 +510,15 @@ function mb_useNaturePotsOnHuhuran()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    if Instance.AQ40 and not (mb_tankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
+    if Instance.AQ40 and not (TankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
         return
     end
 
-    if mb_healthPct("target") > 0.3 then
+    if HealthPct("target") > 0.3 then
         return
     end
 
@@ -494,23 +530,23 @@ end
 --[####################################################################################################]--
 
 local function UseJujuWhenPossible(juju)
-    if not mb_haveInBags(juju) and not mb_isItemInBagCoolDown(juju) then
+    if not HaveInBags(juju) and not IsItemInBagCoolDown(juju) then
         return
     end
 
-    if mb_hasBuffOrDebuff(juju, "player", "buff") then
+    if HasBuffOrDebuff(juju, "player", "buff") then
         return
     end
 
-    if mb_isDruidShapeShifted() then
+    if IsDruidShapeShifted() then
         return
     end
 
     TargetUnit("player")
 
-    if mb_checkCooldown(cooldown, 3) then
+    if CheckCooldown(cooldown, 3) then
         cooldown = GetTime()
-        mb_useFromBags(juju)
+        UseFromBags(juju)
     end
 
     TargetLastTarget()
@@ -558,13 +594,17 @@ function mb_useSpeedRunPots()
         return
     end
 
-    if mb_imBusy() or mb_inCombat("player") then
+    if ImBusy() or InCombat("player") then
 		return
 	end
 
-    if mb_imHealer() then
+    if Instance.IsInRaid() then
+        return
+    end
+
+    if ImHealer() then
         HealerSpeedRunPots()
-    elseif mb_imRangedDPS() then
+    elseif ImRangedDPS() then
         CasterSpeedRunPots()
     else
         MeleeSpeedRunPots()
