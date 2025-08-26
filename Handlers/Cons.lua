@@ -69,100 +69,93 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local ReagentsList = {
+local UniversalReagents = {
+    "Cache of Mau'ari",
+    "Drakefire Amulet", 
+    "Eternal Quintessence"
+}
+
+local OptionalUniversalReagents = {
+    "Swiftness of Zanza",
+    "Greater Shadow Protection Potion",
+}
+
+local ClassSpecificReagents = {
     ["Druid"] = {
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Distilled Wisdom",
-        "Greater Shadow Protection Potion",
         "Ironwood Seed",
         "Major Mana Potion",
         "Wild Thornroot"
     },
     ["Hunter"] = {
-        "Cache of Mau\'ari",
         "Demonic Rune",
         "Doomshot",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of the Titans",
         "Greater Nature Protection Potion",
-        "Greater Shadow Protection Potion",
-        "Major Mana Potion"
+        "Major Mana Potion",
+        "Elixir of the Mongoose",
+        "Juju Might",
+        "Juju Power"
     },
     ["Mage"] = {
         "Arcane Powder",
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Supreme Power",
-        "Greater Shadow Protection Potion",
         "Major Mana Potion",
-        "Rune of Portals"
+        "Rune of Portals",
+        "Mageblood Potion",
+        "Greater Arcane Elixir",
+        "Elixir of Frost Power",
+        "Elixir of Greater Firepower"
     },
     ["Paladin"] = {
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Distilled Wisdom",
-        "Greater Shadow Protection Potion",
         "Major Mana Potion",
         "Symbol of Divinity",
         "Symbol of Kings"
     },
     ["Priest"] = {
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Distilled Wisdom",
-        "Greater Shadow Protection Potion",
         "Major Mana Potion",
-        "Sacred Candle"
+        "Sacred Candle",
+        "Mageblood Potion",
+        "Flask of Supreme Power",
+        "Greater Arcane Elixir",
+        "Elixir of Shadow Power"
     },
     ["Rogue"] = {
-        "Cache of Mau\'ari",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flash Powder",
         "Flask of the Titans",
         "Greater Nature Protection Potion",
-        "Greater Shadow Protection Potion"
+        "Elixir of the Mongoose",
+        "Juju Might",
+        "Juju Power"
     },
     ["Shaman"] = {
         "Ankh",
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Distilled Wisdom",
-        "Greater Shadow Protection Potion",
-        "Major Mana Potion"
+        "Major Mana Potion",
+        "Mageblood Potion"
     },
     ["Warlock"] = {
-        "Cache of Mau\'ari",
         "Demonic Rune",
-        "Drakefire Amulet",
-        "Eternal Quintessence",
         "Flask of Supreme Power",
-        "Greater Shadow Protection Potion",
-        "Major Mana Potion"
+        "Major Mana Potion",
+        "Mageblood Potion",
+        "Greater Arcane Elixir",
+        "Elixir of Shadow Power"
     },
     ["Warrior"] = {
-        "Cache of Mau\'ari",
-        "Dirge\'s Kickin\' Chimaerok Chops",
+        "Dirge's Kickin' Chimaerok Chops",
         "Doomshot",
-        "Drakefire Amulet",
         "Elixir of the Mongoose",
-        "Eternal Quintessence",
         "Flask of the Titans",
         "Gift of Arthas",
         "Greater Nature Protection Potion",
-        "Greater Shadow Protection Potion",
         "Greater Stoneshield Potion",
         "Juju Might",
         "Juju Power",
@@ -172,82 +165,131 @@ local ReagentsList = {
 }
 
 local ReagentsLimit = {
-    -- All Chars need this!
+    -- ========================================
+    -- UNIVERSAL ITEMS (All Characters Need)
+    -- ========================================
+    ["Cache of Mau'ari"] = { 1, 1 },
     ["Drakefire Amulet"] = { 1, 1 },
     ["Eternal Quintessence"] = { 1, 1 },
-    ["Cache of Mau\'ari"] = { 1, 1 },
+    ["Swiftness of Zanza"] = { 1, 1 },
 
-    -- Druid
+    -- ========================================
+    -- CLASS-SPECIFIC REAGENTS
+    -- ========================================
+    
+    -- Druid Reagents
     ["Ironwood Seed"] = { 20, 1 },
-    ["Wild Thornroot"] = { 200, 1 },
-
-    -- Mage
-    ["Arcane Powder"] = { 200, 1 },
+    ["Wild Thornroot"] = { 160, 1 },
+    
+    -- Mage Reagents
+    ["Arcane Powder"] = { 160, 1 },
     ["Rune of Portals"] = { 20, 1 },
-
-    -- Mana Consumables
-    ["Demonic Rune"] = { 20, 1 },
-    ["Major Mana Potion"] = { 40, 1 },
-
-    -- Paladin
+    
+    -- Paladin Reagents
     ["Symbol of Divinity"] = { 10, 1 },
     ["Symbol of Kings"] = { 400, 1 },
-
-    -- Priest
-    ["Sacred Candle"] = { 200, 1 },
-
-    -- Protection Consumables
-    ["Greater Nature Protection Potion"] = { 20, 1 },
-    ["Greater Shadow Protection Potion"] = { 50, 1 },
-
-    -- Rogue
+    
+    -- Priest Reagents
+    ["Sacred Candle"] = { 160, 1 },
+    
+    -- Rogue Reagents
     ["Flash Powder"] = { 100, 1 },
-
-    -- Shaman
+    
+    -- Shaman Reagents
     ["Ankh"] = { 20, 1 },
 
-    -- Warrior
-    ["Doomshot"] = { 1, 2 },
-    ["Miniature Cannon Balls"] = { 1, 2 },
-
-    -- Warrior Consumables
-    ["Dirge\'s Kickin\' Chimaerok Chops"] = { 8, 1 },
+    -- ========================================
+    -- CONSUMABLES BY TYPE
+    -- ========================================
+    
+    -- Protection Potions
+    ["Greater Nature Protection Potion"] = { 20, 1 },
+    ["Greater Shadow Protection Potion"] = { 50, 1 },
+    
+    -- Mana Restoration
+    ["Demonic Rune"] = { 20, 1 },
+    ["Major Mana Potion"] = { 40, 1 },
+    
+    -- Flasks (High-End Consumables)
+    ["Flask of Distilled Wisdom"] = { 5, 1 },
+    ["Flask of Supreme Power"] = { 5, 1 },
+    ["Flask of the Titans"] = { 5, 1 },
+    
+    -- Damage/Power Elixirs
+    ["Elixir of Frost Power"] = { 20, 1 },
+    ["Elixir of Greater Firepower"] = { 20, 1 },
+    ["Elixir of Shadow Power"] = { 20, 1 },
+    ["Greater Arcane Elixir"] = { 20, 1 },
+    
+    -- Utility Potions
+    ["Mageblood Potion"] = { 20, 1 },
+    
+    -- ========================================
+    -- PHYSICAL DPS CONSUMABLES
+    -- ========================================
+    
+    -- Melee Enhancement
     ["Elixir of the Mongoose"] = { 40, 1 },
-    ["Gift of Arthas"] = { 10, 1 },
-    ["Greater Stoneshield Potion"] = { 40, 1 },
     ["Juju Might"] = { 40, 1 },
     ["Juju Power"] = { 40, 1 },
+    
+    -- Food & Drink Buffs
+    ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },
     ["Rumsey Rum Black Label"] = { 20, 1 },
-
-    -- Flasks
-    ["Flask of the Titans"] = { 5, 1 },
-    ["Flask of Supreme Power"] = { 5, 1 },
-    ["Flask of Distilled Wisdom"] = { 5, 1 },
+    
+    -- Tank/Survivability
+    ["Gift of Arthas"] = { 10, 1 },
+    ["Greater Stoneshield Potion"] = { 40, 1 },
+    
+    -- Ammunition/Projectiles (Special Stack Size)
+    ["Doomshot"] = { 1, 2 },
+    ["Miniature Cannon Balls"] = { 1, 2 },
 }
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_buyReagentsAndConsumables()
-    local classItems = ReagentsList[myClass]
+local function GetCompleteReagentList(className)
+    local classItems = ClassSpecificReagents[className]
+    local completeList = {}
 
+    for _, item in ipairs(UniversalReagents) do
+        table.insert(completeList, item)
+    end
+
+    for _, item in ipairs(OptionalUniversalReagents) do
+        table.insert(completeList, item)
+    end
+
+    if classItems then
+        for _, item in ipairs(classItems) do
+            table.insert(completeList, item)
+        end
+    end
+    
+    return completeList
+end
+
+function mb_buyReagentsAndConsumables()
+    local classItems = GetCompleteReagentList(myClass)
+    
     if classItems then
         for _, item in ipairs(classItems) do
             local myCurrentItems = mb_hasItem(item) / ReagentsLimit[item][2]
             local myNeededItems
-
+            
             if (item == "Doomshot" or item == "Miniature Cannon Balls") and myClass == "Hunter" then
                 myNeededItems = (32 - myCurrentItems) / ReagentsLimit[item][2]
             else
                 myNeededItems = (ReagentsLimit[item][1] - myCurrentItems) / ReagentsLimit[item][2]
             end
-
+            
             if myNeededItems > 0 then
                 if item == "Symbol of Kings" then
                     myNeededItems = math.floor(myNeededItems / 20)
                 end
-
+                
                 for itemID = 1, GetMerchantNumItems() do
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then
@@ -260,7 +302,7 @@ function mb_buyReagentsAndConsumables()
             end
         end
     end
-   
+    
     MB_autoBuyReagents.Active = false
 end
 
@@ -450,3 +492,81 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+local function UseJujuWhenPossible(juju)
+    if not mb_haveInBags(juju) and not mb_isItemInBagCoolDown(juju) then
+        return
+    end
+
+    if mb_hasBuffOrDebuff(juju, "player", "buff") then
+        return
+    end
+
+    if mb_isDruidShapeShifted() then
+        return
+    end
+
+    TargetUnit("player")
+
+    if mb_checkCooldown(cooldown, 3) then
+        cooldown = GetTime()
+        mb_useFromBags(juju)
+    end
+
+    TargetLastTarget()
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function MeleeSpeedRunPots() -- Warrior, Hunter, Rogue
+    UsePotionsWhenPossible("Swiftness of Zanza")
+    UsePotionsWhenPossible("Flask of the Titans")
+    UsePotionsWhenPossible("Elixir of the Mongoose")
+    UseJujuWhenPossible("Juju Might")
+    UseJujuWhenPossible("Juju Power")
+end
+
+local function CasterSpeedRunPots() -- Priest Should get Ranged & Healer Pots; Mage, Warlock;
+    UsePotionsWhenPossible("Swiftness of Zanza")
+    UsePotionsWhenPossible("Flask of Supereme Power")
+    UsePotionsWhenPossible("Mageblood Potion")
+    UsePotionsWhenPossible("Greater Arcane Elixir")
+
+    if myClass == "Mage" then
+        if MB_mySpecc == "Frost" then
+            UsePotionsWhenPossible("Elixir of Frost Power")
+            return
+        end
+
+        UsePotionsWhenPossible("Elixir of Greater Firepower")
+        return
+    end
+
+    UsePotionsWhenPossible("Elixir of Shadow Power")
+end
+
+local function HealerSpeedRunPots() -- Priest Should get Ranged & Healer Pots; Shaman, Priest, Druid
+    UsePotionsWhenPossible("Swiftness of Zanza")
+    UsePotionsWhenPossible("Flask of Distilled Wisdom")
+    UsePotionsWhenPossible("Mageblood Potion")
+end
+
+function mb_useSpeedRunPots()
+    if not MB_mySpeedRunStrategy then
+        return
+    end
+
+    if mb_imBusy() or mb_inCombat("player") then
+		return
+	end
+
+    if mb_imHealer() then
+        HealerSpeedRunPots()
+    elseif mb_imRangedDPS() then
+        CasterSpeedRunPots()
+    else
+        MeleeSpeedRunPots()
+    end
+end

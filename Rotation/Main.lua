@@ -411,6 +411,8 @@ function mb_setup()
 		return
 	end
 
+	mb_useSpeedRunPots()
+
 	if myClass == "Warrior" then
         return
     end

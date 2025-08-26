@@ -2,6 +2,8 @@
 --[#################################### BOSS ENCOUNTER CONFIGURATIONS ###{#############################]--
 --[####################################################################################################]--
 
+MB_mySpeedRunStrategy = true
+
 --[[
     This file contains all boss encounter strategies and player assignments.
     
