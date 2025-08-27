@@ -272,7 +272,7 @@ end
 function mb_assignHealerToName(assignments)
 	local _, _, healerName, assignedTarget = string.find(assignments, "(%a+)%s*(%a+)")
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		if (assignedTarget == "Reset" or assignedTarget == "reset") then
 			mb_cdMessage("Unassigned "..healerName.." from healing a specific player.")
 			return

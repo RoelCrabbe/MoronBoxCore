@@ -488,13 +488,13 @@ function MMB:OnEvent()
 	
 	elseif (event == "START_LOOT_ROLL") then
 
-		if not mb_iamFocus() then 
+		if not mb_imFocus() then 
 			RollOnLoot(arg1, 0) 
 		end
 	
 	elseif (event == "CONFIRM_SUMMON") then
 
-		if not mb_iamFocus() then			
+		if not mb_imFocus() then			
 			ConfirmSummon()
 			StaticPopup_Hide("CONFIRM_SUMMON")
 		end
@@ -609,7 +609,7 @@ function MMB:OnEvent()
 		MB_useCooldowns.Active = false
 		MB_useBigCooldowns.Active = false
 
-		if not mb_iamFocus() then 
+		if not mb_imFocus() then 
 			mb_clearTargetIfNotAggroed()
 		end
 
@@ -894,7 +894,7 @@ end
 
 function mb_taxi()
 	local time = GetTime()
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 

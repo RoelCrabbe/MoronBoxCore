@@ -972,7 +972,7 @@ end
 
 local MB_anubAlertCD = GetTime()
 function mb_anubisathAlert()
-    if mb_iamFocus() then
+    if mb_imFocus() then
 		return
 	end
 
@@ -1119,7 +1119,7 @@ function mb_makeALine()
 		return
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		headOfLine = myName
 	else
 		headOfLine = mb_tankName()

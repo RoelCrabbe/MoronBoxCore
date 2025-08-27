@@ -963,10 +963,16 @@ mb_buffData["Evil Twin"] 				 =  "Interface\\Icons\\Spell_Shadow_Charm"
 mb_buffData["Greater Shadow Protection Potion"]				=	"Interface\\Icons\\Spell_Shadow_RagingScream"
 mb_buffData["Greater Nature Protection Potion"] 	 		=	"Interface\\Icons\\Spell_Nature_SpiritArmor"
 mb_buffData["Greater Fire Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Fire_FireArmor"
+mb_buffData["Greater Frost Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Frost_FrostArmor02"
+mb_buffData["Greater Arcane Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
 
 mb_buffData["Juju Power"] 				 	=	"Interface\\Icons\\INV_Misc_MonsterScales_11"
 mb_buffData["Juju Might"] 				 	=	"Interface\\Icons\\INV_Misc_MonsterScales_07"
 mb_buffData["Juju Ember"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_15"
+mb_buffData["Juju Escape"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_17"
+mb_buffData["Juju Chill"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_09"
+mb_buffData["Juju Guile"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_13"
+mb_buffData["Juju Flurry"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_17"
 
 mb_buffData["Swiftness of Zanza"] 				 	=	"Interface\\Icons\\INV_Potion_31"
 mb_buffData["Spirit of Zanza"] 						=   "Interface\\Icons\\INV_Potion_30"
@@ -976,13 +982,14 @@ mb_buffData["Flask of Supreme Power"] 				=	"Interface\\Icons\\INV_Potion_41"
 mb_buffData["Flask of Distilled Wisdom"] 			=	"Interface\\Icons\\INV_Potion_97"
 
 mb_buffData["Elixir of the Mongoose"] 				=	"Interface\\Icons\\INV_Potion_32"
-mb_buffData["Mageblood Potion"] 					=	"Interface\\Icons\\INV_Potion_45"
-mb_buffData["Greater Arcane Elixir"] 				=	"Interface\\Icons\\INV_Potion_25"
 mb_buffData["Elixir of Frost Power"] 				=	"Interface\\Icons\\INV_Potion_03"
 mb_buffData["Elixir of Greater Firepower"] 			=	"Interface\\Icons\\INV_Potion_60"
 mb_buffData["Elixir of Shadow Power"] 				=	"Interface\\Icons\\INV_Potion_46"
 
+mb_buffData["Mageblood Potion"] 					=	"Interface\\Icons\\INV_Potion_45"
+
 mb_buffData["Greater Stoneshield Potion"] 			=	"Interface\\Icons\\INV_Potion_69" 
+mb_buffData["Greater Arcane Elixir"] 				=	"Interface\\Icons\\INV_Potion_25"
 
 mb_buffData["Brilliant Wizard Oil"] 				=	"Interface\\Icons\\INV_Potion_105"
 mb_buffData["Brilliant Mana Oil"] 				 	=	"Interface\\Icons\\INV_Potion_100"

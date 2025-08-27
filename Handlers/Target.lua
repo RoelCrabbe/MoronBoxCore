@@ -125,7 +125,7 @@ local function HandleBWLTargetingPreFocus()
 		MB_raidLeader = myName
 	end
 
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
 		return false
 	end
 
@@ -721,7 +721,7 @@ function mb_getTarget()
 		end	
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		if tName and mb_inCombat("target") then
 			return
 		end
@@ -794,7 +794,7 @@ end
 --[####################################### AUTO TARGET HELPERS ########################################]--
 --[####################################################################################################]--
 
-function mb_iamFocus()
+function mb_imFocus()
 	if MB_raidLeader == myName then
 		return true
 	end
@@ -1679,7 +1679,7 @@ function mb_crowdControlMCedRaidMemberNefarian()
 end
 
 function mb_autoAssignBanishOnMoam()
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
 		return
 	end
 

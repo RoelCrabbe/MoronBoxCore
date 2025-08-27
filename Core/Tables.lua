@@ -568,16 +568,6 @@ MB_itemToAutoTrade = {
 --[######################################### ACCESSOR FUNCTIONS #####################################]--
 --[####################################################################################################]--
 
--- Boss Mechanics Functions
-function mb_bossIShouldUseRunesAndManapotsOn()
-    return mb_targetHealthFromRaidleader("Big Boss", 0.95)
-end
-
-function mb_bossIShouldUseManapotsOn()
-    return mb_targetHealthFromRaidleader("Big Boss", 0.65) or
-           mb_targetHealthFromRaidleader("Patchwerk", 0.95)
-end
-
 function mb_bossIShouldUseBandageOn()
     local myClass = UnitClass("player")
     

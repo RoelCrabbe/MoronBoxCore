@@ -85,7 +85,7 @@ function mb_setFocus()
 end
 
 function mb_clearRaidTarget()
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
 		return
 	end
 	
@@ -114,7 +114,7 @@ function mb_cooldowns()
 		end
 	end
 
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
 		return
 	end
 
@@ -152,7 +152,7 @@ function mb_useManualRecklessness()
 		return
 	end
 
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
 		return
 	end
 
@@ -186,7 +186,7 @@ function mb_reportCooldowns()
 		end
 	end
 
-	if not mb_iamFocus() or mb_inCombat("player") then
+	if not mb_imFocus() or mb_inCombat("player") then
 		return
 	end
 

@@ -85,7 +85,7 @@ local GetWeaverWeapon = mb_getWeaverWeapon
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HaveInBags = mb_haveInBags
 local HealthPct = mb_healthPct
-local IamFocus = mb_iamFocus
+local ImFocus = mb_imFocus
 local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
@@ -1005,7 +1005,7 @@ function Warrior:Taunt()
 		return
 	end
 
-	if IamFocus() then
+	if ImFocus() then
         return
     end
 	

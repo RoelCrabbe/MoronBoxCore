@@ -121,7 +121,7 @@ function mb_crowdControl()
 end
 
 function mb_assignCrowdControl()
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
         return
     end
 
@@ -271,7 +271,7 @@ function mb_crowdControlFear()
 end
 
 function mb_assignFear()
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
         return
     end
 
@@ -303,7 +303,7 @@ function mb_assignOffTank()
 		return 
 	end
 
-	if not mb_iamFocus() or TableLength(MB_offTanks) == 0 then
+	if not mb_imFocus() or TableLength(MB_offTanks) == 0 then
         return
     end
 
@@ -332,7 +332,7 @@ function mb_assignOffTank()
 end
 
 function mb_assignInterrupt()
-	if not mb_iamFocus() then
+	if not mb_imFocus() then
         return
     end
 

@@ -69,7 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local IamFocus = mb_iamFocus
+local ImFocus = mb_imFocus
 local ImRangedDPS = mb_imRangedDPS
 local UnitInRange = mb_unitInRange
 
@@ -105,7 +105,7 @@ local function HandleFollow(delay)
 		return
 	end
 
-	if IamFocus() then
+	if ImFocus() then
 		return
 	end
 

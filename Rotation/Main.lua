@@ -942,7 +942,7 @@ function mb_followFocus()
 		CastSpellByName("Life Tap(Rank 1)")
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 
@@ -971,7 +971,7 @@ function mb_casterFollow()
 		CastSpellByName("Life Tap(Rank 1)")
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 
@@ -995,7 +995,7 @@ function mb_meleeFollow()
 		end
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 
@@ -1086,7 +1086,7 @@ function mb_tankFollow()
 		CastSpellByName("Life Tap(Rank 1)")
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 
@@ -1114,7 +1114,7 @@ function mb_healerFollow()
 		CastSpellByName("Life Tap(Rank 1)")
 	end
 
-	if mb_iamFocus() then
+	if mb_imFocus() then
 		return
 	end
 
@@ -1207,7 +1207,7 @@ function mb_GTFO()
 
 	mb_useSandsOnChromaggus()
 
-    if mb_iamFocus() then
+    if mb_imFocus() then
         return
     end
 

@@ -316,7 +316,6 @@ MB_myOssirianTankDefensivePercentage = 0.35 -- Shield Wall threshold
 
 -- Strategy Configuration
 MB_myRazorgoreBoxStrategy = true
-MB_myRazorgoreBoxHealerStrategy = true -- Mana Pots
 
 -- Orb Controller Assignment (REQUIRED)
 MB_myRazorgoreORBtank = {

@@ -78,7 +78,7 @@ local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HasItem = mb_hasItem
 local HaveInBags = mb_haveInBags
 local HealthPct = mb_healthPct
-local IamFocus = mb_iamFocus
+local ImFocus = mb_imFocus
 local ImBusy = mb_imBusy
 local ImHealer = mb_imHealer
 local ImRangedDPS = mb_imRangedDPS
@@ -116,14 +116,14 @@ local OptionalUniversalReagents = {
 
 local ClassSpecificReagents = {
     ["Druid"] = {
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Ironwood Seed",
         "Major Mana Potion",
         "Wild Thornroot"
     },
     ["Hunter"] = {
-        "Demonic Rune",
+        "Tea with Sugar",
         "Doomshot",
         "Flask of the Titans",
         "Greater Nature Protection Potion",
@@ -134,7 +134,7 @@ local ClassSpecificReagents = {
     },
     ["Mage"] = {
         "Arcane Powder",
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Supreme Power",
         "Major Mana Potion",
         "Rune of Portals",
@@ -144,14 +144,14 @@ local ClassSpecificReagents = {
         "Elixir of Greater Firepower"
     },
     ["Paladin"] = {
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
         "Symbol of Divinity",
         "Symbol of Kings"
     },
     ["Priest"] = {
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
         "Sacred Candle",
@@ -170,13 +170,13 @@ local ClassSpecificReagents = {
     },
     ["Shaman"] = {
         "Ankh",
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
         "Mageblood Potion"
     },
     ["Warlock"] = {
-        "Demonic Rune",
+        "Tea with Sugar",
         "Flask of Supreme Power",
         "Major Mana Potion",
         "Mageblood Potion",
@@ -242,7 +242,7 @@ local ReagentsLimit = {
     ["Greater Shadow Protection Potion"] = { 65, 1 },
     
     -- Mana Restoration
-    ["Demonic Rune"] = { 40, 1 },
+    ["Tea with Sugar"] = { 40, 1 },
     ["Major Mana Potion"] = { 60, 1 },
     
     -- Flasks (High-End Consumables)
@@ -353,6 +353,7 @@ end
 
 local ManaPotsThreshold = {
     { name = "Major Mana Potion", threshold = 2250 },
+    { name = "Tea with Sugar", threshold = 1750 },
     { name = "Demonic Rune", threshold = 1500 },
     { name = "Dark Rune", threshold = 1500 },
 }
@@ -367,37 +368,12 @@ local function UseManaPotsThresholdPots()
     end
 end
 
-local function TakeManaPotionIfBelowManaPotMana()
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    if not BossIShouldUseRunesAndManapotsOn() and not BossIShouldUseManapotsOn() then
-        return
-    end
-
-    UseManaPotsThresholdPots()
-end
-
-local function TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
-    if not MB_myRazorgoreBoxHealerStrategy then 
-        return
-    end
-
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    if Instance.BWL() and not IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
-        return
-    end
-
-    UseManaPotsThresholdPots()
-end
-
 function mb_takeManaPotionAndRunes()
-    TakeManaPotionIfBelowManaPotMana()
-    TakeManaPotionIfBelowManaPotManaInRazorgoreRoom()
+    if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    UseManaPotsThresholdPots()
 end
 
 --[####################################################################################################]--
@@ -417,7 +393,7 @@ function mb_useSandsOnChromaggus()
         return
     end
 
-    if not IamFocus() then
+    if not ImFocus() then
         return
     end
 
