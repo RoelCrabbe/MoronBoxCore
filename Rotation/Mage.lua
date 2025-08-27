@@ -358,12 +358,12 @@ function Mage:BossSpecificDPS()
 
     if (Instance.AQ40() or Instance.AQ20()) and MobsToDetectMagic() then
         if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then        
-            CastSpellOrWand("Frostbolt")
+            Mage:Frost()
             return true
-        elseif HasBuffOrDebuff("Fire and Arcane Reflect", "target", "buff") and not HasBuffOrDebuff("Immolate", "target", "debuff") then
-            CastSpellOrWand("Frostbolt")
+        elseif HasBuffNamed("Fire and Arcane Reflect", "target") and not HasBuffOrDebuff("Immolate", "target", "debuff") then
+            Mage:Frost()
             return true
-        elseif HasBuffOrDebuff("Shadow and Frost Reflect", "target", "buff") and HasBuffOrDebuff("Immolate", "target", "debuff") then
+        elseif HasBuffNamed("Shadow and Frost Reflect", "target") and HasBuffOrDebuff("Immolate", "target", "debuff") then
             Mage:Fire()
             return true
         end

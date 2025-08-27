@@ -122,6 +122,7 @@ local ClassSpecificReagents = {
         "Flask of Distilled Wisdom",
         "Ironwood Seed",
         "Major Mana Potion",
+        "Mageblood Potion",
         "Wild Thornroot"
     },
     ["Hunter"] = {
@@ -149,6 +150,7 @@ local ClassSpecificReagents = {
         "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
+        "Mageblood Potion",
         "Symbol of Divinity",
         "Symbol of Kings"
     },

@@ -314,6 +314,18 @@ function mb_numberOfClassInParty(checkClass)
 	return i
 end
 
+function mb_numberOfClassInRaid(checkClass)
+    local i = 0
+    
+    for _, name in pairs(MBID) do
+        if UnitClass(name) == checkClass then
+            i = i + 1
+        end
+    end
+    
+    return i
+end
+
 function mb_getNameFromPlayerClassInParty(checkClass)
 	local MyGroup = MB_groupID[myName]
 

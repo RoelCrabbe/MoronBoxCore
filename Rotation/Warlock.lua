@@ -366,18 +366,32 @@ function Warlock:BossSpecificDPS()
                 end
             end          
         else
-            local curseAssignments = {
-                [1] = "Curse of Recklessness",
-                [2] = "Curse of the Elements",
-                [3] = "Curse of Shadow",
-                [4] = "Curse of the Elements",
-                [5] = "Curse of Recklessness",
-                [6] = "Curse of Shadow"
-            }
+            local casters = mb_numberOfClassInRaid("Mage") + mb_numberOfClassInRaid("Warlock")
+            local melee = mb_numberOfClassInRaid("Warrior") + mb_numberOfClassInRaid("Rogue") + mb_numberOfClassInRaid("Hunter")
+
+            local curseAssignments
+            if casters > melee then
+                curseAssignments = {
+                    [1] = "Curse of the Elements",
+                    [2] = "Curse of Shadow", 
+                    [3] = "Curse of Recklessness",
+                    [4] = "Curse of the Elements",
+                    [5] = "Curse of Shadow",
+                    [6] = "Curse of Recklessness"
+                }
+            else
+                curseAssignments = {
+                    [1] = "Curse of Recklessness",
+                    [2] = "Curse of the Elements",
+                    [3] = "Curse of Shadow", 
+                    [4] = "Curse of Recklessness",
+                    [5] = "Curse of the Elements",
+                    [6] = "Curse of Shadow"
+                }
+            end
 
             local myOrder = MyClassAlphabeticalOrder()
             local assignedCurse = curseAssignments[myOrder]
-
             if assignedCurse and not HasBuffOrDebuff(assignedCurse, "target", "debuff") then
                 CastSpellByName(assignedCurse)
                 return true
@@ -484,14 +498,12 @@ function Warlock:BossSpecificDPS()
 		end
 
 	elseif Instance.AQ20() then
-
 		if TankTarget("Moam") and ManaPct("target") > 0.75 and not ImBusy() then
 			CastSpellByName("Drain Mana") 			
 		end
 
         if TankTarget("Ossirian the Unscarred") then
-            if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
-            
+            if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then            
                 if SpellReady("Soul Fire") and NumShards() > 10 then 
 					CastSpellOrWand("Soul Fire")
 				end
@@ -499,7 +511,6 @@ function Warlock:BossSpecificDPS()
 				CastSpellOrWand("Immolate")
                 return true
             elseif HasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
-
 				CastSpellOrWand("Shadow Bolt")
                 return true
             end
