@@ -72,14 +72,16 @@ local myRace = UnitRace("player")
 local BossIShouldUseManapotsOn = mb_bossIShouldUseManapotsOn
 local BossIShouldUseRunesAndManapotsOn = mb_bossIShouldUseRunesAndManapotsOn
 local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
+local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
+local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HasItem = mb_hasItem
 local HaveInBags = mb_haveInBags
 local HealthPct = mb_healthPct
-local ImFocus = mb_imFocus
 local ImBusy = mb_imBusy
+local ImFocus = mb_imFocus
 local ImHealer = mb_imHealer
 local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
@@ -307,9 +309,9 @@ local function GetCompleteReagentList(className)
 end
 
 function mb_buyReagentsAndConsumables()
-    local freeSlots = mb_getAllContainerFreeSlots()
+    local freeSlots = GetAllContainerFreeSlots()
     if freeSlots <= 5 then
-        mb_cdMessage("I don't have enough bagspace to buy consumables, sort it!")
+        CdMessage("I don't have enough bagspace to buy consumables, sort it!")
         return
     end
 
