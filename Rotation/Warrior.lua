@@ -999,6 +999,10 @@ end
 
 function Warrior:Taunt()
 
+    if Instance.MC() and TankTarget("Magmadar") then
+        return
+    end
+
 	if SpellReady("Taunt") then
 		WarriorSetDefensive()
 		CastSpellByName("Taunt")

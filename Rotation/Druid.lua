@@ -1251,6 +1251,10 @@ function Druid:Cooldowns()
 end
 
 function Druid:Taunt()
+    if Instance.MC() and TankTarget("Magmadar") then
+        return
+    end
+
 	if SpellReady("Growl") then		
 		CastSpellByName("Growl")
 		return
