@@ -968,7 +968,7 @@ function Priest:PowerInfusion()
 
 	if not MB_autoBuff.Active then
 		MB_autoBuff.Active = true
-		MB_autoBuff.Time = GetTime() + 2.5
+		MB_autoBuff.Time = GetTime() + 1.5
 		PriestCounter.Cycle()
 	end
 

@@ -156,6 +156,50 @@ end
 MB_mySpeccList["Warrior"] = WarriorSpecc
 
 --[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function HasBattleShout()
+    local buffName = "Battle Shout"
+    local buffTexture = "Interface\\Icons\\Ability_Warrior_BattleShout"
+    local tooltip = MMBTooltip
+    local textleft1 = getglobal(tooltip:GetName().."TextLeft1")
+    local unit = "player"
+
+    for i = 1, 32 do
+        local texture = UnitBuff(unit, i)
+        if not texture then
+            break
+        end
+
+        if texture == buffTexture then
+            tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+            tooltip:SetUnitBuff(unit, i)
+
+            local line1 = textleft1:GetText()
+            if strfind(strlower(line1 or ""), strlower(buffName)) then
+                local textLeft2 = getglobal(tooltip:GetName().."TextLeft2")
+                local line2 = textLeft2 and textLeft2:GetText() or ""
+                tooltip:Hide()
+
+                if not strfind(line2, "400") then
+                    return true
+                end
+            end
+        end
+    end
+
+    tooltip:Hide()
+    return false
+end
+
+local function BuffBattleShout()
+    if SpellReady("Battle Shout") and not HasBattleShout() then
+        CastSpellByName("Battle Shout")
+    end
+end
+
+--[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
 
@@ -251,7 +295,7 @@ function Warrior:DPSSingle()
         end
     end
 
-    SelfBuff("Battle Shout")
+    BuffBattleShout()
 
     if not MobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
         if not HasBuffOrDebuff("Expose Armor", "target", "debuff") and DebuffSunderAmount() < 5 then
@@ -397,7 +441,7 @@ function Warrior:TankSingle()
 		end
 	end
     
-    SelfBuff("Battle Shout")
+    BuffBattleShout()
     
     if UnitMana("player") >= 5 and SpellReady("Revenge") then        
         CastSpellByName("Revenge")
@@ -512,7 +556,7 @@ function Warrior:DPSMulti()
         end
     end
 
-    SelfBuff("Battle Shout")
+    BuffBattleShout()
 
     if not MobsNoSunders() and UnitInRaid("player") and GetNumRaidMembers() > 5 then
         if not HasBuffOrDebuff("Expose Armor", "target", "debuff") and DebuffSunderAmount() < 5 then
@@ -629,7 +673,7 @@ function Warrior:TankMulti()
 		end
 	end
 
-    SelfBuff("Battle Shout")
+    BuffBattleShout()
     
     if UnitMana("player") >= 5 and SpellReady("Revenge") then        
         CastSpellByName("Revenge")

@@ -62,10 +62,10 @@ MB_raidAssist = { -- Raid tools
 	Priest = { -- Priest options
 		PowerInfusionList = { -- Players in this list can receive Power Infusion (randomly selected)
 			-- Horde
-			"Thehatter",
-			"Trinali",
-			"Akaaka",
-			"Ayaag",
+			"Drogles",
+			"Oxg",
+			"Alionex",
+			"Salka",
 		}
 	},
 

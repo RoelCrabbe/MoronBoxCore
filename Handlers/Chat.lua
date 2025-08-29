@@ -71,7 +71,7 @@ local myRace = UnitRace("player")
 
 local MB_msgHistory = {}
 local MB_printHistory = {}
-local MB_maxHistory = 10
+local MB_maxHistory = 50
 
 function mb_cdMessage(msg, timer)
 	local coolDown = timer or 15
