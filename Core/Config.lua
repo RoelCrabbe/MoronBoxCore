@@ -60,12 +60,11 @@ MB_raidAssist = { -- Raid tools
 	},
 
 	Priest = { -- Priest options
-		PowerInfusionList = { -- Players in this list can receive Power Infusion (randomly selected)
-			-- Horde
-			"Drogles",
-			"Oxg",
-			"Alionex",
-			"Salka",
+		PowerInfusion = { -- Players in this list can receive Power Infusion (randomly selected)
+			["Liket"] = { "Alionex" },
+			["Blaidzy"] = { "Xlimidrizer" },
+			["Cyal"] = { "Oxg" },
+			["Bonita"] = { "Drogles" }
 		}
 	},
 

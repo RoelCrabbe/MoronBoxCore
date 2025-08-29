@@ -192,17 +192,18 @@ MB_mySpeccList["Priest"] = PriestSpecc
 local function PriestHeal()
 
 	if InCombat("player") then
-		if MB_raidLeader and MyClassOrder() == 1 and (TankTarget("Garr") or TankTarget("Firesworn")) then
-			if HasBuffOrDebuff("Magma Shackles", MBID[MB_raidLeader], "debuff") then
-				
-				TargetUnit(MBID[MB_raidLeader])
-				CastSpellByName("Dispel Magic")
-				TargetLastTarget()
+		if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
+			if MB_raidLeader and MyClassOrder() == 1 then
+				if HasBuffOrDebuff("Magma Shackles", MBID[MB_raidLeader], "debuff") then
+					
+					TargetUnit(MBID[MB_raidLeader])
+					CastSpellByName("Dispel Magic")
+					TargetLastTarget()
+				end
 			end
 		end
 
 		Priest:PowerInfusion()
-
 		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
@@ -411,7 +412,7 @@ function Priest:MaxShieldAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -450,7 +451,7 @@ function Priest:MaxRenewAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -481,7 +482,7 @@ function Priest:RenewAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -511,7 +512,7 @@ function Priest:ShieldAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -546,7 +547,7 @@ function Priest:FearWardAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -590,7 +591,7 @@ function Priest:ShieldToBombFollowTarget()
         return
     end
 
-    TargetByName(targetName)
+    TargetUnit(targetID)
     CastSpellByName("Power Word: Shield")
     TargetLastTarget()
 end
@@ -958,32 +959,37 @@ function Priest:ManaDrain()
 end
 
 function Priest:PowerInfusion()
-	if ImBusy() then
-		return false
-	end
-
-	if not (InCombat("player") and SpellReady("Power Infusion")) then
+	if ImBusy() or not InCombat("player") then
 		return
 	end
 
-	if not MB_autoBuff.Active then
-		MB_autoBuff.Active = true
-		MB_autoBuff.Time = GetTime() + 1.5
-		PriestCounter.Cycle()
+	if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
+        return
+    end
+
+	if not SpellReady("Power Infusion") then
+		return
 	end
 
-	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-		for k, caster in pairs(MB_raidAssist.Priest.PowerInfusionList) do
-			if MBID[caster] then
-				if IsValidFriendlyTargetWithin28YardRange(MBID[caster]) 
-					and not HasBuffOrDebuff("Power Infusion", MBID[caster], "buff") 
-					and InCombat(MBID[caster]) 
-					and ManaPct(MBID[caster]) < 0.9 
-					and ManaPct(MBID[caster]) > 0.1 then
+	local casters = MB_raidAssist.Priest.PowerInfusion[myName] 
+	if not casters or TableLength(casters) == 0 then 
+		return
+	end
 
-					TargetByName(caster)
+	for _, target in ipairs(casters) do
+		local unit = MBID[target]
+
+		if unit and InCombat(unit) then
+			if not (HasBuffOrDebuff("Power Infusion", unit, "buff") or HasBuffOrDebuff("Arcane Power", unit, "buff")) then
+				if IsValidFriendlyTargetWithin28YardRange(unit) and ManaPct(unit) > 0.1 then
+					if UnitIsFriend("player", unit) then
+						ClearTarget()
+					end
+
 					CastSpellByName("Power Infusion")
-					CdMessage("Power Infusion on "..GetColors(UnitName(MBID[caster])).."!")
+					CdMessage("Power Infusion on "..GetColors(UnitName(unit)).."!")
+					SpellTargetUnit(unit)
+					SpellStopTargeting()
 					return
 				end
 			end

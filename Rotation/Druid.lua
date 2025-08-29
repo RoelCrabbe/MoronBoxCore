@@ -430,7 +430,7 @@ function Druid:Innervate()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -466,7 +466,7 @@ function Druid:MaxRejuvAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -501,7 +501,7 @@ function Druid:MaxRegrowthAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -536,7 +536,7 @@ function Druid:SwiftmendOnRandomRaidMember(spell, percentage)
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -573,7 +573,7 @@ function Druid:RejuvAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -603,7 +603,7 @@ function Druid:RegrowthAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -637,7 +637,7 @@ function Druid:RegrowthLowRandom()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
@@ -689,7 +689,7 @@ function Druid:MaxAbolishAggroedPlayer()
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
         return
     end
 
