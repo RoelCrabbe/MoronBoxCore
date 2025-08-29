@@ -522,6 +522,8 @@ function Mage:Fire()
 end
 
 function Mage:Frost()
+    local winterChill = DebuffWintersChillAmount()
+
     -- Combat cooldowns
     if InCombat("player") then
         Mage:UseFrostCooldowns() 
@@ -546,7 +548,7 @@ function Mage:Frost()
     end
 
     -- Winter's Chill opener
-    if WinterChillCheck() and DebuffWintersChillAmount() < 3 then
+    if Instance.IsWorldBoss() and WinterChillCheck() and winterChill < 2 then
         CastSpellByName(MB_raidAssist.Mage.SpellToKeepWintersChillUp)
         return
     end

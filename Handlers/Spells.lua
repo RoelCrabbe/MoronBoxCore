@@ -174,17 +174,20 @@ function mb_coolDownCast(spell, cooldown)
 	end
 end
 
-function mb_castSpellOrWand(spell)		
-	if mb_knowSpell(spell) and UnitMana("player") > MB_classSpellManaCost[spell] then
-		CastSpellByName(spell) 
-		return 
-	else
-        if MB_attackWandSlot then
-		    mb_autoWandAttack()
-        else
-            mb_autoAttack()
-        end
+function mb_castSpellOrWand(spell)
+	if mb_knowSpell(spell) then
+		if UnitMana("player") > MB_classSpellManaCost[spell] then
+			CastSpellByName(spell) 
+			return 
+		end
 	end
+
+	if MB_attackWandSlot then
+		mb_autoWandAttack()
+		return
+	end
+	
+	mb_autoAttack()
 end
 
 function mb_imBusy()

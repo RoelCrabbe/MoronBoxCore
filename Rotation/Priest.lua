@@ -203,11 +203,14 @@ local function PriestHeal()
 			end
 		end
 
-		Priest:PowerInfusion()
 		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Priest:Cooldowns()
+        end
+
+		if Priest:PowerInfusion() then
+            return
         end
 
 		if Priest:ManaDrain() then
@@ -329,14 +332,9 @@ local function PriestHeal()
 	end
 
 	if HasBuffOrDebuff("Inner Focus", "player", "buff") then
-		MBH_CastHeal("Flash Heal", 6, 6)
-
+		MBH_CastHeal("Flash Heal", 6, 7)
 	elseif MB_myHealSpell == "Greater Heal" or HasBuffOrDebuff("Hazza\'rah\'s Charm of Healing", "player", "buff") then
 		MBH_CastHeal("Greater Heal", 1, 1)
-		
-	elseif MB_myHealSpell == "Heal" then
-		MBH_CastHeal("Heal")
-		
 	elseif MB_myHealSpell == "Flash Heal" then
 		MBH_CastHeal("Flash Heal")
 	else
@@ -837,7 +835,6 @@ local function PriestSetup()
 	end
 
 	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-		SelfBuff("Inner Focus")
 		MultiBuff("Prayer of Fortitude")
 
 		if Instance.Naxx() or Instance.AQ40() then
@@ -960,20 +957,20 @@ end
 
 function Priest:PowerInfusion()
 	if ImBusy() or not InCombat("player") then
-		return
+		return false
 	end
 
 	if Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn")) then
-        return
+        return false
     end
 
 	if not SpellReady("Power Infusion") then
-		return
+		return false
 	end
 
 	local casters = MB_raidAssist.Priest.PowerInfusion[myName] 
 	if not casters or TableLength(casters) == 0 then 
-		return
+		return false
 	end
 
 	for _, target in ipairs(casters) do
@@ -990,11 +987,12 @@ function Priest:PowerInfusion()
 					CdMessage("Power Infusion on "..GetColors(UnitName(unit)).."!")
 					SpellTargetUnit(unit)
 					SpellStopTargeting()
-					return
+					return true
 				end
 			end
 		end
 	end
+	return false
 end
 
 function Priest:PartyHurt(hurt, num_party_hurt)
@@ -1028,12 +1026,14 @@ local function PriestLoathebHeal()
 	end
 	
 	if InCombat("player") then
-		Priest:PowerInfusion()
-
 		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
             Priest:Cooldowns()
+        end
+
+		if Priest:PowerInfusion() then
+            return
         end
 
 		if Priest:ManaDrain() then

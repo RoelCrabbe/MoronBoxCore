@@ -335,7 +335,7 @@ function mb_selfBuff(spell)
 	end
 end
 
-local function TryBuff(unitList, spell)
+local function AttemptBuff(unitList, spell)
     for _, unitName in pairs(unitList) do
         local unitID = MBID[unitName]
         if mb_isValidFriendlyTarget(unitID, spell) and not mb_hasBuffOrDebuff(spell, unitID, "buff") then
@@ -349,14 +349,14 @@ local function TryBuff(unitList, spell)
 end
 
 function mb_tankBuff(spell)
-    TryBuff(MB_raidTanks, spell)
+    AttemptBuff(MB_raidTanks, spell)
 end
 
 function mb_meleeBuff(spell)
-    if TryBuff(MB_classList["Rogue"], spell) then return true end
-    if TryBuff(MB_raidTanks, spell) then return true end
+    if AttemptBuff(MB_classList["Rogue"], spell) then return true end
+    if AttemptBuff(MB_raidTanks, spell) then return true end
     if spell == "Abolish Poison" then
-        TryBuff(MB_classList["Warrior"], spell)
+        AttemptBuff(MB_classList["Warrior"], spell)
     end
 end
 
@@ -426,6 +426,8 @@ local function MultiBuffPriest(spell)
 	n = GetNumRaidMembers()
 	r = math.random(n) - 1
 
+	mb_selfBuff("Inner Focus")
+
 	if spell == "Prayer of Fortitude" then
 		for i = 1, n do
 			j = i + r
@@ -444,9 +446,7 @@ local function MultiBuffPriest(spell)
 				return
 			end
 		end
-
 	elseif spell == "Prayer of Shadow Protection" then
-
 		for i = 1, n do
 			j = i + r
 			if j > n then
@@ -464,9 +464,7 @@ local function MultiBuffPriest(spell)
 				return
 			end
 		end
-
 	elseif spell == "Prayer of Spirit" then
-
 		for i = 1, n do
 			j = i + r
 			if j > n then
@@ -485,9 +483,7 @@ local function MultiBuffPriest(spell)
 				return
 			end
 		end
-
 	elseif spell == "Fear Ward" then
-
 		for i = 1, n do
 			j = i + r
 			if j > n then 

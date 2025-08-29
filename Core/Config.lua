@@ -90,7 +90,7 @@ MB_raidAssist = { -- Raid tools
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
 		AllowFireBlastDuringIgnite = true, -- Indicates whether instant cast spells should be allowed like fireblast when igniting	
 		-- Forst
-		SpellToKeepWintersChillUp =  "Frostbolt(Rank 4)"
+		SpellToKeepWintersChillUp =  "Frostbolt(Rank 1)"
 	},
 
 	Debugger = { -- Tells me some stuff on X and Y encounters
