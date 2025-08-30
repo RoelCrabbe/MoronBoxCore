@@ -84,6 +84,7 @@ local HealthPct = mb_healthPct
 local ImBusy = mb_imBusy
 local ImFocus = mb_imFocus
 local ImHealer = mb_imHealer
+local ImMeleeDPS = mb_imMeleeDPS
 local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
 local InCombat = mb_inCombat
@@ -655,6 +656,10 @@ function mb_takeFAP()
     if ImBusy() or InCombat("player") then
 		return
 	end
+
+    if not ImMeleeDPS() then
+        return
+    end
 
     if not BossUseFAPon() then
         return
