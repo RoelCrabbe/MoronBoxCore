@@ -1,0 +1,5 @@
+# PowerShell files
+*.ps1
+
+# Text files
+*.txt

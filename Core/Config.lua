@@ -1,10 +1,12 @@
-------------------------------------------------------------------------------------------------------
------------------------------------------------ Config! ----------------------------------------------
-------------------------------------------------------------------------------------------------------
+--[####################################################################################################]--
+--[######################################### CONFIGURATION ############################################]--
+--[####################################################################################################]--
 
 MB_raidInviter = "Moron" -- Handling Raidinvites
-MB_tankList = {}
+MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
+MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
 
+MB_tankList = {}
 MB_raidAssist = { -- Raid tools
 	AutoTurnToTarget = false, -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
 	Frameflash = true, -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
@@ -48,10 +50,6 @@ MB_raidAssist = { -- Raid tools
 		FarmSoulStones = false -- On HealAndTank, warlocks will Drain Soul
 	},
 
-	Rogue = { -- Rogue options
-		SaveEnergyForInterrupt = false, -- Will not use attacks if below 65 energy, to always be ready with Kick on GCD
-	},
-
 	Paladin = { -- Paladin options
 		HolyShockLowHealthAggroedPlayers = true -- Change to nil if you experience lag
 	},
@@ -62,17 +60,11 @@ MB_raidAssist = { -- Raid tools
 	},
 
 	Priest = { -- Priest options
-		PowerInfusionList = { -- Players in this list can receive Power Infusion (randomly selected)
-			-- Horde
-			"Thehatter",
-			"Trinali",
-			"Akaaka",
-			"Ayaag",
-
-			-- Alliance
-			"Salka",
-			"Bluedabadee",
-			"Trachyt"
+		PowerInfusion = { -- Players in this list can receive Power Infusion (randomly selected)
+			["Liket"] = { "Alionex" },
+			["Blaidzy"] = { "Xlimidrizer" },
+			["Cyal"] = { "Oxg" },
+			["Bonita"] = { "Drogles" }
 		}
 	},
 
@@ -81,6 +73,7 @@ MB_raidAssist = { -- Raid tools
 		AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
 			-- Horde
 			"Jokamok",
+			"Crymeariver",
 
 			"Suecia", -- Tank
 			"Ajlano", -- Tank
@@ -92,54 +85,12 @@ MB_raidAssist = { -- Raid tools
 	},
 
 	Mage = {
-		StarterIgniteTick = 500, -- Represents the threshold tick value for the Ignite debuff
-		AllowIgniteToDropWhenBadTick = false, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
+		StarterIgniteTick = 425, -- Represents the threshold tick value for the Ignite debuff
+		AllowIgniteToDropWhenBadTick = true, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
-		AllowInstantCast = true, -- Indicates whether instant cast spells should be allowed		
-
-		--[[
-			When running multiple different spec mages in one team, the following problems occurred:
-			Your Frost/Arcane mages have more mana than your Fire mages.
-			This caused my Fire mages to do nothing.
-
-			Why? My Fire mages wait for 5 stacks of Scorch before casting Fireball.
-			How it used to work is that the 5 mages with the highest mana would cast Scorch first.
-			With the extra Arcane mages, those 5 will be Frost, and therefore Scorch will never be up.
-
-			This is why there are two tables: FireMages and FrostMages.
-			You will need to fill those in for Fire mages; Frost currently has no usage yet but is there for reference.
-			(Solution to running multiple mage specs)
-
-			(Also tried my best at controlling Ignite, but you can't really do it
-		]]
-
-		FireMages = {
-			-- Horde Main Team --
-			"Thehatter",
-			"Rotonic",
-			"Trinali",
-			"Schoffie",
-			"Mizea",
-
-			-- Alliance Main Team --
-			"Alliance Mage 1",
-		},
-
-		FrostMages = {
-			-- Horde Main Team --
-			"Xlimidrizer",
-			"Kelseran",
-			"Damacon",
-			"Salka",
-			"Umek",
-			"Oxg",
-
-			-- Horde Shatter --
-			"Bluedabadee",
-
-			-- Alliance Main Team --
-			"Alliance Mage 2",
-		}
+		AllowFireBlastDuringIgnite = true, -- Indicates whether instant cast spells should be allowed like fireblast when igniting	
+		-- Forst
+		SpellToKeepWintersChillUp =  "Frostbolt(Rank 1)"
 	},
 
 	Debugger = { -- Tells me some stuff on X and Y encounters
@@ -175,6 +126,7 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
     "Almisael",
     "Rows", 
 	"Sabo",
+	"Honeycocaine",
 
     -- Alliance
     "Alliance Tank 1"
@@ -193,6 +145,10 @@ MB_furysThatCanTank = { -- DPS warriors with a tank set (create ItemRack sets na
     -- Alliance
     "Alliance Fury 1"
 }
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
 function mb_tankList(encounter)
     -- DO NOT PUT OTHER / GUEST TANKS ON HERE, ADD THEM in MB_extraTanks!!
@@ -223,13 +179,15 @@ function mb_tankList(encounter)
     MB_tankList = tanks
 
     if IsRaidLeader() then
-        mb_message(encounter.." Tanklist loaded.")
+        mb_cdMessage(encounter.." Tanklist loaded.")
         for i, tank in ipairs(MB_tankList) do
-            mb_message(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
+            mb_cdMessage(GetColors(MB_raidTargetNames[i]).." => "..tank..".")
         end
     end
 
     mb_initializeClasslists()
 end
 
---------------------------------------------- End Globals! -------------------------------------------
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
