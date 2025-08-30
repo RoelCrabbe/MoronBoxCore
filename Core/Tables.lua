@@ -460,6 +460,12 @@ local MB_PoisonBossSet = {
     ["Razzashi Adder"] = true
 }
 
+local MB_FAPBossSet = {
+    ["Gehennas"] = true,
+    ["Flamewaker"] = true,
+    ["Lava Elemental"] = true
+}
+
 --[####################################################################################################]--
 --[############################################ NPC CATEGORIES #######################################]--
 --[####################################################################################################]--
@@ -476,12 +482,6 @@ local MB_reagentVendorsSet = {
     ["Thomas Mordan"] = true,
     ["Reagents"] = true,
     ["Consumables"] = true
-}
-
-local MB_sunfruitVendorsSet = {
-    ["Quartermaster Miranda Breechlock"] = true,
-    ["Argent Quartermaster Lightspark"] = true,
-    ["Argent Quartermaster Hasana"] = true
 }
 
 --[####################################################################################################]--
@@ -717,9 +717,8 @@ function mb_reagentVendors()
     return targetName and MB_reagentVendorsSet[targetName] == true
 end
 
-function mb_sunfruitVendors()
-    local targetName = UnitName("target")
-    return targetName and MB_sunfruitVendorsSet[targetName] == true
+function mb_bossUseFAPon()
+    return mb_tankTargetInSet(MB_FAPBossSet)
 end
 
 --[####################################################################################################]--

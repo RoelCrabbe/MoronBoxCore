@@ -176,6 +176,8 @@ function mb_single()
 	end
 
 	mb_GTFO()
+	mb_takeLIP()
+	mb_takeFAP()
 
     if mb_hasBuffOrDebuff("First Aid", "player", "buff") and mb_hasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -251,6 +253,8 @@ function mb_multi()
 	end
 
 	mb_GTFO()
+	mb_takeLIP()
+	mb_takeFAP()
 
     if mb_hasBuffOrDebuff("First Aid", "player", "buff") and mb_hasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -326,6 +330,8 @@ function mb_AOE()
 	end
 
 	mb_GTFO()
+	mb_takeLIP()
+	mb_takeFAP()
 
     if mb_hasBuffOrDebuff("First Aid", "player", "buff") and mb_hasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -516,6 +522,8 @@ function mb_healAndTank()
 	end
 
 	mb_GTFO()
+	mb_takeLIP()
+	mb_takeFAP()
 
     if mb_hasBuffOrDebuff("First Aid", "player", "buff") and mb_hasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return

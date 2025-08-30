@@ -72,6 +72,7 @@ local myRace = UnitRace("player")
 local BossIShouldUseManapotsOn = mb_bossIShouldUseManapotsOn
 local BossIShouldUseRunesAndManapotsOn = mb_bossIShouldUseRunesAndManapotsOn
 local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
+local BossUseFAPon = mb_bossUseFAPon
 local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
 local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
@@ -114,6 +115,7 @@ local UniversalReagents = {
 local OptionalUniversalReagents = {
     "Swiftness of Zanza",
     "Greater Shadow Protection Potion",
+    "Limited Invulnerability Potion"
 }
 
 local ClassSpecificReagents = {
@@ -123,7 +125,8 @@ local ClassSpecificReagents = {
         "Ironwood Seed",
         "Major Mana Potion",
         "Mageblood Potion",
-        "Wild Thornroot"
+        "Wild Thornroot",
+        "Conjured Crystal Water"
     },
     ["Hunter"] = {
         "Tea with Sugar",
@@ -133,7 +136,8 @@ local ClassSpecificReagents = {
         "Major Mana Potion",
         "Elixir of the Mongoose",
         "Juju Might",
-        "Juju Power"
+        "Juju Power",
+        "Conjured Crystal Water"
     },
     ["Mage"] = {
         "Arcane Powder",
@@ -144,7 +148,8 @@ local ClassSpecificReagents = {
         "Mageblood Potion",
         "Greater Arcane Elixir",
         "Elixir of Frost Power",
-        "Elixir of Greater Firepower"
+        "Elixir of Greater Firepower",
+        "Conjured Crystal Water"
     },
     ["Paladin"] = {
         "Tea with Sugar",
@@ -152,7 +157,8 @@ local ClassSpecificReagents = {
         "Major Mana Potion",
         "Mageblood Potion",
         "Symbol of Divinity",
-        "Symbol of Kings"
+        "Symbol of Kings",
+        "Conjured Crystal Water"
     },
     ["Priest"] = {
         "Tea with Sugar",
@@ -162,7 +168,8 @@ local ClassSpecificReagents = {
         "Mageblood Potion",
         "Flask of Supreme Power",
         "Greater Arcane Elixir",
-        "Elixir of Shadow Power"
+        "Elixir of Shadow Power",
+        "Conjured Crystal Water"
     },
     ["Rogue"] = {
         "Flash Powder",
@@ -170,14 +177,16 @@ local ClassSpecificReagents = {
         "Greater Nature Protection Potion",
         "Elixir of the Mongoose",
         "Juju Might",
-        "Juju Power"
+        "Juju Power",
+        "Free Action Potion"
     },
     ["Shaman"] = {
         "Ankh",
         "Tea with Sugar",
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
-        "Mageblood Potion"
+        "Mageblood Potion",
+        "Conjured Crystal Water"
     },
     ["Warlock"] = {
         "Tea with Sugar",
@@ -185,7 +194,8 @@ local ClassSpecificReagents = {
         "Major Mana Potion",
         "Mageblood Potion",
         "Greater Arcane Elixir",
-        "Elixir of Shadow Power"
+        "Elixir of Shadow Power",
+        "Conjured Crystal Water"
     },
     ["Warrior"] = {
         "Dirge's Kickin' Chimaerok Chops",
@@ -198,7 +208,9 @@ local ClassSpecificReagents = {
         "Juju Might",
         "Juju Power",
         "Miniature Cannon Balls",
-        "Rumsey Rum Black Label"
+        "Rumsey Rum Black Label",
+        "Free Action Potion",
+        "Mighty Rage Potion"
     }
 }
 
@@ -211,6 +223,8 @@ local ReagentsLimit = {
     ["Eternal Quintessence"] = { 1, 1 },
     ["Swiftness of Zanza"] = { 1, 1 },
     ["Onyxia Scale Cloak"] = { 1, 1 },
+
+    ["Conjured Crystal Water"] = { 60, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
@@ -242,8 +256,8 @@ local ReagentsLimit = {
     -- ========================================
     
     -- Protection Potions
-    ["Greater Nature Protection Potion"] = { 25, 1 },
-    ["Greater Shadow Protection Potion"] = { 65, 1 },
+    ["Greater Nature Protection Potion"] = { 15, 1 },
+    ["Greater Shadow Protection Potion"] = { 55, 1 },
     
     -- Mana Restoration
     ["Tea with Sugar"] = { 40, 1 },
@@ -283,6 +297,11 @@ local ReagentsLimit = {
     -- Ammunition/Projectiles (Special Stack Size)
     ["Doomshot"] = { 1, 2 },
     ["Miniature Cannon Balls"] = { 1, 2 },
+
+    -- Other
+    ["Free Action Potion"] = { 5, 1 },
+    ["Limited Invulnerability Potion"] = { 10, 1 },
+    ["Mighty Rage Potion"] = { 15, 1 }
 }
 
 --[####################################################################################################]--
@@ -545,6 +564,7 @@ local function MeleeSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
+    UsePotionsWhenPossible("Gift of Arthas")
     UseJujuWhenPossible("Juju Might")
     UseJujuWhenPossible("Juju Power")
 end
@@ -594,4 +614,51 @@ function mb_useSpeedRunPots()
     else
         MeleeSpeedRunPots()
     end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function mb_takeLIP()
+    if not MB_mySpeedRunStrategy then
+        return
+    end
+
+    if not Instance:IsInRaid() then
+        return
+    end
+
+    if ImBusy() or InCombat("player") then
+		return
+	end
+
+    if ImTank() then
+        return
+    end
+
+    local aggrox = AceLibrary("Banzai-1.0")
+	if aggrox:GetUnitAggroByUnitId("player") and HealthPct("player") <= 0.25 then
+        UsePotionsWhenPossible("Limited Invulnerability Potion")
+	end
+end
+
+function mb_takeFAP()
+    if not MB_mySpeedRunStrategy then
+        return
+    end
+
+    if not Instance:IsInRaid() then
+        return
+    end
+
+    if ImBusy() or InCombat("player") then
+		return
+	end
+
+    if not BossUseFAPon() then
+        return
+    end
+
+    UsePotionsWhenPossible("Free Action Potion")
 end
