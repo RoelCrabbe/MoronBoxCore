@@ -341,7 +341,7 @@ local function PriestHeal()
 		MBH_CastHeal("Heal")
 	end
 
-	HealerWand()
+	Priest:UseWand()
 end
 
 local GreaterHeal = { Time = 0, Interrupt = false }
@@ -1015,6 +1015,21 @@ function Priest:PartyHurt(hurt, num_party_hurt)
 	end
 end
 
+function Priest:UseWand()
+	if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    GetTarget()
+
+	if MB_mySpeedRunStrategy and SpellReady("Mind Blast") then
+		CastSpellOrWand("Mind Blast")
+		return
+	end
+
+    AutoWandAttack()
+end
+
 --[####################################################################################################]--
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
@@ -1046,8 +1061,7 @@ local function PriestLoathebHeal()
 		end
 	end
 
-	CoolDownCast("Smite", 8)
-	HealerWand()
+	Priest:UseWand()
 end
 
 MB_myLoathebList["Priest"] = PriestLoathebHeal

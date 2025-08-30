@@ -101,19 +101,6 @@ function mb_autoWandAttack()
     end
 end
 
-function mb_healerWand()
-    if mb_imBusy() or not mb_inCombat("player") then
-        return
-    end
-
-    if UnitInRaid("player") and mb_debuffSunderAmount() <= 1 then
-        return
-    end
-
-    mb_assistFocus()
-    mb_autoWandAttack()
-end
-
 function mb_setAttackButton()
     MB_attackSlot = FindActionSlot("Attack")
     if not MB_attackSlot then

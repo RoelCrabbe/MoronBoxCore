@@ -118,7 +118,12 @@ MB_myInnervateHealerList = {
 	"Ayag",
 	"Midavellir",
 	"Murdrum",
-	"Blaidzy"
+
+	-- SpeedRunners
+	"Liket",
+	"Blaidzy",
+	"Cyal",
+	"Bonita"
 }
 
 MB_myFlashHealerList = {
@@ -126,7 +131,12 @@ MB_myFlashHealerList = {
 	"Ayag",
 	"Midavellir",
 	"Murdrum",
-	"Blaidzy"
+
+	-- SpeedRunners
+	"Liket",
+	"Blaidzy",
+	"Cyal",
+	"Bonita"
 }
 	
 --[####################################################################################################]--

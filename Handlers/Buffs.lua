@@ -1002,3 +1002,4 @@ BuffData["Brilliant Mana Oil"] 				 	=	"Interface\\Icons\\INV_Potion_100"
 
 BuffData["Limited Invulnerability Potion"] 		=	"Interface\\Icons\\Spell_Holy_DivineIntervention"
 BuffData["Free Action Potion"] 					=	"Interface\\Icons\\INV_Potion_04"
+BuffData["Gift of Arthas"] 						=	"Interface\\Icons\\Spell_Shadow_FingerOfDeath"

@@ -208,7 +208,7 @@ MB_classSpellManaCost = {
     -- Priest
     ["Smite"] = 280,
     ["Mind Flay"] = 205,
-    ["Mind Blast"] = 250,
+    ["Mind Blast"] = 350,
     ["Mana Burn"] = 270,
 
     -- Druid
