@@ -847,7 +847,7 @@ function Mage:UseManaGems()
 end
 
 function Mage:ConjureManaGems()
-	if ImBusy() or not InCombat("player") then
+	if ImBusy() or InCombat("player") then
 		return
 	end
 

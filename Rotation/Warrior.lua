@@ -200,6 +200,16 @@ local function BuffBattleShout()
     end
 end
 
+local function ImpExecute()
+    local TalentsIn, TalentsInA
+
+    _, _, _, _, TalentsIn = GetTalentInfo(2, 10)
+	if TalentsIn > 1 then
+		return true
+    end
+	return nil	
+end
+
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
@@ -268,23 +278,27 @@ MB_mySingleList["Warrior"] = WarriorSingle
 local function WarriorDPSSingleRotation(myRage)
     local mainSpell = MB_mySpecc == "BT" and "Bloodthirst" or "Mortal Strike"
     local mainSpellCD = SpellCoolDown(mainSpell)
-    local saveRageOnBTCD = 0.45
+    local wwSpellCD = SpellCoolDown("Whirlwind")
+    local canUseHam = mainSpellCD > 1.35 and wwSpellCD > 1.35
 
     if InMeleeRange() then
-        if SpellReady(mainSpell) and myRage >= 30 then          
+        if SpellReady(mainSpell) and myRage >= 30 then    
             CastSpellByName(mainSpell)
         end
 
-        if not IsExcludedWW() and SpellReady("Whirlwind") and myRage >= 25 then
-            if mainSpellCD > saveRageOnBTCD or myRage >= 43 then
+        local cdTime = 1/3
+        if SpellReady("Whirlwind") and myRage >= 25 then
+            if mainSpellCD > cdTime and not IsExcludedWW() then
                 CastSpellByName("Whirlwind")
             end
         end
     end
 
-    if Faction.IsHorde() and myRage >= 84 then
+    if Faction.IsHorde() and canUseHam and myRage >= 84 then
         CastSpellByName("Hamstring")
-    elseif myRage >= 55 then   
+    end
+
+    if myRage >= 55 then
         CastSpellByName("Heroic Strike")
     end
 end
@@ -508,6 +522,9 @@ MB_myMultiList["Warrior"] = WarriorMulti
 
 local function WarriorDPSMultiRotation(myRage)
     local mainSpell = MB_mySpecc == "BT" and "Bloodthirst" or "Mortal Strike"
+    local mainSpellCD = SpellCoolDown(mainSpell)
+    local wwSpellCD = SpellCoolDown("Whirlwind")
+    local canUseHam = mainSpellCD > 1.35 and wwSpellCD > 1.35
 
     if IsExcludedWW() then
         WarriorDPSSingleRotation(myRage)
@@ -515,20 +532,23 @@ local function WarriorDPSMultiRotation(myRage)
     end
 
     if InMeleeRange() then
-        if SpellReady("Whirlwind") and myRage >= 20 then          
+        if SpellReady("Whirlwind") and myRage >= 20 then        
             CastSpellByName("Whirlwind")
         end
 
-        if not SpellReady("Whirlwind") then
-            if SpellReady(mainSpell) and myRage >= 30 then            
+        local cdTime = 1/3
+        if SpellReady(mainSpell) and myRage >= 30 then
+            if wwSpellCD > cdTime then
                 CastSpellByName(mainSpell)
             end
         end
     end
 
-    if Faction.IsHorde() and myRage >= 84 then	       
+    if Faction.IsHorde() and canUseHam and myRage >= 84 then
         CastSpellByName("Hamstring")
-    elseif not SpellReady(mainSpell) and myRage >= 20 then   
+    end
+
+    if not SpellReady(mainSpell) and myRage >= 20 then
         CastSpellByName("Cleave")
     end
 end
@@ -901,7 +921,7 @@ function Warrior:UseTANKCooldowns()
         CastSpellByName("Shield Block") 
     end
 
-    if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
+    if (UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor") and not ImFocus() then				
         if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then					
             CastSpellByName("Demoralizing Shout")
         end
@@ -969,16 +989,6 @@ function Warrior:Annihilator()
             break
         end
     end
-end
-
-local function ImpExecute()
-    local TalentsIn, TalentsInA
-
-    _, _, _, _, TalentsIn = GetTalentInfo(2, 10)
-	if TalentsIn > 1 then
-		return true
-    end
-	return nil	
 end
 
 function Warrior:Execute()
