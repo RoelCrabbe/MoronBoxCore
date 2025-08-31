@@ -265,6 +265,7 @@ MB_mySingleList["Warrior"] = WarriorSingle
 --[####################################################################################################]--
 
 function Warrior:DPSSingle()
+    local myRage = UnitMana("player")
 
     if not WarriorIsBerserker() then
         WarriorSetBerserker()
@@ -278,12 +279,12 @@ function Warrior:DPSSingle()
     AutoAttack()
     Warrior:Annihilator()
 
-    if SpellReady("Bloodrage") and UnitMana("player") < 20 then        
+    if SpellReady("Bloodrage") and myRage < 20 then        
         CastSpellByName("Bloodrage")
     end
 
     if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
-        if UnitMana("player") >= 10 then
+        if myRage >= 10 then
             if ImBusy() then		
                 SpellStopCasting()
             end
@@ -307,42 +308,42 @@ function Warrior:DPSSingle()
     Warrior:Execute()
 
     if MB_mySpecc == "BT" then
-        if UnitMana("player") >= 30 and SpellReady("Bloodthirst") then            
+        if myRage >= 30 and SpellReady("Bloodthirst") then            
             CastSpellByName("Bloodthirst")
         end
 
         if not IsExcludedWW() then
-            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
                 if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
 
-        if UnitMana("player") > 55 then            
+        if myRage > 55 then            
             CastSpellByName("Heroic Strike")
         end
 
     elseif MB_mySpecc == "MS" then
-        if UnitMana("player") >= 30 and SpellReady("Mortal Strike") then            
+        if myRage >= 30 and SpellReady("Mortal Strike") then            
             CastSpellByName("Mortal Strike")
         end
 
         if not IsExcludedWW() then
-            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
                 if not SpellReady("Mortal Strike") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
 
-        if UnitMana("player") > 85 then            
+        if myRage > 85 then            
             CastSpellByName("Heroic Strike")
         end
     end
 
     if UnitFactionGroup("player") ~= "Alliance" then	
-        if UnitMana("player") > 85 then            
+        if myRage > 85 then            
             CastSpellByName("Hamstring")
         end
     end
@@ -352,34 +353,38 @@ end
 --[######################################## Single Tank Code! #########################################]--
 --[####################################################################################################]--
 
-local function WarriorTankSingleRotation()
+local function WarriorTankSingleRotation(myRage)
+    local tName = UnitName("target")
+    local sRage = ImFocus() and 53 or 45
+
     if MB_mySpecc == "Prottank" then
-        if SpellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
+        if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
             CastSpellByName("Shield Slam")
         end
-
     elseif MB_mySpecc == "Furytank" then
-        if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
+        if SpellReady("Bloodthirst") and myRage >= 30 then          
             CastSpellByName("Bloodthirst")
-        end	
-    end
-    
-    if UnitName("target") ~= "Deathknight Understudy" and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then        
-        CastSpellByName("Sunder Armor")
+        end
     end
 
     if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
-        if (not SpellReady("Bloodthirst") and UnitMana("player") >= 23) or UnitMana("player") >= 43 then
+        if not SpellReady("Bloodthirst") and myRage >= 23 then
+            CastSpellByName("Heroic Strike")
+        elseif myRage >= 43 then
             CastSpellByName("Heroic Strike")
         end
-    else
-        if UnitMana("player") >= 43 then
-            CastSpellByName("Heroic Strike")
-        end
+        return
+    end
+
+    if tName ~= "Deathknight Understudy" and myRage >= sRage and DebuffSunderAmount() == 5 then
+        CastSpellByName("Sunder Armor")
+    elseif myRage >= 43 then
+        CastSpellByName("Heroic Strike")
     end
 end
 
 function Warrior:TankSingle()
+    local myRage = UnitMana("player")
 
 	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
@@ -425,13 +430,13 @@ function Warrior:TankSingle()
 	
     AutoAttack()
 
-    if SpellReady("Bloodrage") and UnitMana("player") <= 15 then        
+    if SpellReady("Bloodrage") and myRage <= 15 then        
         CastSpellByName("Bloodrage")
     end
 
     if MB_doInterrupt.Active and SpellReady("Shield Bash") and Warrior:HasShield() then
-        if UnitMana("player") >= 10 then
-            if ImBusy() then		
+        if myRage >= 10 then
+            if ImBusy() then
                 SpellStopCasting()
             end
 
@@ -440,14 +445,14 @@ function Warrior:TankSingle()
             MB_doInterrupt.Active = false
 		end
 	end
-    
+
     BuffBattleShout()
-    
-    if UnitMana("player") >= 5 and SpellReady("Revenge") then        
+
+    if SpellReady("Revenge") and myRage >= 5 then        
         CastSpellByName("Revenge")
     end
-    
-    WarriorTankSingleRotation()
+
+    WarriorTankSingleRotation(myRage)
 end
 
 --[####################################################################################################]--
@@ -516,6 +521,7 @@ MB_myMultiList["Warrior"] = WarriorMulti
 --[####################################################################################################]--
 
 function Warrior:DPSMulti()
+    local myRage = UnitMana("player")
 
     if not UnitName("target") then
         return
@@ -524,7 +530,7 @@ function Warrior:DPSMulti()
     AutoAttack()
     Warrior:Annihilator()
 
-    if SpellReady("Bloodrage") and UnitMana("player") < 20 then        
+    if SpellReady("Bloodrage") and myRage < 20 then        
         CastSpellByName("Bloodrage")
     end
 
@@ -544,7 +550,7 @@ function Warrior:DPSMulti()
     end
 
     if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
-        if UnitMana("player") >= 10 then
+        if myRage >= 10 then
             if ImBusy() then		
                 SpellStopCasting()
             end
@@ -569,15 +575,15 @@ function Warrior:DPSMulti()
     
     if MB_mySpecc == "BT" then
         if not IsExcludedWW() then
-            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
                 if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
         
-        if not SpellReady("Whirlwind") and UnitMana("player") >= 25 then
-            if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
+        if not SpellReady("Whirlwind") and myRage >= 25 then
+            if SpellReady("Bloodthirst") and myRage >= 30 then            
                 CastSpellByName("Bloodthirst")
             end
 
@@ -588,15 +594,15 @@ function Warrior:DPSMulti()
         
     elseif MB_mySpecc == "MS" then
         if not IsExcludedWW() then
-            if UnitMana("player") >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
+            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
                 if not SpellReady("Bloodthirst") then
                     CastSpellByName("Whirlwind")
                 end
             end
         end
         
-        if not SpellReady("Whirlwind") and UnitMana("player") >= 25 then
-            if SpellReady("Mortal Strike") and UnitMana("player") >= 30 then        
+        if not SpellReady("Whirlwind") and myRage >= 25 then
+            if SpellReady("Mortal Strike") and myRage >= 30 then        
                 CastSpellByName("Mortal Strike")
             end
 
@@ -611,7 +617,29 @@ end
 --[######################################### Multi Tank Code! #########################################]--
 --[####################################################################################################]--
 
+local function WarriorTankMultiRotation(myRage)
+    local tName = UnitName("target")
+    local sRage = ImFocus() and 53 or 45
+
+    if MB_mySpecc == "Prottank" then
+        if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
+            CastSpellByName("Shield Slam")
+        end
+    elseif MB_mySpecc == "Furytank" then
+        if SpellReady("Bloodthirst") and myRage >= 30 then  
+            CastSpellByName("Bloodthirst")
+        end
+    end
+
+    if myRage >= 23 then
+        CastSpellByName("Cleave")
+    elseif tName ~= "Deathknight Understudy" and myRage >= sRage and DebuffSunderAmount() == 5 and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+        CastSpellByName("Sunder Armor")
+    end
+end
+
 function Warrior:TankMulti()
+    local myRage = UnitMana("player")
 
 	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
 		CancelBuff("Greater Blessing of Salvation") 
@@ -657,12 +685,12 @@ function Warrior:TankMulti()
 
     AutoAttack()
 
-    if SpellReady("Bloodrage") and UnitMana("player") < 15 then        
+    if SpellReady("Bloodrage") and myRage < 15 then        
         CastSpellByName("Bloodrage")
     end
 
     if MB_doInterrupt.Active and SpellReady("Shield Bash") and Warrior:HasShield() then
-        if UnitMana("player") >= 10 then
+        if myRage >= 10 then
             if ImBusy() then		
                 SpellStopCasting()
             end
@@ -675,41 +703,22 @@ function Warrior:TankMulti()
 
     BuffBattleShout()
     
-    if UnitMana("player") >= 5 and SpellReady("Revenge") then        
+    if SpellReady("Revenge") and myRage >= 5 then        
         CastSpellByName("Revenge")
     end
 
     if Instance.Naxx() and IsAtNoth() then
-        WarriorTankSingleRotation()
+        WarriorTankSingleRotation(myRage)
         return
-
     elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-        WarriorTankSingleRotation()
+        WarriorTankSingleRotation(myRage)
         return
-
     elseif Instance.ONY() and TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
-        WarriorTankSingleRotation()
+        WarriorTankSingleRotation(myRage)
         return
     end 
-
-    if UnitMana("player") >= 20 then        
-        CastSpellByName("Cleave") 
-    end
     
-    if MB_mySpecc == "Prottank" then
-        if SpellReady("Shield Slam") and UnitMana("player") >= 20 and Warrior:HasShield() then        
-            CastSpellByName("Shield Slam")
-        end
-
-    elseif MB_mySpecc == "Furytank" then
-        if SpellReady("Bloodthirst") and UnitMana("player") >= 30 then            
-            CastSpellByName("Bloodthirst")
-        end	
-    end
-
-    if UnitName("target") ~= "Deathknight Understudy" and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then        
-        CastSpellByName("Sunder Armor")
-    end
+    WarriorTankMultiRotation(myRage)
 end
 
 --[####################################################################################################]--
@@ -732,6 +741,7 @@ function Warrior:BigCooldowns(useBloodFury)
 end
 
 function Warrior:Cooldowns(useBloodFury)
+    local myRage = UnitMana("player")
     local useBloodFury = useBloodFury ~= false
 
 	if ImBusy() or not InCombat("player") then
@@ -744,7 +754,7 @@ function Warrior:Cooldowns(useBloodFury)
         SelfBuff("Blood Fury")
     end
 
-    if SpellReady("Death Wish") and UnitMana("player") >= 10 then        
+    if SpellReady("Death Wish") and myRage >= 10 then        
         SelfBuff("Death Wish")
     end
 
@@ -783,6 +793,8 @@ function Warrior:UseDPSCooldowns()
 end
 
 function Warrior:UseTANKCooldowns()
+    local myRage = UnitMana("player")
+
     if ImBusy() or not InCombat("player") then
 		return
 	end
@@ -909,12 +921,12 @@ function Warrior:UseTANKCooldowns()
         end
     end
 
-    if HealthPct("player") < 0.85 and UnitMana("player") >= 20 and Warrior:HasShield() then				
+    if HealthPct("player") < 0.85 and myRage >= 20 and Warrior:HasShield() then				
         CastSpellByName("Shield Block") 
     end
 
     if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
-        if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and UnitMana("player") >= 20 then					
+        if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then					
             CastSpellByName("Demoralizing Shout")
         end
     end
@@ -1042,6 +1054,7 @@ function Warrior:HasShield()
 end
 
 function Warrior:Taunt()
+    local myRage = UnitMana("player")
 
     if Instance.MC() and TankTarget("Magmadar") then
         return
@@ -1061,7 +1074,7 @@ function Warrior:Taunt()
         return
     end
 
-	if SpellReady("Mocking Blow") and UnitMana("player") >= 10 then
+	if SpellReady("Mocking Blow") and myRage >= 10 then
 		if WarriorIsBattle() then
 			CastSpellByName("Mocking Blow")
 		else
