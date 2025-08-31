@@ -102,6 +102,7 @@ local MyNameInTable = mb_myNameInTable
 local OffTank = mb_offTank
 local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
+local SpellCoolDown = mb_spellCoolDown
 local StunnableMob = mb_stunnableMob
 local TankTarget = mb_tankTarget
 local TrinketOnCD = mb_trinketOnCD
@@ -264,6 +265,30 @@ MB_mySingleList["Warrior"] = WarriorSingle
 --[####################################### Single Damage Code! ########################################]--
 --[####################################################################################################]--
 
+local function WarriorDPSSingleRotation(myRage)
+    local mainSpell = MB_mySpecc == "BT" and "Bloodthirst" or "Mortal Strike"
+    local mainSpellCD = SpellCoolDown(mainSpell)
+    local saveRageOnBTCD = 0.45
+
+    if InMeleeRange() then
+        if SpellReady(mainSpell) and myRage >= 30 then          
+            CastSpellByName(mainSpell)
+        end
+
+        if not IsExcludedWW() and SpellReady("Whirlwind") and myRage >= 25 then
+            if mainSpellCD > saveRageOnBTCD or myRage >= 43 then
+                CastSpellByName("Whirlwind")
+            end
+        end
+    end
+
+    if Faction.IsHorde() and myRage >= 84 then
+        CastSpellByName("Hamstring")
+    elseif myRage >= 55 then   
+        CastSpellByName("Heroic Strike")
+    end
+end
+
 function Warrior:DPSSingle()
     local myRage = UnitMana("player")
 
@@ -307,46 +332,7 @@ function Warrior:DPSSingle()
     Warrior:UseDPSCooldowns()
     Warrior:Execute()
 
-    if MB_mySpecc == "BT" then
-        if myRage >= 30 and SpellReady("Bloodthirst") then            
-            CastSpellByName("Bloodthirst")
-        end
-
-        if not IsExcludedWW() then
-            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
-                if not SpellReady("Bloodthirst") then
-                    CastSpellByName("Whirlwind")
-                end
-            end
-        end
-
-        if myRage > 55 then            
-            CastSpellByName("Heroic Strike")
-        end
-
-    elseif MB_mySpecc == "MS" then
-        if myRage >= 30 and SpellReady("Mortal Strike") then            
-            CastSpellByName("Mortal Strike")
-        end
-
-        if not IsExcludedWW() then
-            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
-                if not SpellReady("Mortal Strike") then
-                    CastSpellByName("Whirlwind")
-                end
-            end
-        end
-
-        if myRage > 85 then            
-            CastSpellByName("Heroic Strike")
-        end
-    end
-
-    if UnitFactionGroup("player") ~= "Alliance" then	
-        if myRage > 85 then            
-            CastSpellByName("Hamstring")
-        end
-    end
+    WarriorDPSSingleRotation(myRage)
 end
 
 --[####################################################################################################]--
@@ -520,6 +506,33 @@ MB_myMultiList["Warrior"] = WarriorMulti
 --[######################################## Multi Damage Code! ########################################]--
 --[####################################################################################################]--
 
+local function WarriorDPSMultiRotation(myRage)
+    local mainSpell = MB_mySpecc == "BT" and "Bloodthirst" or "Mortal Strike"
+
+    if IsExcludedWW() then
+        WarriorDPSSingleRotation(myRage)
+        return
+    end
+
+    if InMeleeRange() then
+        if SpellReady("Whirlwind") and myRage >= 20 then          
+            CastSpellByName("Whirlwind")
+        end
+
+        if not SpellReady("Whirlwind") then
+            if SpellReady(mainSpell) and myRage >= 30 then            
+                CastSpellByName(mainSpell)
+            end
+        end
+    end
+
+    if Faction.IsHorde() and myRage >= 84 then	       
+        CastSpellByName("Hamstring")
+    elseif not SpellReady(mainSpell) and myRage >= 20 then   
+        CastSpellByName("Cleave")
+    end
+end
+
 function Warrior:DPSMulti()
     local myRage = UnitMana("player")
 
@@ -573,44 +586,7 @@ function Warrior:DPSMulti()
     Warrior:UseDPSCooldowns()
     Warrior:Execute()
     
-    if MB_mySpecc == "BT" then
-        if not IsExcludedWW() then
-            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
-                if not SpellReady("Bloodthirst") then
-                    CastSpellByName("Whirlwind")
-                end
-            end
-        end
-        
-        if not SpellReady("Whirlwind") and myRage >= 25 then
-            if SpellReady("Bloodthirst") and myRage >= 30 then            
-                CastSpellByName("Bloodthirst")
-            end
-
-            if not SpellReady("Bloodthirst") then                
-                CastSpellByName("Cleave")
-            end
-        end
-        
-    elseif MB_mySpecc == "MS" then
-        if not IsExcludedWW() then
-            if myRage >= 25 and SpellReady("Whirlwind") and InMeleeRange() then
-                if not SpellReady("Bloodthirst") then
-                    CastSpellByName("Whirlwind")
-                end
-            end
-        end
-        
-        if not SpellReady("Whirlwind") and myRage >= 25 then
-            if SpellReady("Mortal Strike") and myRage >= 30 then        
-                CastSpellByName("Mortal Strike")
-            end
-
-            if not SpellReady("Mortal Strike") then                
-                CastSpellByName("Cleave")
-            end
-        end
-    end
+    WarriorDPSMultiRotation(myRage)
 end
 
 --[####################################################################################################]--
