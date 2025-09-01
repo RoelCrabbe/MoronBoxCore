@@ -190,7 +190,7 @@ MB_mySpeccList["Druid"] = DruidSpecc
 
 local removeBuffs = {
     "Battle Shout",
-    "Fengus' Ferocity"
+    "Fengus\' Ferocity"
 }
 
 local function DruidCancelAuras()

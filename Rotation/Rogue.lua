@@ -138,7 +138,7 @@ local removeBuffs = {
     "Arcane Brilliance",
     "Divine Spirit",
     "Prayer of Spirit",
-    "Slip'kik's Savvy",
+    "Slip\'kik\'s Savvy",
     "Fury of Ragnaros",
 }
 

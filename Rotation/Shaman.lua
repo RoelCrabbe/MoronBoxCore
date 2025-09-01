@@ -157,7 +157,7 @@ MB_mySpeccList["Shaman"] = ShamanSpecc
 
 local removeBuffs = {
 	"Battle Shout",
-	"Fengus' Ferocity"
+	"Fengus\' Ferocity"
 }
 
 local function ShamanCancelAuras()

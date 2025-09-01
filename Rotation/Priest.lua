@@ -191,7 +191,7 @@ MB_mySpeccList["Priest"] = PriestSpecc
 
 local removeBuffs = {
 	"Battle Shout",
-	"Fengus' Ferocity"
+	"Fengus\' Ferocity"
 }
 
 local function PriestCancelAuras()

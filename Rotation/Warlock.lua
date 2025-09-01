@@ -162,7 +162,7 @@ MB_mySpeccList["Warlock"] = WarlockSpecc
 
 local removeBuffs = {
     "Battle Shout",
-    "Fengus' Ferocity"
+    "Fengus\' Ferocity"
 }
 
 local function WarlockCancelAuras()
