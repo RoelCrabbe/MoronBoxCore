@@ -183,15 +183,33 @@ local function MageSpecc()
     MB_mySpecc = nil
 end
 
-local function WinterChillCheck()
-	local _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
-	if TalentsIn > 4 then
-		return true
-	end
-	return false
+MB_mySpeccList["Mage"] = MageSpecc
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+    "Battle Shout",
+    "Fengus' Ferocity"
+}
+
+local function MageCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
 end
 
-MB_mySpeccList["Mage"] = MageSpecc
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function WinterChillCheck()
+    local _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
+    return TalentsIn > 4
+end
 
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
@@ -200,6 +218,7 @@ MB_mySpeccList["Mage"] = MageSpecc
 local function MageSingle()
 
     GetTarget()
+    MageCancelAuras()
 
 	if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Frost.")
@@ -576,6 +595,7 @@ MB_myMultiList["Mage"] = MageSingle
 local function MageAOE()
 
     GetTarget()
+    MageCancelAuras()
 
 	if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Frost.")

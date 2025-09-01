@@ -426,8 +426,6 @@ local function MultiBuffPriest(spell)
 	n = GetNumRaidMembers()
 	r = math.random(n) - 1
 
-	mb_selfBuff("Inner Focus")
-
 	if spell == "Prayer of Fortitude" then
 		for i = 1, n do
 			j = i + r
@@ -439,6 +437,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Power Word: Fortitude", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)
@@ -457,6 +457,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Shadow Protection", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)
@@ -476,6 +478,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Divine Spirit", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)

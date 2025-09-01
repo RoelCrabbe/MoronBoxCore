@@ -161,6 +161,27 @@ MB_mySpeccList["Warrior"] = WarriorSpecc
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local removeBuffs = {
+    "Arcane Intellect",
+    "Arcane Brilliance",
+    "Divine Spirit",
+    "Prayer of Spirit",
+    "Slip'kik's Savvy",
+    "Fury of Ragnaros",
+}
+
+local function WarriorCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local function HasBattleShout()
     local buffName = "Battle Shout"
     local buffTexture = "Interface\\Icons\\Ability_Warrior_BattleShout"
@@ -268,7 +289,8 @@ local function WarriorSingle()
     local myRage = UnitMana("player")
 
 	GetTarget()
-	
+	WarriorCancelAuras()
+
     if MB_warriorBinds == "Fury" and not InCombat("player") then
         if MyNameInTable(MB_furysThatCanTank) then				
             FuryGear()
@@ -510,7 +532,8 @@ local function WarriorMulti()
     local myRage = UnitMana("player")
 
 	GetTarget()
-	
+    WarriorCancelAuras()
+
     if MB_warriorBinds == "Fury" and not InCombat("player") then
         if MyNameInTable(MB_furysThatCanTank) then				
             FuryGear()

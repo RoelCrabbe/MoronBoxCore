@@ -132,12 +132,34 @@ end
 MB_mySpeccList["Hunter"] = HunterSpecc
 
 --[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+    "Arcane Intellect",
+    "Arcane Brilliance",
+    "Divine Spirit",
+    "Prayer of Spirit",
+    "Slip'kik's Savvy",
+    "Fury of Ragnaros",
+}
+
+local function HunterCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
+end
+
+--[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
 
 local function HunterSingle()
 
     GetTarget()
+    HunterCancelAuras()
 
 	if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Marksmanship.")
