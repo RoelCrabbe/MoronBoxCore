@@ -976,6 +976,23 @@ function Warrior:UseTANKCooldowns(myRage)
         end
     end
 
+    if UnitInRaid("player") and GetNumRaidMembers() > 5 then
+        local sunderDebuff = DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")
+        local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
+
+        if sunderDebuff then
+            if Instance.IsWorldBoss() then
+                Warrior:TankCooldowns(myRage)
+                return
+            end
+
+            if UnitHealth("target") > hpThreshold then
+                Warrior:TankCooldowns(myRage)
+            end
+        end
+        return
+    end
+
     Warrior:TankCooldowns(myRage)
 end
 
