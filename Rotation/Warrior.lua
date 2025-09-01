@@ -672,10 +672,19 @@ local function WarriorTankMultiRotation(myRage)
         end
     end
 
-    if myRage >= 23 then
-        CastSpellByName("Cleave")
-    elseif tName ~= "Deathknight Understudy" and myRage >= sRage and DebuffSunderAmount() == 5 and not HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+    if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+        if not SpellReady("Bloodthirst") and myRage >= 28 then
+            CastSpellByName("Cleave")
+        elseif myRage >= 47 then
+            CastSpellByName("Cleave")
+        end
+        return
+    end
+
+    if tName ~= "Deathknight Understudy" and myRage >= sRage and DebuffSunderAmount() == 5 then
         CastSpellByName("Sunder Armor")
+    elseif myRage >= 23 then
+        CastSpellByName("Cleave")
     end
 end
 
