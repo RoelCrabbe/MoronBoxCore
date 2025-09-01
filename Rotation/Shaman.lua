@@ -152,6 +152,23 @@ end
 MB_mySpeccList["Shaman"] = ShamanSpecc
 
 --[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+	"Battle Shout",
+	"Fengus\' Ferocity"
+}
+
+local function ShamanCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
+end
+
+--[####################################################################################################]--
 --[######################################### HEALING Code! ############################################]--
 --[####################################################################################################]--
 
@@ -312,6 +329,7 @@ end
 local function ShamanSingle()
 
 	GetTarget()
+	ShamanCancelAuras()
 
     if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Elemental.")

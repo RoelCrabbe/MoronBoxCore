@@ -127,6 +127,23 @@ local PaladinCounter = {
 }
 
 --[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+	"Battle Shout",
+	"Fengus\' Ferocity"
+}
+
+local function PaladinCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
+end
+
+--[####################################################################################################]--
 --[######################################### HEALING Code! ############################################]--
 --[####################################################################################################]--
 
@@ -362,6 +379,7 @@ end
 local function PaladinSingle()
 	
 	GetTarget()
+	PaladinCancelAuras()
 
     if Instance.Naxx() and RaidIsPoisoned() and ImBusy() then
 		if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then

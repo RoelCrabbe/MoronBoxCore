@@ -130,12 +130,34 @@ end
 MB_mySpeccList["Rogue"] = RogueSpecc
 
 --[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+    "Arcane Intellect",
+    "Arcane Brilliance",
+    "Divine Spirit",
+    "Prayer of Spirit",
+    "Slip\'kik\'s Savvy",
+    "Fury of Ragnaros",
+}
+
+local function RogueCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
+end
+
+--[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
 
 local function RogueSingle()
 
 	GetTarget()
+    RogueCancelAuras()
 
 	if not InCombat("target") then
         return

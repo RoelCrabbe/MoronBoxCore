@@ -1144,13 +1144,28 @@ function mb_tankShoot()
 		return
 	end
 
-	if myClass == "Warrior" and mb_imTank() and MB_myOTTarget then
-		local rangedWep = mb_returnEquippedItemType(18)
-
-		if rangedWep and mb_spellExists("Shoot "..rangedWep) then			
-			CastSpellByName("Shoot "..rangedWep)
-		end
+	if Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
+        if mb_mandokirGaze() then
+            return
+        end
 	end
+
+	if not mb_imTank() then
+		return
+	end
+
+	local rangedWep = mb_returnEquippedItemType(18)
+	if not rangedWep then
+		return
+	end
+
+	if not mb_spellExists("Shoot "..rangedWep) then
+		return
+	end
+
+	if MB_myOTTarget or mb_imFocus() then		
+		CastSpellByName("Shoot "..rangedWep)
+	end	
 end
 
 function mb_manualTaunt()
@@ -1162,19 +1177,21 @@ function mb_manualTaunt()
 		return
 	end
 
-	if Instance.ZG() then
-		if mb_mandokirGaze() then
-			return
-		end
+    if Instance.ZG() and mb_tankTarget("Bloodlord Mandokir") then
+        if mb_mandokirGaze() then
+            return
+        end
 	end
-	
-	if mb_imTank() then 		
-		if myClass == "Warrior" and mb_spellReady("Taunt") then			
-			CastSpellByName("Taunt")
 
-		elseif myClass == "Druid" and mb_spellReady("Growl") then
-			CastSpellByName("Growl")
-		end
+	if not mb_imTank() then
+		return
+	end
+
+	if myClass == "Warrior" and mb_spellReady("Taunt") then			
+		CastSpellByName("Taunt")
+
+	elseif myClass == "Druid" and mb_spellReady("Growl") then
+		CastSpellByName("Growl")
 	end
 end
 

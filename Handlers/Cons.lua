@@ -302,7 +302,7 @@ local ReagentsLimit = {
     -- Other
     ["Free Action Potion"] = { 5, 1 },
     ["Limited Invulnerability Potion"] = { 10, 1 },
-    ["Mighty Rage Potion"] = { 15, 1 }
+    ["Mighty Rage Potion"] = { 20, 1 }
 }
 
 --[####################################################################################################]--

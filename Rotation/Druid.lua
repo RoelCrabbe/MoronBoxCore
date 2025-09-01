@@ -182,15 +182,33 @@ local function DruidSpecc()
     MB_mySpecc = nil
 end
 
-local function ImprovedRegrowthCheck()
-	local _, _, _, _, TalentsIn = GetTalentInfo(3, 14)
-	if TalentsIn > 2 then
-		return true
-	end
-	return false
+MB_mySpeccList["Druid"] = DruidSpecc
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local removeBuffs = {
+    "Battle Shout",
+    "Fengus\' Ferocity"
+}
+
+local function DruidCancelAuras()
+    for _, buff in ipairs(removeBuffs) do
+        if HasBuffOrDebuff(buff, "player", "buff") then
+            CancelBuff(buff)
+        end
+    end
 end
 
-MB_mySpeccList["Druid"] = DruidSpecc
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function ImprovedRegrowthCheck()
+    local _, _, _, _, TalentsIn = GetTalentInfo(3, 14)
+    return TalentsIn > 2
+end
 
 --[####################################################################################################]--
 --[######################################### HEALING Code! ############################################]--
@@ -722,6 +740,7 @@ end
 local function DruidSingle()
 	
     GetTarget()
+    DruidCancelAuras()
 
 	if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Resto.")
@@ -977,6 +996,7 @@ end
 local function DruidMulti()
 	
     GetTarget()
+    DruidCancelAuras()
 
 	if not MB_mySpecc then		
 		CdMessage("My specc is fucked. Defaulting to Resto.")

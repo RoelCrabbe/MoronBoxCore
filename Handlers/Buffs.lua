@@ -426,8 +426,6 @@ local function MultiBuffPriest(spell)
 	n = GetNumRaidMembers()
 	r = math.random(n) - 1
 
-	mb_selfBuff("Inner Focus")
-
 	if spell == "Prayer of Fortitude" then
 		for i = 1, n do
 			j = i + r
@@ -439,6 +437,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Power Word: Fortitude", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)
@@ -457,6 +457,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Shadow Protection", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)
@@ -476,6 +478,8 @@ local function MultiBuffPriest(spell)
                 and not (mb_hasBuffOrDebuff(spell, "raid"..j, "buff")
                 or mb_hasBuffOrDebuff("Divine Spirit", "raid"..j, "buff")) then
 				
+				mb_selfBuff("Inner Focus")
+
 				ClearTarget()
 				CastSpellByName(spell, false)
 				SpellTargetUnit("raid"..j)
@@ -916,9 +920,6 @@ BuffData["Sayge\'s Dark Fortune of Resistance"] 	 =  "Interface\\Icons\\INV_Misc
 BuffData["Sayge\'s Dark Fortune of Stamina"] 		 =  "Interface\\Icons\\INV_Misc_Orb_02"
 BuffData["Sayge\'s Dark Fortune of Spirit"] 		 =  "Interface\\Icons\\INV_Misc_Orb_02"
 BuffData["Sayge\'s Dark Fortune of Armor"] 		 =  "Interface\\Icons\\INV_Misc_Orb_02"
-BuffData["Fengus\' Ferocity"] 					 =  "Interface\\Icons\\Spell_Nature_UndyingStrength"
-BuffData["Mol\'dar\'s Moxie"] 						 =  "Interface\\Icons\\Spell_Nature_MassTeleport"
-BuffData["Slip\'kik\'s Savvy"] 					 =  "Interface\\Icons\\Spell_Holy_LesserHeal02"
 BuffData["Recently Bandaged"] 					 =  "Interface\\Icons\\INV_Misc_Bandage_08"
 BuffData["First Aid"] 							 =  "Interface\\Icons\\Spell_Holy_Heal"
 BuffData["Frozen Rune"]							 =  "Interface\\Icons\\Spell_Fire_MasterOfElements"
@@ -981,18 +982,19 @@ BuffData["Juju Guile"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_13"
 BuffData["Juju Flurry"]			 		=	"Interface\\Icons\\INV_Misc_MonsterScales_17"
 
 BuffData["Swiftness of Zanza"] 				 	=	"Interface\\Icons\\INV_Potion_31"
-BuffData["Spirit of Zanza"] 						=   "Interface\\Icons\\INV_Potion_30"
+BuffData["Spirit of Zanza"] 					=   "Interface\\Icons\\INV_Potion_30"
 
-BuffData["Flask of the Titans"] 				 	=	"Interface\\Icons\\INV_Potion_62"
+BuffData["Flask of the Titans"] 				=	"Interface\\Icons\\INV_Potion_62"
 BuffData["Flask of Supreme Power"] 				=	"Interface\\Icons\\INV_Potion_41"
 BuffData["Flask of Distilled Wisdom"] 			=	"Interface\\Icons\\INV_Potion_97"
 
 BuffData["Elixir of the Mongoose"] 				=	"Interface\\Icons\\INV_Potion_32"
 BuffData["Elixir of Frost Power"] 				=	"Interface\\Icons\\INV_Potion_03"
-BuffData["Elixir of Greater Firepower"] 			=	"Interface\\Icons\\INV_Potion_60"
+BuffData["Elixir of Greater Firepower"] 		=	"Interface\\Icons\\INV_Potion_60"
 BuffData["Elixir of Shadow Power"] 				=	"Interface\\Icons\\INV_Potion_46"
 
 BuffData["Mageblood Potion"] 					=	"Interface\\Icons\\INV_Potion_45"
+BuffData["Mighty Rage Potion"] 					=	"Interface\\Icons\\Ability_Warrior_InnerRage"
 
 BuffData["Greater Stoneshield Potion"] 			=	"Interface\\Icons\\INV_Potion_69" 
 BuffData["Greater Arcane Elixir"] 				=	"Interface\\Icons\\INV_Potion_25"
@@ -1003,3 +1005,8 @@ BuffData["Brilliant Mana Oil"] 				 	=	"Interface\\Icons\\INV_Potion_100"
 BuffData["Limited Invulnerability Potion"] 		=	"Interface\\Icons\\Spell_Holy_DivineIntervention"
 BuffData["Free Action Potion"] 					=	"Interface\\Icons\\INV_Potion_04"
 BuffData["Gift of Arthas"] 						=	"Interface\\Icons\\Spell_Shadow_FingerOfDeath"
+
+BuffData["Fury of Ragnaros"] 					=	"Interface\\Icons\\Spell_Holy_MindSooth"
+BuffData["Fengus\' Ferocity"] 					=  "Interface\\Icons\\Spell_Nature_UndyingStrength"
+BuffData["Mol\'dar\'s Moxie"] 					=  "Interface\\Icons\\Spell_Nature_MassTeleport"
+BuffData["Slip\'kik\'s Savvy"] 					=  "Interface\\Icons\\Spell_Holy_LesserHeal02"
