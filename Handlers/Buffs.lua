@@ -996,6 +996,7 @@ BuffData["Mageblood Potion"] 					=	"Interface\\Icons\\INV_Potion_45"
 
 BuffData["Greater Stoneshield Potion"] 			=	"Interface\\Icons\\INV_Potion_69" 
 BuffData["Greater Arcane Elixir"] 				=	"Interface\\Icons\\INV_Potion_25"
+BuffData["Mighty Rage Potion"] 					=	"Interface\\Icons\\Ability_Warrior_InnerRage"
 
 BuffData["Brilliant Wizard Oil"] 				=	"Interface\\Icons\\INV_Potion_105"
 BuffData["Brilliant Mana Oil"] 				 	=	"Interface\\Icons\\INV_Potion_100"
