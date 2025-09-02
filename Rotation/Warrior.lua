@@ -229,6 +229,11 @@ local function ImpExecute()
     return TalentsIn > 1
 end
 
+local function ImpDemo()
+    local _, _, _, _, TalentsIn = GetTalentInfo(2, 3)
+    return TalentsIn > 3
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -427,7 +432,7 @@ end
 
 local function WarriorTankSingleRotation(myRage)
     local tName = UnitName("target")
-    local sRage = ImFocus() and 52 or 42
+    local sRage = ImFocus() and 54 or 46
 
     if MB_mySpecc == "Prottank" then
         if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
@@ -685,7 +690,7 @@ end
 
 local function WarriorTankMultiRotation(myRage)
     local tName = UnitName("target")
-    local sRage = ImFocus() and 52 or 42
+    local sRage = ImFocus() and 54 or 46
 
     if MB_mySpecc == "Prottank" then
         if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
@@ -933,17 +938,15 @@ function Warrior:UseTANKCooldowns(myRage)
                 Warrior:BigTankCooldowns()
             end
         end
-    end
-
-    if HealthPct("player") <= 0.25 then			
-        if ItemNameOfEquippedSlot(13) == "Lifegiving Gem" and not TrinketOnCD(13) then 
-            use(13)
-        elseif ItemNameOfEquippedSlot(14) == "Lifegiving Gem" and not TrinketOnCD(14) then 
-            use(14)
+    else
+        if HealthPct("player") <= 0.25 then			
+            if ItemNameOfEquippedSlot(13) == "Lifegiving Gem" and not TrinketOnCD(13) then 
+                use(13)
+            elseif ItemNameOfEquippedSlot(14) == "Lifegiving Gem" and not TrinketOnCD(14) then 
+                use(14)
+            end
         end
-    end
-
-    if not (TankTarget("Patchwerk") or TankTarget("Maexxna")) then			
+        
         if HealthPct("player") <= 0.2 then				
             SelfBuff("Last Stand") 
         end
@@ -953,26 +956,13 @@ function Warrior:UseTANKCooldowns(myRage)
         CastSpellByName("Concussion Blow")
     end
 
-    if SpellReady("Disarm") and not HasBuffOrDebuff("Disarm", "target", "debuff") and myRage >= 20 then
-        local name = UnitName("target")
-        local hp = HealthPct("target")
-
-        if name == "Gurubashi Axe Thrower"
-            or (hp < 0.5 and (name == "Infectious Ghoul" or name == "Plagued Ghoul"))
-            or (hp <= 0.21 and (name == "Anubisath Sentinel" or name == "Anubisath Defender")) then
-            CastSpellByName("Disarm")
-        end
-    end
+    Warrior:Disarm(myRage)
 
     if HealthPct("player") < 0.85 and Warrior:HasShield() and myRage >= 20 then				
         CastSpellByName("Shield Block") 
     end
 
-    if (UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor") and not ImFocus() then				
-        if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then					
-            CastSpellByName("Demoralizing Shout")
-        end
-    end
+    Warrior:DemoShout(myRage)
 
     if UnitInRaid("player") and GetNumRaidMembers() > 5 then
         local sunderDebuff = DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")
@@ -1120,4 +1110,43 @@ function Warrior:Taunt()
 			WarriorSetBattle()
 		end
 	end
+end
+
+function Warrior:Disarm(myRage)
+    local tName = UnitName("target")
+    local tHealthPct = HealthPct("target")
+
+    if not SpellReady("Disarm") then
+        return
+    end
+
+    if HasBuffOrDebuff("Disarm", "target", "debuff") then
+        return
+    end
+
+    if not (tName == "Gurubashi Axe Thrower"
+        or (tHealthPct < 0.5 and (tName == "Infectious Ghoul" or tName == "Plagued Ghoul"))
+        or (tHealthPct <= 0.21 and (tName == "Anubisath Sentinel" or tName == "Anubisath Defender"))) then
+        return
+    end
+
+    if myRage >= 20 then
+        CastSpellByName("Disarm")
+    end
+end
+
+function Warrior:DemoShout(myRage)
+    local tName = UnitName("target")
+
+    if (tName == "Emperor Vek\'nilash" or tName == "Emperor Vek\'lor") then
+        return
+    end
+
+    if ImFocus() and not ImpDemo() then
+        return
+    end
+
+    if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then					
+        CastSpellByName("Demoralizing Shout")
+    end
 end
