@@ -393,7 +393,7 @@ local function PaladinSingle()
         if not MB_autoBuff.Active then
             MB_autoBuff.Active = true
             MB_autoBuff.Time = GetTime() + 1
-            PriestCounter.Cycle()
+            PaladinCounter.Cycle()
         end
 
 		if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
@@ -435,7 +435,7 @@ local function PaladinSetup()
     if not MB_autoBuff.Active then
         MB_autoBuff.Active = true
         MB_autoBuff.Time = GetTime() + 1
-        PriestCounter.Cycle()
+        PaladinCounter.Cycle()
     end
 
 	if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
@@ -584,7 +584,7 @@ end
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
-local function PriestLoathebHeal()
+local function PaladinLoathebHeal()
 
 	if LoathebHealing() then
 		return
@@ -619,4 +619,4 @@ local function PriestLoathebHeal()
 	end
 end
 
-MB_myLoathebList["Paladin"] = PriestLoathebHeal
+MB_myLoathebList["Paladin"] = PaladinLoathebHeal
