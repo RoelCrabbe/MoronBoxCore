@@ -832,7 +832,7 @@ function Warrior:DPSCooldowns(myRage)
 end
 
 function Warrior:UseDPSCooldowns(myRage)
-    if not InMeleeRange() and not TankTarget("Ragnaros") then
+    if not (InMeleeRange() or TankTarget("Ragnaros")) then
         return
     end
 
@@ -893,7 +893,7 @@ function Warrior:UseTANKCooldowns(myRage)
 		return
 	end
 
-    if not InMeleeRange() and not TankTarget("Ragnaros") then
+    if not (InMeleeRange() or TankTarget("Ragnaros")) then
         return
     end
 
@@ -911,12 +911,8 @@ function Warrior:UseTANKCooldowns(myRage)
         end
 
     elseif Instance.BWL() then
-        if TankTarget("Vaelastrasz the Corrupt") and InMeleeRange() then      
-            Warrior:TankCooldowns(myRage)
-
-            if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-                Warrior:BigTankCooldowns()
-            end
+        if TankTarget("Vaelastrasz the Corrupt") and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+            Warrior:BigTankCooldowns()
 
         elseif TankTarget("Firemaw") then
             if HealthPct("target") <= 0.15 and HealthPct("player") <= 0.3 then
@@ -928,7 +924,7 @@ function Warrior:UseTANKCooldowns(myRage)
         elseif TankTarget("Chromaggus") and HealthPct("target") <= 0.07 and HealthPct("player") <= 0.3 then
             Warrior:BigTankCooldowns()
         end
-    
+
     elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
         if HealthPct("target") <= MB_myOssirianTankDefensivePercentage then
             if HealthPct("player") <= 0.3 then                
