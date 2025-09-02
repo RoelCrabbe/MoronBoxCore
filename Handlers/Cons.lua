@@ -127,7 +127,10 @@ local ClassSpecificReagents = {
         "Major Mana Potion",
         "Mageblood Potion",
         "Wild Thornroot",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Hunter"] = {
         "Tea with Sugar",
@@ -138,7 +141,11 @@ local ClassSpecificReagents = {
         "Elixir of the Mongoose",
         "Juju Might",
         "Juju Power",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "R.O.I.D.S.",
+        "Lung Juice Cocktail",
+        "Ground Scorpok Assay",
+        "Cerebral Cortex Compound"
     },
     ["Mage"] = {
         "Arcane Powder",
@@ -150,7 +157,10 @@ local ClassSpecificReagents = {
         "Greater Arcane Elixir",
         "Elixir of Frost Power",
         "Elixir of Greater Firepower",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Paladin"] = {
         "Tea with Sugar",
@@ -159,7 +169,10 @@ local ClassSpecificReagents = {
         "Mageblood Potion",
         "Symbol of Divinity",
         "Symbol of Kings",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Priest"] = {
         "Tea with Sugar",
@@ -170,7 +183,10 @@ local ClassSpecificReagents = {
         "Flask of Supreme Power",
         "Greater Arcane Elixir",
         "Elixir of Shadow Power",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Rogue"] = {
         "Flash Powder",
@@ -179,7 +195,10 @@ local ClassSpecificReagents = {
         "Elixir of the Mongoose",
         "Juju Might",
         "Juju Power",
-        "Free Action Potion"
+        "Free Action Potion",
+        "R.O.I.D.S.",
+        "Lung Juice Cocktail",
+        "Ground Scorpok Assay"
     },
     ["Shaman"] = {
         "Ankh",
@@ -187,7 +206,10 @@ local ClassSpecificReagents = {
         "Flask of Distilled Wisdom",
         "Major Mana Potion",
         "Mageblood Potion",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Warlock"] = {
         "Tea with Sugar",
@@ -196,7 +218,10 @@ local ClassSpecificReagents = {
         "Mageblood Potion",
         "Greater Arcane Elixir",
         "Elixir of Shadow Power",
-        "Conjured Crystal Water"
+        "Conjured Crystal Water",
+        "Lung Juice Cocktail",
+        "Gizzard Gum",
+        "Cerebral Cortex Compound"
     },
     ["Warrior"] = {
         "Dirge's Kickin' Chimaerok Chops",
@@ -211,7 +236,10 @@ local ClassSpecificReagents = {
         "Miniature Cannon Balls",
         "Rumsey Rum Black Label",
         "Free Action Potion",
-        "Mighty Rage Potion"
+        "Mighty Rage Potion",
+        "R.O.I.D.S.",
+        "Lung Juice Cocktail",
+        "Ground Scorpok Assay"
     }
 }
 
@@ -302,7 +330,16 @@ local ReagentsLimit = {
     -- Other
     ["Free Action Potion"] = { 5, 1 },
     ["Limited Invulnerability Potion"] = { 10, 1 },
-    ["Mighty Rage Potion"] = { 20, 1 }
+    ["Mighty Rage Potion"] = { 20, 1 },
+
+    -- ========================================
+    -- SPECIAL CONSUMABLES
+    -- ========================================
+    ["R.O.I.D.S."] = { 1, 1 },
+    ["Lung Juice Cocktail"] = { 1, 1 },
+    ["Cerebral Cortex Compound"] = { 1, 1 },
+    ["Gizzard Gum"] = { 1, 1 },
+    ["Ground Scorpok Assay"] = { 1, 1 }
 }
 
 --[####################################################################################################]--
@@ -566,8 +603,13 @@ local function MeleeSpeedRunPots()
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
     UsePotionsWhenPossible("Gift of Arthas")
+
     UseJujuWhenPossible("Juju Might")
     UseJujuWhenPossible("Juju Power")
+
+    UsePotionsWhenPossible("R.O.I.D.S.")
+    UsePotionsWhenPossible("Lung Juice Cocktail")
+    UsePotionsWhenPossible("Ground Scorpok Assay")
 end
 
 local function CasterSpeedRunPots()
@@ -575,6 +617,10 @@ local function CasterSpeedRunPots()
     UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
     UsePotionsWhenPossible("Greater Arcane Elixir")
+
+    UsePotionsWhenPossible("Lung Juice Cocktail")
+    UsePotionsWhenPossible("Gizzard Gum")
+    UsePotionsWhenPossible("Cerebral Cortex Compound")
 
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
@@ -593,6 +639,11 @@ local function HealerSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")
+
+    UsePotionsWhenPossible("Lung Juice Cocktail")
+    UsePotionsWhenPossible("Gizzard Gum")
+    UsePotionsWhenPossible("Cerebral Cortex Compound")
+
 end
 
 function mb_useSpeedRunPots()

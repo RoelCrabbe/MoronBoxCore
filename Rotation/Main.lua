@@ -818,11 +818,6 @@ function mb_pickUpWater()
 end
 
 function mb_smartDrink() 
-	if IsControlKeyDown() then		
-		mb_sunfruitBuff()
-		return
-	end
-
 	if IsAltKeyDown() then		
 		mb_smartManaPotTrade()
 		return
