@@ -140,6 +140,8 @@ local removeBuffs = {
     "Prayer of Spirit",
     "Slip\'kik\'s Savvy",
     "Fury of Ragnaros",
+    "Gizzard Gum",
+    "Cerebral Cortex Compound"
 }
 
 local function RogueCancelAuras()

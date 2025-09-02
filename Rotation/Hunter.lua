@@ -142,6 +142,7 @@ local removeBuffs = {
     "Prayer of Spirit",
     "Slip\'kik\'s Savvy",
     "Fury of Ragnaros",
+    "Gizzard Gum",
 }
 
 local function HunterCancelAuras()
