@@ -123,7 +123,8 @@ MB_myInnervateHealerList = {
 	"Liket",
 	"Blaidzy",
 	"Cyal",
-	"Bonita"
+	"Bonita",
+	"Drogles"
 }
 
 MB_myFlashHealerList = {
