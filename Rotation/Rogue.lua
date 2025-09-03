@@ -121,10 +121,7 @@ end
 
 local function ImprovedExposeCheck()
     local _, _, _, _, TalentsIn = GetTalentInfo(1, 8)
-    if TalentsIn == 2 then
-		return true
-	end
-	return false
+    return TalentsIn == 2
 end
 
 MB_mySpeccList["Rogue"] = RogueSpecc

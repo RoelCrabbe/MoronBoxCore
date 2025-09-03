@@ -324,11 +324,9 @@ local function WarriorSingle()
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then		
         if MB_useBigCooldowns.Active then			
             Warrior:BigDPSCooldowns(myRage)
-        end
-
-        if MB_useCooldowns.Active then			
+        elseif MB_useCooldowns.Active then			
             Warrior:DPSCooldowns(myRage)
-        end        
+        end
 
 		Warrior:DPSSingle(myRage)
 		return
@@ -567,11 +565,9 @@ local function WarriorMulti()
 	if (MB_mySpecc == "BT" or MB_mySpecc == "MS") then		
         if MB_useBigCooldowns.Active then			
             Warrior:BigDPSCooldowns(myRage)
-        end
-
-        if MB_useCooldowns.Active then			
+        elseif MB_useCooldowns.Active then			
             Warrior:DPSCooldowns(myRage)
-        end     
+        end  
 		
 		Warrior:DPSMulti(myRage)
 		return

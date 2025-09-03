@@ -75,7 +75,6 @@ local CdPrint = mb_cdPrint
 local CleanseTotem = mb_cleanseTotem
 local CoolDownCast = mb_coolDownCast
 local Dead = mb_dead
-local DisbandRaid = mb_disbandRaid
 local FearBreak = mb_fearBreak
 local GetLink = mb_getLink
 local GetMyInterruptTarget = mb_getMyInterruptTarget
@@ -235,6 +234,23 @@ end
 --[######################################## Inviting Party! ###########################################]--
 --[####################################################################################################]--
 
+function mb_disbandRaid()
+	if UnitInRaid("player") then
+		for i = 1, 40 do
+			local _, rank = GetRaidRosterInfo(i);
+			if rank ~= 2 then
+				UninviteFromParty("raid"..i)
+			end
+		end	
+	else
+		for i = 1, GetNumPartyMembers() do
+			UninviteFromParty("party"..i)
+		end
+	end
+
+	LeaveParty()
+end
+
 function mb_requestInviteSummon()
 	if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then		
 		if MB_raidInviter == myName then			
@@ -248,7 +264,7 @@ function mb_requestInviteSummon()
 
 		if MB_raidInviter then
 			if not (IsInRaid(MB_raidInviter) or IsInGroup(MB_raidInviter)) then			
-				DisbandRaid()
+				mb_disbandRaid()
 				SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidInviter);
 			end
 		end
@@ -275,23 +291,6 @@ function mb_requestInviteSummon()
 		PromoteEveryone()
 		return 
 	end
-end
-
-function mb_disbandRaid()
-	if UnitInRaid("player") then
-		for i = 1, 40 do
-			local _, rank = GetRaidRosterInfo(i);
-			if rank ~= 2 then
-				UninviteFromParty("raid"..i)
-			end
-		end	
-	else
-		for i = 1, GetNumPartyMembers() do
-			UninviteFromParty("party"..i)
-		end
-	end
-
-	LeaveParty()
 end
 
 --[####################################################################################################]--
