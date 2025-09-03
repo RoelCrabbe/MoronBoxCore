@@ -232,6 +232,7 @@ local function ShamanHeal()
 	end
 
     if Instance.AQ40() and TankTarget("Princess Huhuran") then
+
         if TankTargetHealth() <= 0.32 then
             MBH_CastHeal("Chain Heal", 2, 3)
             return
@@ -241,6 +242,7 @@ local function ShamanHeal()
         return
 
     elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+
         if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then	
             MBH_CastHeal("Chain Heal", 3, 3)
             return
@@ -264,7 +266,12 @@ local function ShamanHeal()
 
         MBH_CastHeal("Chain Heal", 3, 3)
         return
-    end
+
+    elseif Instance.MC() and TankTarget("Baron Geddon") then
+
+		MBH_CastHeal("Chain Heal", 3, 3)
+		return
+	end
 
 	if MB_myHealSpell == "Chain Heal" then		
 		MBH_CastHeal("Chain Heal", 1, 1)

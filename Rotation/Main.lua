@@ -1272,7 +1272,7 @@ function mb_GTFO()
                 end
             end
             
-            mb_useFrozenRuneOnFaerlina()
+            mb_useFirePotsOnFaerlina()
         
         elseif Instance.BWL() and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then                

@@ -922,7 +922,6 @@ BuffData["Sayge\'s Dark Fortune of Spirit"] 		 =  "Interface\\Icons\\INV_Misc_Or
 BuffData["Sayge\'s Dark Fortune of Armor"] 		 =  "Interface\\Icons\\INV_Misc_Orb_02"
 BuffData["Recently Bandaged"] 					 =  "Interface\\Icons\\INV_Misc_Bandage_08"
 BuffData["First Aid"] 							 =  "Interface\\Icons\\Spell_Holy_Heal"
-BuffData["Frozen Rune"]							 =  "Interface\\Icons\\Spell_Fire_MasterOfElements"
 BuffData["Shadow Storm"] 				 =  "Interface\\Icons\\Spell_Shadow_ShadowBolt" --aq40 anubisaths BUFF
 BuffData["Mana Burn"]					 =  "Interface\\Icons\\Spell_Shadow_ManaBurn" --aq40 anubisaths BUFF
 BuffData["Fire and Arcane Reflect"] 		 =  "Interface\\Icons\\Spell_Arcane_Blink" --same icon, 
@@ -967,11 +966,12 @@ BuffData["Well Fed"] 				 =  "Interface\\Icons\\INV_Misc_Food"
 BuffData["Increased Intellect"] 				 =  "Interface\\Icons\\INV_Misc_Organ_03"
 BuffData["Evil Twin"] 				 =  "Interface\\Icons\\Spell_Shadow_Charm"
 
-BuffData["Greater Shadow Protection Potion"]				=	"Interface\\Icons\\Spell_Shadow_RagingScream"
+BuffData["Greater Shadow Protection Potion"]			=	"Interface\\Icons\\Spell_Shadow_RagingScream"
 BuffData["Greater Nature Protection Potion"] 	 		=	"Interface\\Icons\\Spell_Nature_SpiritArmor"
 BuffData["Greater Fire Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Fire_FireArmor"
-BuffData["Greater Frost Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Frost_FrostArmor02"
-BuffData["Greater Arcane Protection Potion"] 		 		=	"Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+BuffData["Greater Frost Protection Potion"] 		 	=	"Interface\\Icons\\Spell_Frost_FrostArmor02"
+BuffData["Greater Arcane Protection Potion"] 		 	=	"Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+BuffData["Frozen Rune"]							 		=  "Interface\\Icons\\Spell_Fire_MasterOfElements"
 
 BuffData["Juju Power"] 				 	=	"Interface\\Icons\\INV_Misc_MonsterScales_11"
 BuffData["Juju Might"] 				 	=	"Interface\\Icons\\INV_Misc_MonsterScales_07"
@@ -1016,3 +1016,17 @@ BuffData["Lung Juice Cocktail"] 				=   "Interface\\Icons\\Spell_Nature_Purge"
 BuffData["Cerebral Cortex Compound"] 			=   "Interface\\Icons\\Spell_Ice_Lament"
 BuffData["R.O.I.D.S."] 							=   "Interface\\Icons\\Spell_Nature_Strength"
 BuffData["Ground Scorpok Assay"] 				=   "Interface\\Icons\\Spell_Nature_ForceOfNature"
+
+function DebugBuffs()
+    local buffCount = 0
+
+    for i = 1, 32 do
+        local name = UnitBuff("player", i)
+        if name then
+            buffCount = buffCount + 1
+        end
+    end
+
+    Print("Player has " .. buffCount .. " buffs.")
+    return buffCount
+end

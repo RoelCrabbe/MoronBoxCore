@@ -116,7 +116,8 @@ local UniversalReagents = {
 local OptionalUniversalReagents = {
     "Swiftness of Zanza",
     "Greater Shadow Protection Potion",
-    "Limited Invulnerability Potion"
+    "Limited Invulnerability Potion",
+    "Greater Fire Protection Potion",
 }
 
 local ClassSpecificReagents = {
@@ -198,7 +199,8 @@ local ClassSpecificReagents = {
         "Free Action Potion",
         "R.O.I.D.S.",
         "Lung Juice Cocktail",
-        "Ground Scorpok Assay"
+        "Ground Scorpok Assay",
+        "Frozen Rune"
     },
     ["Shaman"] = {
         "Ankh",
@@ -239,7 +241,8 @@ local ClassSpecificReagents = {
         "Mighty Rage Potion",
         "R.O.I.D.S.",
         "Lung Juice Cocktail",
-        "Ground Scorpok Assay"
+        "Ground Scorpok Assay",
+        "Frozen Rune"
     }
 }
 
@@ -287,7 +290,9 @@ local ReagentsLimit = {
     -- Protection Potions
     ["Greater Nature Protection Potion"] = { 15, 1 },
     ["Greater Shadow Protection Potion"] = { 55, 1 },
-    
+    ["Greater Fire Protection Potion"] = { 5, 1 },
+    ["Frozen Rune"] = { 5, 1 },
+
     -- Mana Restoration
     ["Tea with Sugar"] = { 40, 1 },
     ["Major Mana Potion"] = { 60, 1 },
@@ -499,7 +504,7 @@ local function UsePotionsWhenPossible(potion)
     end
 end
 
-function mb_useFrozenRuneOnFaerlina()
+function mb_useFirePotsOnFaerlina()
     if not MB_myFaerlinaFirePotStrategy then
         return
     end

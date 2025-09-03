@@ -830,6 +830,10 @@ function Warrior:DPSCooldowns(myRage)
         SelfBuff("Death Wish")
     end
 
+    if Instance.MC() and TankTarget("Baron Geddon") then
+        UseSpeedRunPotsWhenPossible("Frozen Rune")
+    end
+
     if HasBuffOrDebuff("Death Wish", "player", "debuff") then
         SelfBuff("Blood Fury") 
         UseSpeedRunPotsWhenPossible("Mighty Rage Potion")
