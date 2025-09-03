@@ -35,13 +35,19 @@ Handlers\AddonMessage.lua
 Handlers\Decurse.lua
 Handlers\Gear.lua
 Handlers\Cons.lua
+Handlers\GTFO.lua
 
 Event\Flash.lua
 Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
 
-Rotation\Main.lua
+Rotation\Scripts\Extra.lua
+Rotation\Scripts\Rotation.lua
+Rotation\Scripts\Follow.lua
+Rotation\Scripts\Totem.lua
+Rotation\Scripts\HealAndTank.lua
+
 Rotation\Druid.lua
 Rotation\Hunter.lua
 Rotation\Mage.lua

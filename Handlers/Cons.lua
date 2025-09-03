@@ -106,6 +106,80 @@ local UseSpeedRunPots = mb_useSpeedRunPots
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local MageWater = {
+	[60] = "Conjured Crystal Water",
+	[50] = "Conjured Sparkling Water"
+}
+
+function mb_mageWater()
+	local waterRanks = TableInvert(MageWater)
+	local bestRank = 1
+	local bestWater = nil
+	local count = 0
+	local bag, slot, link
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, itemCount, _, _, _, _, link = GetContainerItemInfo(bag, slot)
+			
+			if texture then
+				link = GetContainerItemLink(bag, slot)
+				_, stack = GetContainerItemInfo(bag, slot)
+				local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsNum)
+				
+				if FindInTable(MageWater, itemName) then
+					if waterRanks[itemName] > bestRank then
+						bestWater = itemName
+						bestRank = waterRanks[itemName]
+						count = stack
+					elseif waterRanks[itemName] == bestRank then
+						count = count + stack
+					end
+				end
+			end
+		end 
+	end
+	return count, bestWater
+end
+
+function mb_pickUpWater()
+	local waterRanks = TableInvert(MageWater)
+	local amount = 0
+	local bestRank = 1
+	local bag, slot, link
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local texture, _, _, _, _, _, link = GetContainerItemInfo(bag, slot)
+			
+			if texture then
+				link = GetContainerItemLink(bag, slot)
+				local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+				local itemName, _, _, _, _, _, _, _, _ = GetItemInfo(bsNum)
+				
+                if FindInTable(MageWater, itemName) then
+					if waterRanks[itemName] > bestRank then						
+						bestRank = waterRanks[itemName]
+						bestWater = itemName.." "..bag.." "..slot
+					end
+				end
+			end 
+		end 
+	end
+
+	if bestRank > 0 then
+		local _ , _, water, bag, slot = string.find(bestWater, "(Conjured.*Water) (%d+) (%d+)")		
+		CdPrint("Found "..water.." in bag "..bag.." in slot "..slot)
+		PickupContainerItem(bag, slot)
+		return water
+	end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local UniversalReagents = {
     "Cache of Mau'ari",
     "Drakefire Amulet", 
