@@ -1017,8 +1017,8 @@ BuffData["Cerebral Cortex Compound"] 			=   "Interface\\Icons\\Spell_Ice_Lament"
 BuffData["R.O.I.D.S."] 							=   "Interface\\Icons\\Spell_Nature_Strength"
 BuffData["Ground Scorpok Assay"] 				=   "Interface\\Icons\\Spell_Nature_ForceOfNature"
 
-function DebugBuffs()
-    local buffCount = 0
+function AmountOfBuffs()
+	local buffCount = 0
 
     for i = 1, 32 do
         local name = UnitBuff("player", i)
@@ -1027,6 +1027,9 @@ function DebugBuffs()
         end
     end
 
-    Print("Player has " .. buffCount .. " buffs.")
     return buffCount
+end
+
+function DebugBuffs()
+    Print("Player has "..AmountOfBuffs().." buffs.")
 end
