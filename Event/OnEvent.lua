@@ -253,35 +253,22 @@ function MMB:OnEvent()
 		elseif arg1 == MB_RAID.."MB_REMOVEBUFFS" then
 
             if arg2 == "all" then
-                local buffsToCancel = {
-                    "Gift of the Wild",
-                    "Prayer of Spirit",
-                    "Prayer of Fortitude", 
-                    "Arcane Brilliance",
-                    "Divine Spirit",
-                    "Power Word: Fortitude",
-                    "Mark of the Wild",
-                    "Arcane Intellect",
-                    "Prayer of Shadow Protection",
-                    "Greater Blessing of Salvation",
-                    "Greater Blessing of Might",
-                    "Greater Blessing of Kings", 
-                    "Greater Blessing of Light",
-                    "Greater Blessing of Wisdom",
-                    "Greater Blessing of Sanctuary"
-                }
-                
-                if myClass == "Mage" then
-                    table.insert(buffsToCancel, "Mage Armor")
-                elseif myClass == "Warlock" then
-                    table.insert(buffsToCancel, "Demon Armor")
-                end
-                
-                for _, buff in ipairs(buffsToCancel) do
-                    if mb_hasBuffOrDebuff(buff, "player", "buff") then
-                        CancelBuff(buff)
-                    end
-                end
+				local tooltip = MMBTooltip
+				local textleft1 = getglobal(tooltip:GetName().."TextLeft1")
+				local text
+				
+				for i = 1, 32 do
+					tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+					tooltip:SetUnitBuff("player", i)
+					text = textleft1:GetText()
+					tooltip:Hide()
+					
+					if not text then
+						break
+					end
+					
+					CancelBuff(text)
+				end
             elseif arg2 and mb_hasBuffOrDebuff(arg2, "player", "buff") then
                 CancelBuff(arg2)
             end
