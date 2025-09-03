@@ -190,16 +190,16 @@ MB_mySpeccList["Priest"] = PriestSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-	"Battle Shout",
-	"Fengus\' Ferocity",
-	"R.O.I.D.S.",
-    "Ground Scorpok Assay"
+    ["Battle Shout"]          = "Battle Shout",
+    ["Fengus' Ferocity"]      = "Fengus' Ferocity",
+    ["R.O.I.D.S."]            = "Rage of Ages",
+    ["Ground Scorpok Assay"]  = "Strike of the Scorpok"
 }
 
 local function PriestCancelAuras()
-    for _, buff in ipairs(removeBuffs) do
-        if HasBuffOrDebuff(buff, "player", "buff") then
-            CancelBuff(buff)
+    for itemName, buffName in pairs(removeBuffs) do
+        if HasBuffOrDebuff(itemName, "player", "buff") then
+            CancelBuff(buffName)
         end
     end
 end

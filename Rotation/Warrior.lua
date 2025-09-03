@@ -162,20 +162,20 @@ MB_mySpeccList["Warrior"] = WarriorSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    "Arcane Intellect",
-    "Arcane Brilliance",
-    "Divine Spirit",
-    "Prayer of Spirit",
-    "Slip\'kik\'s Savvy",
-    "Fury of Ragnaros",
-    "Gizzard Gum",
-    "Cerebral Cortex Compound"
+    ["Arcane Intellect"]          = "Arcane Intellect",
+    ["Arcane Brilliance"]         = "Arcane Brilliance",
+    ["Divine Spirit"]             = "Divine Spirit",
+    ["Prayer of Spirit"]          = "Prayer of Spirit",
+    ["Slip'kik's Savvy"]          = "Slip'kik's Savvy",
+    ["Fury of Ragnaros"]          = "Fury of Ragnaros",
+    ["Gizzard Gum"]               = "Spiritual Domination",
+    ["Cerebral Cortex Compound"]  = "Infallible Mind"
 }
 
 local function WarriorCancelAuras()
-    for _, buff in ipairs(removeBuffs) do
-        if HasBuffOrDebuff(buff, "player", "buff") then
-            CancelBuff(buff)
+    for itemName, buffName in pairs(removeBuffs) do
+        if HasBuffOrDebuff(itemName, "player", "buff") then
+            CancelBuff(buffName)
         end
     end
 end
