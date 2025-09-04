@@ -107,6 +107,7 @@ local StunnableMob = mb_stunnableMob
 local TankTarget = mb_tankTarget
 local TrinketOnCD = mb_trinketOnCD
 local UseFromBags = mb_useFromBags
+local UseNaturePotsOnHuhuran = mb_useNaturePotsOnHuhuran
 local WarriorIsBattle = mb_warriorIsBattle
 local WarriorIsBerserker = mb_warriorIsBerserker
 local WarriorIsDefensive = mb_warriorIsDefensive
@@ -310,7 +311,7 @@ local function WarriorSingle()
     end
 
     if Instance.AQ40() then
-        mb_useNaturePotsOnHuhuran()
+        UseNaturePotsOnHuhuran()
 
         if IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
@@ -551,7 +552,7 @@ local function WarriorMulti()
     end
 	
     if Instance.AQ40() then
-        mb_useNaturePotsOnHuhuran()
+        UseNaturePotsOnHuhuran()
 
         if IsAtSkeram() and SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
