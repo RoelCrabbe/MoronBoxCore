@@ -815,23 +815,33 @@ MB_myAOEList["Warrior"] = WarriorMulti
 --[######################################### DPS Cooldowns! ###########################################]--
 --[####################################################################################################]--
 
+local function CanUseCooldowns()
+    if ImBusy() or not InCombat("player") then
+        return false
+    end
+
+    return (TankTarget("Ragnaros") or InMeleeRange())
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function Warrior:BigDPSCooldowns(myRage)
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if not CanUseCooldowns() then
+        return
+    end
 
     SelfBuff("Recklessness")
 	Warrior:DPSCooldowns(myRage)
 end
 
 function Warrior:DPSCooldowns(myRage)
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if not CanUseCooldowns() then
+        return
+    end
 
-    SelfBuff("Berserking")
-
-    if SpellReady("Death Wish") and myRage >= 10 then     
+    if SpellReady("Death Wish") and myRage >= 10 then
         SelfBuff("Death Wish")
     end
 
@@ -840,6 +850,7 @@ function Warrior:DPSCooldowns(myRage)
     end
 
     if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        SelfBuff("Berserking")
         SelfBuff("Blood Fury")
         UseSpeedRunPotsWhenPossible("Mighty Rage Potion")
     end
@@ -848,7 +859,7 @@ function Warrior:DPSCooldowns(myRage)
 end
 
 function Warrior:UseDPSCooldowns(myRage)
-    if not (InMeleeRange() or TankTarget("Ragnaros")) then
+    if not CanUseCooldowns() then
         return
     end
 
@@ -857,45 +868,52 @@ function Warrior:UseDPSCooldowns(myRage)
     end
 
     if UnitInRaid("player") and GetNumRaidMembers() > 5 then
-        local sunderDebuff = DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")
         local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
     
-        if sunderDebuff then
+        if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
             if Instance.IsWorldBoss() then
                 Warrior:DPSCooldowns(myRage)
-                return
-            end
-
-            if UnitHealth("target") > hpThreshold then
+            elseif UnitHealth("target") > hpThreshold then
                 Warrior:DPSCooldowns(myRage)
             end
         end
-        return
+    else
+        Warrior:DPSCooldowns(myRage)
     end
-
-    Warrior:DPSCooldowns(myRage)
 end
 
 --[####################################################################################################]--
 --[######################################## Tank Cooldowns! ###########################################]--
 --[####################################################################################################]--
 
-function Warrior:BigTankCooldowns()
-    SelfBuff("Last Stand")
+function Warrior:BigTANKCooldowns(myRage)
+    if not CanUseCooldowns() then
+        return
+    end
 
-    if Warrior:HasShield() then                     
+    if Warrior:HasShield() then
         SelfBuff("Shield Wall")
     end
+
+    SelfBuff("Last Stand")
+    Warrior:TANKCooldowns(myRage)
 end
 
-function Warrior:TankCooldowns(myRage)
-    SelfBuff("Berserking")
+function Warrior:TANKCooldowns(myRage)
+    if not CanUseCooldowns() then
+        return
+    end
 
     if SpellReady("Death Wish") and myRage >= 10 then
         SelfBuff("Death Wish")
     end
 
+    if Instance.MC() and TankTarget("Baron Geddon") then
+        UseSpeedRunPotsWhenPossible("Frozen Rune")
+    end
+
     if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        SelfBuff("Berserking")
         UseSpeedRunPotsWhenPossible("Greater Stoneshield Potion")
     end
 
@@ -903,17 +921,13 @@ function Warrior:TankCooldowns(myRage)
 end
 
 function Warrior:UseTANKCooldowns(myRage)
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    if not (InMeleeRange() or TankTarget("Ragnaros")) then
+    if not ShouldDoCooldowns() then
         return
     end
 
     if Instance.Naxx() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
         if HealthPct("target") <= 0.05 then
-            Warrior:BigTankCooldowns()
+            Warrior:BigTANKCooldowns(myRage)
         end
 
         UseJujuWhenPossible("Juju Escape")
@@ -921,74 +935,55 @@ function Warrior:UseTANKCooldowns(myRage)
 
     elseif Instance.AQ40() and TankTarget("Princess Huhuran") and MB_myHuhuranBoxStrategy then            
         if HealthPct("target") <= MB_myHuhuranTankDefensivePercentage then
-            Warrior:BigTankCooldowns()
+            Warrior:BigTANKCooldowns(myRage)
         end
 
-    elseif Instance.BWL() then
-        if TankTarget("Vaelastrasz the Corrupt") and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-            Warrior:BigTankCooldowns()
+    elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+        Warrior:BigTANKCooldowns(myRage)
 
-        elseif TankTarget("Firemaw") then
-            if HealthPct("target") <= 0.15 and HealthPct("player") <= 0.3 then
-                Warrior:BigTankCooldowns()                 
-            end
-
-            UseJujuWhenPossible("Juju Ember")
-
-        elseif TankTarget("Chromaggus") and HealthPct("target") <= 0.07 and HealthPct("player") <= 0.3 then
-            Warrior:BigTankCooldowns()
+    elseif Instance.BWL() and TankTarget("Firemaw") then
+        if HealthPct("target") <= 0.15 and HealthPct("player") <= 0.3 then
+            Warrior:BigTANKCooldowns(myRage)                 
         end
+
+        UseJujuWhenPossible("Juju Ember")
+
+    elseif Instance.BWL() and TankTarget("Chromaggus") and HealthPct("target") <= 0.07 and HealthPct("player") <= 0.3 then
+        Warrior:BigTANKCooldowns(myRage)
 
     elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
         if HealthPct("target") <= MB_myOssirianTankDefensivePercentage then
             if HealthPct("player") <= 0.3 then                
-                Warrior:BigTankCooldowns()
+                Warrior:BigTANKCooldowns(myRage)
             end
         end
-    else
-        if HealthPct("player") <= 0.25 then			
-            if ItemNameOfEquippedSlot(13) == "Lifegiving Gem" and not TrinketOnCD(13) then 
-                use(13)
-            elseif ItemNameOfEquippedSlot(14) == "Lifegiving Gem" and not TrinketOnCD(14) then 
-                use(14)
-            end
-        end
-        
+    else        
         if HealthPct("player") <= 0.2 then				
             SelfBuff("Last Stand") 
         end
     end
 
-    if SpellReady("Concussion Blow") and StunnableMob() and myRage >= 15 then	
-        CastSpellByName("Concussion Blow")
+    if HealthPct("player") <= 0.25 then
+        if ItemNameOfEquippedSlot(13) == "Lifegiving Gem" and not TrinketOnCD(13) then
+            use(13)
+        elseif ItemNameOfEquippedSlot(14) == "Lifegiving Gem" and not TrinketOnCD(14) then
+            use(14)
+        end
     end
-
-    Warrior:Disarm(myRage)
-
-    if HealthPct("player") < 0.85 and Warrior:HasShield() and myRage >= 20 then				
-        CastSpellByName("Shield Block") 
-    end
-
-    Warrior:DemoShout(myRage)
 
     if UnitInRaid("player") and GetNumRaidMembers() > 5 then
-        local sunderDebuff = DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")
         local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
 
-        if sunderDebuff then
+        if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
             if Instance.IsWorldBoss() then
-                Warrior:TankCooldowns(myRage)
-                return
-            end
-
-            if UnitHealth("target") > hpThreshold then
-                Warrior:TankCooldowns(myRage)
+                Warrior:TANKCooldowns(myRage)
+            elseif UnitHealth("target") > hpThreshold then
+                Warrior:TANKCooldowns(myRage)
             end
         end
-        return
+    else
+        Warrior:TANKCooldowns(myRage)
     end
-
-    Warrior:TankCooldowns(myRage)
 end
 
 --[####################################################################################################]--
