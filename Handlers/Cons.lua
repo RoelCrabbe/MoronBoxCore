@@ -399,7 +399,7 @@ local ReagentsLimit = {
     ["Rumsey Rum Black Label"] = { 20, 1 },
     
     -- Tank/Survivability
-    ["Gift of Arthas"] = { 15, 1 },
+    ["Gift of Arthas"] = { 10, 1 },
     ["Greater Stoneshield Potion"] = { 40, 1 },
     
     -- Ammunition/Projectiles (Special Stack Size)
@@ -681,14 +681,13 @@ local function MeleeSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
-    UsePotionsWhenPossible("Gift of Arthas")
 
     UseJujuWhenPossible("Juju Might")
     UseJujuWhenPossible("Juju Power")
 
-    UsePotionsWhenPossible("R.O.I.D.S.")
-    UsePotionsWhenPossible("Lung Juice Cocktail")
-    UsePotionsWhenPossible("Ground Scorpok Assay")
+    if ImTank() then
+        UsePotionsWhenPossible("Gift of Arthas")
+    end
 end
 
 local function CasterSpeedRunPots()
@@ -696,10 +695,6 @@ local function CasterSpeedRunPots()
     UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
     UsePotionsWhenPossible("Greater Arcane Elixir")
-
-    UsePotionsWhenPossible("Lung Juice Cocktail")
-    UsePotionsWhenPossible("Gizzard Gum")
-    UsePotionsWhenPossible("Cerebral Cortex Compound")
 
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
@@ -718,11 +713,6 @@ local function HealerSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")
-
-    UsePotionsWhenPossible("Lung Juice Cocktail")
-    UsePotionsWhenPossible("Gizzard Gum")
-    UsePotionsWhenPossible("Cerebral Cortex Compound")
-
 end
 
 function mb_useSpeedRunPots()

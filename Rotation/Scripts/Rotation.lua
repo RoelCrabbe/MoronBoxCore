@@ -238,6 +238,13 @@ function mb_single()
 
     CheckWarStomp()
 
+    if ImMeleeDPS() then
+        local aBuffs = AmountOfBuffs()
+        if aBuffs > 28 and InCombat("player") then
+            CdMessage("Nearing Buffcap!", 500)
+        end
+    end
+
     local SingleRotation = MB_mySingleList[myClass]
     if SingleRotation and type(SingleRotation) == "function" then
         SingleRotation()
