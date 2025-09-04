@@ -1061,7 +1061,12 @@ function Warrior:Annihilator()
 end
 
 function Warrior:Execute()
-    if not UnitName("target") then
+    if HealthPct("target") >= 0.20 then
+        return
+    end
+
+    if MB_mySpecc == "MS" then
+        CastSpellByName("Execute")
         return
     end
 
@@ -1084,14 +1089,12 @@ function Warrior:Execute()
     local btDamage = apTotal * 0.45
     local impExeValue = ImpExecute() and 900 or 820
 
-    if HealthPct("target") < 0.20 then
-        if impExeValue >= btDamage then
-            CastSpellByName("Execute")
-        elseif btDamage >= impExeValue and SpellReady("Bloodthirst") then
-            CastSpellByName("Bloodthirst")
-        else
-            CastSpellByName("Execute")
-        end
+    if impExeValue >= btDamage then
+        CastSpellByName("Execute")
+    elseif btDamage >= impExeValue and SpellReady("Bloodthirst") then
+        CastSpellByName("Bloodthirst")
+    else
+        CastSpellByName("Execute")
     end
 end
 
