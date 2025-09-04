@@ -671,9 +671,7 @@ local function PriestSingle()
 
 	if MB_mySpecc == "Bitch" then
         Priest:ShadowWeaving()
-
     elseif MB_mySpecc == "Shadow" then
-
         Priest:Shadow()
         return
     end
@@ -998,7 +996,7 @@ function Priest:PowerInfusion()
 
 		if unit and InCombat(unit) then
 			if not (HasBuffOrDebuff("Power Infusion", unit, "buff") or HasBuffOrDebuff("Arcane Power", unit, "buff")) then
-				if IsValidFriendlyTargetWithin28YardRange(unit) and ManaPct(unit) > 0.1 then
+				if IsValidFriendlyTargetWithin28YardRange(unit) and ManaPct(unit) < 0.95 and ManaPct(unit) > 0.1 then
 					if UnitIsFriend("player", unit) then
 						ClearTarget()
 					end

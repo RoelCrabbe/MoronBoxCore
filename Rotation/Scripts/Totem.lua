@@ -257,18 +257,18 @@ function mb_dropTotems()
 		return 
 	end
 
-	CastTotem(ChooseAirTotem())
+	mb_castTotem(ChooseAirTotem())
 
 	if not MB_cooldowns["Tremor Totem"] then
-		CastTotem(ChooseEarthTotem())
+		mb_castTotem(ChooseEarthTotem())
 	end
 
 	if not MB_cooldowns["Poison Cleansing Totem"] then
-		CastTotem(ChooseWaterTotem())
+		mb_castTotem(ChooseWaterTotem())
 	end
 
 	if TankTarget("Sapphiron") or TankTarget("Azuregos") then
-		CastTotem(ChooseFireTotem())
+		mb_castTotem(ChooseFireTotem())
 	end
 end
 

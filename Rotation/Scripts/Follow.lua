@@ -137,7 +137,7 @@ function mb_casterFollow()
 	end
 
 	if ImRangedDPS() then
-		FollowFocus()
+		mb_followFocus()
 	end
 end
 
@@ -203,13 +203,13 @@ function mb_meleeFollow()
 		end
     else
         if ImMeleeDPS() then		
-            FollowFocus()
+            mb_followFocus()
         end
 
         if ImTank() and not MB_myOTTarget
             and not (TankTarget("Instructor Razuvious") or TankTarget("Razorgore the Untamed") 
             or TankTarget("Chromaggus") or IsAtTwinsEmps()) then
-            FollowFocus()
+            mb_followFocus()
         end
     end
 end
@@ -224,7 +224,7 @@ function mb_tankFollow()
 	end
 
 	if ImTank() then		
-		FollowFocus()
+		mb_followFocus()
 	end
 end
 
@@ -238,6 +238,6 @@ function mb_healerFollow()
 	end
 
 	if ImHealer() then		
-		FollowFocus()
+		mb_followFocus()
 	end
 end

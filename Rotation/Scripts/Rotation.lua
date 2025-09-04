@@ -197,7 +197,7 @@ function mb_single()
     end
 
     CheckWarStomp()
-	
+
     local SingleRotation = MB_mySingleList[myClass]
     if SingleRotation and type(SingleRotation) == "function" then
         SingleRotation()
@@ -328,6 +328,10 @@ function mb_setup()
 	end
 
 	UseSpeedRunPots()
+
+    if myClass == "Warrior" then
+        return
+    end
 
     local SetupRotation = MB_mySetupList[myClass]
     if SetupRotation and type(SetupRotation) == "function" then

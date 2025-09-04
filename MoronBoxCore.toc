@@ -46,6 +46,7 @@ Rotation\Scripts\Extra.lua
 Rotation\Scripts\Rotation.lua
 Rotation\Scripts\Follow.lua
 Rotation\Scripts\Totem.lua
+Rotation\Scripts\MageWater.lua
 Rotation\Scripts\HealAndTank.lua
 
 Rotation\Druid.lua

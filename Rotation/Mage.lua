@@ -193,7 +193,8 @@ local removeBuffs = {
     ["Battle Shout"]           = "Battle Shout",
     ["Fengus' Ferocity"]       = "Fengus' Ferocity",
     ["R.O.I.D.S."]             = "Rage of Ages",
-    ["Ground Scorpok Assay"]   = "Strike of the Scorpok"
+    ["Ground Scorpok Assay"]   = "Strike of the Scorpok",
+    ["Lung Juice Cocktail"]    = "Spirit of Boar"
 }
 
 local function MageCancelAuras()
