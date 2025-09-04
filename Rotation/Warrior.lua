@@ -244,6 +244,10 @@ local function UsePotionsWhenPossible(potion)
         return
     end
 
+    if not Instance:IsInRaid() then
+        return
+    end
+
     if HasBuffOrDebuff(potion, "player", "buff") then
         return
     end
@@ -256,6 +260,10 @@ end
 
 local function UseJujuWhenPossible(juju)
     if not HaveInBags(juju) and not IsItemInBagCoolDown(juju) then
+        return
+    end
+
+    if not Instance:IsInRaid() then
         return
     end
 
@@ -823,7 +831,7 @@ function Warrior:DPSCooldowns(myRage)
 
     SelfBuff("Berserking")
 
-    if SpellReady("Death Wish") and myRage >= 10 then        
+    if SpellReady("Death Wish") and myRage >= 10 then     
         SelfBuff("Death Wish")
     end
 
@@ -831,8 +839,8 @@ function Warrior:DPSCooldowns(myRage)
         UseSpeedRunPotsWhenPossible("Frozen Rune")
     end
 
-    if HasBuffOrDebuff("Death Wish", "player", "debuff") and Instance:IsInRaid() then
-        SelfBuff("Blood Fury") 
+    if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        SelfBuff("Blood Fury")
         UseSpeedRunPotsWhenPossible("Mighty Rage Potion")
     end
 
@@ -883,14 +891,12 @@ end
 function Warrior:TankCooldowns(myRage)
     SelfBuff("Berserking")
 
-    if MB_mySpeedRunStrategy then
-        if SpellReady("Death Wish") and myRage >= 10 then        
-            SelfBuff("Death Wish")
-        end
+    if SpellReady("Death Wish") and myRage >= 10 then
+        SelfBuff("Death Wish")
+    end
 
-        if HasBuffOrDebuff("Death Wish", "player", "debuff") and Instance:IsInRaid() then
-            UseSpeedRunPotsWhenPossible("Greater Stoneshield Potion")
-        end
+    if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        UseSpeedRunPotsWhenPossible("Greater Stoneshield Potion")
     end
 
     MeleeTrinkets()
