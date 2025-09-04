@@ -831,7 +831,7 @@ function Warrior:DPSCooldowns(myRage)
         UseSpeedRunPotsWhenPossible("Frozen Rune")
     end
 
-    if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+    if HasBuffOrDebuff("Death Wish", "player", "debuff") and Instance:IsInRaid() then
         SelfBuff("Blood Fury") 
         UseSpeedRunPotsWhenPossible("Mighty Rage Potion")
     end
@@ -888,7 +888,7 @@ function Warrior:TankCooldowns(myRage)
             SelfBuff("Death Wish")
         end
 
-        if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        if HasBuffOrDebuff("Death Wish", "player", "debuff") and Instance:IsInRaid() then
             UseSpeedRunPotsWhenPossible("Greater Stoneshield Potion")
         end
     end
