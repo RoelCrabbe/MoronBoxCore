@@ -171,6 +171,9 @@ function MMB:OnEvent()
         elseif targetName == "Lothos Riftwaker" then
             MB_MCEnter.Active = true
             MB_MCEnter.Time = currentTime + 0.2
+		elseif targetName == "Teleportman" then
+            MB_TeleportMan.Active = true
+            MB_TeleportMan.Time = currentTime + 0.2
         elseif mb_reagentVendors() then
             MB_autoBuyReagents.Active = true    
             MB_autoBuyReagents.Time = currentTime + 0.2
@@ -180,6 +183,7 @@ function MMB:OnEvent()
 
         MB_DMFWeek.Active = false
         MB_MCEnter.Active = false
+		MB_TeleportMan.Active = false
         MB_autoBuyReagents.Active = false
 
 	elseif (event == "TAXIMAP_OPENED") then
@@ -614,9 +618,7 @@ function MMB:OnEvent()
 		if x == "10" then
 			SetCVar("targetNearestDistance", "41")
 		end
-		
 
-	
 	elseif (event == "RESURRECT_REQUEST") then
 
 		if mb_tankTarget("Bloodlord Mandokir") then
@@ -648,6 +650,9 @@ function MMB:OnEvent()
         elseif targetName == "Lothos Riftwaker" then
             MB_MCEnter.Active = true
             MB_MCEnter.Time = currentTime + 0.2
+		elseif targetName == "Teleportman" then
+            MB_TeleportMan.Active = true
+            MB_TeleportMan.Time = currentTime + 0.2
         elseif mb_reagentVendors() then
             MB_autoBuyReagents.Active = true    
             MB_autoBuyReagents.Time = currentTime + 0.2

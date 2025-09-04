@@ -136,13 +136,14 @@ MB_mySpeccList["Hunter"] = HunterSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Arcane Intellect"]       = "Arcane Intellect",
-    ["Arcane Brilliance"]      = "Arcane Brilliance",
-    ["Divine Spirit"]          = "Divine Spirit",
-    ["Prayer of Spirit"]       = "Prayer of Spirit",
-    ["Slip'kik's Savvy"]       = "Slip'kik's Savvy",
-    ["Fury of Ragnaros"]       = "Fury of Ragnaros",
-    ["Gizzard Gum"]            = "Spiritual Domination"
+    ["Arcane Intellect"]            = "Arcane Intellect",
+    ["Arcane Brilliance"]           = "Arcane Brilliance",
+    ["Divine Spirit"]               = "Divine Spirit",
+    ["Prayer of Spirit"]            = "Prayer of Spirit",
+    ["Slip'kik's Savvy"]            = "Slip'kik's Savvy",
+    ["Fury of Ragnaros"]            = "Fury of Ragnaros",
+    ["Very Berry Cream"]            = "Very Berry Cream",
+    ["Sweet Surprise"]              = "Sweet Surprise",
 }
 
 local function HunterCancelAuras()

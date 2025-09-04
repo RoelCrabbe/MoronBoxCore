@@ -189,10 +189,10 @@ MB_mySpeccList["Druid"] = DruidSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Battle Shout"]            = "Battle Shout",
-    ["Fengus' Ferocity"]        = "Fengus' Ferocity",
-    ["R.O.I.D.S."]              = "Rage of Ages",
-    ["Ground Scorpok Assay"]    = "Strike of the Scorpok"
+    ["Battle Shout"]                = "Battle Shout",
+    ["Fengus' Ferocity"]            = "Fengus' Ferocity",
+    ["Polished Armor"]		        = "Polished Armor",
+    ["R.O.I.D.S."]                  = "Rage of Ages"
 }
 
 local function DruidCancelAuras()

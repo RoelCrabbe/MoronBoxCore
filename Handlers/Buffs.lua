@@ -1017,6 +1017,10 @@ BuffData["Cerebral Cortex Compound"] 			=   "Interface\\Icons\\Spell_Ice_Lament"
 BuffData["R.O.I.D.S."] 							=   "Interface\\Icons\\Spell_Nature_Strength"
 BuffData["Ground Scorpok Assay"] 				=   "Interface\\Icons\\Spell_Nature_ForceOfNature"
 
+BuffData["Very Berry Cream"] 					=   "Interface\\Icons\\INV_ValentinesChocolate02"
+BuffData["Sweet Surprise"] 						=   "Interface\\Icons\\INV_ValentinesChocolate03"
+BuffData["Polished Armor"] 						=   "Interface\\Icons\\INV_Shield_10"
+
 function AmountOfBuffs()
 	local buffCount = 0
 

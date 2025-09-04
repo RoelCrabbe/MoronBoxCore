@@ -190,11 +190,10 @@ MB_mySpeccList["Mage"] = MageSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Battle Shout"]           = "Battle Shout",
-    ["Fengus' Ferocity"]       = "Fengus' Ferocity",
-    ["R.O.I.D.S."]             = "Rage of Ages",
-    ["Ground Scorpok Assay"]   = "Strike of the Scorpok",
-    ["Lung Juice Cocktail"]    = "Spirit of Boar"
+    ["Battle Shout"]                = "Battle Shout",
+    ["Fengus' Ferocity"]            = "Fengus' Ferocity",
+    ["Polished Armor"]		        = "Polished Armor",
+    ["R.O.I.D.S."]                  = "Rage of Ages"
 }
 
 local function MageCancelAuras()
