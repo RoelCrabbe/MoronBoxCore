@@ -441,14 +441,27 @@ local function WarriorTankSingleRotation(myRage)
     local tName = UnitName("target")
     local sRage = ImFocus() and 54 or 46
 
-    if MB_mySpecc == "Prottank" then
-        if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
-            CastSpellByName("Shield Slam")
+    if InMeleeRange() then
+        if SpellReady("Concussion Blow") and StunnableMob() and myRage >= 15 then
+            CastSpellByName("Concussion Blow")
         end
-    elseif MB_mySpecc == "Furytank" then
-        if SpellReady("Bloodthirst") and myRage >= 30 then          
-            CastSpellByName("Bloodthirst")
+
+        if HealthPct("player") < 0.85 and Warrior:HasShield() and myRage >= 20 then	
+            CastSpellByName("Shield Block")
         end
+
+        if MB_mySpecc == "Prottank" then
+            if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
+                CastSpellByName("Shield Slam")
+            end
+        elseif MB_mySpecc == "Furytank" then
+            if SpellReady("Bloodthirst") and myRage >= 30 then          
+                CastSpellByName("Bloodthirst")
+            end
+        end
+
+        Warrior:Disarm(myRage)
+        Warrior:DemoShout(myRage)
     end
 
     if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
@@ -697,14 +710,27 @@ local function WarriorTankMultiRotation(myRage)
     local tName = UnitName("target")
     local sRage = ImFocus() and 54 or 46
 
-    if MB_mySpecc == "Prottank" then
-        if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
-            CastSpellByName("Shield Slam")
+    if InMeleeRange() then
+        if SpellReady("Concussion Blow") and StunnableMob() and myRage >= 15 then
+            CastSpellByName("Concussion Blow")
         end
-    elseif MB_mySpecc == "Furytank" then
-        if SpellReady("Bloodthirst") and myRage >= 30 then  
-            CastSpellByName("Bloodthirst")
+
+        if HealthPct("player") < 0.85 and Warrior:HasShield() and myRage >= 20 then	
+            CastSpellByName("Shield Block")
         end
+
+        if MB_mySpecc == "Prottank" then
+            if SpellReady("Shield Slam") and myRage >= 20 and Warrior:HasShield() then  
+                CastSpellByName("Shield Slam")
+            end
+        elseif MB_mySpecc == "Furytank" then
+            if SpellReady("Bloodthirst") and myRage >= 30 then          
+                CastSpellByName("Bloodthirst")
+            end
+        end
+
+        Warrior:Disarm(myRage)
+        Warrior:DemoShout(myRage)
     end
 
     if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
