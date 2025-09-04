@@ -371,9 +371,8 @@ local function WarriorDPSSingleRotation(myRage)
             CastSpellByName(mainSpell)
         end
 
-        local cdTime = 1/3
         if SpellReady("Whirlwind") and myRage >= 25 then
-            if mainSpellCD > cdTime and not IsExcludedWW() then
+            if mainSpellCD > 0.33 and not IsExcludedWW() then
                 CastSpellByName("Whirlwind")
             end
         end
@@ -383,7 +382,7 @@ local function WarriorDPSSingleRotation(myRage)
         CastSpellByName("Hamstring")
     end
 
-    if myRage >= 55 then
+    if myRage >= 54 then
         CastSpellByName("Heroic Strike")
     end
 end
@@ -625,25 +624,22 @@ local function WarriorDPSMultiRotation(myRage)
         return
     end
 
-    if InMeleeRange() then
-        if SpellReady("Whirlwind") and myRage >= 20 then        
-            CastSpellByName("Whirlwind")
-        end
-
-        local cdTime = 1/3
-        if SpellReady(mainSpell) and myRage >= 30 then
-            if wwSpellCD > cdTime then
-                CastSpellByName(mainSpell)
-            end
-        end
+    if InMeleeRange() and SpellReady("Whirlwind") and myRage >= 25 then        
+        CastSpellByName("Whirlwind")
     end
 
-    if Faction.IsHorde() and canUseHam and myRage >= 84 then
+    if Faction.IsHorde() and canUseHam and myRage >= 89 then
         CastSpellByName("Hamstring")
     end
 
-    if not SpellReady(mainSpell) and myRage >= 23 then
+    if myRage >= 25 then
         CastSpellByName("Cleave")
+    end
+
+    if InMeleeRange() and SpellReady(mainSpell) and myRage >= 30 then
+        if wwSpellCD > 0.33 then
+            CastSpellByName(mainSpell)
+        end
     end
 end
 
