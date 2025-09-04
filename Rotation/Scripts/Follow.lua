@@ -132,6 +132,10 @@ function mb_casterFollow()
         return
     end
 
+	if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
+		CastSpellByName("Life Tap(Rank 1)")
+	end
+
 	if ImFocus() then
 		return
 	end

@@ -43,11 +43,10 @@ Event\OnUpdate.lua
 Event\OnEvent.lua
 
 Rotation\Scripts\Extra.lua
-Rotation\Scripts\Rotation.lua
-Rotation\Scripts\Follow.lua
 Rotation\Scripts\Totem.lua
 Rotation\Scripts\MageWater.lua
-Rotation\Scripts\HealAndTank.lua
+Rotation\Scripts\Follow.lua
+Rotation\Scripts\Rotation.lua
 
 Rotation\Druid.lua
 Rotation\Hunter.lua
