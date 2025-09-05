@@ -1170,7 +1170,7 @@ function mb_reportMyCooldowns()
    end
 
    if myClass == "Warrior" then
-       if MB_mySpecc == "BT" or MB_mySpecc == "MS" then
+       if MB_mySpecc == "BT" then
            local recklessnessReady = mb_spellReady("Recklessness")
            local deathWishReady = mb_spellReady("Death Wish")
            

@@ -85,7 +85,7 @@ end
 function mb_imMeleeDPS()
     if myClass == "Rogue" then
         return true
-    elseif myClass == "Warrior" and (MB_mySpecc == "MS" or MB_mySpecc == "BT") then
+    elseif myClass == "Warrior" and MB_mySpecc == "BT" then
         return true
     end
     return false
