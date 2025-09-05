@@ -1174,3 +1174,46 @@ function Warrior:HasShield()
 		return false
 	end
 end
+
+--[####################################################################################################]--
+--[########################################## Helper Code! ############################################]--
+--[####################################################################################################]--
+
+function Warrior:BattleSingle(myRage)
+
+    if not WarriorIsBattle() then
+        WarriorSetBattle()
+        return
+    end
+
+    if not UnitName("target") then
+        return
+    end
+
+    AutoAttack()
+
+    if SpellReady("Bloodrage") and myRage < 15 then        
+        CastSpellByName("Bloodrage")
+    end
+
+    Warrior:BattleShout(myRage)
+    Warrior:UseTANKCooldowns(myRage)
+    Warrior:Execute(myRage)
+    Warrior:BattleSingleRotation(myRage)
+end
+
+function Warrior:BattleSingleRotation(myRage)
+    if InMeleeRange() then
+        if SpellReady("Bloodthirst") and myRage >= 30 then    
+            CastSpellByName("Bloodthirst")
+        end
+
+        if SpellReady("Overpower") and myRage >= 5 then        
+            CastSpellByName("Overpower")
+        end
+    end
+
+    if myRage >= 49 then
+        CastSpellByName("Heroic Strike")
+    end
+end
