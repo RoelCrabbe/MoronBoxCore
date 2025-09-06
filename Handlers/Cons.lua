@@ -470,7 +470,7 @@ function mb_buyReagentsAndConsumables()
                 if item == "Symbol of Kings" then
                     myNeededItems = math.floor(myNeededItems / 20)
                 end
-                
+
                 for itemID = 1, GetMerchantNumItems() do
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then

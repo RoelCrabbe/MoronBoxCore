@@ -251,7 +251,8 @@ MB_buffingCounterPaladin = 1
 
 MB_DMFWeek = { Active = false, Time = 0 }
 MB_MCEnter = { Active = false, Time = 0 }
-MB_TeleportMan = { Active = false, Time = 0 }
+MB_teleportMan = { Active = false, Time = 0 }
+MB_summonRag = { Active = false, Time = 0 }
 
 MB_tradeOpen = nil
 MB_tradeOpenOnUpdate = { Active = false, Time = 0 }

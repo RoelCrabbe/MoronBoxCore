@@ -127,14 +127,22 @@ function MMB:OnUpdate()
         end
     end
 
-    if MB_TeleportMan and MB_TeleportMan.Active and currentTime > MB_TeleportMan.Time then
-        MB_TeleportMan.Active = false
+    if MB_teleportMan and MB_teleportMan.Active and currentTime > MB_teleportMan.Time then
+        MB_teleportMan.Active = false
         local option1, _, option2, _, option3, _, option4 = GetGossipOptions()
 
         if option4 == "Raids" then
             SelectGossipOption(4)
         elseif option3 == "Molten Core" then
             SelectGossipOption(3)
+        end
+    end
+
+    if MB_summonRag and MB_summonRag.Active and currentTime > MB_summonRag.Time then
+        MB_summonRag.Active = false
+
+        if GetGossipOptions() then
+            SelectGossipOption(1)
         end
     end
     

@@ -164,7 +164,7 @@ function MMB:OnEvent()
     elseif (event == "GOSSIP_SHOW") then
         local targetName = UnitName("target")
         local currentTime = GetTime()
-        
+
         if targetName == "Sayge" then
             MB_DMFWeek.Active = true
             MB_DMFWeek.Time = currentTime + 0.2
@@ -172,8 +172,11 @@ function MMB:OnEvent()
             MB_MCEnter.Active = true
             MB_MCEnter.Time = currentTime + 0.2
 		elseif targetName == "Teleportman" then
-            MB_TeleportMan.Active = true
-            MB_TeleportMan.Time = currentTime + 0.2
+            MB_teleportMan.Active = true
+            MB_teleportMan.Time = currentTime + 0.2
+		elseif targetName == "Majordomo Executus" then
+			MB_summonRag.Active = true
+			MB_summonRag.Time = currentTime + 0.2
         elseif mb_reagentVendors() then
             MB_autoBuyReagents.Active = true    
             MB_autoBuyReagents.Time = currentTime + 0.2
@@ -183,7 +186,8 @@ function MMB:OnEvent()
 
         MB_DMFWeek.Active = false
         MB_MCEnter.Active = false
-		MB_TeleportMan.Active = false
+		MB_teleportMan.Active = false
+		MB_summonRag.Active = false
         MB_autoBuyReagents.Active = false
 
 	elseif (event == "TAXIMAP_OPENED") then
@@ -651,8 +655,11 @@ function MMB:OnEvent()
             MB_MCEnter.Active = true
             MB_MCEnter.Time = currentTime + 0.2
 		elseif targetName == "Teleportman" then
-            MB_TeleportMan.Active = true
-            MB_TeleportMan.Time = currentTime + 0.2
+            MB_teleportMan.Active = true
+            MB_teleportMan.Time = currentTime + 0.2
+		elseif targetName == "Majordomo Executus" then
+			MB_summonRag.Active = true
+			MB_summonRag.Time = currentTime + 0.2
         elseif mb_reagentVendors() then
             MB_autoBuyReagents.Active = true    
             MB_autoBuyReagents.Time = currentTime + 0.2
