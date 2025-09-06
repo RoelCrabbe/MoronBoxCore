@@ -471,7 +471,7 @@ function mb_buyReagentsAndConsumables()
                     myNeededItems = math.floor(myNeededItems / 20)
                 end
                 
-                for itemID = 1, 120  do
+                for itemID = 1, GetMerchantNumItems()  do
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then
                         if string.find(merchantItemLink, item) then
