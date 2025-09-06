@@ -69,6 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local AssistFocus = mb_assistFocus
 local AutoAssignBanishOnMoam = mb_autoAssignBanishOnMoam
 local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
@@ -118,6 +119,7 @@ local TakeFAP = mb_takeFAP
 local TakeLIP = mb_takeLIP
 local TankTarget = mb_tankTarget
 local UseTranquilizingShot = mb_useTranquilizingShot
+local UseSpeedRunPots = mb_useSpeedRunPots
 
 --[####################################################################################################]--
 --[####################################################################################################]--
