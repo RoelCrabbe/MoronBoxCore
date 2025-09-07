@@ -160,6 +160,9 @@ function mb_tankShoot()
 	end
 
 	if not ImTank() then
+		if myClass == "Shaman" then
+			mb_dropTotems()
+		end
 		return
 	end
 

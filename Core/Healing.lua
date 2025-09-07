@@ -639,9 +639,10 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_loathebHealing()
-   local HealerCounter = 1
+local HealerCounter = 1
    
+function mb_loathebHealing()
+
    if not MB_myLoathebHealer then
        return false
    end
@@ -650,7 +651,7 @@ function mb_loathebHealing()
    if not currentHealer then
        return false
    end
-   
+
    local currentHealerId = MBID[currentHealer]
    if not currentHealerId then
        return false
@@ -671,11 +672,11 @@ function mb_loathebHealing()
        return false
    end
    
-   mb_cdMessage("Current healer: "..nextHealer)
-   
    if myName ~= nextHealer then
        return false
    end
+
+   mb_cdMessage("Current healer: "..nextHealer)
    
    local mainTank = MB_myLoathebMainTank
    if not mainTank then

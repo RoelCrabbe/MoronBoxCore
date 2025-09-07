@@ -148,13 +148,13 @@ MB_myLoathebBoxStrategy = true
 MB_myLoathebShadowPotStrategy = true
 
 -- Tank and Paladin Assignments (REQUIRED)
-MB_myLoathebMainTank = "Klawss"
+MB_myLoathebMainTank = "Adolf"
 MB_myLoathebSealPaladin = "Bubblebumm" -- Seal of Light/Wisdom
 
 -- Healer Assignments (REQUIRED)
 MB_myLoathebHealer = {
     -- Priests
-    "Wiccana", "Nouveele", "Luxic", "Hms", "Murdrum", "Captivity",
+    "Midavellir", "Ayag", "Luxic", "Hms", "Murdrum", "Captivity",
     -- Paladins  
     "Bubblebumm", "Breachedhull", "Fatnun", "Candylane", "Adobe",
     -- Druids
