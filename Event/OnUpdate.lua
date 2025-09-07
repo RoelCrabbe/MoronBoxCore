@@ -105,7 +105,7 @@ function MMB:OnUpdate()
         end
 	end
     
-    if MB_DMFWeek and MB_DMFWeek.Active and currentTime > MB_DMFWeek.Time then
+    if MB_DMFWeek.Active and currentTime > MB_DMFWeek.Time then
         MB_DMFWeek.Active = false
         local option1, _, option2 = GetGossipOptions()
        
@@ -122,12 +122,13 @@ function MMB:OnUpdate()
     
     if MB_MCEnter.Active and currentTime > MB_MCEnter.Time then
         MB_MCEnter.Active = false
+
         if GetGossipOptions() == "Teleport me to the Molten Core" then              
             SelectGossipOption(1)
         end
     end
 
-    if MB_teleportMan and MB_teleportMan.Active and currentTime > MB_teleportMan.Time then
+    if MB_teleportMan.Active and currentTime > MB_teleportMan.Time then
         MB_teleportMan.Active = false
         local option1, _, option2, _, option3, _, option4 = GetGossipOptions()
 
@@ -138,7 +139,7 @@ function MMB:OnUpdate()
         end
     end
 
-    if MB_summonRag and MB_summonRag.Active and currentTime > MB_summonRag.Time then
+    if MB_summonRag.Active and currentTime > MB_summonRag.Time then
         MB_summonRag.Active = false
 
         if GetGossipOptions() then
@@ -170,7 +171,7 @@ function MMB:OnUpdate()
     end
     
     if MB_hunterFeign.Active and currentTime > MB_hunterFeign.Time then
-        RemoveFeignDeath()()
+        RemoveFeignDeath()
     end
 end
 
