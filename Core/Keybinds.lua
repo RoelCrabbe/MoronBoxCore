@@ -83,6 +83,7 @@ function mb_createBinds()
 	SetBinding("S", "MOVEBACKWARD") -- Backward.
 	SetBinding("Q", "STRAFELEFT") -- Left.
 	SetBinding("D", "STRAFERIGHT") -- Right.
+	SetBinding("DELETE", "TOGGLERUN") -- Fast Walk Toggle.
 
 	-- Extra's
 	SetBinding("SHIFT-V", "NAMEPLATES") -- Show all Nameplates.
