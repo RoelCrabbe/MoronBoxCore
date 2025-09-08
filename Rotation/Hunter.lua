@@ -181,7 +181,7 @@ local function HunterSingle()
 		SelfBuff("Aspect of the Hawk")  
 	end
 
-    if Instance.Naxx() and TankTarget("Gluth") then
+    if Instance.NAXX() and TankTarget("Gluth") then
 
 		Hunter:FreezingTrap()
     elseif Instance.AQ40() and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then

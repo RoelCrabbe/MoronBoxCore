@@ -788,7 +788,7 @@ local function DruidSingle()
         return
     end
 	
-    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()
@@ -1044,7 +1044,7 @@ local function DruidMulti()
         return
     end
 
-    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()

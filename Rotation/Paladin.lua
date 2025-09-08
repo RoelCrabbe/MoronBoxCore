@@ -382,7 +382,7 @@ local function PaladinSingle()
 	GetTarget()
 	PaladinCancelAuras()
 
-    if Instance.Naxx() and RaidIsPoisoned() and ImBusy() then
+    if Instance.NAXX() and RaidIsPoisoned() and ImBusy() then
 		if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
 			SpellStopCasting()
 		end

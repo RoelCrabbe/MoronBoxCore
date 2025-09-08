@@ -355,7 +355,7 @@ local function ShamanSingle()
 		return
 	end	
 
-	if Instance.Naxx() and TankTarget("Heigan the Unclean") then		 
+	if Instance.NAXX() and TankTarget("Heigan the Unclean") then		 
 		if MeleeDPSInParty() and PartyIsDiseased() then			
 			if ImBusy() then			
 				SpellStopCasting()

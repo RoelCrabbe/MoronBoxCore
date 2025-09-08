@@ -638,7 +638,7 @@ local function PriestSingle()
         end
 	end
 
-	if Instance.Naxx() then
+	if Instance.NAXX() then
 
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
@@ -855,13 +855,13 @@ local function PriestSetup()
 	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
 		MultiBuff("Prayer of Fortitude")
 
-		if Instance.Naxx() or Instance.AQ40() then
+		if Instance.NAXX() or Instance.AQ40() then
 			if KnowSpell("Prayer of Spirit") then				
 				MultiBuff("Prayer of Spirit")
 			end
 		end
 
-		if Instance.Naxx() and not IsAtInstructorRazuvious() then										
+		if Instance.NAXX() and not IsAtInstructorRazuvious() then										
 			MultiBuff("Prayer of Shadow Protection")
 		end
 

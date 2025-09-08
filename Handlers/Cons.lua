@@ -587,7 +587,7 @@ function mb_useFirePotsOnFaerlina()
 		return
 	end
 
-    if Instance.Naxx() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
+    if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
@@ -603,7 +603,7 @@ function mb_useShadowPotsOnLoatheb()
 		return
 	end
 
-    if Instance.Naxx() and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
+    if Instance.NAXX() and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
         return
     end
 

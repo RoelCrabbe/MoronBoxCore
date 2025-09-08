@@ -121,7 +121,7 @@ function mb_GTFO()
     end
 		
     if not HaveAggro() then
-        if Instance.Naxx() and MB_myGrobbulusBoxStrategy then
+        if Instance.NAXX() and MB_myGrobbulusBoxStrategy then
             if IsAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
                 if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
                     if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then

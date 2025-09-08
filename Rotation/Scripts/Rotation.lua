@@ -151,7 +151,7 @@ local WarlockCounter = {
 --[####################################################################################################]--
 
 local function SpecialRotation()
-    if Instance.Naxx() and HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
+    if Instance.NAXX() and HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()
@@ -581,7 +581,7 @@ local function SpecialHealAndTankSituation(SingleRotation)
             end
 		end
 
-	elseif Instance.Naxx() and myClass == "Priest" then
+	elseif Instance.NAXX() and myClass == "Priest" then
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()

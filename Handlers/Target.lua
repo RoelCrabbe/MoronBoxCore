@@ -732,7 +732,7 @@ function mb_getTarget()
 		return
 	end
 
-	if Instance.Naxx() then
+	if Instance.NAXX() then
 		if HandleNAXXTargetingPostFocus() then
 			return
 		end
