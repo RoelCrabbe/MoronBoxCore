@@ -42,6 +42,8 @@ Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
 
+Encounters\Loatheb.lua
+
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua
 Rotation\Scripts\MageWater.lua

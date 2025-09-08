@@ -89,6 +89,7 @@ local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local IsAtRazorgore = mb_isAtRazorgore
+local IsAtLoatheb = mb_isAtLoatheb
 local IsDruidShapeShifted = mb_isDruidShapeShifted
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
 local ManaDown = mb_manaDown
@@ -588,6 +589,7 @@ function mb_useFirePotsOnFaerlina()
 	end
 
     if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
+    if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
@@ -603,7 +605,7 @@ function mb_useShadowPotsOnLoatheb()
 		return
 	end
 
-    if Instance.NAXX() and not (TankTarget("Loatheb") or UnitName("target") == "Loatheb") then
+    if Instance.NAXX() and not IsAtLoatheb() then
         return
     end
 
@@ -688,6 +690,10 @@ local function MeleeSpeedRunPots()
     if ImTank() then
         UsePotionsWhenPossible("Gift of Arthas")
     end
+
+    if Instance.NAXX() and IsAtLoatheb() then
+        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    end
 end
 
 local function CasterSpeedRunPots()
@@ -695,6 +701,10 @@ local function CasterSpeedRunPots()
     UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
     UsePotionsWhenPossible("Greater Arcane Elixir")
+
+    if Instance.NAXX() and IsAtLoatheb() then
+        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    end
 
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
@@ -713,6 +723,10 @@ local function HealerSpeedRunPots()
     UsePotionsWhenPossible("Swiftness of Zanza")
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")
+
+    if Instance.NAXX() and IsAtLoatheb() then
+        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    end
 end
 
 function mb_useSpeedRunPots()

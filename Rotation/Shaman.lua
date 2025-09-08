@@ -72,6 +72,7 @@ if myClass ~= "Shaman" then return end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local AutoAttack = mb_autoAttack
 local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
 local CasterTrinkets = mb_casterTrinkets
 local CastSpellOrWand = mb_castSpellOrWand
@@ -96,6 +97,7 @@ local ImHealer = mb_imHealer
 local InCombat = mb_inCombat
 local InstructorRazAddsHeal = mb_instructorRazAddsHeal
 local IsAlive = mb_isAlive
+local LoathebHealing = mb_loathebHealing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
 local MeleeDPSInParty = mb_meleeDPSInParty
@@ -540,3 +542,71 @@ function Shaman:Cooldowns()
     HealerTrinkets()
     CasterTrinkets()
 end
+
+function Shaman:UseAttack()
+	if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    GetTarget()
+
+	if MB_mySpeedRunStrategy and SpellReady("Lightning Bolt") then
+		CoolDownCast("Lightning Bolt", 6)
+		return
+	end
+
+    AutoAttack()
+end
+
+--[####################################################################################################]--
+--[######################################### LOATHEB Code! ############################################]--
+--[####################################################################################################]--
+
+local function ShamanLoathebHeal()
+
+	GetTarget()
+	ShamanCancelAuras()
+
+	if PartyIsPoisoned() then
+		if ImBusy() then		
+			SpellStopCasting()
+			return
+		end
+
+		CastSpellByName("Poison Cleansing Totem")
+		CoolDownCast("Poison Cleansing Totem", 6)
+		return
+	end
+
+	if InCombat("player") then
+		TakeManaPotionAndRunes()
+
+        if SpellReady("Mana Tide Totem") 
+            and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
+            
+            local _, partyManaDown = PartyMana()
+            local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
+            local myManaDown = ManaDown()
+
+            if (avgManaDown > 1500 and myManaDown > 1050)
+                or (myManaDown > 1500) then
+                CastSpellByName("Mana Tide Totem")
+                CoolDownCast("Mana Tide Totem", 13)
+            end
+        end
+
+        if ManaDown("player") > 600 then
+            Shaman:Cooldowns()
+        end
+	end
+
+	DropTotems()
+
+	if LoathebHealing() then
+		return
+	end
+
+	Shaman:UseAttack()
+end
+
+MB_myLoathebList["Shaman"] = ShamanLoathebHeal

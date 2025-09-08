@@ -857,7 +857,7 @@ function mb_tankTargetInSet(mobSet)
     return mobSet[tankTargetName] == true
 end
 
-function mb_playerWithAgroFromSpecificTarget(target, player)
+function mb_playerWithAggroFromSpecificTarget(target, player)
     local playerId = MBID[player]
     if not playerId then
         return false
@@ -1147,75 +1147,75 @@ function mb_isAtMonstrosity()
 end
 
 function mb_isAtGrobbulus()
-   local targetName = UnitName("target")
-   
-   if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankOne) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankTwo) then
-       return true
-   end
-   
-   if mb_tankTarget("Grobbulus") then
-       return true
-   end
-   
-   if mb_tankTarget("Fallout Slime") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Grobbulus" then
-       return true
-   end
-   
-   if targetName == "Fallout Slime" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankOne) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankTwo) then
+		return true
+	end
+	
+	if mb_tankTarget("Grobbulus") then
+		return true
+	end
+	
+	if mb_tankTarget("Fallout Slime") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Grobbulus" then
+		return true
+	end
+	
+	if targetName == "Fallout Slime" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtLoatheb()
    local targetName = UnitName("target")
    
-   if mb_targetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
-       return true
-   end
+	if mb_targetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
+		return true
+	end
    
-   if mb_targetFromSpecificPlayer("Spore", MB_myLoathebMainTank) then
-       return true
-   end
+	if mb_targetFromSpecificPlayer("Spore", MB_myLoathebMainTank) then
+		return true
+	end
    
-   if mb_tankTarget("Loatheb") then
-       return true
-   end
-   
-   if mb_tankTarget("Spore") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Loatheb" then
-       return true
-   end
-   
-   if targetName == "Spore" then
-       return true
-   end
-   
-   return false
+	if mb_tankTarget("Loatheb") then
+		return true
+	end
+	
+	if mb_tankTarget("Spore") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Loatheb" then
+		return true
+	end
+	
+	if targetName == "Spore" then
+		return true
+	end
+	
+	return false
 end
 
 local function IsOrbControlled()
@@ -1228,256 +1228,256 @@ local function IsOrbControlled()
 end
 
 function mb_isAtRazorgorePhase()
-   local targetName = UnitName("target")
-   
-   if IsOrbControlled() then
-       return true
-   end
-   
-   if mb_tankTarget("Blackwing Mage") then
-       return true
-   end
-   
-   if mb_tankTarget("Blackwing Legionnaire") then
-       return true
-   end
-   
-   if mb_tankTarget("Death Talon Dragonspawn") then
-       return true
-   end
-   
-   local leftTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
-   if mb_targetFromSpecificPlayer("Blackwing Mage", leftTank) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Blackwing Legionnaire", leftTank) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", leftTank) then
-       return true
-   end
-   
-   local rightTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
-   if mb_targetFromSpecificPlayer("Blackwing Mage", rightTank) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Blackwing Legionnaire", rightTank) then
-       return true
-   end
-   
-   if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", rightTank) then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Blackwing Mage" then
-       return true
-   end
-   
-   if targetName == "Blackwing Legionnaire" then
-       return true
-   end
-   
-   if targetName == "Death Talon Dragonspawn" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if IsOrbControlled() then
+		return true
+	end
+	
+	if mb_tankTarget("Blackwing Mage") then
+		return true
+	end
+	
+	if mb_tankTarget("Blackwing Legionnaire") then
+		return true
+	end
+	
+	if mb_tankTarget("Death Talon Dragonspawn") then
+		return true
+	end
+	
+	local leftTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+	if mb_targetFromSpecificPlayer("Blackwing Mage", leftTank) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Blackwing Legionnaire", leftTank) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", leftTank) then
+		return true
+	end
+	
+	local rightTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+	if mb_targetFromSpecificPlayer("Blackwing Mage", rightTank) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Blackwing Legionnaire", rightTank) then
+		return true
+	end
+	
+	if mb_targetFromSpecificPlayer("Death Talon Dragonspawn", rightTank) then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Blackwing Mage" then
+		return true
+	end
+	
+	if targetName == "Blackwing Legionnaire" then
+		return true
+	end
+	
+	if targetName == "Death Talon Dragonspawn" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtInstructorRazuvious()
-   local targetName = UnitName("target")
-   
-   if mb_tankTarget("Instructor Razuvious") then
-       return true
-   end
-   
-   if mb_tankTarget("Deathknight Understudy") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Instructor Razuvious" then
-       return true
-   end
-   
-   if targetName == "Deathknight Understudy" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_tankTarget("Instructor Razuvious") then
+		return true
+	end
+	
+	if mb_tankTarget("Deathknight Understudy") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Instructor Razuvious" then
+		return true
+	end
+	
+	if targetName == "Deathknight Understudy" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtSartura()
-   local targetName = UnitName("target")
-   
-   if mb_tankTarget("Battleguard Sartura") then
-       return true
-   end
-   
-   if mb_tankTarget("Sartura's Royal Guard") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Battleguard Sartura" then
-       return true
-   end
-   
-   if targetName == "Sartura's Royal Guard" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_tankTarget("Battleguard Sartura") then
+		return true
+	end
+	
+	if mb_tankTarget("Sartura's Royal Guard") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Battleguard Sartura" then
+		return true
+	end
+	
+	if targetName == "Sartura's Royal Guard" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtNefarianPhase()
-   local targetName = UnitName("target")
-   
-   if mb_tankTarget("Red Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Blue Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Green Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Black Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Bronze Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Chromatic Drakonid") then
-       return true
-   end
-   
-   if mb_tankTarget("Lord Victor Nefarius") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Red Drakonid" then
-       return true
-   end
-   
-   if targetName == "Blue Drakonid" then
-       return true
-   end
-   
-   if targetName == "Green Drakonid" then
-       return true
-   end
-   
-   if targetName == "Black Drakonid" then
-       return true
-   end
-   
-   if targetName == "Bronze Drakonid" then
-       return true
-   end
-   
-   if targetName == "Chromatic Drakonid" then
-       return true
-   end
-   
-   if targetName == "Lord Victor Nefarius" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_tankTarget("Red Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Blue Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Green Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Black Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Bronze Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Chromatic Drakonid") then
+		return true
+	end
+	
+	if mb_tankTarget("Lord Victor Nefarius") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Red Drakonid" then
+		return true
+	end
+	
+	if targetName == "Blue Drakonid" then
+		return true
+	end
+	
+	if targetName == "Green Drakonid" then
+		return true
+	end
+	
+	if targetName == "Black Drakonid" then
+		return true
+	end
+	
+	if targetName == "Bronze Drakonid" then
+		return true
+	end
+	
+	if targetName == "Chromatic Drakonid" then
+		return true
+	end
+	
+	if targetName == "Lord Victor Nefarius" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtSkeram()
-   local targetName = UnitName("target")
-   
-   if mb_tankTarget("The Prophet Skeram") then
-       return true
-   end
-   
-   local leftTank = mb_returnPlayerInRaidFromTable(MB_mySkeramLeftTank)
-   if mb_targetFromSpecificPlayer("The Prophet Skeram", leftTank) then
-       return true
-   end
-   
-   local middleTank = mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank)
-   if mb_targetFromSpecificPlayer("The Prophet Skeram", middleTank) then
-       return true
-   end
-   
-   local rightTank = mb_returnPlayerInRaidFromTable(MB_mySkeramRightTank)
-   if mb_targetFromSpecificPlayer("The Prophet Skeram", rightTank) then
-       return true
-   end
-   
-   if targetName and targetName == "The Prophet Skeram" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_tankTarget("The Prophet Skeram") then
+		return true
+	end
+	
+	local leftTank = mb_returnPlayerInRaidFromTable(MB_mySkeramLeftTank)
+	if mb_targetFromSpecificPlayer("The Prophet Skeram", leftTank) then
+		return true
+	end
+	
+	local middleTank = mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank)
+	if mb_targetFromSpecificPlayer("The Prophet Skeram", middleTank) then
+		return true
+	end
+	
+	local rightTank = mb_returnPlayerInRaidFromTable(MB_mySkeramRightTank)
+	if mb_targetFromSpecificPlayer("The Prophet Skeram", rightTank) then
+		return true
+	end
+	
+	if targetName and targetName == "The Prophet Skeram" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_isAtTwinsEmps()
-   local targetName = UnitName("target")
-   
-   if mb_tankTarget("Qiraji Scarab") then
-       return true
-   end
-   
-   if mb_tankTarget("Qiraji Scorpion") then
-       return true
-   end
-   
-   if mb_tankTarget("Emperor Vek'lor") then
-       return true
-   end
-   
-   if mb_tankTarget("Emperor Vek'nilash") then
-       return true
-   end
-   
-   if not targetName then
-       return false
-   end
-   
-   if targetName == "Qiraji Scarab" then
-       return true
-   end
-   
-   if targetName == "Qiraji Scorpion" then
-       return true
-   end
-   
-   if targetName == "Emperor Vek'lor" then
-       return true
-   end
-   
-   if targetName == "Emperor Vek'nilash" then
-       return true
-   end
-   
-   return false
+	local targetName = UnitName("target")
+	
+	if mb_tankTarget("Qiraji Scarab") then
+		return true
+	end
+	
+	if mb_tankTarget("Qiraji Scorpion") then
+		return true
+	end
+	
+	if mb_tankTarget("Emperor Vek'lor") then
+		return true
+	end
+	
+	if mb_tankTarget("Emperor Vek'nilash") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Qiraji Scarab" then
+		return true
+	end
+	
+	if targetName == "Qiraji Scorpion" then
+		return true
+	end
+	
+	if targetName == "Emperor Vek'lor" then
+		return true
+	end
+	
+	if targetName == "Emperor Vek'nilash" then
+		return true
+	end
+	
+	return false
 end
 
 function mb_offTank()

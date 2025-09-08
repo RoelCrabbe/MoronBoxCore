@@ -1054,10 +1054,11 @@ end
 
 local function PriestLoathebHeal()
 
-	if LoathebHealing() then
-		return
-	end
-	
+	GetTarget()
+	PriestCancelAuras()
+
+	Priest:Fade()
+
 	if InCombat("player") then
 		TakeManaPotionAndRunes()
 
@@ -1068,15 +1069,10 @@ local function PriestLoathebHeal()
 		if Priest:PowerInfusion() then
             return
         end
+	end
 
-		if Priest:ManaDrain() then
-            return
-        end
-
-		if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then			
-			CastSpellByName("Desperate Prayer")
-			return
-		end
+	if LoathebHealing() then
+		return
 	end
 
 	Priest:UseWand()
