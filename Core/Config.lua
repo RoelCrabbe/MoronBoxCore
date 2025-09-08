@@ -121,6 +121,7 @@ MB_sortingBags = { -- Automatically sorts bags and bank if enabled
 MB_tankList = { -- Add your tanks to this list for the login tank list
     -- Horde
     "Moron",
+	"Kungen",
     "Suecia",
     "Ajlano",
     "Almisael",

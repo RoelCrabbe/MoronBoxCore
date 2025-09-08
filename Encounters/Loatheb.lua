@@ -88,16 +88,16 @@ MB_myLoathebBoxStrategy = true
 MB_myLoathebShadowPotStrategy = true
 
 -- Tank and Paladin Assignments (REQUIRED)
-MB_myLoathebMainTank = "Moron"
+MB_myLoathebMainTank = "Kungen"
 MB_myLoathebHealerIndex = 1
-MB_myLoathebHealerOverheal = 0.88
+MB_myLoathebHealerOverheal = 0.85
 
 -- Healer Assignments (REQUIRED)
 MB_myLoathebHealer = {
     -- Priests
     "Liket", "Blaidzy", "Cyal", "Bonita",
     -- Shaman
-    "Shamuk", "Hurtek", "Rockon", "Slaver",
+    "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", "Chimando", "Shaitan", "Lillifee",
     -- Druids
     "Pyqmi"
 }
@@ -238,7 +238,7 @@ function LOA:OnEvent()
 
         elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
             if (arg2 == "ALL_DEBUFFED" and mb_imFocus()) then
-                mb_cdMessage("EMERGENCY: All healers debuffed!")
+                mb_cdMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>")
             end
         end
     end
@@ -251,6 +251,7 @@ LOA:SetScript("OnEvent", LOA.OnEvent)
 --[####################################################################################################]--
 
 function mb_loathebHealing()
+
     if ShouldBroadcast() then
         BroadcastHealer()
         return false

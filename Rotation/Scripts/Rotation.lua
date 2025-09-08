@@ -99,6 +99,7 @@ local ImMeleeDPS = mb_imMeleeDPS
 local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
+local IsAtLoatheb = mb_isAtLoatheb
 local IsAtNefarianPhase = mb_isAtNefarianPhase
 local IsAtRazorgore = mb_isAtRazorgore
 local IsAtSkeram = mb_isAtSkeram
@@ -120,6 +121,7 @@ local TakeLIP = mb_takeLIP
 local TankTarget = mb_tankTarget
 local UseTranquilizingShot = mb_useTranquilizingShot
 local UseSpeedRunPots = mb_useSpeedRunPots
+local UseShadowPotsOnLoatheb = mb_useShadowPotsOnLoatheb
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -207,6 +209,14 @@ local function CheckWarStomp()
     CastSpellByName("War Stomp")
 end
 
+local function ExecuteRotation(rotation, context)
+    if rotation and type(rotation) == "function" then
+        rotation()
+    else
+        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+    end
+end
+
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
@@ -239,22 +249,23 @@ function mb_single()
     end
 
     CheckWarStomp()
-
-    if Instance.NAXX() and ImHealer() and TankTarget("Loatheb") and MB_myLoathebBoxStrategy then
-        local SingleLoathebRotation = MB_myLoathebList[myClass]
-        if SingleLoathebRotation and type(SingleLoathebRotation) == "function" then
-            SingleLoathebRotation()
-        else
-            CdMessage("I don\'t know what to do.", 500)
-        end
-        return
-    end
+    UseShadowPotsOnLoatheb()
 
     local SingleRotation = MB_mySingleList[myClass]
-    if SingleRotation and type(SingleRotation) == "function" then
-        SingleRotation()
+
+    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if ImHealer() then
+            local SingleLoathebRotation = MB_myLoathebList[myClass]
+            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing")
+        elseif HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
+        elseif ImTank() then
+            ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
+        elseif ImRangedDPS() or ImMeleeDPS() then
+            ExecuteRotation(SingleRotation, "Loatheb SINGLE")
+        end
     else
-        CdMessage("I don\'t know what to do.", 500)
+        ExecuteRotation(SingleRotation, "Default SINGLE")
     end
 end
 
@@ -291,12 +302,23 @@ function mb_multi()
     end
 
     CheckWarStomp()
+    UseShadowPotsOnLoatheb()
 
     local MultiRotation = MB_myMultiList[myClass]
-    if MultiRotation and type(MultiRotation) == "function" then
-        MultiRotation()
+
+    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if ImHealer() then
+            local SingleLoathebRotation = MB_myLoathebList[myClass]
+            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing")
+        elseif HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            ExecuteRotation(MultiRotation, "Fungal Bloom MULTI")
+        elseif ImTank() then
+            ExecuteRotation(MultiRotation, "Loatheb Tank MULTI")
+        elseif ImRangedDPS() or ImMeleeDPS() then
+            ExecuteRotation(MultiRotation, "Loatheb MULTI")
+        end
     else
-        CdMessage("I don\'t know what to do.", 500)
+        ExecuteRotation(MultiRotation, "Default MULTI")
     end
 end
 
@@ -333,12 +355,23 @@ function mb_AOE()
     end
 
     CheckWarStomp()
+    UseShadowPotsOnLoatheb()
 
     local AOERotation = MB_myAOEList[myClass]
-    if AOERotation and type(AOERotation) == "function" then
-        AOERotation()
+
+    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if ImHealer() then
+            local SingleLoathebRotation = MB_myLoathebList[myClass]
+            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing")
+        elseif HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            ExecuteRotation(AOERotation, "Fungal Bloom AOE")
+        elseif ImTank() then
+            ExecuteRotation(AOERotation, "Loatheb Tank AOE")
+        elseif ImRangedDPS() or ImMeleeDPS() then
+            ExecuteRotation(AOERotation, "Loatheb AOE")
+        end
     else
-        CdMessage("I don\'t know what to do.", 500)
+        ExecuteRotation(AOERotation, "Default AOE")
     end
 end
 
@@ -502,7 +535,7 @@ local function SpecialHealAndTankClass()
     return false
 end
 
-local function SpecialHealAndTankSituation(SingleRotation)
+local function SpecialHealAndTankSituation()
 	if Instance.ZG() and myClass == "Mage" and TankTarget("Hakkar") then		
         if HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
@@ -562,7 +595,8 @@ local function SpecialHealAndTankSituation(SingleRotation)
 		
 		elseif myClass == "Warlock" and IsAtTwinsEmps() and MB_myTwinsBoxStrategy then
             if MyNameInTable(MB_myTwinsWarlockTank) then
-                SingleRotation()
+                local SingleRotation = MB_mySingleList[myClass]
+                ExecuteRotation(SingleRotation, "Twins Tank SINGLE")
             end
 		end
 
@@ -605,12 +639,6 @@ function mb_healAndTank()
         return
     end
 
-    local SingleRotation = MB_mySingleList[myClass]
-    if not (SingleRotation and type(SingleRotation) == "function") then
-        CdMessage("I don\'t know what to do.", 500)
-        return
-    end
-
 	GetTarget()
 
     if HasBuffNamed("Mind Control", "player") then
@@ -638,7 +666,7 @@ function mb_healAndTank()
         return
     end
 
-    if SpecialHealAndTankSituation(SingleRotation) then
+    if SpecialHealAndTankSituation() then
         return
     end
 
@@ -658,18 +686,34 @@ function mb_healAndTank()
         end
 	end
 
-	if ImTank() then
-        SingleRotation()
+    UseShadowPotsOnLoatheb()
 
-	elseif ImHealer() then
-		if myClass == "Druid" then
-			if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then			
-				CastSpellByName("Hibernate(Rank 1)")
-				return
-			end
+    local SingleRotation = MB_mySingleList[myClass]
+
+    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if ImHealer() then
+            local SingleLoathebRotation = MB_myLoathebList[myClass]
+            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing")
+        elseif HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
+        elseif ImTank() then
+            ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
+        elseif ImRangedDPS() or ImMeleeDPS() then
+            ExecuteRotation(SingleRotation, "Loatheb DPS SINGLE")
         end
+    else
+        if ImTank() then
+            ExecuteRotation(SingleRotation, "Tank&Heal SINGLE")
+        elseif ImHealer() then
+            if myClass == "Druid" then
+                if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then			
+                    CastSpellByName("Hibernate(Rank 1)")
+                    return
+                end
+            end
 
-        SingleRotation()		
-	end
+            ExecuteRotation(SingleRotation, "Tank&Heal SINGLE")
+        end
+    end
 end
 
