@@ -788,7 +788,7 @@ local function DruidSingle()
         return
     end
 	
-    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()
@@ -1044,7 +1044,7 @@ local function DruidMulti()
         return
     end
 
-    if Instance.Naxx() and UnitFactionGroup("player") == "Alliance" then
+    if Instance.NAXX() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
                 SpellStopCasting()
@@ -1289,16 +1289,30 @@ function Druid:Taunt()
 	end
 end
 
+function Druid:UseAttack()
+	if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    GetTarget()
+
+	if MB_mySpeedRunStrategy and SpellReady("Starfire") then
+		CoolDownCast("Starfire", 6)
+		return
+	end
+
+    AutoAttack()
+end
+
 --[####################################################################################################]--
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
 local function DruidLoathebHeal()
-
-	if LoathebHealing() then
-		return
-	end
 	
+    GetTarget()
+    DruidCancelAuras()
+
 	if InCombat("player") then
 		Druid:HealerDebuffs()
 		Druid:Innervate()
@@ -1310,7 +1324,11 @@ local function DruidLoathebHeal()
         end
 	end
 
-	CoolDownCast("Starfire", 8)
+    if LoathebHealing() then
+		return
+	end
+
+	Druid:UseAttack()
 end
 
 MB_myLoathebList["Druid"] = DruidLoathebHeal

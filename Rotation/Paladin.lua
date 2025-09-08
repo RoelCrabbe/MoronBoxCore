@@ -382,7 +382,7 @@ local function PaladinSingle()
 	GetTarget()
 	PaladinCancelAuras()
 
-    if Instance.Naxx() and RaidIsPoisoned() and ImBusy() then
+    if Instance.NAXX() and RaidIsPoisoned() and ImBusy() then
 		if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
 			SpellStopCasting()
 		end
@@ -580,44 +580,3 @@ function Paladin:SealWisdom()
 
 	CastSpellByName("Judgement")
 end
-
---[####################################################################################################]--
---[######################################### LOATHEB Code! ############################################]--
---[####################################################################################################]--
-
-local function PaladinLoathebHeal()
-
-	if LoathebHealing() then
-		return
-	end
-
-    AssistByName(MB_myLoathebMainTank)
-	
-	if InCombat("player") then	
-		MB_mySetupList["Paladin"]()
-
-		if HealthPct("player") < 0.2 then			
-			SelfBuff("Divine Shield")
-			return 
-		end
-
-		TakeManaPotionAndRunes()
-
-		if ManaDown("player") > 600 then
-            Paladin:Cooldowns()
-        end
-	end
-
-    AutoAttack()
-
-    if myName == MB_myLoathebSealPaladin and not HasBuffOrDebuff("Seal of Light", "target", "debuff") then
-		Paladin:SealLight()
-		return
-	end
-
-    if not HasBuffOrDebuff("Seal of Righteousness", "player", "buff") then
-		CastSpellByName("Seal of Righteousness")
-	end
-end
-
-MB_myLoathebList["Paladin"] = PaladinLoathebHeal

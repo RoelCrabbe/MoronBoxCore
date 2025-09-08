@@ -943,7 +943,7 @@ function Warrior:TANKSurvival()
         return
     end
 
-    if Instance.Naxx() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+    if Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
         if HealthPct("target") <= 0.05 then
             Warrior:BigTANKCooldowns()
         end
@@ -1100,7 +1100,7 @@ function Warrior:TankMulti(myRage)
     Warrior:BattleShout(myRage)
     Warrior:UseTANKCooldowns(myRage)
 
-    if Instance.Naxx() and IsAtNoth() then
+    if Instance.NAXX() and IsAtNoth() then
         Warrior:TANKSingleRotation(myRage)
         return
     elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then

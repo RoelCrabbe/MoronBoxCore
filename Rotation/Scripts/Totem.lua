@@ -93,7 +93,7 @@ local TankTargetHealth = mb_tankTargetHealth
 
 local function ChooseAirTotem()
 
-    if Instance.Naxx() then
+    if Instance.NAXX() then
         if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
            
             if IsInGroup(MB_myFirstPWSoaker) or IsInGroup(MB_mySecondPWSoaker) or IsInGroup(MB_myThirdPWSoaker) then                

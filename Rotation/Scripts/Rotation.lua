@@ -151,7 +151,7 @@ local WarlockCounter = {
 --[####################################################################################################]--
 
 local function SpecialRotation()
-    if Instance.Naxx() and HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
+    if Instance.NAXX() and HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()
@@ -240,11 +240,14 @@ function mb_single()
 
     CheckWarStomp()
 
-    if ImMeleeDPS() then
-        local aBuffs = AmountOfBuffs()
-        if aBuffs > 28 and InCombat("player") then
-            CdMessage("Nearing Buffcap!", 500)
+    if Instance.NAXX() and ImHealer() and TankTarget("Loatheb") and MB_myLoathebBoxStrategy then
+        local SingleLoathebRotation = MB_myLoathebList[myClass]
+        if SingleLoathebRotation and type(SingleLoathebRotation) == "function" then
+            SingleLoathebRotation()
+        else
+            CdMessage("I don\'t know what to do.", 500)
         end
+        return
     end
 
     local SingleRotation = MB_mySingleList[myClass]
@@ -581,7 +584,7 @@ local function SpecialHealAndTankSituation(SingleRotation)
             end
 		end
 
-	elseif Instance.Naxx() and myClass == "Priest" then
+	elseif Instance.NAXX() and myClass == "Priest" then
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()

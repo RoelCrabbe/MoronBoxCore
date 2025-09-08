@@ -91,7 +91,7 @@ MB_myPreCastList = {}
 MB_myLoathebList = {}
 
 Instance = {
-    Naxx = function() return GetRealZoneText() == "Naxxramas" end,
+    NAXX = function() return GetRealZoneText() == "Naxxramas" end,
     AQ40 = function() return GetRealZoneText() == "Ahn'Qiraj" end,
     AQ20 = function() return GetRealZoneText() == "The Ruins of Ahn'Qiraj" end,
     MC   = function() return GetRealZoneText() == "Molten Core" end,
@@ -102,7 +102,7 @@ Instance = {
         return UnitClassification("target") == "worldboss"
     end,    
     IsInRaid = function(self)
-        return self.Naxx() or self.AQ40() or self.AQ20() or self.MC() or self.BWL() or self.ONY() or self.ZG()
+        return self.NAXX() or self.AQ40() or self.AQ20() or self.MC() or self.BWL() or self.ONY() or self.ZG()
     end
 }
 

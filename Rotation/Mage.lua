@@ -632,7 +632,7 @@ local function MageAOE()
     if Instance.BWL() and GetSubZoneText() == "Halls of Strife" then        
         CastSpellByName("Arcane Explosion(Rank 3)") 
         return
-    elseif Instance.Naxx() and TankTarget("Maexxna") then        
+    elseif Instance.NAXX() and TankTarget("Maexxna") then        
         CastSpellByName("Arcane Explosion(Rank 3)") 
         return
     end
