@@ -698,8 +698,6 @@ function mb_healAndTank()
             ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
         elseif ImTank() then
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
-        elseif ImRangedDPS() or ImMeleeDPS() then
-            ExecuteRotation(SingleRotation, "Loatheb DPS SINGLE")
         end
     else
         if ImTank() then
