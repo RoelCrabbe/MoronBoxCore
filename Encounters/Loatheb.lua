@@ -231,14 +231,18 @@ function LOA:OnEvent()
             local _, _, newIndex, healerName = string.find(arg2, "NEXT:(%d+):(.+)")
 
             if myName == healerName then
-                mb_cdMessage("Healer rotation updated: " .. healerName .. " is now active")
+                mb_cdMessage(">> "..healerName.." is now active healer <<")
             end
 
             MB_myLoathebHealerIndex = tonumber(newIndex)
 
         elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
-            if (arg2 == "ALL_DEBUFFED" and mb_imFocus()) then
-                mb_cdMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>")
+            if (arg2 == "ALL_DEBUFFED") then
+                if IsRaidLeader() then
+                    SendChatMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>", "RAID_WARNING")
+                elseif mb_imFocus() then
+                    mb_cdMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>", 20)
+                end
             end
         end
     end
@@ -310,7 +314,7 @@ local function ExecuteRotation(rotation, context)
     if rotation and type(rotation) == "function" then
         rotation()
     else
-        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+        CdMessage("I don't know what to do for "..(context or "this situation")..".", 500)
     end
 end
 
