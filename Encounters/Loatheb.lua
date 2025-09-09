@@ -100,11 +100,11 @@ local MB_myLoathebHealerOverheal = 0.84
 -- Healer Assignments (REQUIRED)
 local MB_myLoathebHealers = {
     -- Priests
-    "Liket", "Blaidzy", "Cyal", "Bonita", "Ootskar",
+    "Liket", "Blaidzy", "Cyal", "Bonita",
     -- Shaman
     "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", "Chimando", "Shaitan", "Lillifee",
     -- Druids
-    "Pyqmi", "Bayo"
+    "Pyqmi"
 }
 
 -- Healing Spell Configuration
