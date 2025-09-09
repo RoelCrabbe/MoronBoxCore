@@ -174,6 +174,9 @@ function MMB:OnEvent()
 		elseif targetName == "Teleportman" then
             MB_teleportMan.Active = true
             MB_teleportMan.Time = currentTime + 0.2
+		elseif targetName == "WorldBuffs" then
+            MB_worldBuffMan.Active = true
+            MB_worldBuffMan.Time = currentTime + 0.2
 		elseif targetName == "Majordomo Executus" then
 			MB_summonRag.Active = true
 			MB_summonRag.Time = currentTime + 0.2
@@ -187,6 +190,7 @@ function MMB:OnEvent()
         MB_DMFWeek.Active = false
         MB_MCEnter.Active = false
 		MB_teleportMan.Active = false
+		MB_worldBuffMan.Active = false
 		MB_summonRag.Active = false
         MB_autoBuyReagents.Active = false
 
@@ -657,6 +661,9 @@ function MMB:OnEvent()
 		elseif targetName == "Teleportman" then
             MB_teleportMan.Active = true
             MB_teleportMan.Time = currentTime + 0.2
+		elseif targetName == "WorldBuffs" then
+            MB_worldBuffMan.Active = true
+            MB_worldBuffMan.Time = currentTime + 0.2
 		elseif targetName == "Majordomo Executus" then
 			MB_summonRag.Active = true
 			MB_summonRag.Time = currentTime + 0.2
