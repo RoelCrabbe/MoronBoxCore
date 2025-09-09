@@ -81,8 +81,6 @@ do
 	end
 end
 
-local DeBugHealerList = false
-
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -151,7 +149,6 @@ local function InitializeHealerRotation()
         end
     end
 
-    local result = {}
     local priests, nonPriests = {}, {}
     table.sort(sorted)
 
@@ -166,17 +163,16 @@ local function InitializeHealerRotation()
         end
     end
 
+	local result = {}
+	local priestIndex, nonPriestIndex, nextPriestPosition = 1, 1, 1
     local totalHealers = TableLength(priests) + TableLength(nonPriests)
     local priestCount = TableLength(priests)
-    
-    if priestCount == 0 then
-        result = sorted
-    elseif priestCount >= totalHealers then
+
+    if priestCount >= totalHealers or priestCount == 0 then
         result = sorted
     else
         local spacing = math.floor(totalHealers / priestCount)
         local remainder = math.mod(totalHealers, priestCount)
-        local priestIndex, nonPriestIndex, nextPriestPosition = 1, 1, 1
 
         for i = 1, totalHealers do
             if i == nextPriestPosition and priestIndex <= priestCount then
@@ -187,7 +183,8 @@ local function InitializeHealerRotation()
                     local additionalSpacing = 0
                     if priestIndex <= remainder then
                         additionalSpacing = 1
-                    end
+					end
+
                     nextPriestPosition = nextPriestPosition + spacing + additionalSpacing
                 end
             else
@@ -199,28 +196,19 @@ local function InitializeHealerRotation()
         end
     end
 
-    result, wasSuccessful = CheckClassOrder(result, sorted)
-    MB_myLoathebHealers = result
-    MB_myLoathebHealerIndex = 1
+	local final, isSuccessful = CheckClassOrder(result, sorted)
+	local finalCount = TableLength(final)
 
-    if TableLength(result) < 12 then
-        mb_cdRaidWarning(">> Loatheb Healer Info: Only "..TableLength(result).." Healers Found <<")
-    elseif not wasSuccessful then
+    if finalCount < 12 then
+        mb_cdRaidWarning(">> Loatheb Healer Info: Only "..finalCount.." Healers Found <<")
+    elseif not isSuccessful then
         mb_cdRaidWarning(">> Loatheb Healer Info: Using Alphabetic Fallback <<")
     else
         mb_cdRaidWarning(">> Loatheb Healer Info: Priest Spacing Successful <<")
     end
 
-    if DeBugHealerList then
-        for i, name in ipairs(MB_myLoathebHealers) do
-            local healerClass = UnitClass(MBID[name])
-            if healerClass then
-                Print("> "..i..": "..name.." ("..healerClass..")")
-            else
-                Print("> "..i..": "..name.." (Unknown)")
-            end
-        end
-    end
+	MB_myLoathebHealers = final
+    MB_myLoathebHealerIndex = 1
 end
 
 local function CurrentActiveHealer()
