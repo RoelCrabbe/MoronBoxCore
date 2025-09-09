@@ -118,6 +118,15 @@ function mb_cdPrint(msg, timer)
 end
 
 function mb_cdRaidWarning(msg, timer)
+	if not mb_imFocus() then
+		return
+	end
+
+	if not IsRaidLeader() then
+		mb_cdMessage(msg, timer)
+		return
+	end
+	
 	local coolDown = timer or 15
 	local time = GetTime()
 
@@ -133,12 +142,7 @@ function mb_cdRaidWarning(msg, timer)
 	end
 
 	table.insert(MB_rwHistory, {msg = msg, time = time})
-
-	if UnitInRaid("player") and IsRaidLeader() then
-		SendChatMessage(msg, "RAID_WARNING")
-	elseif mb_imFocus() then
-		mb_cdMessage(msg, timer)
-	end
+	SendChatMessage(msg, "RAID_WARNING")
 end
 
 function Print(msg)
