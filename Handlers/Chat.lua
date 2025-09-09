@@ -71,6 +71,7 @@ local myRace = UnitRace("player")
 
 local MB_msgHistory = {}
 local MB_printHistory = {}
+local MB_rwHistory = {}
 local MB_maxHistory = 50
 
 function mb_cdMessage(msg, timer)
@@ -114,6 +115,30 @@ function mb_cdPrint(msg, timer)
 
 	table.insert(MB_printHistory, {msg = msg, time = time})
 	Print(msg)
+end
+
+function mb_cdRaidWarning(msg, timer)
+	local coolDown = timer or 15
+	local time = GetTime()
+
+	for i = 1, TableLength(MB_rwHistory) do
+		local entry = MB_rwHistory[i]
+		if entry.msg == msg and entry.time + coolDown > time then
+			return
+		end
+	end
+
+	if TableLength(MB_rwHistory) >= MB_maxHistory then
+		table.remove(MB_rwHistory, 1)
+	end
+
+	table.insert(MB_rwHistory, {msg = msg, time = time})
+
+	if UnitInRaid("player") and IsRaidLeader() then
+		SendChatMessage(msg, "RAID_WARNING")
+	elseif mb_imFocus() then
+		mb_cdMessage(msg, timer)
+	end
 end
 
 function Print(msg)

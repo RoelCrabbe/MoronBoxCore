@@ -73,11 +73,15 @@ local LOA = CreateFrame("Button", "LOA", UIParent)
 
 do
 	for _, event in {
-		"CHAT_MSG_ADDON"
+		"CHAT_MSG_ADDON",
+        "ZONE_CHANGED_NEW_AREA",
+        "PLAYER_ENTERING_WORLD"
 		}
 		do LOA:RegisterEvent(event)
 	end
 end
+
+local DeBugHealerList = false
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -87,30 +91,31 @@ end
 MB_myLoathebBoxStrategy = true
 MB_myLoathebShadowPotStrategy = true
 
--- Tank and Paladin Assignments (REQUIRED)
+-- Tank Assignments (REQUIRED)
 MB_myLoathebMainTank = "Kungen"
-MB_myLoathebHealerIndex = 1
-MB_myLoathebHealerOverheal = 0.85
+
+local MB_myLoathebHealerIndex = 1
+local MB_myLoathebHealerOverheal = 0.84
 
 -- Healer Assignments (REQUIRED)
-MB_myLoathebHealer = {
+local MB_myLoathebHealers = {
     -- Priests
-    "Liket", "Blaidzy", "Cyal", "Bonita",
+    "Liket", "Blaidzy", "Cyal", "Bonita", "Ootskar",
     -- Shaman
     "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", "Chimando", "Shaitan", "Lillifee",
     -- Druids
-    "Pyqmi"
+    "Pyqmi", "Bayo"
 }
 
 -- Healing Spell Configuration
-MB_myLoathebHealSpell = {
+local MB_myLoathebHealSpell = {
     Shaman = "Healing Wave", 
     Priest = "Greater Heal",
     Paladin = "Holy Light",
     Druid = "Healing Touch"
 }
 
-MB_myLoathebHealSpellRank = {
+local MB_myLoathebHealSpellRank = {
     Shaman = "Rank 10", 
     Priest = "Rank 5",
     Paladin = "Rank 9",
@@ -121,8 +126,105 @@ MB_myLoathebHealSpellRank = {
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function CheckClassOrder(healerList, fallbackList)
+    for i = 1, TableLength(healerList) - 1 do
+        if UnitClass(MBID[healerList[i]]) == "Priest" 
+            and UnitClass(MBID[healerList[i + 1]]) == "Priest" then
+            return fallbackList, false
+        end
+    end
+    return healerList, true
+end
+
+local function InitializeHealerRotation()
+    if not MB_myLoathebHealers or TableLength(MB_myLoathebHealers) == 0 then
+        return nil
+    end
+
+    local sorted, seen = {}, {}
+    table.sort(MB_myLoathebHealers)
+
+    for _, healer in ipairs(MB_myLoathebHealers) do
+        if MBID[healer] and not seen[healer] then
+            table.insert(sorted, healer)
+            seen[healer] = true
+        end
+    end
+
+    local result = {}
+    local priests, nonPriests = {}, {}
+    table.sort(sorted)
+
+    for _, healer in ipairs(sorted) do
+        local healerId = MBID[healer]
+        if healerId then
+            if UnitClass(healerId) == "Priest" then
+                table.insert(priests, healer)
+            else
+                table.insert(nonPriests, healer)
+            end
+        end
+    end
+
+    local totalHealers = TableLength(priests) + TableLength(nonPriests)
+    local priestCount = TableLength(priests)
+    
+    if priestCount == 0 then
+        result = sorted
+    elseif priestCount >= totalHealers then
+        result = sorted
+    else
+        local spacing = math.floor(totalHealers / priestCount)
+        local remainder = math.mod(totalHealers, priestCount)
+        local priestIndex, nonPriestIndex, nextPriestPosition = 1, 1, 1
+
+        for i = 1, totalHealers do
+            if i == nextPriestPosition and priestIndex <= priestCount then
+                table.insert(result, priests[priestIndex])
+                priestIndex = priestIndex + 1
+                
+                if priestIndex <= priestCount then
+                    local additionalSpacing = 0
+                    if priestIndex <= remainder then
+                        additionalSpacing = 1
+                    end
+                    nextPriestPosition = nextPriestPosition + spacing + additionalSpacing
+                end
+            else
+                if nonPriestIndex <= TableLength(nonPriests) then
+                    table.insert(result, nonPriests[nonPriestIndex])
+                    nonPriestIndex = nonPriestIndex + 1
+                end
+            end
+        end
+    end
+
+    result, wasSuccessful = CheckClassOrder(result, sorted)
+    MB_myLoathebHealers = result
+    MB_myLoathebHealerIndex = 1
+
+    if TableLength(result) < 12 then
+        mb_cdRaidWarning(">> Loatheb Healer Info: Only "..TableLength(result).." Healers Found <<")
+    elseif not wasSuccessful then
+        mb_cdRaidWarning(">> Loatheb Healer Info: Using Alphabetic Fallback <<")
+    else
+        mb_cdRaidWarning(">> Loatheb Healer Info: Priest Spacing Successful <<")
+    end
+
+    if DeBugHealerList then
+        for i, name in ipairs(MB_myLoathebHealers) do
+            local healerClass = UnitClass(MBID[name])
+            if healerClass then
+                Print("> "..i..": "..name.." ("..healerClass..")")
+            else
+                Print("> "..i..": "..name.." (Unknown)")
+            end
+        end
+    end
+end
+
 local function CurrentActiveHealer()
-    if not MB_myLoathebHealer then
+    if not MB_myLoathebHealers then
         return nil
     end
     
@@ -130,16 +232,16 @@ local function CurrentActiveHealer()
         return nil
     end
     
-    local totalHealers = TableLength(MB_myLoathebHealer)
+    local totalHealers = TableLength(MB_myLoathebHealers)
     if totalHealers == 0 then
         return nil
     end
-    
+
     if MB_myLoathebHealerIndex > totalHealers then
         return nil
     end
-    
-    return MB_myLoathebHealer[MB_myLoathebHealerIndex]
+
+    return MB_myLoathebHealers[MB_myLoathebHealerIndex]
 end
 
 local function ImCurrentHealer()
@@ -183,7 +285,7 @@ end
 --[####################################################################################################]--
 
 function mb_findNextCleanHealer(startingIndex)
-    if not MB_myLoathebHealer then
+    if not MB_myLoathebHealers then
         return nil, nil
     end
 
@@ -191,20 +293,18 @@ function mb_findNextCleanHealer(startingIndex)
         return nil, nil
     end
 
-    local totalHealers = TableLength(MB_myLoathebHealer)
+    local totalHealers = TableLength(MB_myLoathebHealers)
     if totalHealers == 0 then
         return nil, nil
     end
 
     for i = 1, totalHealers do
         local testIndex = startingIndex + i
-
         if testIndex > totalHealers then
             testIndex = testIndex - totalHealers
         end
 
-        local healerName = MB_myLoathebHealer[testIndex]
-
+        local healerName = MB_myLoathebHealers[testIndex]
         if healerName then
             local healerId = MBID[healerName]
             if healerId and mb_isAlive(healerId) then
@@ -229,22 +329,17 @@ function LOA:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
         if (arg1 == MB_RAID.."LOATHEB_HEAL") then
             local _, _, newIndex, healerName = string.find(arg2, "NEXT:(%d+):(.+)")
-
-            if myName == healerName then
-                mb_cdMessage(">> "..healerName.." is now active healer <<")
-            end
-
             MB_myLoathebHealerIndex = tonumber(newIndex)
+
+            mb_cdRaidWarning(">> "..healerName.." Is Now Active Healer! <<")
 
         elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
             if (arg2 == "ALL_DEBUFFED") then
-                if IsRaidLeader() then
-                    SendChatMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>", "RAID_WARNING")
-                elseif mb_imFocus() then
-                    mb_cdMessage("<< All Healers Debuffed! Use Cooldowns on TANK! >>", 20)
-                end
+                mb_cdRaidWarning("<< All Healers Debuffed! Use Cooldowns on TANK! >>")
             end
         end
+    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") and Instance.NAXX() then
+        InitializeHealerRotation()
     end
 end
 
@@ -304,6 +399,12 @@ function mb_loathebHealing()
     end
 
     return true
+end
+
+function mb_whoIsBetterTank()
+    local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
+    local total = dodge + parry + block
+    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total)) 
 end
 
 --[####################################################################################################]--
