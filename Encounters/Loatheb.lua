@@ -301,3 +301,36 @@ function mb_loathebHealing()
 
     return true
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function ExecuteRotation(rotation, context)
+    if rotation and type(rotation) == "function" then
+        rotation()
+    else
+        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+    end
+end
+
+function mb_loathebRotation()
+    if Instance.NAXX() and mb_isAtLoatheb() and MB_myLoathebBoxStrategy then
+        local SingleRotation = MB_mySingleList[myClass]
+
+        mb_useShadowPotsOnLoatheb()
+
+        if mb_imHealer() then
+            local SingleLoathebRotation = MB_myLoathebList[myClass]
+            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing SINGLE")
+        elseif mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
+        elseif mb_imTank() then
+            ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
+        elseif mb_tankTargetHealth() <= 0.63 then
+            ExecuteRotation(SingleRotation, "Loatheb Emergency SINGLE")
+        end
+        return true
+    end
+    return false
+end

@@ -750,8 +750,12 @@ end
 
 function Warrior:TankSingle(myRage)
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
+	if FindInTable(MB_raidTanks, myName) then
+        if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+		    CancelBuff("Greater Blessing of Salvation")
+        elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            CancelBuff("Dampen Magic")
+        end
 	end
 
     Warrior:TANKSurvival()
@@ -1037,8 +1041,12 @@ end
 
 function Warrior:TankMulti(myRage)
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
+	if FindInTable(MB_raidTanks, myName) then
+        if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+		    CancelBuff("Greater Blessing of Salvation")
+        elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            CancelBuff("Dampen Magic")
+        end
 	end
 
     Warrior:TANKSurvival()
