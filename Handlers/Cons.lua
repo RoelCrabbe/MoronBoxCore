@@ -318,7 +318,8 @@ local ClassSpecificReagents = {
         "R.O.I.D.S.",
         "Lung Juice Cocktail",
         "Ground Scorpok Assay",
-        "Frozen Rune"
+        "Frozen Rune",
+        "Juju Escape"
     }
 }
 
@@ -396,6 +397,7 @@ local ReagentsLimit = {
     ["Elixir of the Mongoose"] = { 40, 1 },
     ["Juju Might"] = { 40, 1 },
     ["Juju Power"] = { 40, 1 },
+    ["Juju Escape"] = { 60, 1 },
     
     -- Food & Drink Buffs
     ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },

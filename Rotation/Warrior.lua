@@ -947,7 +947,14 @@ function Warrior:TANKSurvival()
         return
     end
 
-    if Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+    if Instance.NAXX() and IsAtLoatheb() and MB_myNothBoxStrategy then
+        if HealthPct("target") <= 0.1 then
+            Warrior:BigTANKCooldowns()
+        end
+
+        UseJujuWhenPossible("Juju Escape")
+
+    elseif Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
         if HealthPct("target") <= 0.05 then
             Warrior:BigTANKCooldowns()
         end
