@@ -76,6 +76,7 @@ local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtGrobbulus = mb_isAtGrobbulus
+local IsAtLoatheb = mb_isAtLoatheb
 local IsFireBoss = mb_isFireBoss
 local IsInGroup = mb_isInGroup
 local IsNatureBoss = mb_isNatureBoss
@@ -206,8 +207,7 @@ end
 
 local function ChooseWaterTotem()
 
-	if IsPoisonBoss() then
-	
+	if IsPoisonBoss() then	
         if Instance.AQ40() then
 			if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
 			if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
@@ -215,10 +215,14 @@ local function ChooseWaterTotem()
 		elseif Instance.BWL() and TankTarget("Chromaggus") then
 			if MyGroupClassOrder() == 1 then return "Poison Cleansing Totem" end
 			if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
-		end	
-		
+		end		
+
 	elseif IsFireBoss() then		
 		if MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
+		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
+
+	elseif IsAtLoatheb() then
+		if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
 		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
 	end
 
