@@ -144,11 +144,11 @@ function MMB:OnUpdate()
         local option1, _, option2 = GetGossipOptions()
 
         if MB_mySpeedRunStrategy then
-            if option2 == "Steroid WorldBuffs?!" then
+            if option2 == "Steroid WorldBuffs" then
                 SelectGossipOption(2)
             end
         else
-            if option1 == "WorldBuffs?!" then
+            if option1 == "Normal WorldBuffs" then
                 SelectGossipOption(1)
             end
         end
