@@ -335,7 +335,7 @@ function LOA:OnEvent()
 
         elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
             if (arg2 == "ALL_DEBUFFED") then
-                mb_cdRaidWarning("<< All Healers Debuffed! Use Cooldowns on TANK! >>")
+                mb_cdRaidWarning(">> All Healers Debuffed! Use Cooldowns on TANK! <<")
             end
         end
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") and Instance.NAXX() then
