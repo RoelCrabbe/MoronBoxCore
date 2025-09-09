@@ -589,7 +589,6 @@ function mb_useFirePotsOnFaerlina()
 	end
 
     if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
-    if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
