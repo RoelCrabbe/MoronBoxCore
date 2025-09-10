@@ -1052,6 +1052,29 @@ end
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
+local function LoathebAttack()
+	if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    GetTarget()
+
+	if ManaPct("player") < 0.1 then
+        return
+    end
+
+	if SpellReady("Mind Blast") then
+		CastSpellOrWand("Mind Blast")
+		return
+	end
+
+	if SpellReady("Smite") then
+		CoolDownCast("Smite", 6)
+	end
+
+    AutoWandAttack()
+end
+
 local function PriestLoathebHeal()
 
 	GetTarget()
@@ -1075,7 +1098,7 @@ local function PriestLoathebHeal()
 		return
 	end
 
-	Priest:UseWand()
+	LoathebAttack()
 end
 
 MB_myLoathebList["Priest"] = PriestLoathebHeal

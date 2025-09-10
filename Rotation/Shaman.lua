@@ -543,24 +543,28 @@ function Shaman:Cooldowns()
     CasterTrinkets()
 end
 
-function Shaman:UseAttack()
+--[####################################################################################################]--
+--[######################################### LOATHEB Code! ############################################]--
+--[####################################################################################################]--
+
+local function LoathebAttack()
 	if ImBusy() or not InCombat("player") then
 		return
 	end
 
     GetTarget()
 
-	if MB_mySpeedRunStrategy and SpellReady("Lightning Bolt") then
-		CoolDownCast("Lightning Bolt", 6)
+	if ManaPct("player") < 0.1 then
+        return
+    end
+
+	if SpellReady("Lightning Bolt") then
+		CoolDownCast("Lightning Bolt", 5)
 		return
 	end
 
     AutoAttack()
 end
-
---[####################################################################################################]--
---[######################################### LOATHEB Code! ############################################]--
---[####################################################################################################]--
 
 local function ShamanLoathebHeal()
 
@@ -606,7 +610,7 @@ local function ShamanLoathebHeal()
 		return
 	end
 
-	Shaman:UseAttack()
+	LoathebAttack()
 end
 
 MB_myLoathebList["Shaman"] = ShamanLoathebHeal

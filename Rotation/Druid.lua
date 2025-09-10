@@ -1289,24 +1289,28 @@ function Druid:Taunt()
 	end
 end
 
-function Druid:UseAttack()
+--[####################################################################################################]--
+--[######################################### LOATHEB Code! ############################################]--
+--[####################################################################################################]--
+
+local function LoathebAttack()
 	if ImBusy() or not InCombat("player") then
 		return
 	end
 
     GetTarget()
 
-	if MB_mySpeedRunStrategy and SpellReady("Starfire") then
-		CoolDownCast("Starfire", 6)
+    if ManaPct("player") < 0.1 then
+        return
+    end
+
+	if SpellReady("Starfire") then
+		CoolDownCast("Starfire", 5)
 		return
 	end
 
     AutoAttack()
 end
-
---[####################################################################################################]--
---[######################################### LOATHEB Code! ############################################]--
---[####################################################################################################]--
 
 local function DruidLoathebHeal()
 	
@@ -1328,7 +1332,7 @@ local function DruidLoathebHeal()
 		return
 	end
 
-	Druid:UseAttack()
+	LoathebAttack()
 end
 
 MB_myLoathebList["Druid"] = DruidLoathebHeal
