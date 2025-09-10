@@ -428,7 +428,7 @@ function mb_loathebRotation()
         elseif mb_imTank() then
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
         elseif mb_tankTargetHealth() <= 0.88 then            
-            if myName == MB_myLoathebMasterMage and mb_numberOfClassInParty("Mage") < 4 then
+            if myName == MB_myLoathebMasterMage and mb_numberOfClassInRaid("Mage") < 4 then
                 if not mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
                     SendAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH", "RAID")
                 end
