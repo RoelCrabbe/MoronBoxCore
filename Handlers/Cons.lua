@@ -190,6 +190,7 @@ local UniversalReagents = {
 
 local OptionalUniversalReagents = {
     "Swiftness of Zanza",
+    "Spirit of Zanza",
     "Greater Shadow Protection Potion",
     "Limited Invulnerability Potion",
     "Greater Fire Protection Potion",
@@ -317,7 +318,8 @@ local ClassSpecificReagents = {
         "R.O.I.D.S.",
         "Lung Juice Cocktail",
         "Ground Scorpok Assay",
-        "Frozen Rune"
+        "Frozen Rune",
+        "Juju Escape"
     }
 }
 
@@ -329,6 +331,7 @@ local ReagentsLimit = {
     ["Drakefire Amulet"] = { 1, 1 },
     ["Eternal Quintessence"] = { 1, 1 },
     ["Swiftness of Zanza"] = { 1, 1 },
+    ["Spirit of Zanza"] = { 1, 1 },
     ["Onyxia Scale Cloak"] = { 1, 1 },
 
     ["Conjured Crystal Water"] = { 60, 1 },
@@ -394,6 +397,7 @@ local ReagentsLimit = {
     ["Elixir of the Mongoose"] = { 40, 1 },
     ["Juju Might"] = { 40, 1 },
     ["Juju Power"] = { 40, 1 },
+    ["Juju Escape"] = { 60, 1 },
     
     -- Food & Drink Buffs
     ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },
@@ -509,10 +513,29 @@ local function UseManaPotsThresholdPots()
     end
 end
 
+local ManaRunesThreshold = {
+    { name = "Tea with Sugar", threshold = 1750 }
+}
+
+local function UseManaRunesThresholdRunes()
+    local manaDown = ManaDown()
+    for _, item in ipairs(ManaRunesThreshold) do
+        if manaDown > item.threshold and HaveInBags(item.name) and not IsItemInBagCoolDown(item.name) then
+            UseItemByName(item.name)
+            return
+        end
+    end
+end
+
 function mb_takeManaPotionAndRunes()
     if ImBusy() or not InCombat("player") then
 		return
 	end
+
+    if Instance.NAXX() and IsAtLoatheb() then
+        UseManaRunesThresholdRunes()
+        return
+    end
 
     UseManaPotsThresholdPots()
 end
@@ -678,54 +701,56 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function ZanzaPotions()
+    if Instance.NAXX() then
+        UsePotionsWhenPossible("Spirit of Zanza")
+    else
+        UsePotionsWhenPossible("Swiftness of Zanza")
+    end
+end
+
+local function ProtectionPotions()
+    if Instance.NAXX() and IsAtLoatheb() then
+        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    end
+end
+
 local function MeleeSpeedRunPots()
-    UsePotionsWhenPossible("Swiftness of Zanza")
+    ZanzaPotions()
+    ProtectionPotions()
+
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
 
     UseJujuWhenPossible("Juju Might")
     UseJujuWhenPossible("Juju Power")
-
-    if ImTank() then
-        UsePotionsWhenPossible("Gift of Arthas")
-    end
-
-    if Instance.NAXX() and IsAtLoatheb() then
-        UsePotionsWhenPossible("Greater Shadow Protection Potion")
-    end
 end
 
 local function CasterSpeedRunPots()
-    UsePotionsWhenPossible("Swiftness of Zanza")
+    ZanzaPotions()
+    ProtectionPotions()
+
     UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
     UsePotionsWhenPossible("Greater Arcane Elixir")
 
-    if Instance.NAXX() and IsAtLoatheb() then
-        UsePotionsWhenPossible("Greater Shadow Protection Potion")
-    end
-
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
-            UsePotionsWhenPossible("Elixir of Frost Power")
-            return
+            UsePotionsWhenPossible("Elixir of Frost Power")            
+        else
+            UsePotionsWhenPossible("Elixir of Greater Firepower")
         end
-
-        UsePotionsWhenPossible("Elixir of Greater Firepower")
-        return
+    elseif myClass == "Warlock" then
+        UsePotionsWhenPossible("Elixir of Shadow Power")
     end
-
-    UsePotionsWhenPossible("Elixir of Shadow Power")
 end
 
 local function HealerSpeedRunPots()
-    UsePotionsWhenPossible("Swiftness of Zanza")
+    ZanzaPotions()
+    ProtectionPotions()
+
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")
-
-    if Instance.NAXX() and IsAtLoatheb() then
-        UsePotionsWhenPossible("Greater Shadow Protection Potion")
-    end
 end
 
 function mb_useSpeedRunPots()

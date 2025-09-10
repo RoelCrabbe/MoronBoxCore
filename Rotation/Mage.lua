@@ -704,8 +704,8 @@ local function MageSetup()
             MultiBuff("Arcane Brilliance")
 
             if MobsToDampenMagic() then  
-                MultiBuff("Dampen Magic")            
-           
+                MultiBuff("Dampen Magic")
+
             elseif MobsToAmplifyMagic() then            
                 if TankTarget("Gluth") then
                     MultiBuff("Amplify Magic")

@@ -90,6 +90,7 @@ local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtNoth = mb_isAtNoth
+local IsAtLoatheb = mb_isAtLoatheb
 local IsAtSkeram = mb_isAtSkeram
 local IsExcludedWW = mb_isExcludedWW
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
@@ -750,8 +751,12 @@ end
 
 function Warrior:TankSingle(myRage)
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
+	if FindInTable(MB_raidTanks, myName) then
+        if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+		    CancelBuff("Greater Blessing of Salvation")
+        elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            CancelBuff("Dampen Magic")
+        end
 	end
 
     Warrior:TANKSurvival()
@@ -943,7 +948,14 @@ function Warrior:TANKSurvival()
         return
     end
 
-    if Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if HealthPct("target") <= 0.12 then
+            Warrior:BigTANKCooldowns()
+        end
+
+        UseJujuWhenPossible("Juju Escape")
+
+    elseif Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
         if HealthPct("target") <= 0.05 then
             Warrior:BigTANKCooldowns()
         end
@@ -1037,8 +1049,12 @@ end
 
 function Warrior:TankMulti(myRage)
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
+	if FindInTable(MB_raidTanks, myName) then
+        if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
+		    CancelBuff("Greater Blessing of Salvation")
+        elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            CancelBuff("Dampen Magic")
+        end
 	end
 
     Warrior:TANKSurvival()

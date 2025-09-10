@@ -156,7 +156,33 @@ end
 local function HandleNAXXTargetingPostFocus()
 	local tName = UnitName("target")
 
-	if mb_isAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+	if mb_isAtLoatheb() and MB_myLoathebBoxStrategy then
+		if mb_imTank() then						
+			if myName == MB_myLoathebMainTank then
+				if mb_lockOnTarget("Loatheb") then
+					return
+				end
+
+				if not tName or mb_dead("target") then
+					mb_assistFocus()
+				end
+				return
+			end
+			
+			mb_getTargetNotOnTank()
+			return
+		elseif mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer() then
+			if mb_lockOnTarget("Loatheb") then
+				return
+			end
+
+			if not tName or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return
+		end
+
+	elseif mb_isAtGrobbulus() and MB_myGrobbulusBoxStrategy then
 		if mb_imTank() then						
 			if myName == MB_myGrobbulusMainTank then
 				if mb_lockOnTarget("Grobbulus") then
