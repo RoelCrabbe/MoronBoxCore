@@ -118,7 +118,7 @@ function mb_cdPrint(msg, timer)
 end
 
 function mb_cdRaidWarning(msg, timer)
-	if not mb_imFocus() then
+	if myName ~= MB_raidInviter then
 		return
 	end
 

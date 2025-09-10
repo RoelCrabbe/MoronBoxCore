@@ -702,16 +702,22 @@ end
 --[####################################################################################################]--
 
 local function ZanzaPotions()
-    if Instance.NAXX() and IsAtLoatheb() then
-        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    if Instance.NAXX() then
         UsePotionsWhenPossible("Spirit of Zanza")
     else
         UsePotionsWhenPossible("Swiftness of Zanza")
     end
 end
 
+local function ProtectionPotions()
+    if Instance.NAXX() and IsAtLoatheb() then
+        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    end
+end
+
 local function MeleeSpeedRunPots()
     ZanzaPotions()
+    ProtectionPotions()
 
     UsePotionsWhenPossible("Flask of the Titans")
     UsePotionsWhenPossible("Elixir of the Mongoose")
@@ -722,6 +728,7 @@ end
 
 local function CasterSpeedRunPots()
     ZanzaPotions()
+    ProtectionPotions()
 
     UsePotionsWhenPossible("Flask of Supreme Power")
     UsePotionsWhenPossible("Mageblood Potion")
@@ -740,6 +747,7 @@ end
 
 local function HealerSpeedRunPots()
     ZanzaPotions()
+    ProtectionPotions()
 
     UsePotionsWhenPossible("Flask of Distilled Wisdom")
     UsePotionsWhenPossible("Mageblood Potion")

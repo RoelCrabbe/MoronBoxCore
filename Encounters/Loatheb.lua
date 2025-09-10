@@ -120,6 +120,8 @@ local MB_myLoathebHealSpellRank = {
     Druid = "Rank 11"
 }
 
+local MB_myLoathebMasterMage = "Rotonic"
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -325,6 +327,11 @@ function LOA:OnEvent()
             if (arg2 == "ALL_DEBUFFED") then
                 mb_cdRaidWarning(">> All Healers Debuffed! Use Cooldowns on TANK! <<")
             end
+        
+        elseif (arg1 == MB_RAID.."LOATHEB_IGNITE") then
+            if (arg2 == "REFRESH") then
+                mb_cdRaidWarning(">> Refresh Fungal Bloom on MAGES! <<")
+            end 
         end
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") and Instance.NAXX() then
         InitializeHealerRotation()
@@ -420,7 +427,13 @@ function mb_loathebRotation()
             ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
         elseif mb_imTank() then
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
-        elseif mb_tankTargetHealth() <= 0.63 then
+        elseif mb_tankTargetHealth() <= 0.88 then            
+            if myName == MB_myLoathebMasterMage and mb_numberOfClassInParty("Mage") < 4 then
+                if not mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+                    SendAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH", "RAID")
+                end
+            end
+
             ExecuteRotation(SingleRotation, "Loatheb Emergency SINGLE")
         end
         return true
