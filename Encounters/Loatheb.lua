@@ -79,9 +79,9 @@ local ImHealer = mb_imHealer
 local ImTank = mb_imTank
 local IsAlive = mb_isAlive
 local IsAtLoatheb = mb_isAtLoatheb
+local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local NumberOfClassInRaid = mb_numberOfClassInRaid
 local TankTargetHealth = mb_tankTargetHealth
-local UseShadowPotsOnLoatheb = mb_useShadowPotsOnLoatheb
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -110,7 +110,11 @@ MB_myLoathebShadowPotStrategy = true
 -- Tank Assignments (REQUIRED)
 MB_myLoathebMainTank = "Kungen"
 
-local MB_myLoathebMasterMage = "Thehatter"
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+-- Healer Rotation Configuration
 local MB_myLoathebHealerIndex = 1
 local MB_myLoathebHealerOverheal = 0.84
 local MB_myLoathebDPSThreshold = 0.88
@@ -262,6 +266,8 @@ local function InitializeHealerRotation()
 
 	MB_myLoathebHealers = final
     MB_myLoathebHealerIndex = 1
+
+    Print(MB_myLoathebHealers[1])
 end
 
 local function CurrentActiveHealer()
@@ -416,6 +422,22 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function UseShadowPotsOnLoatheb()
+    if not MB_myLoathebShadowPotStrategy then
+        return
+    end
+
+    if mb_imBusy() or not mb_inCombat("player") then
+		return
+	end
+
+    mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function mb_loathebRotation()
     if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
         local SingleRotation = MB_mySingleList[myClass]
@@ -433,7 +455,7 @@ function mb_loathebRotation()
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
 
         elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then            
-            if myName == MB_myLoathebMasterMage and NumberOfClassInRaid("Mage") < 4 then
+            if MyClassAlphabeticalOrder() == 1 and NumberOfClassInRaid("Mage") < 4 then
                 if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
                     SendAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH", "RAID")
                 end
@@ -443,5 +465,40 @@ function mb_loathebRotation()
         end
         return true
     end
+    return false
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function mb_loathebTargeting()
+	if IsAtLoatheb() and MB_myLoathebBoxStrategy then
+		if myName == MB_myLoathebMainTank then
+            if mb_lockOnTarget("Loatheb") then
+                return true
+            end
+
+            if not tName or mb_dead("target") then
+                mb_assistFocus()
+            end
+            return true
+        
+        elseif mb_imTank() then				
+			mb_getTargetNotOnTank()
+			return true
+
+		elseif mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer() then
+			if mb_lockOnTarget("Loatheb") then
+				return true
+			end
+
+			if not tName or mb_dead("target") then
+				mb_assistFocus()
+			end
+			return true
+		end
+    end
+
     return false
 end

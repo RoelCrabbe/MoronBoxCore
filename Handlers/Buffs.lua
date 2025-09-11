@@ -1004,8 +1004,6 @@ BuffData["Corruption of the Earth"]		 =  "Interface\\Icons\\Ability_Creature_Cur
 BuffData["Atiesh"] 						 =  "Interface\\Icons\\Spell_Nature_MoonGlow"
 BuffData["Hazza\'rah\'s Charm of Healing"] = "Interface\\Icons\\Spell_Holy_HealingAura"
 BuffData["Magma Shackles"] 				 =  "Interface\\Icons\\Spell_Nature_EarthBind" --Garr's Slowing effect
-BuffData["Corrupted Mind"]				 =	"Interface\\Icons\\Spell_Shadow_AuraOfDarkness" -- Loatheb
-BuffData["Fungal Bloom"]					 =  "Interface\\Icons\\Spell_Nature_UnyeildingStamina" -- Buff Loatheb
 BuffData["Impending Doom"]				 =  "Interface\\Icons\\Spell_Shadow_NightOfTheDead"
 BuffData["Inevitable Doom"]				 =  "Interface\\Icons\\Spell_Shadow_NightOfTheDead"
 BuffData["Mind Exhaustion"] 				 = "Interface\\Icons\\Spell_Shadow_Teleport" 
@@ -1075,6 +1073,9 @@ BuffData["Ground Scorpok Assay"] 				=   "Interface\\Icons\\Spell_Nature_ForceOf
 BuffData["Very Berry Cream"] 					=   "Interface\\Icons\\INV_ValentinesChocolate02"
 BuffData["Sweet Surprise"] 						=   "Interface\\Icons\\INV_ValentinesChocolate03"
 BuffData["Polished Armor"] 						=   "Interface\\Icons\\INV_Shield_10"
+
+BuffData["Corrupted Mind"]				 		=	"Interface\\Icons\\Spell_Shadow_AuraOfDarkness"
+BuffData["Fungal Bloom"]					 	=  "Interface\\Icons\\Spell_Nature_UnyeildingStamina"
 
 function AmountOfBuffs()
 	local buffCount = 0

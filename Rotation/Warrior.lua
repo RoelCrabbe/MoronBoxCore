@@ -106,6 +106,8 @@ local SpellReady = mb_spellReady
 local SpellCoolDown = mb_spellCoolDown
 local StunnableMob = mb_stunnableMob
 local TankTarget = mb_tankTarget
+local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local TakeJujuWhenPossible = mb_takeJujuWhenPossible
 local TrinketOnCD = mb_trinketOnCD
 local UseFromBags = mb_useFromBags
 local UseNaturePotsOnHuhuran = mb_useNaturePotsOnHuhuran
@@ -228,54 +230,12 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UsePotionsWhenPossible(potion)
-    if not HaveInBags(potion) and not IsItemInBagCoolDown(potion) then
-        return
-    end
-
-    if not Instance:IsInRaid() then
-        return
-    end
-
-    if HasBuffOrDebuff(potion, "player", "buff") then
-        return
-    end
-
-    if (sandTime == nil or GetTime() - sandTime > 3) then
-        sandTime = GetTime()
-        UseFromBags(potion)
-    end
-end
-
-local function UseJujuWhenPossible(juju)
-    if not HaveInBags(juju) and not IsItemInBagCoolDown(juju) then
-        return
-    end
-
-    if not Instance:IsInRaid() then
-        return
-    end
-
-    if HasBuffOrDebuff(juju, "player", "buff") then
-        return
-    end
-
-    TargetUnit("player")
-
-    if (sandTime == nil or GetTime() - sandTime > 3) then
-        sandTime = GetTime()
-        UseFromBags(juju)
-    end
-
-    TargetLastTarget()
-end
-
 local function UseSpeedRunPotsWhenPossible(potion)
     if not MB_mySpeedRunStrategy then
         return
     end
 
-    UsePotionsWhenPossible(potion)
+    TakePotionsWhenPossible(potion)
 end
 
 local function UseSpeedRunJujusWhenPossible(potion)
@@ -283,7 +243,7 @@ local function UseSpeedRunJujusWhenPossible(potion)
         return
     end
 
-    UseJujuWhenPossible(potion)
+    TakeJujuWhenPossible(potion)
 end
 
 --[####################################################################################################]--

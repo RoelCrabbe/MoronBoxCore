@@ -69,44 +69,6 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local BossIShouldUseManapotsOn = mb_bossIShouldUseManapotsOn
-local BossIShouldUseRunesAndManapotsOn = mb_bossIShouldUseRunesAndManapotsOn
-local BuyReagentsAndConsumables = mb_buyReagentsAndConsumables
-local BossUseFAPon = mb_bossUseFAPon
-local CdMessage = mb_cdMessage
-local CdPrint = mb_cdPrint
-local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
-local HasBuffNamed = mb_hasBuffNamed
-local HasBuffOrDebuff = mb_hasBuffOrDebuff
-local HasItem = mb_hasItem
-local HaveInBags = mb_haveInBags
-local HealthPct = mb_healthPct
-local ImBusy = mb_imBusy
-local ImFocus = mb_imFocus
-local ImHealer = mb_imHealer
-local ImMeleeDPS = mb_imMeleeDPS
-local ImRangedDPS = mb_imRangedDPS
-local ImTank = mb_imTank
-local InCombat = mb_inCombat
-local IsAtRazorgore = mb_isAtRazorgore
-local IsAtLoatheb = mb_isAtLoatheb
-local IsDruidShapeShifted = mb_isDruidShapeShifted
-local IsItemInBagCoolDown = mb_isItemInBagCoolDown
-local ManaDown = mb_manaDown
-local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
-local TankTarget = mb_tankTarget
-local UseFirePotsOnVaelastrasz = mb_useFirePotsOnVaelastrasz
-local UseFromBags = mb_useFromBags
-local UseFrozenRuneOnFaerlina = mb_useFrozenRuneOnFaerlina
-local UseNaturePotsOnHuhuran = mb_useNaturePotsOnHuhuran
-local UseSandsOnChromaggus = mb_useSandsOnChromaggus
-local UseShadowPotsOnLoatheb = mb_useShadowPotsOnLoatheb
-local UseSpeedRunPots = mb_useSpeedRunPots
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
 local MageWater = {
 	[60] = "Conjured Crystal Water",
 	[50] = "Conjured Sparkling Water"
@@ -171,7 +133,7 @@ function mb_pickUpWater()
 
 	if bestRank > 0 then
 		local _ , _, water, bag, slot = string.find(bestWater, "(Conjured.*Water) (%d+) (%d+)")		
-		CdPrint("Found "..water.." in bag "..bag.." in slot "..slot)
+		mb_cdPrint("Found "..water.." in bag "..bag.." in slot "..slot)
 		PickupContainerItem(bag, slot)
 		return water
 	end
@@ -452,9 +414,9 @@ local function GetCompleteReagentList(className)
 end
 
 function mb_buyReagentsAndConsumables()
-    local freeSlots = GetAllContainerFreeSlots()
+    local freeSlots = mb_getAllContainerFreeSlots()
     if freeSlots <= 5 then
-        CdMessage("I don't have enough bagspace to buy consumables, sort it!")
+        mb_cdMessage("I don't have enough bagspace to buy consumables, sort it!")
         return
     end
 
@@ -462,7 +424,7 @@ function mb_buyReagentsAndConsumables()
     
     if classItems then
         for _, item in ipairs(classItems) do
-            local myCurrentItems = HasItem(item) / ReagentsLimit[item][2]
+            local myCurrentItems = mb_hasItem(item) / ReagentsLimit[item][2]
             local myNeededItems
             
             if (item == "Doomshot" or item == "Miniature Cannon Balls") and myClass == "Hunter" then
@@ -480,7 +442,7 @@ function mb_buyReagentsAndConsumables()
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then
                         if string.find(merchantItemLink, item) then
-                            CdPrint("Buying "..myNeededItems.." "..merchantItemLink)
+                            mb_cdPrint("Buying "..myNeededItems.." "..merchantItemLink)
                             BuyMerchantItem(itemID, myNeededItems)
                         end
                     end
@@ -504,9 +466,9 @@ local ManaPotsThreshold = {
 }
 
 local function UseManaPotsThresholdPots()
-    local manaDown = ManaDown()
+    local manaDown = mb_manaDown()
     for _, item in ipairs(ManaPotsThreshold) do
-        if manaDown > item.threshold and HaveInBags(item.name) and not IsItemInBagCoolDown(item.name) then
+        if manaDown > item.threshold and mb_haveInBags(item.name) and not mb_isItemInBagCoolDown(item.name) then
             UseItemByName(item.name)
             return
         end
@@ -518,9 +480,9 @@ local ManaRunesThreshold = {
 }
 
 local function UseManaRunesThresholdRunes()
-    local manaDown = ManaDown()
+    local manaDown = mb_manaDown()
     for _, item in ipairs(ManaRunesThreshold) do
-        if manaDown > item.threshold and HaveInBags(item.name) and not IsItemInBagCoolDown(item.name) then
+        if manaDown > item.threshold and mb_haveInBags(item.name) and not mb_isItemInBagCoolDown(item.name) then
             UseItemByName(item.name)
             return
         end
@@ -528,11 +490,11 @@ local function UseManaRunesThresholdRunes()
 end
 
 function mb_takeManaPotionAndRunes()
-    if ImBusy() or not InCombat("player") then
+    if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
-    if Instance.NAXX() and IsAtLoatheb() then
+    if Instance.NAXX() and mb_isAtLoatheb() then
         UseManaRunesThresholdRunes()
         return
     end
@@ -545,37 +507,37 @@ end
 --[####################################################################################################]--
 
 function mb_useSandsOnChromaggus()
-	if ImBusy() or not InCombat("player") then
+	if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
-	if Instance.BWL() and not TankTarget("Chromaggus") then
+	if Instance.BWL() and not mb_tankTarget("Chromaggus") then
         return
     end
 
-	if not ImTank() then
+	if not mb_imTank() then
         return
     end
 
-    if not ImFocus() then
+    if not mb_imFocus() then
         return
     end
 
-	if not HasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
+	if not mb_hasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
         return
     end
 
-	if HasBuffNamed("Time Stop", "player") then
+	if mb_hasBuffNamed("Time Stop", "player") then
         return
     end
 
-    if IsDruidShapeShifted() then
+    if mb_isDruidShapeShifted() then
         return
     end
 
     if (sandTime == nil or GetTime() - sandTime > 3) then
         sandTime = GetTime()
-        UseFromBags("Hourglass Sand")
+        mb_useFromBags("Hourglass Sand")
     end
 end
 
@@ -583,22 +545,22 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UsePotionsWhenPossible(potion)
-    if not HaveInBags(potion) and not IsItemInBagCoolDown(potion) then
+function mb_takePotionsWhenPossible(potion)
+    if not mb_haveInBags(potion) and not mb_isItemInBagCoolDown(potion) then
         return
     end
 
-    if HasBuffOrDebuff(potion, "player", "buff") then
+    if mb_hasBuffOrDebuff(potion, "player", "buff") then
         return
     end
 
-    if IsDruidShapeShifted() then
+    if mb_isDruidShapeShifted() then
         return
     end
 
     if (sandTime == nil or GetTime() - sandTime > 3) then
         sandTime = GetTime()
-        UseFromBags(potion)
+        mb_useFromBags(potion)
     end
 end
 
@@ -607,31 +569,15 @@ function mb_useFirePotsOnFaerlina()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
+    if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
-    if Instance.NAXX() and not (TankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
+    if Instance.NAXX() and not (mb_tankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
     end
 
-    UsePotionsWhenPossible("Greater Fire Protection Potion")
-end
-
-function mb_useShadowPotsOnLoatheb()
-    if not MB_myLoathebShadowPotStrategy then
-        return
-    end
-
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    if Instance.NAXX() and not IsAtLoatheb() then
-        return
-    end
-
-    UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    mb_takePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 function mb_useFirePotsOnVaelastrasz()
@@ -639,15 +585,15 @@ function mb_useFirePotsOnVaelastrasz()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
+    if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
-    if Instance.BWL() and not (TankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
+    if Instance.BWL() and not (mb_tankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
         return
     end
 
-    UsePotionsWhenPossible("Greater Fire Protection Potion")
+    mb_takePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 function mb_useNaturePotsOnHuhuran()
@@ -655,35 +601,35 @@ function mb_useNaturePotsOnHuhuran()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
+    if mb_imBusy() or not mb_inCombat("player") then
 		return
 	end
 
-    if Instance.AQ40() and not (TankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
+    if Instance.AQ40() and not (mb_tankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
         return
     end
 
-    if HealthPct("target") > 0.3 then
+    if mb_healthPct("target") > 0.3 then
         return
     end
 
-    UsePotionsWhenPossible("Greater Nature Protection Potion")
+    mb_takePotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseJujuWhenPossible(juju)
-    if not HaveInBags(juju) and not IsItemInBagCoolDown(juju) then
+function mb_takeJujuWhenPossible(juju)
+    if not mb_haveInBags(juju) and not mb_isItemInBagCoolDown(juju) then
         return
     end
 
-    if HasBuffOrDebuff(juju, "player", "buff") then
+    if mb_hasBuffOrDebuff(juju, "player", "buff") then
         return
     end
 
-    if IsDruidShapeShifted() then
+    if mb_isDruidShapeShifted() then
         return
     end
 
@@ -691,7 +637,7 @@ local function UseJujuWhenPossible(juju)
 
     if (sandTime == nil or GetTime() - sandTime > 3) then
         sandTime = GetTime()
-        UseFromBags(juju)
+        mb_useFromBags(juju)
     end
 
     TargetLastTarget()
@@ -703,15 +649,15 @@ end
 
 local function ZanzaPotions()
     if Instance.NAXX() then
-        UsePotionsWhenPossible("Spirit of Zanza")
+        mb_takePotionsWhenPossible("Spirit of Zanza")
     else
-        UsePotionsWhenPossible("Swiftness of Zanza")
+        mb_takePotionsWhenPossible("Swiftness of Zanza")
     end
 end
 
 local function ProtectionPotions()
-    if Instance.NAXX() and IsAtLoatheb() then
-        UsePotionsWhenPossible("Greater Shadow Protection Potion")
+    if Instance.NAXX() and mb_isAtLoatheb() then
+        mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
     end
 end
 
@@ -719,29 +665,29 @@ local function MeleeSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    UsePotionsWhenPossible("Flask of the Titans")
-    UsePotionsWhenPossible("Elixir of the Mongoose")
+    mb_takePotionsWhenPossible("Flask of the Titans")
+    mb_takePotionsWhenPossible("Elixir of the Mongoose")
 
-    UseJujuWhenPossible("Juju Might")
-    UseJujuWhenPossible("Juju Power")
+    mb_takeJujuWhenPossible("Juju Might")
+    mb_takeJujuWhenPossible("Juju Power")
 end
 
 local function CasterSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    UsePotionsWhenPossible("Flask of Supreme Power")
-    UsePotionsWhenPossible("Mageblood Potion")
-    UsePotionsWhenPossible("Greater Arcane Elixir")
+    mb_takePotionsWhenPossible("Flask of Supreme Power")
+    mb_takePotionsWhenPossible("Mageblood Potion")
+    mb_takePotionsWhenPossible("Greater Arcane Elixir")
 
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
-            UsePotionsWhenPossible("Elixir of Frost Power")            
+            mb_takePotionsWhenPossible("Elixir of Frost Power")            
         else
-            UsePotionsWhenPossible("Elixir of Greater Firepower")
+            mb_takePotionsWhenPossible("Elixir of Greater Firepower")
         end
     elseif myClass == "Warlock" then
-        UsePotionsWhenPossible("Elixir of Shadow Power")
+        mb_takePotionsWhenPossible("Elixir of Shadow Power")
     end
 end
 
@@ -749,8 +695,8 @@ local function HealerSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    UsePotionsWhenPossible("Flask of Distilled Wisdom")
-    UsePotionsWhenPossible("Mageblood Potion")
+    mb_takePotionsWhenPossible("Flask of Distilled Wisdom")
+    mb_takePotionsWhenPossible("Mageblood Potion")
 end
 
 function mb_useSpeedRunPots()
@@ -762,13 +708,13 @@ function mb_useSpeedRunPots()
         return
     end
 
-    if ImBusy() or InCombat("player") then
+    if mb_imBusy() or mb_inCombat("player") then
 		return
 	end
 
-    if ImHealer() then
+    if mb_imHealer() then
         HealerSpeedRunPots()
-    elseif ImRangedDPS() then
+    elseif mb_imRangedDPS() then
         CasterSpeedRunPots()
     else
         MeleeSpeedRunPots()
@@ -788,17 +734,17 @@ function mb_takeLIP()
         return
     end
 
-    if ImBusy() or InCombat("player") then
+    if mb_imBusy() or mb_inCombat("player") then
 		return
 	end
 
-    if ImTank() then
+    if mb_imTank() then
         return
     end
 
     local aggrox = AceLibrary("Banzai-1.0")
-	if aggrox:GetUnitAggroByUnitId("player") and HealthPct("player") <= 0.25 then
-        UsePotionsWhenPossible("Limited Invulnerability Potion")
+	if aggrox:GetUnitAggroByUnitId("player") and mb_healthPct("player") <= 0.25 then
+        mb_takePotionsWhenPossible("Limited Invulnerability Potion")
 	end
 end
 
@@ -811,17 +757,17 @@ function mb_takeFAP()
         return
     end
 
-    if ImBusy() or InCombat("player") then
+    if mb_imBusy() or mb_inCombat("player") then
 		return
 	end
 
-    if not ImMeleeDPS() then
+    if not mb_imMeleeDPS() then
         return
     end
 
-    if not BossUseFAPon() then
+    if not mb_bossUseFAPon() then
         return
     end
 
-    UsePotionsWhenPossible("Free Action Potion")
+    mb_takePotionsWhenPossible("Free Action Potion")
 end
