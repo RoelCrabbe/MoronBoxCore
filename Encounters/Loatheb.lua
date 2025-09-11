@@ -406,14 +406,6 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function ExecuteRotation(rotation, context)
-    if rotation and type(rotation) == "function" then
-        rotation()
-    else
-        CdMessage("I don't know what to do for "..(context or "this situation")..".", 500)
-    end
-end
-
 function mb_loathebRotation()
     if Instance.NAXX() and mb_isAtLoatheb() and MB_myLoathebBoxStrategy then
         local SingleRotation = MB_mySingleList[myClass]
@@ -422,11 +414,11 @@ function mb_loathebRotation()
 
         if mb_imHealer() then
             local SingleLoathebRotation = MB_myLoathebList[myClass]
-            ExecuteRotation(SingleLoathebRotation, "Loatheb Healing SINGLE")
+            mb_executeRotation(SingleLoathebRotation, "Loatheb Healing SINGLE")
         elseif mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
-            ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
+            mb_executeRotation(SingleRotation, "Fungal Bloom SINGLE")
         elseif mb_imTank() then
-            ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
+            mb_executeRotation(SingleRotation, "Loatheb Tank SINGLE")
         elseif mb_tankTargetHealth() <= 0.88 then            
             if myName == MB_myLoathebMasterMage and mb_numberOfClassInRaid("Mage") < 4 then
                 if not mb_hasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
@@ -434,7 +426,7 @@ function mb_loathebRotation()
                 end
             end
 
-            ExecuteRotation(SingleRotation, "Loatheb Emergency SINGLE")
+            mb_executeRotation(SingleRotation, "Loatheb Emergency SINGLE")
         end
         return true
     end

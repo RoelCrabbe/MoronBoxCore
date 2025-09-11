@@ -776,6 +776,8 @@ function MMB_Post_Init:OnUpdate()
 		mb_equipRackSet(MB_raidAssist.AutoEquipSet.Set)
 	end
 
+	UIErrorsFrame:Hide()
+
 	MMB_Post_Init:SetScript("OnUpdate", nil)
 	MMB_Post_Init.Timer = nil
 	MMB_Post_Init.OnUpdate = nil

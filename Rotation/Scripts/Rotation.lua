@@ -84,6 +84,7 @@ local Dead = mb_dead
 local Decurse = mb_decurse
 local DoFaerlinaActions = mb_doFaerlinaActions
 local DoRazuviousActions = mb_doRazuviousActions
+local ExecuteRotation = mb_executeRotation
 local FreezingTrap = mb_freezingTrap
 local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local GetMCActions = mb_getMCActions
@@ -207,14 +208,6 @@ local function CheckWarStomp()
     end
 
     CastSpellByName("War Stomp")
-end
-
-local function ExecuteRotation(rotation, context)
-    if rotation and type(rotation) == "function" then
-        rotation()
-    else
-        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
-    end
 end
 
 --[####################################################################################################]--
@@ -396,11 +389,7 @@ function mb_setup()
     end
 
     local SetupRotation = MB_mySetupList[myClass]
-    if SetupRotation and type(SetupRotation) == "function" then
-        SetupRotation()
-    else
-        CdMessage("I don\'t know what to do.", 500)
-    end
+    ExecuteRotation(SetupRotation, "Default SETUP")
 end
 
 --[####################################################################################################]--
@@ -428,11 +417,7 @@ function mb_preCast()
     end
 
     local PreCastRotation = MB_myPreCastList[myClass]
-    if PreCastRotation and type(PreCastRotation) == "function" then
-        PreCastRotation()
-    else
-        CdMessage("I don\'t know what to do.", 500)
-    end
+    ExecuteRotation(PreCastRotation, "Default PRECAST")
 end
 
 --[####################################################################################################]--
