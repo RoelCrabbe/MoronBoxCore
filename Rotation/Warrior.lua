@@ -949,8 +949,10 @@ function Warrior:TANKSurvival()
     end
 
     if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
-        if HealthPct("target") <= 0.12 then
+        if HealthPct("player") <= 0.8 then
             Warrior:BigTANKCooldowns()
+        elseif HealthPct("target") <= 0.12 then
+            SelfBuff("Last Stand")
         end
 
         UseJujuWhenPossible("Juju Escape")
