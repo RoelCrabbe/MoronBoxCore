@@ -85,10 +85,9 @@ function mb_decurse()
 		end
 	end
 
-	if (mb_isAtSkeram() or mb_isAtLoatheb()
+	if (mb_isAtSkeram() or mb_isAtLoatheb() or mb_isAtGrobbulus()
         or mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Princess Huhuran")
-        or mb_isAtGrobbulus() or mb_tankTarget("Garr") or mb_tankTarget("Firesworn")
-        or mb_tankTarget("Spore") or mb_tankTarget("Fungal Spore") or mb_tankTarget("Anubisath Guardian")) then
+        or mb_tankTarget("Garr") or mb_tankTarget("Firesworn") or mb_tankTarget("Anubisath Guardian")) then
 		return false
 	end
 	

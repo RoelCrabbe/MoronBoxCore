@@ -160,54 +160,11 @@ local function HandleNAXXTargetingPostFocus()
 		return true
 	end
 
-	if mb_isAtGrobbulus() and MB_myGrobbulusBoxStrategy then
-		if mb_imTank() then						
-			if myName == MB_myGrobbulusMainTank then
-				if mb_lockOnTarget("Grobbulus") then
-					return
-				end
+	if GROB_Targeting() then
+		return true
+	end
 
-				if not tName or mb_dead("target") then
-					mb_assistFocus()
-				end
-				return
-			end
-			
-			mb_getTargetNotOnTank()
-			return
-
-		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
-			if mb_tankTargetHealth() < 0.1 or (mb_tankTargetHealth() < 0.9 and MB_mySpecc == "Fire") then
-				mb_assistFocus()
-				return 
-			end
-
-			if mb_assistSpecificTargetFromPlayer("Fallout Slime", MB_myGrobbulusSlimeTankOne) then 
-				mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..MB_myGrobbulusSlimeTankOne.." on Fallout Slime!") 
-				return 
-			end
-
-			if mb_assistSpecificTargetFromPlayer("Fallout Slime", MB_myGrobbulusSlimeTankTwo) then 
-				mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..MB_myGrobbulusSlimeTankTwo.." on Fallout Slime!") 
-				return 
-			end
-
-			if mb_assistSpecificTargetFromPlayer("Fallout Slime", MB_myGrobbulusFollowTarget) then 
-				mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..MB_myGrobbulusFollowTarget.." on Fallout Slime!") 
-				return 
-			end
-
-			if mb_lockOnTarget("Grobbulus") then
-				return
-			end
-
-			if not tName or mb_dead("target") then
-				mb_assistFocus()
-			end
-			return
-		end
-
-	elseif (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+	if (mb_tankTarget("Instructor Razuvious") and mb_myNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
 		(mb_tankTarget("Grand Widow Faerlina") and mb_myNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
 		return true
 
@@ -1152,19 +1109,17 @@ end
 
 function mb_isAtGrobbulus()
 	local targetName = UnitName("target")
-	
+
 	if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
 		return true
 	end
-	
-	if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankOne) then
-		return true
+
+	for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
+		if mb_targetFromSpecificPlayer("Fallout Slime", tankName) then
+			return true
+		end
 	end
-	
-	if mb_targetFromSpecificPlayer("Fallout Slime", MB_myGrobbulusSlimeTankTwo) then
-		return true
-	end
-	
+
 	if mb_tankTarget("Grobbulus") then
 		return true
 	end

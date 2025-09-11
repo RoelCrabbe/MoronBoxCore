@@ -43,6 +43,7 @@ Event\OnUpdate.lua
 Event\OnEvent.lua
 
 Encounters\Loatheb.lua
+Encounters\Grobbulus.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua

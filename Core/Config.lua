@@ -30,10 +30,6 @@ MB_raidAssist = { -- Raid tools
 			"Suecia", -- Horde
 			"Alliance Soak 1" -- Alliance
 		},
-		Grobbulus = { -- Grobbulus
-			"Bloodbatz", -- Horde
-			"Alliance Priest 1", -- Alliance
-		},
 		Onyxia = { -- Onyxia Phase 2 (Character that gets fireballed moves out to reduce damage)
 			"Moron", -- Horde
 			"Alliance Soak 1" -- Alliance

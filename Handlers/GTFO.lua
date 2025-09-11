@@ -75,7 +75,6 @@ local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HaveAggro = mb_haveAggro
 local ImFocus = mb_imFocus
 local IsAlive = mb_isAlive
-local IsAtGrobbulus = mb_isAtGrobbulus
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SpellReady = mb_spellReady
 local TankTarget = mb_tankTarget
@@ -121,25 +120,9 @@ function mb_GTFO()
     end
 		
     if not HaveAggro() then
-        if Instance.NAXX() and MB_myGrobbulusBoxStrategy then
-            if IsAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
-                if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
-                    if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
-                        FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
-                    end
-                else
-                    if MBID[MB_myGrobbulusFollowTarget] and UnitInRange(MBID[MB_myGrobbulusFollowTarget]) then                        
-                        if not CheckInteractDistance(MBID[MB_myGrobbulusFollowTarget], 3) then
-                            FollowByName(MB_myGrobbulusFollowTarget, 1)
-                        end
-                    else
-                        if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
-                            FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
-                        end
-                    end
-                end
-            end
-            
+        if Instance.NAXX() then
+
+            GROB_GetOUT()            
             UseFirePotsOnFaerlina()
         
         elseif Instance.BWL() and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
