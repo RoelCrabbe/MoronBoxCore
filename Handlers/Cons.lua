@@ -397,7 +397,7 @@ local ReagentsLimit = {
     ["Elixir of the Mongoose"] = { 40, 1 },
     ["Juju Might"] = { 40, 1 },
     ["Juju Power"] = { 40, 1 },
-    ["Juju Escape"] = { 60, 1 },
+    ["Juju Escape"] = { 20, 1 },
     
     -- Food & Drink Buffs
     ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },

@@ -83,6 +83,7 @@ local myRace = UnitRace("player")
 local MB_recklessnessTargetsSet = {
     ["Patchwerk"] = 0.19,
     ["Maexxna"] = 0.19,
+    ["Loatheb"] = 0.19,
     ["Noth the Plaguebringer"] = 0.19,
     ["Ragnaros"] = 0.19,
     ["Chromaggus"] = 0.19,
@@ -90,7 +91,6 @@ local MB_recklessnessTargetsSet = {
     ["Fankriss the Unyielding"] = 0.19,
     ["Princess Yauj"] = 0.30,
     ["Heigan the Unclean"] = 0.25,
-    ["Magmadar"] = 0.25,
     ["Vaelastrasz the Corrupt"] = 0.11,
     ["Grand Widow Faerlina"] = 0.19
 }
