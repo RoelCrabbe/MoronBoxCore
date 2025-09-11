@@ -156,7 +156,7 @@ end
 local function HandleNAXXTargetingPostFocus()
 	local tName = UnitName("target")
 
-	if mb_loathebTargeting() then
+	if LOA_Targeting() then
 		return true
 	end
 

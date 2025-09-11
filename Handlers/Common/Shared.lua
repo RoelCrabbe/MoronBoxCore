@@ -1460,3 +1460,9 @@ function mb_executeRotation(rotation, context)
         CdMessage("I don't know what to do for "..(context or "this situation")..".", 500)
     end
 end
+
+function mb_whoIsBetterTank()
+    local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
+    local total = dodge + parry + block
+    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total)) 
+end

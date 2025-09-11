@@ -108,7 +108,7 @@ MB_myLoathebBoxStrategy = true
 MB_myLoathebShadowPotStrategy = true
 
 -- Tank Assignments (REQUIRED)
-MB_myLoathebMainTank = "Kungen"
+MB_myLoathebMainTank = "Kungen"        -- Targets boss
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -266,8 +266,6 @@ local function InitializeHealerRotation()
 
 	MB_myLoathebHealers = final
     MB_myLoathebHealerIndex = 1
-
-    Print(MB_myLoathebHealers[1])
 end
 
 local function CurrentActiveHealer()
@@ -331,6 +329,22 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function UseShadowPotsOnLoatheb()
+    if not MB_myLoathebShadowPotStrategy then
+        return
+    end
+
+    if mb_imBusy() or not mb_inCombat("player") then
+		return
+	end
+
+    mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function LOA:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
         if (arg1 == MB_RAID.."LOATHEB_HEAL") then
@@ -359,7 +373,7 @@ LOA:SetScript("OnEvent", LOA.OnEvent)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_loathebHealing()
+function LOA_Healing()
 
     if ShouldBroadcast() then
         BroadcastHealer()
@@ -412,33 +426,11 @@ function mb_loathebHealing()
     return true
 end
 
-function mb_whoIsBetterTank()
-    local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
-    local total = dodge + parry + block
-    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total)) 
-end
-
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseShadowPotsOnLoatheb()
-    if not MB_myLoathebShadowPotStrategy then
-        return
-    end
-
-    if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
-
-    mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
-end
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-function mb_loathebRotation()
+function LOA_Rotation()
     if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
         local SingleRotation = MB_mySingleList[myClass]
 
@@ -472,7 +464,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_loathebTargeting()
+function LOA_Targeting()
 	if IsAtLoatheb() and MB_myLoathebBoxStrategy then
 		if myName == MB_myLoathebMainTank then
             if mb_lockOnTarget("Loatheb") then
