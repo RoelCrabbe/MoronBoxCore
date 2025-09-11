@@ -100,7 +100,6 @@ local ImMeleeDPS = mb_imMeleeDPS
 local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
-local IsAtLoatheb = mb_isAtLoatheb
 local IsAtNefarianPhase = mb_isAtNefarianPhase
 local IsAtRazorgore = mb_isAtRazorgore
 local IsAtSkeram = mb_isAtSkeram
@@ -375,7 +374,7 @@ function mb_setup()
 	UseSpeedRunPots()
 
     if myClass == "Mage" or myClass == "Warlock" then
-        if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if Instance.NAXX() and MB_myLoathebBoxStrategy then
             RunLine("/trinket load top UNDEAD")
             RunLine("/trinket load top UNDEAD")
         else

@@ -72,6 +72,7 @@ local myRace = UnitRace("player")
 local CdPrint = mb_cdPrint
 local CdRaidWarning = mb_cdRaidWarning
 local ExecuteRotation = mb_executeRotation
+local GetMaxSpellRank = mb_getMaxSpellRank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthDown = mb_healthDown
 local ImHealer = mb_imHealer
@@ -119,24 +120,18 @@ local MB_myLoathebHealers = {
     -- Priests
     "Liket", "Blaidzy", "Cyal", "Bonita",
     -- Shaman
-    "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", "Chimando", "Shaitan", "Lillifee",
+    "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", 
+    "Chimando", "Shaitan", "Lillifee",
     -- Druids
     "Pyqmi"
 }
 
 -- Healing Spell Configuration
 local MB_myLoathebHealSpell = {
+    Druid = "Healing Touch",
     Shaman = "Healing Wave", 
     Priest = "Greater Heal",
-    Paladin = "Holy Light",
-    Druid = "Healing Touch"
-}
-
-local MB_myLoathebHealSpellRank = {
-    Shaman = "Rank 10", 
-    Priest = "Rank 5",
-    Paladin = "Rank 9",
-    Druid = "Rank 11"
+    Paladin = "Holy Light"
 }
 
 --[####################################################################################################]--
@@ -335,7 +330,6 @@ function LOA:OnEvent()
         if (arg1 == MB_RAID.."LOATHEB_HEAL") then
             local _, _, newIndex, healerName = string.find(arg2, "NEXT:(%d+):(.+)")
             MB_myLoathebHealerIndex = tonumber(newIndex)
-
             CdRaidWarning(">> "..healerName.." <<")
 
         elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
@@ -376,7 +370,8 @@ function mb_loathebHealing()
     end
 
     local myHealSpell = MB_myLoathebHealSpell[myClass]
-    local myHealRank = MB_myLoathebHealSpellRank[myClass]
+    local myHealRank = GetMaxSpellRank(myHealSpell)
+
     if not myHealSpell or not myHealRank then
         return false
     end
