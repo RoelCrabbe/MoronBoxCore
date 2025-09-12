@@ -184,46 +184,6 @@ MB_myFearSpell = {
     Warlock = "Fear"
 }
 
-MB_classSpellManaCost = {
-    -- Fire Magus
-    ["Fireball"] = 410,
-    ["Pyroblast"] = 440,
-    ["Scorch"] = 150,
-    ["Blast Wave"] = 545,
-
-    -- Frost Magus
-    ["Frostbolt"] = 290,
-    ["Frostbolt(Rank 1)"] = 25,
-    ["Cone of Cold"] = 555,
-
-    -- Arcane Magus
-    ["Arcane Explosion"] = 390,
-    ["Arcane Explosion(Rank 1)"] = 75,
-    ["Arcane Missiles"] = 655,
-
-    -- Warlock
-    ["Searing Pain"] = 168,
-    ["Shadow Bolt"] = 380,
-    ["Soul Fire"] = 335,
-    ["Immolate"] = 380,
-    ["Corruption"] = 340,
-    ["Drain Mana"] = 225,
-
-    -- Priest
-    ["Smite"] = 280,
-    ["Mind Flay"] = 205,
-    ["Mind Blast"] = 350,
-    ["Mana Burn"] = 270,
-
-    -- Druid
-    ["Starfire"] = 309,
-    ["Wrath"] = 163,
-
-    -- Shaman
-    ["Chain Lightning"] = 544,
-    ["Lightning Bolt"] = 238
-}
-
 MB_raidTargetNames = {
     [8] = "Skull", 
     [7] = "Cross", 

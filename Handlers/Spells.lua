@@ -174,20 +174,141 @@ function mb_coolDownCast(spell, cooldown)
 	end
 end
 
-function mb_castSpellOrWand(spell)
-	if mb_knowSpell(spell) then
-		if UnitMana("player") > MB_classSpellManaCost[spell] then
-			CastSpellByName(spell) 
-			return 
+local function MaxRankOfSpell(spellName)
+    if not spellName then
+		return nil
+	end
+    
+    local maxRank = 0
+    local maxRankText = nil
+    
+    local i = 1
+    while true do
+        local spell, rank = GetSpellName(i, BOOKTYPE_SPELL)
+        if not spell then
+			break
 		end
+        
+        if spell == spellName then
+            if rank then
+                local rankStart = strfind(rank, "Rank ")
+                if rankStart then
+                    local numberStart = rankStart + 5
+                    local rankNumStr = strsub(rank, numberStart)
+                    local rankNum = tonumber(rankNumStr)
+                    if rankNum and rankNum > maxRank then
+                        maxRank = rankNum
+                        maxRankText = rank
+                    end
+                end
+            else
+                if maxRank == 0 then
+                    maxRankText = nil
+                end
+            end
+        end
+
+        i = i + 1
+    end
+    
+    return maxRankText
+end
+
+local function CostOfSpell(spellName, rankText)
+    if not spellName then
+        return nil
+    end
+
+    local tooltip = MMBTooltip
+	tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+
+    local i = 1
+
+    while true do
+        local spell, rank = GetSpellName(i, BOOKTYPE_SPELL)
+        if not spell then
+            break
+        end
+
+        if spell == spellName and (not rankText or rank == rankText) then
+            tooltip:SetSpell(i, BOOKTYPE_SPELL)
+
+            local lineIndex = 2
+            while true do
+                local textRegion = getglobal(tooltip:GetName().."TextLeft"..lineIndex)
+                if not textRegion then
+                    break
+                end
+
+                local text = textRegion:GetText()
+                if text then
+                    local _, _, cost = strfind(text, "(%d+)%s+[Mm]ana")
+                    if cost then
+                        tooltip:Hide()
+                        return tonumber(cost)
+                    end
+                end
+
+                lineIndex = lineIndex + 1
+            end
+
+            tooltip:Hide()
+            break
+        end
+
+        i = i + 1
+    end
+
+    return nil
+end
+
+local SpellRankCache = {}
+function mb_getSpellMaxRank(spellName)
+    if not spellName then
+		return nil
+	end
+    
+    if SpellRankCache[spellName] then
+        return SpellRankCache[spellName]
+    end
+    
+    local result = MaxRankOfSpell(spellName)
+    SpellRankCache[spellName] = result
+    return result
+end
+
+local SpellManaCostCache = {}
+function mb_getSpellManaCost(spellName, rankText)
+    if not spellName then
+		return nil
 	end
 
-	if MB_attackWandSlot then
-		mb_autoWandAttack()
-		return
+	local getRank = rankText or mb_getSpellMaxRank(spellName)    
+    local cacheKey = spellName..(getRank or "")
+
+    if SpellManaCostCache[cacheKey] then
+        return SpellManaCostCache[cacheKey]
+    end
+
+    local manaCost = CostOfSpell(spellName, getRank)
+    SpellManaCostCache[cacheKey] = manaCost
+    return manaCost
+end
+
+function mb_castSpellOrWand(spell)
+    if mb_knowSpell(spell) then
+        local spellCost = mb_getSpellManaCost(spell)
+        if spellCost and UnitMana("player") > spellCost then
+            CastSpellByName(spell)
+            return
+        end
+    end
+
+    if MB_attackWandSlot then
+        mb_autoWandAttack()
+	else
+    	mb_autoAttack()
 	end
-	
-	mb_autoAttack()
 end
 
 function mb_imBusy()
