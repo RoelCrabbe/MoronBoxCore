@@ -71,10 +71,12 @@ local myRace = UnitRace("player")
 
 local AssistFocus = mb_assistFocus
 local CdPrint = mb_cdPrint
+local CdMessage = mb_cdMessage
 local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
 local ExecuteRotation = mb_executeRotation
-local GetMaxSpellRank = mb_getMaxSpellRank
+local GetSpellMaxRank = mb_getSpellMaxRank
+local GetSpellManaCost = mb_getSpellManaCost
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthDown = mb_healthDown
@@ -125,7 +127,7 @@ MB_myLoathebMainTank = "Kungen"
 
 -- Healer Rotation Configuration
 local MB_myLoathebHealerIndex = 1
-local MB_myLoathebHealerOverheal = 0.84
+local MB_myLoathebHealerOverheal = 0.85
 local MB_myLoathebDPSThreshold = 0.88
 
 -- Healer Assignments (REQUIRED)
@@ -399,9 +401,16 @@ function LOA_Healing()
     end
 
     local myHealSpell = MB_myLoathebHealSpell[myClass]
-    local myHealRank = GetMaxSpellRank(myHealSpell)
+    local myHealRank = GetSpellMaxRank(myHealSpell)
 
     if not myHealSpell or not myHealRank then
+        return false
+    end
+
+    local spellCost = GetSpellManaCost(myHealSpell, myHealRank)
+    if not spellCost or (spellCost * 1.25) > UnitMana("player") then
+        CdMessage("No Mana For << "..myHealSpell.." >> Finding Healer!", 30)
+        BroadcastHealer()
         return false
     end
 
@@ -415,10 +424,12 @@ function LOA_Healing()
     local requiredMissing = math.floor(healValue * effectiveOverheal + 0.5)
     local allowedOverhealPct = (1 - effectiveOverheal) * 100
 
-    local printMessage = string.format(
-        "Heal value=%d, allowed overheal=%.0f%% → will start when missing ≥ %d HP",
-        healValue, allowedOverhealPct, requiredMissing
-    )
+    local printMessage = string.format([[
+    Heal Configuration:
+    • Heal Value: %d HP
+    • Allowed Overheal: %.0f%%
+    • Will Heal When Missing ≥ %d HP
+    ]], healValue, allowedOverhealPct, requiredMissing)
 
     CdPrint(printMessage, 30)
 
@@ -456,8 +467,8 @@ function LOA_Rotation()
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
 
         elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then            
-            if MyClassAlphabeticalOrder() == 1 and NumberOfClassInRaid("Mage") < 4 then
-                if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
+            if myClass == "Mage" and MyClassAlphabeticalOrder() == 1 then
+                if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") and NumberOfClassInRaid("Mage") < 4 then
                     SendAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH", "RAID")
                 end
             end
@@ -485,7 +496,7 @@ function LOA_Targeting()
             end
             return true
         
-        elseif ImTank() then				
+        elseif ImTank() then
 			GetTargetNotOnTank()
 			return true
 

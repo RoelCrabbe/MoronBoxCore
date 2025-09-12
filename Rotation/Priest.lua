@@ -107,7 +107,7 @@ local IsValidFriendlyTarget = mb_isValidFriendlyTarget
 local IsValidFriendlyTargetWithin28YardRange = mb_isValidFriendlyTargetWithin28YardRange
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
 local KnowSpell = mb_knowSpell
-local LoathebHealing = LOA_Healing
+local LOA_Healing = LOA_Healing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
 local MobsToFearWard = mb_mobsToFearWard
@@ -1052,14 +1052,14 @@ end
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
-local function LoathebAttack()
+local function LOA_Attack()
 	if ImBusy() or not InCombat("player") then
 		return
 	end
 
     GetTarget()
 
-	if ManaPct("player") < 0.1 then
+	if ManaPct("player") < 0.11 then
         return
     end
 
@@ -1069,13 +1069,13 @@ local function LoathebAttack()
 	end
 
 	if SpellReady("Smite") then
-		CoolDownCast("Smite", 6)
+		CoolDownCast("Smite", 8)
 	end
 
     AutoWandAttack()
 end
 
-local function PriestLoathebHeal()
+local function LOA_Heal()
 
 	GetTarget()
 	PriestCancelAuras()
@@ -1094,11 +1094,11 @@ local function PriestLoathebHeal()
         end
 	end
 
-	if LoathebHealing() then
+	if LOA_Healing() then
 		return
 	end
 
-	LoathebAttack()
+	LOA_Attack()
 end
 
-MB_myLoathebList["Priest"] = PriestLoathebHeal
+MB_myLoathebList["Priest"] = LOA_Heal

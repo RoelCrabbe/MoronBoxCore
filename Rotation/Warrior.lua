@@ -296,7 +296,7 @@ local function WarriorSingle()
         end
 
         if MobsToAutoBreakFear() then
-            if SpellReady("Death Wish") and myRage >= 10then
+            if SpellReady("Death Wish") and myRage >= 10 then
                 SelfBuff("Death Wish")
             end
         end
@@ -756,7 +756,7 @@ function Warrior:TankSingle(myRage)
         WarriorSetDefensive()
         return
     end
-	
+
     AutoAttack()
 
     if SpellReady("Bloodrage") and myRage < 15 then        
@@ -909,7 +909,7 @@ function Warrior:TANKSurvival()
     end
 
     if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
-        if HealthPct("player") <= 0.8 then
+        if HealthPct("player") <= 0.08 then
             Warrior:BigTANKCooldowns()
         elseif HealthPct("target") <= 0.12 then
             SelfBuff("Last Stand")

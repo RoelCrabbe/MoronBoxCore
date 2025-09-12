@@ -97,7 +97,7 @@ local ImHealer = mb_imHealer
 local InCombat = mb_inCombat
 local InstructorRazAddsHeal = mb_instructorRazAddsHeal
 local IsAlive = mb_isAlive
-local LoathebHealing = LOA_Healing
+local LOA_Healing = LOA_Healing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
 local MeleeDPSInParty = mb_meleeDPSInParty
@@ -547,26 +547,26 @@ end
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
-local function LoathebAttack()
+local function LOA_Attack()
 	if ImBusy() or not InCombat("player") then
 		return
 	end
 
     GetTarget()
 
-	if ManaPct("player") < 0.1 then
+	if ManaPct("player") < 0.17 then
         return
     end
 
 	if SpellReady("Lightning Bolt") then
-		CoolDownCast("Lightning Bolt", 5)
+		CoolDownCast("Lightning Bolt", 6)
 		return
 	end
 
     AutoAttack()
 end
 
-local function ShamanLoathebHeal()
+local function LOA_Heal()
 
 	GetTarget()
 	ShamanCancelAuras()
@@ -606,11 +606,11 @@ local function ShamanLoathebHeal()
 
 	DropTotems()
 
-	if LoathebHealing() then
+	if LOA_Healing() then
 		return
 	end
 
-	LoathebAttack()
+	LOA_Attack()
 end
 
-MB_myLoathebList["Shaman"] = ShamanLoathebHeal
+MB_myLoathebList["Shaman"] = LOA_Heal

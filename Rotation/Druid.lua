@@ -109,7 +109,7 @@ local IsDruidShapeShifted = mb_isDruidShapeShifted
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
 local KnowSpell = mb_knowSpell
-local LoathebHealing = LOA_Healing
+local LOA_Healing = LOA_Healing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
 local MeleeBuff = mb_meleeBuff
@@ -1293,26 +1293,26 @@ end
 --[######################################### LOATHEB Code! ############################################]--
 --[####################################################################################################]--
 
-local function LoathebAttack()
+local function LOA_Attack()
 	if ImBusy() or not InCombat("player") then
 		return
 	end
 
     GetTarget()
 
-    if ManaPct("player") < 0.1 then
+    if ManaPct("player") < 0.13 then
         return
     end
 
 	if SpellReady("Starfire") then
-		CoolDownCast("Starfire", 5)
+		CoolDownCast("Starfire", 6)
 		return
 	end
 
     AutoAttack()
 end
 
-local function DruidLoathebHeal()
+local function LOA_Heal()
 	
     GetTarget()
     DruidCancelAuras()
@@ -1328,11 +1328,11 @@ local function DruidLoathebHeal()
         end
 	end
 
-    if LoathebHealing() then
+    if LOA_Healing() then
 		return
 	end
 
-	LoathebAttack()
+	LOA_Attack()
 end
 
-MB_myLoathebList["Druid"] = DruidLoathebHeal
+MB_myLoathebList["Druid"] = LOA_Heal

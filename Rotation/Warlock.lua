@@ -276,16 +276,6 @@ local function WarlockSingle()
         return
     end
 
-    if Instance.IsWorldBoss() then
-        local wndSlot = tonumber(MB_attackWandSlot)
-
-        if MB_mySpecc == "Corruption" 
-            and UnitMana("player") > MB_classSpellManaCost["Corruption"] 
-            and not IsAutoRepeatAction(wndSlot) then
-            CoolDownCast("Corruption", 18)
-        end
-    end
-
 	if MB_mySpecc == "Shadowburn" and MB_raidAssist.Warlock.ShouldBeWhores then		
 		Warlock:ShadowBoltWhoring()
 	else	
