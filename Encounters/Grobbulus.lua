@@ -69,21 +69,19 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local AssistFocus = mb_assistFocus
-local AssistSpecificTargetFromPlayer = mb_assistSpecificTargetFromPlayer
+local CdPrint = mb_cdPrint
+local CdMessage = mb_cdMessage
+local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
-local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local ImBusy = mb_imBusy
 local ImHealer = mb_imHealer
 local ImMeleeDPS = mb_imMeleeDPS
 local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
+local IsAlive = mb_isAlive
 local InCombat = mb_inCombat
-local IsAtGrobbulus = mb_isAtGrobbulus
-local LockOnTarget = mb_lockOnTarget
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
-local TankTargetHealth = mb_tankTargetHealth
 local UnitInRange = mb_unitInRange
 
 --[####################################################################################################]--
@@ -110,19 +108,19 @@ end
 MB_myGrobbulusBoxStrategy = true 
 MB_myGrobbulusNaturePotStrategy = true
 
-MB_myGrobbulusDecurseFollow = "Liket"
+MB_myGrobbulusDecurseFollow = "Ayag"
 
 -- Tank Assignments (REQUIRED)
-MB_myGrobbulusMainTank = "Kungen"
+MB_myGrobbulusMainTank = "Moron"
 MB_myGrobbulusSlimeTanks = {
-	"Moron",
-	"Pyqmi"
+	"Kungen",
+	"Likalottapus"
 }
 
 -- Follow Targets (REQUIRED)
 MB_myGrobbulusRaidFollowers = {
-	"Moron",
-	"Pyqmi"
+	"Kungen",
+	"Likalottapus"
 }
 
 --[####################################################################################################]--
@@ -145,8 +143,54 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function GROB:OnEvent()
+function GROB_IsAtGrobbulus()
+	local targetName = UnitName("target")
 
+	if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
+		return true
+	end
+
+	for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
+		if mb_targetFromSpecificPlayer("Fallout Slime", tankName) then
+			return true
+		end
+	end
+
+	if mb_tankTarget("Grobbulus") then
+		return true
+	end
+	
+	if mb_tankTarget("Fallout Slime") then
+		return true
+	end
+	
+	if not targetName then
+		return false
+	end
+	
+	if targetName == "Grobbulus" then
+		return true
+	end
+	
+	if targetName == "Fallout Slime" then
+		return true
+	end
+	
+	return false
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function GROB:OnEvent()
+	if (event == "CHAT_MSG_ADDON") then
+        if (arg1 == MB_RAID.."GROBBULUS_EMERGENCY") then
+            if (arg2 == "PRIEST_OOR") then
+                CdRaidWarning(">> Priest Out of Range! <<")
+            end
+		end
+    end
 end
 
 GROB:SetScript("OnEvent", GROB.OnEvent) 
@@ -175,7 +219,7 @@ local function GetRaidFollow(firstId, secondId, decurseId)
 end
 
 function GROB_GetOUT()
-	if IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+	if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
 		UseNaturePotsOnGrobbulus()
 
 		local firstFollow, secondFollow = MB_myGrobbulusRaidFollowers[1], MB_myGrobbulusRaidFollowers[2]
@@ -207,7 +251,7 @@ function GROB_GetOUT()
 		if myName == mainFollow then
 			return false
 		end
-	
+
 		if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then
 			if IsAlive(decurseId) then
 				FollowUnit(decurseId, 1)
@@ -229,11 +273,11 @@ function GROB_GetOUT()
 end
 
 local function GetTargetWithInjection()
-    if not IsInRaid() then
+    if not UnitInRaid("player") then
         return nil
     end
 
-    for i = 1, GetNumGroupMembers() do
+    for i = 1, GetNumRaidMembers() do
         local memberId = "raid"..i
         if HasBuffOrDebuff("Mutating Injection", memberId, "debuff") then
             return memberId
@@ -250,6 +294,7 @@ function GROB_Decurse()
 	end
 
 	if not UnitInRange(targetId) then
+		SendAddonMessage(MB_RAID.."GROBBULUS_EMERGENCY", "PRIEST_OOR", "RAID")
 		return false
 	end
 
@@ -267,41 +312,41 @@ end
 --[####################################################################################################]--
 
 function GROB_Targeting()
-	if IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+	if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
 		if myName == MB_myGrobbulusMainTank then
-            if LockOnTarget("Grobbulus") then
+            if mb_lockOnTarget("Grobbulus") then
                 return true
             end
 
             if not tName or Dead("target") then
-                AssistFocus()
+                mb_assistFocus()
             end
             return true
         
         elseif ImTank() then				
-			GetTargetNotOnTank()
+			mb_getTargetNotOnTank()
 			return true
 
 		elseif ImRangedDPS() then
-			if TankTargetHealth() < 0.12 then
-				AssistFocus()
+			if mb_tankTargetHealth() < 0.12 then
+				mb_assistFocus()
 				return true
 			end
 
 			if MB_mySpecc ~= "Fire" then
 				for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
-					if AssistSpecificTargetFromPlayer("Fallout Slime", tankName) then
+					if mb_assistSpecificTargetFromPlayer("Fallout Slime", tankName) then
 						return true
 					end
 				end
 			end
 
-			if LockOnTarget("Grobbulus") then
+			if mb_lockOnTarget("Grobbulus") then
 				return true
 			end
 
 			if not tName or Dead("target") then
-				AssistFocus()
+				mb_assistFocus()
 			end
 			return true
 		end
@@ -313,21 +358,3 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
-
--- if IsAtGrobbulus() and (myName ~= MB_myGrobbulusMainTank or myName ~= MB_myGrobbulusFollowTarget) then
---     if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then                    
---         if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
---             FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
---         end
---     else
---         if MBID[MB_myGrobbulusFollowTarget] and UnitInRange(MBID[MB_myGrobbulusFollowTarget]) then                        
---             if not CheckInteractDistance(MBID[MB_myGrobbulusFollowTarget], 3) then
---                 FollowByName(MB_myGrobbulusFollowTarget, 1)
---             end
---         else
---             if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus)]) then
---                 FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Grobbulus), 1)
---             end
---         end
---     end
--- end

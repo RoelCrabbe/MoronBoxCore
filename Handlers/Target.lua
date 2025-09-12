@@ -160,7 +160,7 @@ local function HandleNAXXTargetingPostFocus()
 		return true
 	end
 
-	if GROB_Targeting() then
+	if GROB_Targeting and GROB_Targeting() then
 		return true
 	end
 
@@ -1105,42 +1105,6 @@ function mb_isAtMonstrosity()
     end
     
     return false
-end
-
-function mb_isAtGrobbulus()
-	local targetName = UnitName("target")
-
-	if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
-		return true
-	end
-
-	for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
-		if mb_targetFromSpecificPlayer("Fallout Slime", tankName) then
-			return true
-		end
-	end
-
-	if mb_tankTarget("Grobbulus") then
-		return true
-	end
-	
-	if mb_tankTarget("Fallout Slime") then
-		return true
-	end
-	
-	if not targetName then
-		return false
-	end
-	
-	if targetName == "Grobbulus" then
-		return true
-	end
-	
-	if targetName == "Fallout Slime" then
-		return true
-	end
-	
-	return false
 end
 
 function mb_isAtLoatheb()

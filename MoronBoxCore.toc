@@ -29,12 +29,15 @@ Handlers\Attacking.lua
 Handlers\Spells.lua
 Handlers\Macros.lua
 Handlers\Slash.lua
-Handlers\Target.lua
 Handlers\CrowdControl.lua
 Handlers\AddonMessage.lua
-Handlers\Decurse.lua
 Handlers\Gear.lua
 Handlers\Cons.lua
+
+Encounters\Grobbulus.lua
+
+Handlers\Target.lua
+Handlers\Decurse.lua
 Handlers\GTFO.lua
 
 Event\Flash.lua
@@ -43,7 +46,6 @@ Event\OnUpdate.lua
 Event\OnEvent.lua
 
 Encounters\Loatheb.lua
-Encounters\Grobbulus.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua

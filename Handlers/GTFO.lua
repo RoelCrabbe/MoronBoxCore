@@ -122,7 +122,7 @@ function mb_GTFO()
     if not HaveAggro() then
         if Instance.NAXX() then
 
-            GROB_GetOUT()            
+            GROB_GetOUT()
             UseFirePotsOnFaerlina()
         
         elseif Instance.BWL() and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        

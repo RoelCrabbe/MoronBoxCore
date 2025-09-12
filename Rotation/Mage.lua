@@ -98,7 +98,6 @@ local HealthPct = mb_healthPct
 local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
-local IsAtGrobbulus = mb_isAtGrobbulus
 local IsAtNefarianPhase = mb_isAtNefarianPhase
 local IsAtSkeram = mb_isAtSkeram
 local IsFireImmune = mb_isFireImmune
@@ -550,7 +549,7 @@ function Mage:Frost()
         Mage:UseFrostCooldowns() 
 
         -- Ice Block if low health (except Grobbulus)
-        if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not IsAtGrobbulus() then
+        if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then
             SelfBuff("Ice Block")
             return
         end
@@ -652,7 +651,7 @@ local function MageAOE()
                 return
             end
 
-            if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not IsAtGrobbulus() then			
+            if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then			
                 SelfBuff("Ice Block")
                 return
             end
