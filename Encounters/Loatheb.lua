@@ -69,19 +69,28 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local AssistFocus = mb_assistFocus
 local CdPrint = mb_cdPrint
 local CdRaidWarning = mb_cdRaidWarning
+local Dead = mb_dead
 local ExecuteRotation = mb_executeRotation
 local GetMaxSpellRank = mb_getMaxSpellRank
+local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthDown = mb_healthDown
+local ImBusy = mb_imBusy
 local ImHealer = mb_imHealer
+local ImMeleeDPS = mb_imMeleeDPS
+local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
+local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local IsAtLoatheb = mb_isAtLoatheb
+local LockOnTarget = mb_lockOnTarget
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local NumberOfClassInRaid = mb_numberOfClassInRaid
 local TankTargetHealth = mb_tankTargetHealth
+local TakePotionsWhenPossible = mb_takePotionsWhenPossible
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -108,7 +117,7 @@ MB_myLoathebBoxStrategy = true
 MB_myLoathebShadowPotStrategy = true
 
 -- Tank Assignments (REQUIRED)
-MB_myLoathebMainTank = "Kungen"        -- Targets boss
+MB_myLoathebMainTank = "Kungen"
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -334,11 +343,11 @@ local function UseShadowPotsOnLoatheb()
         return
     end
 
-    if mb_imBusy() or not mb_inCombat("player") then
+    if ImBusy() or not InCombat("player") then
 		return
 	end
 
-    mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
+    TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
 --[####################################################################################################]--
@@ -467,26 +476,26 @@ end
 function LOA_Targeting()
 	if IsAtLoatheb() and MB_myLoathebBoxStrategy then
 		if myName == MB_myLoathebMainTank then
-            if mb_lockOnTarget("Loatheb") then
+            if LockOnTarget("Loatheb") then
                 return true
             end
 
-            if not tName or mb_dead("target") then
-                mb_assistFocus()
+            if not tName or Dead("target") then
+                AssistFocus()
             end
             return true
         
-        elseif mb_imTank() then				
-			mb_getTargetNotOnTank()
+        elseif ImTank() then				
+			GetTargetNotOnTank()
 			return true
 
-		elseif mb_imMeleeDPS() or mb_imRangedDPS() or mb_imHealer() then
-			if mb_lockOnTarget("Loatheb") then
+		elseif ImMeleeDPS() or ImRangedDPS() or ImHealer() then
+			if LockOnTarget("Loatheb") then
 				return true
 			end
 
-			if not tName or mb_dead("target") then
-				mb_assistFocus()
+			if not tName or Dead("target") then
+				AssistFocus()
 			end
 			return true
 		end
