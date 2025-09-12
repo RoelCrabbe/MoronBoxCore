@@ -113,16 +113,16 @@ MB_myGrobbulusNaturePotStrategy = true
 MB_myGrobbulusDecurseFollow = "Liket"
 
 -- Tank Assignments (REQUIRED)
-MB_myGrobbulusMainTank = "Moron"
+MB_myGrobbulusMainTank = "Kungen"
 MB_myGrobbulusSlimeTanks = {
-	"Kungen",
-	"Likalottapus"
+	"Moron",
+	"Pyqmi"
 }
 
 -- Follow Targets (REQUIRED)
 MB_myGrobbulusRaidFollowers = {
-	"Kungen",
-	"Likalottapus"
+	"Moron",
+	"Pyqmi"
 }
 
 --[####################################################################################################]--
@@ -192,6 +192,11 @@ function GROB_GetOUT()
 			return false
 		end
 
+		if myName == MB_myGrobbulusDecurseFollow then
+			GROB_Decurse()
+			return false
+		end
+
 		if myName == MB_myGrobbulusMainTank then
 			return false
 		end
@@ -220,6 +225,40 @@ function GROB_GetOUT()
 		end
 		return true
 	end
+	return false
+end
+
+local function GetTargetWithInjection()
+    if not IsInRaid() then
+        return nil
+    end
+
+    for i = 1, GetNumGroupMembers() do
+        local memberId = "raid"..i
+        if HasBuffOrDebuff("Mutating Injection", memberId, "debuff") then
+            return memberId
+        end
+    end
+
+    return nil
+end
+
+function GROB_Decurse()
+	local targetId = GetTargetWithInjection()
+	if not targetId then
+		return false
+	end
+
+	if not UnitInRange(targetId) then
+		return false
+	end
+
+	if CheckInteractDistance(targetId, 3) then
+		TargetUnit(targetId)
+		CastSpellByName("Cure Disease")
+		return true
+	end
+
 	return false
 end
 
