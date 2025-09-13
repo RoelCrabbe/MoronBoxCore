@@ -14,11 +14,11 @@
 Global\Rotation.lua
 Global\Helpers.lua
 
-Core\Config.lua
-Core\Keybinds.lua
-Core\Tables.lua
-Core\Encounters.lua
-Core\Healing.lua
+Config\Config.lua
+Config\Keybinds.lua
+Config\Tables.lua
+Config\Encounters.lua
+Config\Healing.lua
 
 Handlers\Common\Shared.lua
 
