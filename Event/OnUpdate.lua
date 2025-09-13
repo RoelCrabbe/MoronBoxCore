@@ -143,7 +143,7 @@ function MMB:OnUpdate()
         MB_worldBuffMan.Active = false
         local option1, _, option2 = GetGossipOptions()
 
-        if MB_mySpeedRunStrategy then
+        if MB_myGigaWorldBuffsStrategy then
             if option2 == "Steroid WorldBuffs" then
                 SelectGossipOption(2)
             end
