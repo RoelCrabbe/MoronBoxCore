@@ -12,28 +12,28 @@
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
 Global\Rotation.lua
-Global\Helpers.lua
+Global\Functions.lua
 
 Config\Config.lua
-Config\Keybinds.lua
-Config\Tables.lua
 Config\Encounters.lua
+Config\Tables.lua
 Config\Healing.lua
+Config\Keybinds.lua
 
 Handlers\Common\Shared.lua
 
-Handlers\Chat.lua
-Handlers\Buffs.lua
-Handlers\Roles.lua
-Handlers\Attacking.lua
-Handlers\Spells.lua
-Handlers\Macros.lua
-Handlers\Slash.lua
-Handlers\CrowdControl.lua
 Handlers\AddonMessage.lua
-Handlers\Gear.lua
+Handlers\Attacking.lua
+Handlers\Buffs.lua
+Handlers\Chat.lua
 Handlers\Cons.lua
-Handlers\Target.lua
+Handlers\CrowdControl.lua
+Handlers\Gear.lua
+Handlers\Macros.lua
+Handlers\Roles.lua
+Handlers\Slash.lua
+Handlers\Spells.lua
+Handlers\Target
 
 Core\Target.lua
 Core\Decurse.lua

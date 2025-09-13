@@ -375,6 +375,7 @@ function mb_fearBreak()
 		if SpellReady("Berserker Rage") then		
 			SelfBuff("Berserker Stance")
 			CastSpellByName("Berserker Rage")
+			return
 		end
 	end
 
@@ -388,15 +389,18 @@ function mb_fearBreak()
 	end
 
 	if KnowSpell("Will of the Forsaken") then
-		if myClass == "Warrior" then 
-			if SpellReady("Will of the Forsaken") and not (HasBuffOrDebuff("Berserker Rage", "player", "buff") and SpellReady("Berserker Rage")) then 
-				CastSpellByName("Will of the Forsaken") 
-				return 
+		if myClass == "Warrior" then
+			if HasBuffOrDebuff("Berserker Rage", "player", "buff") then
+				CdPrint("You already have Berserker Rage!", 15)
+				return
+			end
+
+			if SpellReady("Will of the Forsaken") and not SpellReady("Berserker Rage") then		
+				CastSpellByName("Will of the Forsaken")
 			end
 		else
-			if SpellReady("Will of the Forsaken") then 				
-				CastSpellByName("Will of the Forsaken") 
-				return 
+			if SpellReady("Will of the Forsaken") then		
+				CastSpellByName("Will of the Forsaken")
 			end
 		end
 	end
