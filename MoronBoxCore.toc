@@ -33,7 +33,7 @@ Handlers\Macros.lua
 Handlers\Roles.lua
 Handlers\Slash.lua
 Handlers\Spells.lua
-Handlers\Target
+Handlers\Target.lua
 
 Core\Target.lua
 Core\Decurse.lua
