@@ -391,7 +391,7 @@ function mb_fearBreak()
 	if KnowSpell("Will of the Forsaken") then
 		if myClass == "Warrior" then
 			if HasBuffOrDebuff("Berserker Rage", "player", "buff") then
-				CdPrint("You already have Berserker Rage!", 15)
+				CdPrint("WARNING: You already have Berserker Rage!", 15)
 				return
 			end
 
