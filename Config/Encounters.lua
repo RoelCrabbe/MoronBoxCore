@@ -3,6 +3,7 @@
 --[####################################################################################################]--
 
 MB_mySpeedRunStrategy = true
+MB_myGigaWorldBuffsStrategy = false
 
 --[[
     This file contains all boss encounter strategies and player assignments.
