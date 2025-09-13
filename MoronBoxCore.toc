@@ -14,11 +14,11 @@
 Global\Rotation.lua
 Global\Helpers.lua
 
-Core\Config.lua
-Core\Keybinds.lua
-Core\Tables.lua
-Core\Encounters.lua
-Core\Healing.lua
+Config\Config.lua
+Config\Keybinds.lua
+Config\Tables.lua
+Config\Encounters.lua
+Config\Healing.lua
 
 Handlers\Common\Shared.lua
 
@@ -33,19 +33,19 @@ Handlers\CrowdControl.lua
 Handlers\AddonMessage.lua
 Handlers\Gear.lua
 Handlers\Cons.lua
+Handlers\Target.lua
+
+Core\Target.lua
+Core\Decurse.lua
+Core\GTFO.lua
 
 Encounters\Grobbulus.lua
-
-Handlers\Target.lua
-Handlers\Decurse.lua
-Handlers\GTFO.lua
+Encounters\Loatheb.lua
 
 Event\Flash.lua
 Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
-
-Encounters\Loatheb.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua

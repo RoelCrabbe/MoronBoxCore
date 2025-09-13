@@ -69,6 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local CdAddonMessage = mb_cdAddonMessage
 local CdPrint = mb_cdPrint
 local CdMessage = mb_cdMessage
 local CdRaidWarning = mb_cdRaidWarning
@@ -105,20 +106,20 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_myGrobbulusBoxStrategy = true 
-MB_myGrobbulusNaturePotStrategy = true
+local MB_myGrobbulusBoxStrategy = true 
+local MB_myGrobbulusNaturePotStrategy = true
 
-MB_myGrobbulusDecurseFollow = "Ayag"
+local MB_myGrobbulusDecurseFollow = "Ayag"
 
 -- Tank Assignments (REQUIRED)
-MB_myGrobbulusMainTank = "Moron"
-MB_myGrobbulusSlimeTanks = {
+local MB_myGrobbulusMainTank = "Moron"
+local MB_myGrobbulusSlimeTanks = {
 	"Kungen",
 	"Likalottapus"
 }
 
 -- Follow Targets (REQUIRED)
-MB_myGrobbulusRaidFollowers = {
+local MB_myGrobbulusRaidFollowers = {
 	"Kungen",
 	"Likalottapus"
 }
@@ -144,8 +145,6 @@ end
 --[####################################################################################################]--
 
 function GROB_IsAtGrobbulus()
-	local targetName = UnitName("target")
-
 	if mb_targetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
 		return true
 	end
@@ -156,26 +155,19 @@ function GROB_IsAtGrobbulus()
 		end
 	end
 
-	if mb_tankTarget("Grobbulus") then
+	if (mb_tankTarget("Grobbulus") or mb_tankTarget("Fallout Slime")) then
 		return true
 	end
-	
-	if mb_tankTarget("Fallout Slime") then
-		return true
-	end
-	
-	if not targetName then
+
+	local tName = UnitName("target")
+	if not tName then
 		return false
 	end
-	
-	if targetName == "Grobbulus" then
+
+	if (tName == "Grobbulus" or tName == "Fallout Slime") then
 		return true
 	end
-	
-	if targetName == "Fallout Slime" then
-		return true
-	end
-	
+
 	return false
 end
 
@@ -194,6 +186,45 @@ function GROB:OnEvent()
 end
 
 GROB:SetScript("OnEvent", GROB.OnEvent) 
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function GetTargetWithInjection()
+    if not UnitInRaid("player") then
+        return nil
+    end
+
+    for i = 1, GetNumRaidMembers() do
+        local memberId = "raid"..i
+        if HasBuffOrDebuff("Mutating Injection", memberId, "debuff") then
+            return memberId
+        end
+    end
+
+    return nil
+end
+
+function GROB_Decurse()
+	local targetId = GetTargetWithInjection()
+	if not targetId then
+		return false
+	end
+
+	if not UnitInRange(targetId) then
+		CdAddonMessage(MB_RAID.."GROBBULUS_EMERGENCY", "PRIEST_OOR")
+		return false
+	end
+
+	if CheckInteractDistance(targetId, 3) then
+		TargetUnit(targetId)
+		CastSpellByName("Cure Disease")
+		return true
+	end
+
+	return false
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -269,41 +300,6 @@ function GROB_GetOUT()
 		end
 		return true
 	end
-	return false
-end
-
-local function GetTargetWithInjection()
-    if not UnitInRaid("player") then
-        return nil
-    end
-
-    for i = 1, GetNumRaidMembers() do
-        local memberId = "raid"..i
-        if HasBuffOrDebuff("Mutating Injection", memberId, "debuff") then
-            return memberId
-        end
-    end
-
-    return nil
-end
-
-function GROB_Decurse()
-	local targetId = GetTargetWithInjection()
-	if not targetId then
-		return false
-	end
-
-	if not UnitInRange(targetId) then
-		SendAddonMessage(MB_RAID.."GROBBULUS_EMERGENCY", "PRIEST_OOR", "RAID")
-		return false
-	end
-
-	if CheckInteractDistance(targetId, 3) then
-		TargetUnit(targetId)
-		CastSpellByName("Cure Disease")
-		return true
-	end
-
 	return false
 end
 

@@ -69,48 +69,30 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local FocusAggro = mb_focusAggro
-local GTFO = mb_GTFO
-local HasBuffOrDebuff = mb_hasBuffOrDebuff
-local HaveAggro = mb_haveAggro
-local ImFocus = mb_imFocus
-local IsAlive = mb_isAlive
-local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
-local SpellReady = mb_spellReady
-local TankTarget = mb_tankTarget
-local TankTargetHealth = mb_tankTargetHealth
-local UnitInRange = mb_unitInRange
-local UseFirePotsOnFaerlina = mb_useFirePotsOnFaerlina
-local UseSandsOnChromaggus = mb_useSandsOnChromaggus
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
 function mb_GTFO()
 	if not MB_raidAssist.GTFO.Active then
         return
     end
 
-	UseSandsOnChromaggus()
+	mb_useSandsOnChromaggus()
 
-    if ImFocus() then
+    if mb_imFocus() then
         return
     end
 
     if Instance.ONY() and MB_myOnyxiaBoxStrategy then
-        if TankTarget("Onyxia") and (TankTargetHealth() <= 0.65 and TankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then            
-            if FocusAggro() then
-                if myClass == "Paladin" and SpellReady("Divine Shield") then                     
+        if mb_tankTarget("Onyxia") and (mb_tankTargetHealth() <= 0.65 and mb_tankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then            
+            if mb_focusAggro() then
+                if myClass == "Paladin" and mb_spellReady("Divine Shield") then                     
                     CastSpellByName("Divine Shield") 
                     return 
                 end
 
-                if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)]) then
-                    FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia), 1)
+                if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)]) then
+                    FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia), 1)
                 end
             else
-                if MBID[MB_myOnyxiaFollowTarget] and UnitInRange(MBID[MB_myOnyxiaFollowTarget]) then                        
+                if MBID[MB_myOnyxiaFollowTarget] and mb_unitInRange(MBID[MB_myOnyxiaFollowTarget]) then                        
                     if not CheckInteractDistance(MBID[MB_myOnyxiaFollowTarget], 3) then
                         FollowByName(MB_myOnyxiaFollowTarget, 1)
                     end
@@ -119,30 +101,30 @@ function mb_GTFO()
         end	
     end
 		
-    if not HaveAggro() then
+    if not mb_haveAggro() then
         if Instance.NAXX() then
 
             GROB_GetOUT()
-            UseFirePotsOnFaerlina()
+            mb_useFirePotsOnFaerlina()
         
-        elseif Instance.BWL() and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
-            if myClass == "Paladin" and SpellReady("Divine Shield") then                
+        elseif Instance.BWL() and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then        
+            if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
             end
 
-            if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)]) then
-                FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
+            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)]) then
+                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
             end            
 
-        elseif Instance.MC() and HasBuffOrDebuff("Living Bomb", "player", "debuff") then 
-            if myClass == "Paladin" and SpellReady("Divine Shield") then                
+        elseif Instance.MC() and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then 
+            if myClass == "Paladin" and mb_spellReady("Divine Shield") then                
                 CastSpellByName("Divine Shield") 
                 return 
             end
         
-            if MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)] and IsAlive(MBID[ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)]) then
-                FollowByName(ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron), 1)
+            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)]) then
+                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron), 1)
             end
         end
     end

@@ -649,7 +649,7 @@ function mb_mobsToDetectMagic()
 end
 
 function mb_mobsToDampenMagic()
-    return mb_tankTargetInSet(MB_mobsToDampenMagicSet) or mb_isAtLoatheb()
+    return mb_tankTargetInSet(MB_mobsToDampenMagicSet) or LOA_IsAtLoatheb()
 end
 
 function mb_mobsToAmplifyMagic()

@@ -90,6 +90,7 @@ local Decurse = mb_decurse
 local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local GetMyInterruptTarget = mb_getMyInterruptTarget
 local GetTarget = mb_getTarget
+local GROB_IsAtGrobbulus = GROB_IsAtGrobbulus
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HaveInBags = mb_haveInBags

@@ -494,7 +494,7 @@ function mb_takeManaPotionAndRunes()
 		return
 	end
 
-    if Instance.NAXX() and mb_isAtLoatheb() then
+    if Instance.NAXX() and LOA_IsAtLoatheb() then
         UseManaRunesThresholdRunes()
         return
     end
@@ -656,7 +656,7 @@ local function ZanzaPotions()
 end
 
 local function ProtectionPotions()
-    if Instance.NAXX() and mb_isAtLoatheb() then
+    if Instance.NAXX() and LOA_IsAtLoatheb() then
         mb_takePotionsWhenPossible("Greater Shadow Protection Potion")
     end
 end

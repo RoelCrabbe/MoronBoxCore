@@ -75,7 +75,7 @@ local DropTotems = mb_dropTotems
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
-local IsAtLoatheb = mb_isAtLoatheb
+local LOA_IsAtLoatheb = LOA_IsAtLoatheb
 local IsFireBoss = mb_isFireBoss
 local IsInGroup = mb_isInGroup
 local IsNatureBoss = mb_isNatureBoss
@@ -204,7 +204,7 @@ local function ChooseWaterTotem()
 		if MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
 		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
 
-	elseif IsAtLoatheb() then
+	elseif LOA_IsAtLoatheb() then
 		if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
 		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
 	end
