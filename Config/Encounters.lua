@@ -95,25 +95,6 @@ MB_myMaexxnaPriestHealer = {
 --]]
 
 -- Strategy Configuration
-MB_myGrobbulusBoxStrategy = true 
-
--- Tank Assignments (REQUIRED)
-MB_myGrobbulusMainTank = "Moron"        -- Targets boss
-MB_myGrobbulusSlimeTankOne = "Suecia"   -- Targets blobs, caster assist
-MB_myGrobbulusSlimeTankTwo = "Ajlano"   -- Targets blobs, caster assist
-
--- Follow Targets
-MB_myGrobbulusFollowTarget = "Suecia"
-MB_myGrobbulusSecondFollowTarget = "Ajlano"
-
---[[
-    Grobbulus Tactics:
-    - Main tank holds boss
-    - Slime tanks handle blob spawns
-    - Casters assist slime tanks
---]]
-
--- Strategy Configuration
 MB_myRazuviousBoxStrategy = true 
 
 -- Priest Assignments (REQUIRED - Mind Control)

@@ -85,10 +85,9 @@ function mb_decurse()
 		end
 	end
 
-	if (mb_isAtSkeram() or mb_isAtLoatheb()
+	if (mb_isAtSkeram() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
         or mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Princess Huhuran")
-        or mb_isAtGrobbulus() or mb_tankTarget("Garr") or mb_tankTarget("Firesworn")
-        or mb_tankTarget("Spore") or mb_tankTarget("Fungal Spore") or mb_tankTarget("Anubisath Guardian")) then
+        or mb_tankTarget("Garr") or mb_tankTarget("Firesworn") or mb_tankTarget("Anubisath Guardian")) then
 		return false
 	end
 	
@@ -162,4 +161,75 @@ function mb_decurse()
 		end
 	end
 	return false
+end
+
+function mb_partyIsPoisoned()	
+	if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+		return false
+	end	
+
+	local i, x
+	for i = 1, GetNumPartyMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("party"..i, x, 1)
+			if debuffType == "Poison" then 
+				return true 
+			end
+		end
+	end
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Poison" then 
+			return true 
+		end
+	end
+end
+
+function mb_raidIsPoisoned()
+	if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+		return false
+	end	
+
+	local i, x
+	for i = 1, GetNumRaidMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("raid"..i, x, 1)
+			if debuffType == "Poison" then 
+				return true 
+			end
+		end
+	end
+end
+
+function mb_playerIsPoisoned()
+	if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+		return false
+	end	
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Poison" then 
+			return true 
+		end
+	end
+end
+
+function mb_partyIsDiseased()	
+	local i, x
+	for i = 1, GetNumPartyMembers() do
+		for x = 1, 16 do
+			local name, count, debuffType = UnitDebuff("party"..i, x, 1)
+			if debuffType == "Disease" then 
+				return true 
+			end
+		end
+	end
+
+	for x = 1, 16 do
+		local name, count, debuffType = UnitDebuff("player", x, 1)
+		if debuffType == "Disease" then 
+			return true 
+		end
+	end
 end

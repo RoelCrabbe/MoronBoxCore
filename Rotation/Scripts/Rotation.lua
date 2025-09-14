@@ -90,6 +90,7 @@ local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local GetMCActions = mb_getMCActions
 local GetTarget = mb_getTarget
 local GTFO = mb_GTFO
+local GLUTH_IsAtGluth = GLUTH_IsAtGluth
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealAndTank = mb_healAndTank
@@ -106,7 +107,7 @@ local IsAtSkeram = mb_isAtSkeram
 local IsAtTwinsEmps = mb_isAtTwinsEmps
 local IsDruidShapeShifted = mb_isDruidShapeShifted
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
-local LoathebRotation = LOA_Rotation
+local LOA_Rotation = LOA_Rotation
 local MandokirGaze = mb_mandokirGaze
 local MobsToDetectMagic = mb_mobsToDetectMagic
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
@@ -242,7 +243,7 @@ function mb_single()
 
     CheckWarStomp()
 
-    if LoathebRotation() then
+    if LOA_Rotation() then
         return
     end
 
@@ -284,7 +285,7 @@ function mb_multi()
 
     CheckWarStomp()
 
-    if LoathebRotation() then
+    if LOA_Rotation() then
         return
     end
 
@@ -326,7 +327,7 @@ function mb_AOE()
 
     CheckWarStomp()
 
-    if LoathebRotation() then
+    if LOA_Rotation() then
         return
     end
 
@@ -472,7 +473,7 @@ local function SpecialHealAndTankClass()
             CastSpellByName("Tranquilizing Shot")
         end
 
-		if TankTarget("Gluth") then
+		if GLUTH_IsAtGluth() then
 			FreezingTrap()
 		end
     end
@@ -647,7 +648,7 @@ function mb_healAndTank()
         end
 	end
 
-    if LoathebRotation() then
+    if LOA_Rotation() then
         return
     end
 

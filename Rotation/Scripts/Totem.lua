@@ -75,8 +75,7 @@ local DropTotems = mb_dropTotems
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
-local IsAtGrobbulus = mb_isAtGrobbulus
-local IsAtLoatheb = mb_isAtLoatheb
+local LOA_IsAtLoatheb = LOA_IsAtLoatheb
 local IsFireBoss = mb_isFireBoss
 local IsInGroup = mb_isInGroup
 local IsNatureBoss = mb_isNatureBoss
@@ -95,29 +94,13 @@ local TankTargetHealth = mb_tankTargetHealth
 local function ChooseAirTotem()
 
     if Instance.NAXX() then
-        if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-           
+        if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then           
             if IsInGroup(MB_myFirstPWSoaker) or IsInGroup(MB_mySecondPWSoaker) or IsInGroup(MB_myThirdPWSoaker) then                
                 if MyGroupClassOrder() == 1 then return "Grace of Air Totem" end
                 if MyGroupClassOrder() == 2 then return "Windfury Totem" end
             end
-        
-        elseif IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
-            
-            if MB_druidTankInParty or MB_warriorTankInParty then
-                if MyGroupClassOrder() == 1 then return "Windfury Totem" end
-                if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
-                
-            elseif NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-                if MyGroupClassOrder() == 1 then return "Windfury Totem" end
-                if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
-                
-            elseif NumberOfClassInParty("Mage") > 0 or NumberOfClassInParty("Warlock") > 0 then
-                if MyGroupClassOrder() == 1 then return "Nature Resistance Totem" end
-                if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
-            end
-        end
-    
+		end
+
     elseif Instance.AQ40() and TankTarget("Princess Huhuran") and TankTargetHealth() <= 0.4 then
 
         if MyGroupClassOrder() == 1 then return "Nature Resistance Totem" end
@@ -221,7 +204,7 @@ local function ChooseWaterTotem()
 		if MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
 		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
 
-	elseif IsAtLoatheb() then
+	elseif LOA_IsAtLoatheb() then
 		if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
 		if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
 	end

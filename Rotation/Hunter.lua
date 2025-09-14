@@ -77,6 +77,7 @@ local AutoRangedAttack = mb_autoRangedAttack
 local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
 local GetTarget = mb_getTarget
+local GLUTH_IsAtGluth = GLUTH_IsAtGluth
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthPct = mb_healthPct
@@ -181,7 +182,7 @@ local function HunterSingle()
 		SelfBuff("Aspect of the Hawk")  
 	end
 
-    if Instance.NAXX() and TankTarget("Gluth") then
+    if Instance.NAXX() and GLUTH_IsAtGluth() then
 
 		Hunter:FreezingTrap()
     elseif Instance.AQ40() and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then

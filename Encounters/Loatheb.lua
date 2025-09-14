@@ -70,13 +70,14 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 local AssistFocus = mb_assistFocus
-local CdPrint = mb_cdPrint
+local CdAddonMessage = mb_cdAddonMessage
 local CdMessage = mb_cdMessage
+local CdPrint = mb_cdPrint
 local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
 local ExecuteRotation = mb_executeRotation
-local GetSpellMaxRank = mb_getSpellMaxRank
 local GetSpellManaCost = mb_getSpellManaCost
+local GetSpellMaxRank = mb_getSpellMaxRank
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthDown = mb_healthDown
@@ -87,12 +88,13 @@ local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
-local IsAtLoatheb = mb_isAtLoatheb
 local LockOnTarget = mb_lockOnTarget
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local NumberOfClassInRaid = mb_numberOfClassInRaid
-local TankTargetHealth = mb_tankTargetHealth
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local TankTarget = mb_tankTarget
+local TankTargetHealth = mb_tankTargetHealth
+local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -328,11 +330,9 @@ local function BroadcastHealer()
 
     if nextIndex and nextHealerName then
         local message = "NEXT:"..nextIndex..":"..nextHealerName
-        SendAddonMessage(MB_RAID.."LOATHEB_HEAL", message, "RAID")
-
-        MB_myLoathebHealerIndex = nextIndex
+        CdAddonMessage(MB_RAID.."LOATHEB_HEAL", message)
     else
-        SendAddonMessage(MB_RAID.."LOATHEB_EMERGENCY", "ALL_DEBUFFED", "RAID")
+        CdAddonMessage(MB_RAID.."LOATHEB_HEAL", "ALL_DEBUFFED")
     end
 end
 
@@ -350,6 +350,31 @@ local function UseShadowPotsOnLoatheb()
 	end
 
     TakePotionsWhenPossible("Greater Shadow Protection Potion")
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function LOA_IsAtLoatheb()   
+	if TargetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
+		return true
+	end
+
+	if (TankTarget("Loatheb") or TankTarget("Spore")) then
+		return true
+	end
+
+    local tName = UnitName("target")
+	if not tName then
+		return false
+	end
+
+    if (tName == "Loatheb" or tName == "Spore") then
+		return true
+	end
+
+	return false
 end
 
 --[####################################################################################################]--
@@ -451,7 +476,7 @@ end
 --[####################################################################################################]--
 
 function LOA_Rotation()
-    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
+    if Instance.NAXX() and LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
         local SingleRotation = MB_mySingleList[myClass]
 
         UseShadowPotsOnLoatheb()
@@ -469,7 +494,7 @@ function LOA_Rotation()
         elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then            
             if myClass == "Mage" and MyClassAlphabeticalOrder() == 1 then
                 if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") and NumberOfClassInRaid("Mage") < 4 then
-                    SendAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH", "RAID")
+                    CdAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH")
                 end
             end
 
@@ -485,7 +510,7 @@ end
 --[####################################################################################################]--
 
 function LOA_Targeting()
-	if IsAtLoatheb() and MB_myLoathebBoxStrategy then
+	if LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
 		if myName == MB_myLoathebMainTank then
             if LockOnTarget("Loatheb") then
                 return true
@@ -514,3 +539,7 @@ function LOA_Targeting()
 
     return false
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--

@@ -89,7 +89,7 @@ function mb_cdMessage(msg, timer)
 		table.remove(MB_msgHistory, 1)
 	end
 
-	table.insert(MB_msgHistory, {msg = msg, time = time})
+	table.insert(MB_msgHistory, { msg = msg, time = time })
 
 	if UnitInRaid("player") then
 		SendChatMessage(msg, "RAID")
@@ -113,7 +113,7 @@ function mb_cdPrint(msg, timer)
 		table.remove(MB_printHistory, 1)
 	end
 
-	table.insert(MB_printHistory, {msg = msg, time = time})
+	table.insert(MB_printHistory, { msg = msg, time = time })
 	Print(msg)
 end
 
@@ -141,8 +141,36 @@ function mb_cdRaidWarning(msg, timer)
 		table.remove(MB_rwHistory, 1)
 	end
 
-	table.insert(MB_rwHistory, {msg = msg, time = time})
+	table.insert(MB_rwHistory, { msg = msg, time = time })
 	SendChatMessage(msg, "RAID_WARNING")
+end
+
+local MB_addonHistory = {}
+local MB_maxAddonHistory = 10
+
+function mb_cdAddonMessage(prefix, message, timer)
+    local coolDown = timer or 5
+    local time = GetTime()
+    local messageKey = prefix..":"..(message or "")
+
+    for i = 1, TableLength(MB_addonHistory) do
+        local entry = MB_addonHistory[i]
+        if entry.key == messageKey and entry.time + coolDown > time then
+            return
+        end
+    end
+    
+    if TableLength(MB_addonHistory) >= MB_maxAddonHistory then
+        table.remove(MB_addonHistory, 1)
+    end
+
+    table.insert(MB_addonHistory, { key = messageKey, time = time })
+
+    if UnitInRaid("player") then
+        SendAddonMessage(prefix, message, "RAID")
+    else
+        SendAddonMessage(prefix, message, "PARTY")
+    end
 end
 
 function Print(msg)

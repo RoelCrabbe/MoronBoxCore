@@ -90,7 +90,7 @@ local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtNoth = mb_isAtNoth
-local IsAtLoatheb = mb_isAtLoatheb
+local LOA_IsAtLoatheb = LOA_IsAtLoatheb
 local IsAtSkeram = mb_isAtSkeram
 local IsExcludedWW = mb_isExcludedWW
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
@@ -908,8 +908,8 @@ function Warrior:TANKSurvival()
         return
     end
 
-    if Instance.NAXX() and IsAtLoatheb() and MB_myLoathebBoxStrategy then
-        if HealthPct("player") <= 0.08 then
+    if Instance.NAXX() and LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if HealthPct("target") <= 0.08 then
             Warrior:BigTANKCooldowns()
         elseif HealthPct("target") <= 0.12 then
             SelfBuff("Last Stand")
