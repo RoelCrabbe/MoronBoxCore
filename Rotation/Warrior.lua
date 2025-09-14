@@ -909,7 +909,7 @@ function Warrior:TANKSurvival()
     end
 
     if Instance.NAXX() and LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
-        if HealthPct("player") <= 0.08 then
+        if HealthPct("target") <= 0.08 then
             Warrior:BigTANKCooldowns()
         elseif HealthPct("target") <= 0.12 then
             SelfBuff("Last Stand")

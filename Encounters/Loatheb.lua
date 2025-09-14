@@ -71,13 +71,13 @@ local myRace = UnitRace("player")
 
 local AssistFocus = mb_assistFocus
 local CdAddonMessage = mb_cdAddonMessage
-local CdPrint = mb_cdPrint
 local CdMessage = mb_cdMessage
+local CdPrint = mb_cdPrint
 local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
 local ExecuteRotation = mb_executeRotation
-local GetSpellMaxRank = mb_getSpellMaxRank
 local GetSpellManaCost = mb_getSpellManaCost
+local GetSpellMaxRank = mb_getSpellMaxRank
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealthDown = mb_healthDown
@@ -91,8 +91,10 @@ local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local NumberOfClassInRaid = mb_numberOfClassInRaid
-local TankTargetHealth = mb_tankTargetHealth
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local TankTarget = mb_tankTarget
+local TankTargetHealth = mb_tankTargetHealth
+local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -355,11 +357,11 @@ end
 --[####################################################################################################]--
 
 function LOA_IsAtLoatheb()   
-	if mb_targetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
+	if TargetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
 		return true
 	end
 
-	if (mb_tankTarget("Loatheb") or mb_tankTarget("Spore")) then
+	if (TankTarget("Loatheb") or TankTarget("Spore")) then
 		return true
 	end
 

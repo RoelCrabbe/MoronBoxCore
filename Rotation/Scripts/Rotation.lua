@@ -90,6 +90,7 @@ local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local GetMCActions = mb_getMCActions
 local GetTarget = mb_getTarget
 local GTFO = mb_GTFO
+local GLUTH_IsAtGluth = GLUTH_IsAtGluth
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealAndTank = mb_healAndTank
@@ -472,7 +473,7 @@ local function SpecialHealAndTankClass()
             CastSpellByName("Tranquilizing Shot")
         end
 
-		if TankTarget("Gluth") then
+		if GLUTH_IsAtGluth() then
 			FreezingTrap()
 		end
     end

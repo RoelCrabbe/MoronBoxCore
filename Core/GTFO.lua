@@ -104,6 +104,7 @@ function mb_GTFO()
     if not mb_haveAggro() then
         if Instance.NAXX() then
 
+            GLUTH_GetOUT()
             GROB_GetOUT()
             mb_useFirePotsOnFaerlina()
         

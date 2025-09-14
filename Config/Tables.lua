@@ -252,7 +252,6 @@ local MB_mobsToDampenMagicSet = {
 local MB_mobsToAmplifyMagicSet = {
     ["Patchwerk"] = true,
     ["Noth the Plaguebringer"] = true,
-    ["Gluth"] = true,
     ["Maexxna"] = true
 }
 

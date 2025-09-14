@@ -39,13 +39,14 @@ Core\Target.lua
 Core\Decurse.lua
 Core\GTFO.lua
 
-Encounters\Grobbulus.lua
-Encounters\Loatheb.lua
-
 Event\Flash.lua
 Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
+
+Encounters\Gluth.lua
+Encounters\Grobbulus.lua
+Encounters\Loatheb.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua

@@ -706,11 +706,7 @@ local function MageSetup()
             if MobsToDampenMagic() then  
                 MultiBuff("Dampen Magic")
 
-            elseif MobsToAmplifyMagic() then            
-                if TankTarget("Gluth") then
-                    MultiBuff("Amplify Magic")
-                end
-   
+            elseif MobsToAmplifyMagic() then
                 TankBuff("Amplify Magic")
             end
         end

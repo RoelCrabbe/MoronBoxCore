@@ -80,6 +80,7 @@ local CdMessage = mb_cdMessage
 local Dead = mb_dead
 local Decurse = mb_decurse
 local GetTarget = mb_getTarget
+local GLUTH_IsAtGluth = GLUTH_IsAtGluth
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HaveInBags = mb_haveInBags
@@ -322,7 +323,7 @@ function Paladin:ShockLowAggroedPlayer()
 end
 
 function Paladin:BOPLowRandom()
-	if TankTarget("Gluth") or TankTarget("Zombie Chow")
+	if GLUTH_IsAtGluth()
 		or not UnitInRaid("player")
 		or not InCombat("player")
 		or ImBusy()
