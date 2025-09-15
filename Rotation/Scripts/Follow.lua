@@ -140,7 +140,13 @@ function mb_casterFollow()
 		return
 	end
 
-	if ImRangedDPS() then
+	if not ImRangedDPS() then
+		return
+	end
+
+	if Instance.NAXX() then
+		THAD_IsFollowThaddius()
+	else
 		mb_followFocus()
 	end
 end
@@ -154,7 +160,9 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then	
+	if Instance.NAXX() and (ImMeleeDPS() or ImTank()) then
+		THAD_IsFollowThaddius()
+	elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then	
 		if MyNameInTable(MB_mySkeramLeftTank) then
 			return
 		end
@@ -241,7 +249,13 @@ function mb_healerFollow()
 		return
 	end
 
-	if ImHealer() then		
+	if not ImHealer() then
+		return
+	end
+
+	if Instance.NAXX() then
+		THAD_IsFollowThaddius()
+	else
 		mb_followFocus()
 	end
 end

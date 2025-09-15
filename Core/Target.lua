@@ -83,6 +83,10 @@ local function GetTargetIfNone()
 	end
 end
 
+local function HandleNAXXTargetingPreFocus()
+	return THAD_TargetingPreFocus()
+end
+
 local function HandleAQ40TargetingPreFocus()
 	local tName = UnitName("target")
 
@@ -161,6 +165,10 @@ local function HandleNAXXTargetingPostFocus()
 	end
 
 	if GROB_Targeting() then
+		return true
+	end
+
+	if THAD_TargetingPostFocus() then
 		return true
 	end
 
@@ -672,14 +680,18 @@ function mb_getTarget()
         return
     end
 
-	if Instance.AQ40() and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
+	if Instance.NAXX() then
+		if HandleNAXXTargetingPreFocus() then
+			return
+		end
+	elseif Instance.AQ40() and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
 		if HandleAQ40TargetingPreFocus() then
 			return
 		end
 	elseif Instance.BWL() and mb_isAtRazorgore() and MB_myRazorgoreBoxStrategy then
 		if HandleBWLTargetingPreFocus() then
 			return
-		end	
+		end
 	end
 
 	if mb_imFocus() then
