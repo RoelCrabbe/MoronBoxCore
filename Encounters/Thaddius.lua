@@ -126,21 +126,21 @@ local MB_myFeugenDPSERS = {
     MB_myFeugenOffTank,
 
     -- Mages
-    "Frostoni",
-    "Salka",
-    "Alionex",
-    "Grimpeh",
-    "Xlimidrizer",
     "Damacon",
-    "Schoffie",
-    "Mizea",
+    "Xlimidrizer",
+    "Grimpeh",
+    "Alionex",
+    "Nofreewater",
     "Merkan",
+    "Ykani",
+    "Salka",
+
+    -- Fire
     "Thehatter",
     "Rotonic",
-    "Trinali",
 
     -- Warlock
-    "Ayaag"
+    "Akaaka"
 }
 
 local MB_myFeugenHEALERS = {
@@ -165,18 +165,21 @@ local MB_myStalaggDPSERS = {
     MB_myStalaggOffTank,
 
     -- Mages
-    "Bluedabadee",
-    "Nofreewater",
-    "Oxg",
     "Nyktheus",
     "Drogles",
     "Kelseran",
-    "Umek",
-    "Ykani",
+    "Oxg",
     "Hypernewb",
+    "Schoffie",
+    "Mizea",
+    "Umek",
+
+    -- Fire
+    "Faithzy",
+    "Trinali",
 
     -- Warlock
-    "Akaaka"
+    "Ayaag"
 }
 
 local MB_myStalaggHEALERS = {
@@ -188,7 +191,10 @@ local MB_myStalaggHEALERS = {
 
     -- Priest
     "Blaidzy",
-    "Bonita"
+    "Bonita",
+
+    -- Druid
+    "Maxvoldson"
 }
 
 --[####################################################################################################]--
@@ -420,21 +426,7 @@ function THAD_TargetingPostFocus()
 			mb_getTargetNotOnTank()
 			return true
 
-        elseif ImRangedDPS() then
-            if MyNameInTable(MB_myFeugenDPSERS) then
-                if LockOnTarget("Feugen") then
-                    return true
-                end
-			end
-
-			if MyNameInTable(MB_myStalaggDPSERS) then
-                if LockOnTarget("Stalagg") then
-                    return true
-                end
-			end
-            return true
-
-        elseif ImMeleeDPS() then
+        elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             if MyNameInTable(MB_myFeugenDPSERS) then
                 if LockOnTarget("Feugen") then
                     return true
