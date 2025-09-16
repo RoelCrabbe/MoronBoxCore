@@ -24,9 +24,9 @@ As of 03/01/2024, the following content has been completed:
 - **MC:** Full clear
 - **Naxxramas:**
   - Full Spider Wing
-  - Noth, Heigan, Loatheb (53%)
+  - Noth, Heigan, Loatheb (Solo)
   - Razuvious (Solo MC), Gothik, Four Horsemen (I once killed a horse :D)
-  - Patchwerk, Grobbulus (World Second, World First 2-man), Gluth (21%)
+  - Patchwerk, Grobbulus (World First Solo), Gluth (World First Solo), Thaddius (98% :D)
 - **Level 20 Raids:** Everything
 
 > All features have been tested and work as intended.
