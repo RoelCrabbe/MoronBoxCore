@@ -121,43 +121,7 @@ MB_myThaddiusBoxStrategy = true
 MB_myThaddiusNaturePotStrategy = true
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 1
-MB_myFeugenMainTank = "Kungen"
-
-MB_myFeugenDPSERS = {
-    -- Mages
-    "Damacon",
-    "Xlimidrizer",
-    "Grimpeh",
-    "Alionex",
-    "Nofreewater",
-    "Merkan",
-    "Ykani",
-    "Salka",
-    "Frostoni",
-
-    -- Fire
-    "Thehatter",
-    "Rotonic",
-
-    -- Warlock
-    "Akaaka"
-}
-
-local MB_myFeugenHEALERS = {
-    -- Shaman
-    "Shamuk",
-    "Rockon",
-    "Mvenna",
-    "Shaitan",
-
-    -- Priest
-    "Liket",
-
-    -- Druid
-    "Pyqmi"
-}
-
-MB_myStalaggMainTank = "Tyamies"
+MB_myStalaggMainTank = "Kungen"
 
 MB_myStalaggDPSERS = {
     -- Mages
@@ -191,6 +155,42 @@ local MB_myStalaggHEALERS = {
 
     -- Druid
     "Maxvoldson"
+}
+
+MB_myFeugenMainTank = "Tyamies"
+
+MB_myFeugenDPSERS = {
+    -- Mages
+    "Damacon",
+    "Xlimidrizer",
+    "Grimpeh",
+    "Alionex",
+    "Nofreewater",
+    "Merkan",
+    "Ykani",
+    "Salka",
+    "Frostoni",
+
+    -- Fire
+    "Thehatter",
+    "Rotonic",
+
+    -- Warlock
+    "Akaaka"
+}
+
+local MB_myFeugenHEALERS = {
+    -- Shaman
+    "Shamuk",
+    "Rockon",
+    "Mvenna",
+    "Shaitan",
+
+    -- Priest
+    "Liket",
+
+    -- Druid
+    "Pyqmi"
 }
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 2
@@ -495,3 +495,86 @@ function THAD_WarlockCurseP1()
         end
     end
 end
+
+-- ############################################################
+-- ##   THADDEUS POLARITY HANDLER (Classic 1.12.1 private)  ##
+-- ##   Secondary keybind Shift-H for manual movement       ##
+-- ############################################################
+
+local PolarityState = { Current = "NONE", Previous = "NONE" }
+local THAD_POLARITY = CreateFrame("Button", "THAD_POLARITY", UIParent)
+
+-- Register events to detect aura changes
+do
+    for _, event in { "UNIT_AURA", "PLAYER_AURAS_CHANGED" } do
+        THAD_POLARITY:RegisterEvent(event)
+    end
+end
+
+------------------------------------------------------------
+-- Detect which platform player belongs to
+------------------------------------------------------------
+local function GetCurrentPlatform()
+    local leftMembers = {}
+    table.insert(leftMembers, MB_myStalaggMainTank)
+    for _, n in ipairs(MB_myStalaggDPSERS) do table.insert(leftMembers, n) end
+    for _, n in ipairs(MB_myStalaggHEALERS) do table.insert(leftMembers, n) end
+
+    local rightMembers = {}
+    table.insert(rightMembers, MB_myFeugenMainTank)
+    for _, n in ipairs(MB_myFeugenDPSERS) do table.insert(rightMembers, n) end
+    for _, n in ipairs(MB_myFeugenHEALERS) do table.insert(rightMembers, n) end
+
+    if MyNameInTable(leftMembers) then
+        return "LEFT"
+    elseif MyNameInTable(rightMembers) then
+        return "RIGHT"
+    end
+    return "CENTER"
+end
+
+------------------------------------------------------------
+-- Apply secondary bind Shift-H based on platform & debuff
+------------------------------------------------------------
+local negativeKeybinds = {
+    ["LEFT"] = "STRAFELEFT",
+    ["RIGHT"] = "STRAFERIGHT",
+}
+
+local positiveKeybinds = {
+    ["LEFT"] = "STRAFERIGHT",
+    ["RIGHT"] = "STRAFELEFT",
+}
+
+local function ApplySecondaryBind()
+    local platform = GetCurrentPlatform()
+
+    if HasBuffOrDebuff("Negative Charge", "player", "debuff") then
+        local key = negativeKeybinds[platform]
+        SetBinding("SHIFT-H", key)
+    elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
+        local key = positiveKeybinds[platform]
+        SetBinding("SHIFT-H", key)
+    else
+        SetBinding("SHIFT-H", nil)
+    end
+end
+
+------------------------------------------------------------
+-- Aura event: detect polarity changes
+------------------------------------------------------------
+function THAD_POLARITY:OnEvent()
+    if (event == "UNIT_AURA" and arg1 == "player" and not Dead("player")) then
+        PolarityState.Previous = PolarityState.Current
+
+        if HasBuffOrDebuff("Negative Charge", "player", "debuff") then
+            PolarityState.Current = "NEGATIVE"
+            ApplySecondaryBind()
+        elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
+            PolarityState.Current = "POSITIVE"
+            ApplySecondaryBind()
+        end
+    end
+end
+
+THAD_POLARITY:SetScript("OnEvent", THAD_POLARITY.OnEvent)

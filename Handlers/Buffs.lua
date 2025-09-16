@@ -1022,6 +1022,9 @@ BuffData["Polished Armor"] 						=   "Interface\\Icons\\INV_Shield_10"
 BuffData["Corrupted Mind"]				 		=	"Interface\\Icons\\Spell_Shadow_AuraOfDarkness"
 BuffData["Fungal Bloom"]					 	=  "Interface\\Icons\\Spell_Nature_UnyeildingStamina"
 
+BuffData["Positive Charge"]					 	=  "Interface\\Icons\\Spell_ChargePositive"
+BuffData["Negative Charge"]					 	=  "Interface\\Icons\\Spell_ChargeNegative"
+
 function AmountOfBuffs()
 	local buffCount = 0
 
