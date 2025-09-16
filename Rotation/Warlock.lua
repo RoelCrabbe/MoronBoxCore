@@ -330,7 +330,14 @@ function Warlock:BossSpecificDPS()
     end
 
 	if not HasBuffNamed("Shadow and Frost Reflect", "target") then
-        if Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
+        if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+
+            if THAD_WarlockCurseP1() then
+                CdMessage("Curse of Elements yes yes", 50)
+                return true
+            end
+
+        elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
 
             local skeramTankMap = {
                 [1] = MB_mySkeramLeftTank,

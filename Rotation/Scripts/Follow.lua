@@ -108,6 +108,13 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function FollowRaidLeader()
+	if MB_raidLeader then
+		FollowByName(MB_raidLeader, 1)
+		SetView(5)
+	end
+end
+
 function mb_followFocus()
     if SpecialFollowing() then
         return
@@ -121,9 +128,9 @@ function mb_followFocus()
 		return
 	end
 
-	if MB_raidLeader then		
-		FollowByName(MB_raidLeader, 1)
-		SetView(5) 
+	if Instance.NAXX() and THAD_IsFollowThaddius() then
+	else
+		FollowRaidLeader()
 	end
 end
 
@@ -144,11 +151,7 @@ function mb_casterFollow()
 		return
 	end
 
-	if Instance.NAXX() then
-		THAD_IsFollowThaddius()
-	else
-		mb_followFocus()
-	end
+	FollowRaidLeader()
 end
 
 function mb_meleeFollow()
@@ -160,9 +163,7 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.NAXX() and (ImMeleeDPS() or ImTank()) then
-		THAD_IsFollowThaddius()
-	elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then	
+	if Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then	
 		if MyNameInTable(MB_mySkeramLeftTank) then
 			return
 		end
@@ -215,13 +216,13 @@ function mb_meleeFollow()
 		end
     else
         if ImMeleeDPS() then		
-            mb_followFocus()
+            FollowRaidLeader()
         end
 
         if ImTank() and not MB_myOTTarget
             and not (TankTarget("Instructor Razuvious") or TankTarget("Razorgore the Untamed") 
             or TankTarget("Chromaggus") or IsAtTwinsEmps()) then
-            mb_followFocus()
+            FollowRaidLeader()
         end
     end
 end
@@ -236,7 +237,7 @@ function mb_tankFollow()
 	end
 
 	if ImTank() then		
-		mb_followFocus()
+		FollowRaidLeader()
 	end
 end
 
@@ -253,9 +254,9 @@ function mb_healerFollow()
 		return
 	end
 
-	if Instance.NAXX() then
-		THAD_IsFollowThaddius()
+	if Instance.NAXX() and THAD_IsAtThaddiusP1() then 
+		THAD_IsFollowThaddiusHealers()
 	else
-		mb_followFocus()
+		FollowRaidLeader()
 	end
 end

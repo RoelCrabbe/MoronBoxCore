@@ -296,7 +296,7 @@ local ReagentsLimit = {
     ["Spirit of Zanza"] = { 1, 1 },
     ["Onyxia Scale Cloak"] = { 1, 1 },
 
-    ["Conjured Crystal Water"] = { 60, 1 },
+    ["Conjured Crystal Water"] = { 80, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
@@ -648,11 +648,11 @@ end
 --[####################################################################################################]--
 
 local function ZanzaPotions()
-    if Instance.NAXX() then
-        mb_takePotionsWhenPossible("Spirit of Zanza")
-    else
+    -- if Instance.NAXX() then
+    --     mb_takePotionsWhenPossible("Spirit of Zanza")
+    -- else
         mb_takePotionsWhenPossible("Swiftness of Zanza")
-    end
+    -- end
 end
 
 local function ProtectionPotions()
