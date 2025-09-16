@@ -57,10 +57,10 @@ MB_raidAssist = { -- Raid tools
 
 	Priest = { -- Priest options
 		PowerInfusion = { -- Players in this list can receive Power Infusion (randomly selected)
-			["Liket"] = { "Alionex" },
-			["Blaidzy"] = { "Xlimidrizer" },
-			["Cyal"] = { "Oxg" },
-			["Bonita"] = { "Drogles" }
+			["Draub"] = { "Drogles" },
+			["Liket"] = { "Alionex" },			
+			["Ayag"] = { "Xlimidrizer" },
+			["Blaidzy"] = { "Oxg" }
 		}
 	},
 
