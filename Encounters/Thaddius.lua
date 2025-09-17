@@ -78,6 +78,7 @@ local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HealthPct = mb_healthPct
 local ImFocus = mb_imFocus
 local ImBusy = mb_imBusy
 local ImHealer = mb_imHealer
@@ -126,30 +127,61 @@ MB_myStalaggMainTank = "Kungen"
 
 MB_myStalaggDPSERS = {
     -- Mages
-    "Nyktheus",
-    "Drogles",
+    "Grimpeh",
+    "Alionex",
+    "Xlimidrizer",
+    "Damacon",
+    "Rotonic",
+    "Salka",
+    "Thehatter",
+    "Schoffie",
+    "Nofreewater",
+    "Merkan",
+
+    -- Warlock
+    "Akaaka"
+}
+
+local MB_myStalaggHEALERS = {
+    -- Shaman
+    "Shamuk",
+    "Rockon",
+    "Slaver",
+
+    -- Priest
+    "Liket",
+    "Draub",
+
+    -- Druid
+    "Pyqmi"
+}
+
+MB_myFeugenMainTank = "Tyamies"
+
+MB_myFeugenDPSERS = {
+    -- Mages
+    "Dogles",
     "Kelseran",
     "Oxg",
-    "Hypernewb",
-    "Schoffie",
-    "Mizea",
+    "Drogles",
+    "Nyktheus",
     "Umek",
-    "Bluedabadee",
-
-    -- Fire
-    "Faithzy",
     "Trinali",
+    "Faithzy",
+    "Hypernewb",
+    "Mizea",
+    "Ykani",
 
     -- Warlock
     "Ayaag"
 }
 
-local MB_myStalaggHEALERS = {
+local MB_myFeugenHEALERS = {
     -- Shaman
     "Hurtek",
-    "Slaver",
+    "Mvenna",
     "Chimando",
-    "Lillifee",
+    "Shaitan",
 
     -- Priest
     "Blaidzy",
@@ -158,50 +190,17 @@ local MB_myStalaggHEALERS = {
     "Maxvoldson"
 }
 
-MB_myFeugenMainTank = "Tyamies"
-
-MB_myFeugenDPSERS = {
-    -- Mages
-    "Damacon",
-    "Xlimidrizer",
-    "Grimpeh",
-    "Alionex",
-    "Nofreewater",
-    "Merkan",
-    "Ykani",
-    "Salka",
-    "Frostoni",
-
-    -- Fire
-    "Thehatter",
-    "Rotonic",
-
-    -- Warlock
-    "Akaaka"
-}
-
-local MB_myFeugenHEALERS = {
-    -- Shaman
-    "Shamuk",
-    "Rockon",
-    "Mvenna",
-    "Shaitan",
-
-    -- Priest
-    "Liket",
-
-    -- Druid
-    "Pyqmi"
-}
-
 -- Tank & DPS Assignments (REQUIRED) PHASE 2
 MB_myThaddiusMainTank = "Moron"
+MB_myThaddiusMainPriest = "Midavellir"
 
 local MB_myThaddiusHEALERS = {
+    -- Shaman
+    "Lillifee",
+
     -- Priest
-    "Midavellir",
-    "Cyal",
-    "Bonita"
+    MB_myThaddiusMainPriest,
+    "Ayag"
 }
 
 --[####################################################################################################]--
@@ -256,14 +255,22 @@ local function GetClosestMainTankForSide()
 end
 
 local function CheckThaddiusHealersSlowFall()
-    if MyNameInTable(MB_myThaddiusHEALERS) then
-        for i, healerName in pairs(MB_myThaddiusHEALERS) do
+    local healerList = {}
+    table.insert(healerList, MB_myThaddiusMainTank)
+    for _, n in ipairs(MB_myThaddiusHEALERS) do table.insert(healerList, n) end
+
+    if MyNameInTable(healerList) then
+        if myName == MB_myThaddiusMainPriest and not MB_myAssignedHealTarget then
+            MB_myAssignedHealTarget = MB_myThaddiusMainTank
+        end
+
+        for i, healerName in pairs(healerList) do
             if not mb_hasBuffOrDebuff("Slow Fall", MBID[healerName], "buff") then
                 return false
             end
         end
 
-        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY")
+        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 60)
         return true
     end
 end
@@ -292,6 +299,11 @@ local function UseSlowFallPotsOnThaddius()
     if ImBusy() or not InCombat("player") then
 		return
 	end
+
+    if (myName == MB_myStalaggMainTank or myName == MB_myFeugenMainTank) 
+        and HealthPct("target") > 0.1 then
+        return
+    end
 
     if not mb_haveInBags("Noggenfogger Elixir") and not mb_isItemInBagCoolDown("Noggenfogger Elixir") then
         return
@@ -426,6 +438,51 @@ THAD:SetScript("OnEvent", THAD.OnEvent)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function GetPlatformBossHealthPct(mobName)
+    local members = {}
+    if not mobName then
+        return
+    end
+
+    if mobName == "Feugen" then
+        members = MB_myFeugenDPSERS
+    elseif mobName == "Stalagg" then
+        members = MB_myStalaggDPSERS
+    end
+
+    local lowestHp = nil
+    for _, playerName in ipairs(members) do
+        local playerId = MBID[playerName]
+        if playerId and mb_targetFromSpecificPlayer(mobName, playerName) then
+            local hp = HealthPct(playerId.."target")
+            if not lowestHp or hp < lowestHp then
+                lowestHp = hp
+            end
+        end
+    end
+
+    return lowestHp or 1.0
+end
+
+local function CanDPSMob(mobName)
+    local feugenHp = GetPlatformBossHealthPct("Feugen")
+    local stalaggHp = GetPlatformBossHealthPct("Stalagg")
+
+    if not feugenHp or not stalaggHp then
+        return false
+    end
+
+    if feugenHp > 0.10 and stalaggHp > 0.10 then
+        return true
+    end
+    
+    if feugenHp <= 0.10 and stalaggHp <= 0.10 then
+        return true
+    end
+
+    return false
+end
+
 function THAD_TargetingPreFocus()
     local tName = UnitName("target")
 
@@ -491,16 +548,16 @@ function THAD_TargetingPostFocus()
 
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             if MyNameInTable(MB_myFeugenDPSERS) then
-                if LockOnTarget("Feugen") then
+                if CanDPSMob("Feugen") and LockOnTarget("Feugen") then
                     return true
                 end
-			end
+            end
 
-			if MyNameInTable(MB_myStalaggDPSERS) then
-                if LockOnTarget("Stalagg") then
+            if MyNameInTable(MB_myStalaggDPSERS) then
+                if CanDPSMob("Stalagg") and LockOnTarget("Stalagg") then
                     return true
                 end
-			end
+            end
             return true
         end
     end
@@ -599,22 +656,51 @@ local function ApplySecondaryBind()
     local currentDebuff = PolarityState.Current
     local previousDebuff = PolarityState.Previous
     local currentPosition = PolarityState.Position
-
+    
+    Print("Debug: Platform=" .. platform .. " Debuff=" .. currentDebuff .. " Position=" .. currentPosition .. " Previous=" .. previousDebuff)
+    
     if currentDebuff == "NEGATIVE" then
-        SetBinding("SHIFT-H", negativeKeybinds[platform])
-        PolarityState.Position = "AWAY"
-        
-    elseif currentDebuff == "POSITIVE" then
-        if previousDebuff == "NEGATIVE" and currentPosition == "AWAY" then
-            SetBinding("SHIFT-H", positiveKeybinds[platform])
-            PolarityState.Position = "RETURNING"
-        else
-            SetBinding("SHIFT-H", nil)
+        -- If we were RETURNING, assume we're back HOME now
+        if currentPosition == "RETURNING" then
+            currentPosition = "HOME"
             PolarityState.Position = "HOME"
         end
+        
+        -- Only move if we're at HOME
+        if currentPosition == "HOME" then
+            SetBinding("SHIFT-W", negativeKeybinds[platform])
+            PolarityState.Position = "AWAY"
+            Print("NEGATIVE: Binding movement to go AWAY")
+        else
+            -- Already AWAY, don't bind anything
+            SetBinding("SHIFT-W", nil)
+            Print("NEGATIVE: Already AWAY, no movement needed")
+        end
+       
+    elseif currentDebuff == "POSITIVE" then
+        -- If we were RETURNING, assume we're back HOME now
+        if currentPosition == "RETURNING" then
+            currentPosition = "HOME"
+            PolarityState.Position = "HOME"
+        end
+        
+        -- Only return if we're currently AWAY
+        if currentPosition == "AWAY" then
+            SetBinding("SHIFT-W", positiveKeybinds[platform])
+            PolarityState.Position = "RETURNING"
+            Print("POSITIVE: Binding movement to RETURN home")
+        else
+            -- Already HOME, no movement needed
+            SetBinding("SHIFT-W", nil)
+            PolarityState.Position = "HOME"
+            Print("POSITIVE: Already HOME, no movement needed")
+        end
+        
     else
-        SetBinding("SHIFT-H", nil)
+        -- No debuff - clear binding and reset to HOME
+        SetBinding("SHIFT-W", nil)
         PolarityState.Position = "HOME"
+        Print("No debuff: Cleared binding, position = HOME")
     end
 end
 

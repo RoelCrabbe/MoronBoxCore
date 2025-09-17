@@ -156,6 +156,7 @@ local OptionalUniversalReagents = {
     "Greater Shadow Protection Potion",
     "Limited Invulnerability Potion",
     "Greater Fire Protection Potion",
+    "Noggenfogger Elixir"
 }
 
 local ClassSpecificReagents = {
@@ -297,6 +298,7 @@ local ReagentsLimit = {
     ["Onyxia Scale Cloak"] = { 1, 1 },
 
     ["Conjured Crystal Water"] = { 80, 1 },
+    ["Noggenfogger Elixir"] = { 40, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
