@@ -119,6 +119,7 @@ end
 -- Strategy Configuration
 MB_myThaddiusBoxStrategy = true 
 MB_myThaddiusNaturePotStrategy = true
+MB_myThaddiusSlowFallPotStrategy = true
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 1
 MB_myStalaggMainTank = "Kungen"
@@ -198,7 +199,7 @@ MB_myThaddiusMainTank = "Moron"
 
 local MB_myThaddiusHEALERS = {
     -- Priest
-    "Ayag",
+    "Midavellir",
     "Cyal",
     "Bonita"
 }
@@ -254,6 +255,19 @@ local function GetClosestMainTankForSide()
     end
 end
 
+local function CheckThaddiusHealersSlowFall()
+    if MyNameInTable(MB_myThaddiusHEALERS) then
+        for i, healerName in pairs(MB_myThaddiusHEALERS) do
+            if not mb_hasBuffOrDebuff("Slow Fall", MBID[healerName], "buff") then
+                return false
+            end
+        end
+
+        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY")
+        return true
+    end
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -270,6 +284,37 @@ local function UseNaturePotsOnThaddius()
     TakePotionsWhenPossible("Greater Nature Protection Potion")
 end
 
+local function UseSlowFallPotsOnThaddius()
+    if not MB_myThaddiusSlowFallPotStrategy then
+        return
+    end
+
+    if ImBusy() or not InCombat("player") then
+		return
+	end
+
+    if not mb_haveInBags("Noggenfogger Elixir") and not mb_isItemInBagCoolDown("Noggenfogger Elixir") then
+        return
+    end
+
+    CheckThaddiusHealersSlowFall()
+
+    if mb_hasBuffOrDebuff("Slow Fall", "player", "buff") then
+        return
+    end
+
+    if mb_isDruidShapeShifted() then
+        return
+    end
+
+    CancelBuff("Noggenfogger Elixir")
+
+    if (potTimer == nil or GetTime() - potTimer > 3) then
+        potTimer = GetTime()
+        mb_useFromBags("Noggenfogger Elixir")
+    end
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -279,6 +324,8 @@ local THAD_PHASE_2_ACTIVE = false
 
 function THAD_IsAtThaddiusP1()
     if THAD_PHASE_1_ACTIVE then
+        UseSlowFallPotsOnThaddius()
+        UseNaturePotsOnThaddius()
         return true
     end
 
@@ -307,6 +354,7 @@ end
 
 function THAD_IsAtThaddiusP2()
     if THAD_PHASE_2_ACTIVE then
+        UseNaturePotsOnThaddius()
         return true
     end
 
@@ -346,6 +394,11 @@ function THAD:OnEvent()
 
         elseif (arg1 == MB_RAID.."THADDIUS_TRANSITION") then    
             CdRaidWarning(">> "..arg2.." Is Follow Tank! <<")  
+
+        elseif (arg1 == MB_RAID.."THADDIUS_HEALERS_SLOWFALL") then
+            if (arg2 == "ALL_READY") then
+                CdRaidWarning(">> All Thaddius Healers Have Slow Fall! <<")
+            end
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE1") then
             if (arg2 == "ENGAGE") then
@@ -496,24 +549,22 @@ function THAD_WarlockCurseP1()
     end
 end
 
--- ############################################################
--- ##   THADDEUS POLARITY HANDLER (Classic 1.12.1 private)  ##
--- ##   Secondary keybind Shift-H for manual movement       ##
--- ############################################################
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
 
-local PolarityState = { Current = "NONE", Previous = "NONE" }
+local PolarityState = { Current = "NONE", Previous = "NONE", Position = "HOME" }
 local THAD_POLARITY = CreateFrame("Button", "THAD_POLARITY", UIParent)
 
--- Register events to detect aura changes
 do
-    for _, event in { "UNIT_AURA", "PLAYER_AURAS_CHANGED" } do
+    for _, event in {
+        "UNIT_AURA",
+        "PLAYER_AURAS_CHANGED"
+    } do
         THAD_POLARITY:RegisterEvent(event)
     end
 end
 
-------------------------------------------------------------
--- Detect which platform player belongs to
-------------------------------------------------------------
 local function GetCurrentPlatform()
     local leftMembers = {}
     table.insert(leftMembers, MB_myStalaggMainTank)
@@ -533,9 +584,6 @@ local function GetCurrentPlatform()
     return "CENTER"
 end
 
-------------------------------------------------------------
--- Apply secondary bind Shift-H based on platform & debuff
-------------------------------------------------------------
 local negativeKeybinds = {
     ["LEFT"] = "STRAFELEFT",
     ["RIGHT"] = "STRAFERIGHT",
@@ -548,21 +596,28 @@ local positiveKeybinds = {
 
 local function ApplySecondaryBind()
     local platform = GetCurrentPlatform()
+    local currentDebuff = PolarityState.Current
+    local previousDebuff = PolarityState.Previous
+    local currentPosition = PolarityState.Position
 
-    if HasBuffOrDebuff("Negative Charge", "player", "debuff") then
-        local key = negativeKeybinds[platform]
-        SetBinding("SHIFT-H", key)
-    elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
-        local key = positiveKeybinds[platform]
-        SetBinding("SHIFT-H", key)
+    if currentDebuff == "NEGATIVE" then
+        SetBinding("SHIFT-H", negativeKeybinds[platform])
+        PolarityState.Position = "AWAY"
+        
+    elseif currentDebuff == "POSITIVE" then
+        if previousDebuff == "NEGATIVE" and currentPosition == "AWAY" then
+            SetBinding("SHIFT-H", positiveKeybinds[platform])
+            PolarityState.Position = "RETURNING"
+        else
+            SetBinding("SHIFT-H", nil)
+            PolarityState.Position = "HOME"
+        end
     else
         SetBinding("SHIFT-H", nil)
+        PolarityState.Position = "HOME"
     end
 end
 
-------------------------------------------------------------
--- Aura event: detect polarity changes
-------------------------------------------------------------
 function THAD_POLARITY:OnEvent()
     if (event == "UNIT_AURA" and arg1 == "player" and not Dead("player")) then
         PolarityState.Previous = PolarityState.Current
@@ -572,6 +627,9 @@ function THAD_POLARITY:OnEvent()
             ApplySecondaryBind()
         elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
             PolarityState.Current = "POSITIVE"
+            ApplySecondaryBind()
+        else
+            PolarityState.Current = "NONE"
             ApplySecondaryBind()
         end
     end

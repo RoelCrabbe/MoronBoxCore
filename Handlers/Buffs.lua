@@ -1025,6 +1025,8 @@ BuffData["Fungal Bloom"]					 	=  "Interface\\Icons\\Spell_Nature_UnyeildingStam
 BuffData["Positive Charge"]					 	=  "Interface\\Icons\\Spell_ChargePositive"
 BuffData["Negative Charge"]					 	=  "Interface\\Icons\\Spell_ChargeNegative"
 
+BuffData["Slow Fall"]					 	=  "Interface\\Icons\\Spell_Magic_FeatherFall"
+
 function AmountOfBuffs()
 	local buffCount = 0
 
