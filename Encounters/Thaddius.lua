@@ -203,6 +203,22 @@ local MB_myThaddiusHEALERS = {
     "Ayag"
 }
 
+--
+local Old_HealSpell = nil
+local MB_myThaddiusP1HealSpells = {
+    Druid = "Rejuvenation", 
+    Priest = "Heal",
+    Shaman = "Healing Wave",
+    Paladin = "Holy Light"
+}
+
+--
+local SyncState = {
+    IsWaiting = false,
+    WaitThreshold = 0.2,
+    ResumeThreshold = 0.15
+}
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -417,18 +433,35 @@ function THAD:OnEvent()
                 CdRaidWarning(">> Thaddius Phase 1 <<")  
                 THAD_PHASE_1_ACTIVE = true
                 THAD_PHASE_2_ACTIVE = false
+
+                if ImHealer() then
+                    Old_HealSpell = MB_myHealSpell
+                    MB_myHealSpell = MB_myThaddiusP1HealSpells[myClass]
+                end
+
+            elseif (arg2 == "AWAIT_NUKE") then
+                CdRaidWarning(">> WRONG TANK ON PLATFORM <<") 
+
+            elseif (arg2 == "NUKE_PLATFORM") then
+                CdRaidWarning(">> NUKE PLATFORM <<") 
             end
+
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE2") then
             if (arg2 == "ENGAGE") then
                 CdRaidWarning(">> Thaddius Phase 2 <<")
                 THAD_PHASE_1_ACTIVE = false
                 THAD_PHASE_2_ACTIVE = true
+
+                if ImHealer() then
+                    MB_myHealSpell = Old_HealSpell
+                end
             end
         end
 
     elseif (event == "PLAYER_REGEN_ENABLED") then
         THAD_PHASE_1_ACTIVE = false
         THAD_PHASE_2_ACTIVE = false
+        SyncState.IsWaiting = false
     end
 end
 
@@ -464,19 +497,25 @@ local function GetPlatformBossHealthPct(mobName)
     return lowestHp or 1.0
 end
 
+
 local function CanDPSMob(mobName)
     local feugenHp = GetPlatformBossHealthPct("Feugen")
     local stalaggHp = GetPlatformBossHealthPct("Stalagg")
-
+    
     if not feugenHp or not stalaggHp then
         return false
     end
-
-    if feugenHp > 0.10 and stalaggHp > 0.10 then
+    
+    if not SyncState.IsWaiting and (feugenHp <= SyncState.WaitThreshold or stalaggHp <= SyncState.WaitThreshold) then
+        SyncState.IsWaiting = true
+    end
+    
+    if not SyncState.IsWaiting then
         return true
     end
     
-    if feugenHp <= 0.10 and stalaggHp <= 0.10 then
+    if feugenHp <= SyncState.ResumeThreshold and stalaggHp <= SyncState.ResumeThreshold then
+        SyncState.IsWaiting = false
         return true
     end
 
@@ -486,7 +525,17 @@ end
 function THAD_TargetingPreFocus()
     local tName = UnitName("target")
 
-	if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+    if THAD_IsAtThaddiusP2() and MB_myThaddiusBoxStrategy then
+        if LockOnTarget("Thaddius") then
+            return true
+        end
+
+        if not tName or Dead("target") then
+            AssistFocus()
+        end
+        return true
+
+	elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) and MB_raidLeader ~= myName then
             MB_raidLeader = myName
         end
@@ -503,6 +552,30 @@ function THAD_TargetingPreFocus()
 
             if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
+            end
+
+            if myName == MB_myFeugenMainTank then
+                if tName == "Feugen" then
+                    if HealthPct("target") <= 0.1 then
+                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
+                    end
+                elseif tName == "Stalagg" then
+                    if HealthPct("target") <= 0.1 then
+                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
+                    end
+                end
+            end
+
+            if myName == MB_myStalaggMainTank then
+                if tName == "Stalagg" then
+                    if HealthPct("target") <= 0.1 then
+                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
+                    end
+                elseif tName == "Feugen" then
+                    if HealthPct("target") <= 0.1 then
+                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
+                    end
+                end
             end
             return true
         end
@@ -610,7 +683,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local PolarityState = { Current = "NONE", Previous = "NONE", Position = "HOME" }
+local PolarityState = { Current = "NONE", Previous = "NONE", Position = "HOME", LastProcessTime = 0 }
 local THAD_POLARITY = CreateFrame("Button", "THAD_POLARITY", UIParent)
 
 do
@@ -653,59 +726,46 @@ local positiveKeybinds = {
 
 local function ApplySecondaryBind()
     local platform = GetCurrentPlatform()
-    local currentDebuff = PolarityState.Current
-    local previousDebuff = PolarityState.Previous
-    local currentPosition = PolarityState.Position
-    
-    Print("Debug: Platform=" .. platform .. " Debuff=" .. currentDebuff .. " Position=" .. currentPosition .. " Previous=" .. previousDebuff)
-    
-    if currentDebuff == "NEGATIVE" then
-        -- If we were RETURNING, assume we're back HOME now
-        if currentPosition == "RETURNING" then
-            currentPosition = "HOME"
-            PolarityState.Position = "HOME"
-        end
-        
-        -- Only move if we're at HOME
-        if currentPosition == "HOME" then
-            SetBinding("SHIFT-W", negativeKeybinds[platform])
+    local data = {
+        current = PolarityState.Current,
+        previous = PolarityState.Previous,
+        position = PolarityState.Position
+    }
+
+    if data.current == "NEGATIVE" then
+        if data.position ~= "AWAY" then
+            -- If we're not already AWAY, set position AWAY
+            -- Change keybinds, to move away.
             PolarityState.Position = "AWAY"
-            Print("NEGATIVE: Binding movement to go AWAY")
+            SetBinding("SHIFT-W", negativeKeybinds[platform])
         else
-            -- Already AWAY, don't bind anything
+            -- Only when we ARE not returning, reset keybinds
+            -- ALso includes if we are already away, reset keybinds
             SetBinding("SHIFT-W", nil)
-            Print("NEGATIVE: Already AWAY, no movement needed")
         end
-       
-    elseif currentDebuff == "POSITIVE" then
-        -- If we were RETURNING, assume we're back HOME now
-        if currentPosition == "RETURNING" then
-            currentPosition = "HOME"
-            PolarityState.Position = "HOME"
-        end
-        
-        -- Only return if we're currently AWAY
-        if currentPosition == "AWAY" then
-            SetBinding("SHIFT-W", positiveKeybinds[platform])
+
+    elseif data.current == "POSITIVE" then
+        if data.position == "AWAY" then
+            -- If we're already AWAY, set position RETURNING
+            -- Change keybinds, to return.
             PolarityState.Position = "RETURNING"
-            Print("POSITIVE: Binding movement to RETURN home")
+            SetBinding("SHIFT-W", positiveKeybinds[platform])
         else
-            -- Already HOME, no movement needed
+            -- Only when we ARE not away, reset keybinds
+            -- ALso includes if we are already returning, reset keybinds
             SetBinding("SHIFT-W", nil)
-            PolarityState.Position = "HOME"
-            Print("POSITIVE: Already HOME, no movement needed")
         end
-        
-    else
-        -- No debuff - clear binding and reset to HOME
-        SetBinding("SHIFT-W", nil)
-        PolarityState.Position = "HOME"
-        Print("No debuff: Cleared binding, position = HOME")
     end
 end
 
 function THAD_POLARITY:OnEvent()
+    local now = GetTime()
+
     if (event == "UNIT_AURA" and arg1 == "player" and not Dead("player")) then
+        if now - PolarityState.LastProcessTime < 5 then
+            return
+        end
+        
         PolarityState.Previous = PolarityState.Current
 
         if HasBuffOrDebuff("Negative Charge", "player", "debuff") then
@@ -714,10 +774,9 @@ function THAD_POLARITY:OnEvent()
         elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
             PolarityState.Current = "POSITIVE"
             ApplySecondaryBind()
-        else
-            PolarityState.Current = "NONE"
-            ApplySecondaryBind()
         end
+
+        PolarityState.LastProcessTime = now
     end
 end
 

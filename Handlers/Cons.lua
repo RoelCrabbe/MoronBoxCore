@@ -298,7 +298,7 @@ local ReagentsLimit = {
     ["Onyxia Scale Cloak"] = { 1, 1 },
 
     ["Conjured Crystal Water"] = { 80, 1 },
-    ["Noggenfogger Elixir"] = { 40, 1 },
+    ["Noggenfogger Elixir"] = { 200, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
@@ -438,6 +438,8 @@ function mb_buyReagentsAndConsumables()
             if myNeededItems > 0 then
                 if item == "Symbol of Kings" then
                     myNeededItems = math.floor(myNeededItems / 20)
+                elseif item == "Noggenfogger Elixir" then
+                    myNeededItems = math.floor(myNeededItems / 5)
                 end
 
                 for itemID = 1, GetMerchantNumItems() do
