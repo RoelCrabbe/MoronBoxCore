@@ -330,7 +330,7 @@ local ReagentsLimit = {
     -- ========================================
     
     -- Protection Potions
-    ["Greater Nature Protection Potion"] = { 15, 1 },
+    ["Greater Nature Protection Potion"] = { 20, 1 },
     ["Greater Shadow Protection Potion"] = { 55, 1 },
     ["Greater Fire Protection Potion"] = { 5, 1 },
     ["Frozen Rune"] = { 5, 1 },

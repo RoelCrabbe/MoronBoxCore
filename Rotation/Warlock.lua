@@ -332,9 +332,11 @@ function Warlock:BossSpecificDPS()
 	if not HasBuffNamed("Shadow and Frost Reflect", "target") then
         if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
 
-            if THAD_WarlockCurseP1() then
-                CdMessage("Curse of Elements yes yes", 50)
-                return true
+            if UnitName("target") == "Feugen" or UnitName("target") == "Stalagg" then
+                if not HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
+                    CastSpellByName("Curse of the Elements")
+                    return true
+                end
             end
 
         elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then

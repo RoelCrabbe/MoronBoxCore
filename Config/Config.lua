@@ -52,7 +52,7 @@ MB_raidAssist = { -- Raid tools
 
 	Druid = { -- Druid options
 		BuffTanksWithThorns = false, -- No longer buffs tanks with Thorns
-		PrioritizePriestsAtieshBuff = true -- If enabled, prevents druid from re-equipping Atiesh so priest can keep the buff
+		PrioritizePriestsAtieshBuff = false -- If enabled, prevents druid from re-equipping Atiesh so priest can keep the buff
 	},
 
 	Priest = { -- Priest options

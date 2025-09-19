@@ -135,7 +135,7 @@ MB_myStalaggDPSERS = {
     "Salka",
     "Thehatter",
     "Schoffie",
-    "Nofreewater",
+    "Mizea",
     "Merkan",
 
     -- Warlock
@@ -144,16 +144,16 @@ MB_myStalaggDPSERS = {
 
 local MB_myStalaggHEALERS = {
     -- Shaman
-    "Shamuk",
-    "Rockon",
-    "Slaver",
+    "Healdazor",
+    "Shaitan",
+    "Bayo",
 
     -- Priest
     "Liket",
-    "Draub",
 
     -- Druid
-    "Pyqmi"
+    "Pyqmi",
+    "Kugal"
 }
 
 MB_myFeugenMainTank = "Tyamies"
@@ -169,8 +169,8 @@ MB_myFeugenDPSERS = {
     "Trinali",
     "Faithzy",
     "Hypernewb",
-    "Mizea",
     "Ykani",
+    "Nofreewater",
 
     -- Warlock
     "Ayaag"
@@ -178,16 +178,16 @@ MB_myFeugenDPSERS = {
 
 local MB_myFeugenHEALERS = {
     -- Shaman
-    "Hurtek",
     "Mvenna",
     "Chimando",
-    "Shaitan",
 
     -- Priest
     "Blaidzy",
+    "Draub",
 
     -- Druid
-    "Maxvoldson"
+    "Maxvoldson",
+    "Smalheal"
 }
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 2
@@ -201,22 +201,6 @@ local MB_myThaddiusHEALERS = {
     -- Priest
     MB_myThaddiusMainPriest,
     "Ayag"
-}
-
---
-local Old_HealSpell = nil
-local MB_myThaddiusP1HealSpells = {
-    Druid = "Rejuvenation", 
-    Priest = "Heal",
-    Shaman = "Healing Wave",
-    Paladin = "Holy Light"
-}
-
---
-local SyncState = {
-    IsWaiting = false,
-    WaitThreshold = 0.2,
-    ResumeThreshold = 0.15
 }
 
 --[####################################################################################################]--
@@ -286,8 +270,20 @@ local function CheckThaddiusHealersSlowFall()
             end
         end
 
-        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 60)
+        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
         return true
+    end
+
+    if myName == MB_myStalaggMainTank then
+        local tankId = MBID[MB_myStalaggMainTank]
+        if not mb_hasBuffOrDebuff("Slow Fall", tankId, "buff") then
+            CdPrint("WARNING: MANUAL JUMP NEEDED!")
+        end
+    elseif myName == MB_myFeugenMainTank then
+        local tankId = MBID[MB_myFeugenMainTank]
+        if not mb_hasBuffOrDebuff("Slow Fall", tankId, "buff") then
+            CdPrint("WARNING: MANUAL JUMP NEEDED!")
+        end
     end
 end
 
@@ -303,6 +299,10 @@ local function UseNaturePotsOnThaddius()
     if ImBusy() or not InCombat("player") then
 		return
 	end
+
+    if ImTank() then
+        return
+    end
 
     TakePotionsWhenPossible("Greater Nature Protection Potion")
 end
@@ -340,6 +340,36 @@ local function UseSlowFallPotsOnThaddius()
     if (potTimer == nil or GetTime() - potTimer > 3) then
         potTimer = GetTime()
         mb_useFromBags("Noggenfogger Elixir")
+    end
+end
+
+local function CheckClosestHealerDebuff()
+    if not ImFocus() then
+        return
+    end
+    
+    local mainTankDebuff = "NONE"
+    if mb_hasBuffOrDebuff("Negative Charge", MBID[MB_myThaddiusMainTank], "buff") then
+        mainTankDebuff = "Negative Charge"
+    elseif mb_hasBuffOrDebuff("Positive Charge", MBID[MB_myThaddiusMainTank], "buff") then
+        mainTankDebuff = "Positive Charge"
+    end
+    
+    local mainTankHealerDebuff = "NONE"
+    if mb_hasBuffOrDebuff("Negative Charge", MBID[MB_myThaddiusMainPriest], "buff") then
+        mainTankHealerDebuff = "Negative Charge"
+    elseif mb_hasBuffOrDebuff("Positive Charge", MBID[MB_myThaddiusMainPriest], "buff") then
+        mainTankHealerDebuff = "Positive Charge"
+    end
+
+    if mainTankDebuff == "NONE" and mainTankHealerDebuff == "NONE" then
+        return
+    end
+
+    if mainTankDebuff == mainTankHealerDebuff then
+        SetRaidTarget(MBID[MB_myThaddiusMainPriest], 1)
+    else
+        SetRaidTarget(MBID[MB_myThaddiusMainPriest], 8)
     end
 end
 
@@ -383,6 +413,7 @@ end
 function THAD_IsAtThaddiusP2()
     if THAD_PHASE_2_ACTIVE then
         UseNaturePotsOnThaddius()
+        CheckClosestHealerDebuff()
         return true
     end
 
@@ -434,11 +465,6 @@ function THAD:OnEvent()
                 THAD_PHASE_1_ACTIVE = true
                 THAD_PHASE_2_ACTIVE = false
 
-                if ImHealer() then
-                    Old_HealSpell = MB_myHealSpell
-                    MB_myHealSpell = MB_myThaddiusP1HealSpells[myClass]
-                end
-
             elseif (arg2 == "AWAIT_NUKE") then
                 CdRaidWarning(">> WRONG TANK ON PLATFORM <<") 
 
@@ -448,20 +474,19 @@ function THAD:OnEvent()
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE2") then
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Thaddius Phase 2 <<")
+                CdRaidWarning(">> Thaddius Phase 2 - Position Casters <<")
                 THAD_PHASE_1_ACTIVE = false
                 THAD_PHASE_2_ACTIVE = true
-
-                if ImHealer() then
-                    MB_myHealSpell = Old_HealSpell
-                end
+            
+            elseif (arg2 == "POLARITY_MOVE") then
+                CdRaidWarning(">> MOVE NOW <<")
             end
         end
 
     elseif (event == "PLAYER_REGEN_ENABLED") then
         THAD_PHASE_1_ACTIVE = false
         THAD_PHASE_2_ACTIVE = false
-        SyncState.IsWaiting = false
+        THAD_ResetBossSync()
     end
 end
 
@@ -476,13 +501,11 @@ local function GetPlatformBossHealthPct(mobName)
     if not mobName then
         return
     end
-
     if mobName == "Feugen" then
         members = MB_myFeugenDPSERS
     elseif mobName == "Stalagg" then
         members = MB_myStalaggDPSERS
     end
-
     local lowestHp = nil
     for _, playerName in ipairs(members) do
         local playerId = MBID[playerName]
@@ -493,33 +516,81 @@ local function GetPlatformBossHealthPct(mobName)
             end
         end
     end
-
     return lowestHp or 1.0
 end
 
+-- Global state for synchronization
+SyncState = {
+    WaitThreshold = 0.25,    -- Start waiting when either hits 25%
+    ResumeThreshold = 0.20,  -- Resume when both are at 20%
+    FeugenWaiting = false,   -- Track each mob's waiting state separately
+    StalaggWaiting = false,
+    LastCheck = 0            -- Prevent spam
+}
 
 local function CanDPSMob(mobName)
     local feugenHp = GetPlatformBossHealthPct("Feugen")
     local stalaggHp = GetPlatformBossHealthPct("Stalagg")
     
+    -- Debug output (limit spam)
+    local currentTime = GetTime() or 0
+    if currentTime - SyncState.LastCheck > 1 then
+        CdPrint("Feugen HP: " .. (feugenHp and string.format("%.1f%%", feugenHp*100) or "nil") .. 
+                ", Stalagg HP: " .. (stalaggHp and string.format("%.1f%%", stalaggHp*100) or "nil"))
+        SyncState.LastCheck = currentTime
+    end
+    
     if not feugenHp or not stalaggHp then
         return false
     end
     
-    if not SyncState.IsWaiting and (feugenHp <= SyncState.WaitThreshold or stalaggHp <= SyncState.WaitThreshold) then
-        SyncState.IsWaiting = true
-    end
+    -- Determine if each mob should be waiting
+    local feugenShouldWait = feugenHp <= SyncState.WaitThreshold and stalaggHp > SyncState.ResumeThreshold
+    local stalaggShouldWait = stalaggHp <= SyncState.WaitThreshold and feugenHp > SyncState.ResumeThreshold
     
-    if not SyncState.IsWaiting then
-        return true
-    end
+    -- Update waiting states
+    SyncState.FeugenWaiting = feugenShouldWait
+    SyncState.StalaggWaiting = stalaggShouldWait
     
-    if feugenHp <= SyncState.ResumeThreshold and stalaggHp <= SyncState.ResumeThreshold then
-        SyncState.IsWaiting = false
+    -- Allow DPS if:
+    -- 1. Both mobs are above wait threshold (normal phase)
+    -- 2. Both mobs are at or below resume threshold (synchronized kill phase)
+    -- 3. This specific mob is not in waiting state
+    
+    if feugenHp > SyncState.WaitThreshold and stalaggHp > SyncState.WaitThreshold then
+        -- Normal DPS phase - both above threshold
         return true
+    elseif feugenHp <= SyncState.ResumeThreshold and stalaggHp <= SyncState.ResumeThreshold then
+        -- Synchronized kill phase - both ready
+        if currentTime - SyncState.LastCheck > 1 then
+            CdPrint("SYNCHRONIZED KILL PHASE - Both mobs ready!")
+        end
+        return true
+    else
+        -- Waiting phase - check if THIS mob should wait
+        if mobName == "Feugen" and SyncState.FeugenWaiting then
+            if currentTime - SyncState.LastCheck > 1 then
+                CdPrint("Feugen WAITING for Stalagg to catch up")
+            end
+            return false
+        elseif mobName == "Stalagg" and SyncState.StalaggWaiting then
+            if currentTime - SyncState.LastCheck > 1 then
+                CdPrint("Stalagg WAITING for Feugen to catch up")
+            end
+            return false
+        else
+            -- This mob is not waiting, continue DPS
+            return true
+        end
     end
+end
 
-    return false
+-- Reset function for encounter start
+function THAD_ResetBossSync()
+    SyncState.FeugenWaiting = false
+    SyncState.StalaggWaiting = false
+    SyncState.LastCheck = 0
+    CdPrint("Boss sync state RESET")
 end
 
 function THAD_TargetingPreFocus()
@@ -668,67 +739,68 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function THAD_WarlockCurseP1()
-    if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        if MyNameInTable(MB_myFeugenDPSERS) or MyNameInTable(MB_myStalaggDPSERS) then
-            if HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
-                CastSpellByName("Curse of the Elements")
-                return true
-            end
-        end
-    end
-end
+local THAD_POLARITY = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
+local NEGATIVE_KEYBINDS = { ["LEFT"] = "STRAFELEFT", ["RIGHT"] = "STRAFERIGHT" }
+local POSITIVE_KEYBINDS = { ["LEFT"] = "STRAFERIGHT", ["RIGHT"] = "STRAFELEFT" }
 
-local PolarityState = { Current = "NONE", Previous = "NONE", Position = "HOME", LastProcessTime = 0 }
-local THAD_POLARITY = CreateFrame("Button", "THAD_POLARITY", UIParent)
+local POSITIVE_TEXTURE = "Interface\\Icons\\Spell_ChargePositive"
+local NEGATIVE_TEXTURE = "Interface\\Icons\\Spell_ChargeNegative"
 
-do
-    for _, event in {
-        "UNIT_AURA",
-        "PLAYER_AURAS_CHANGED"
-    } do
-        THAD_POLARITY:RegisterEvent(event)
-    end
-end
+local PolarityState = { Current = "NONE", Position = "HOME", Window = false }
 
 local function GetCurrentPlatform()
     local leftMembers = {}
     table.insert(leftMembers, MB_myStalaggMainTank)
-    for _, n in ipairs(MB_myStalaggDPSERS) do table.insert(leftMembers, n) end
-    for _, n in ipairs(MB_myStalaggHEALERS) do table.insert(leftMembers, n) end
+
+    for _, n in ipairs(MB_myStalaggDPSERS) do
+        table.insert(leftMembers, n)
+    end
+
+    for _, n in ipairs(MB_myStalaggHEALERS) do
+        table.insert(leftMembers, n)
+    end
 
     local rightMembers = {}
     table.insert(rightMembers, MB_myFeugenMainTank)
-    for _, n in ipairs(MB_myFeugenDPSERS) do table.insert(rightMembers, n) end
-    for _, n in ipairs(MB_myFeugenHEALERS) do table.insert(rightMembers, n) end
+
+    for _, n in ipairs(MB_myFeugenDPSERS) do 
+        table.insert(rightMembers, n)
+    end
+
+    for _, n in ipairs(MB_myFeugenHEALERS) do
+        table.insert(rightMembers, n)
+    end
 
     if MyNameInTable(leftMembers) then
         return "LEFT"
     elseif MyNameInTable(rightMembers) then
         return "RIGHT"
+    else
+        return "CENTER"
     end
-    return "CENTER"
 end
 
-local negativeKeybinds = {
-    ["LEFT"] = "STRAFELEFT",
-    ["RIGHT"] = "STRAFERIGHT",
-}
+local function GetPolarityFromAuras()
+    local iIterator = 1
+    while UnitDebuff("player", iIterator) do
+        local texture, applications = UnitDebuff("player", iIterator)
+        if texture == POSITIVE_TEXTURE or texture == NEGATIVE_TEXTURE then
+            if applications and applications > 1 then
+                return nil
+            end
+            return texture
+        end
 
-local positiveKeybinds = {
-    ["LEFT"] = "STRAFERIGHT",
-    ["RIGHT"] = "STRAFELEFT",
-}
+        iIterator = iIterator + 1
+    end
+    return nil
+end
 
 local function ApplySecondaryBind()
     local platform = GetCurrentPlatform()
     local data = {
         current = PolarityState.Current,
-        previous = PolarityState.Previous,
         position = PolarityState.Position
     }
 
@@ -737,7 +809,8 @@ local function ApplySecondaryBind()
             -- If we're not already AWAY, set position AWAY
             -- Change keybinds, to move away.
             PolarityState.Position = "AWAY"
-            SetBinding("SHIFT-W", negativeKeybinds[platform])
+            SetBinding("SHIFT-W", NEGATIVE_KEYBINDS[platform])
+            CdAddonMessage(MB_RAID.."THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not returning, reset keybinds
             -- ALso includes if we are already away, reset keybinds
@@ -749,7 +822,8 @@ local function ApplySecondaryBind()
             -- If we're already AWAY, set position RETURNING
             -- Change keybinds, to return.
             PolarityState.Position = "RETURNING"
-            SetBinding("SHIFT-W", positiveKeybinds[platform])
+            SetBinding("SHIFT-W", POSITIVE_KEYBINDS[platform])
+            CdAddonMessage(MB_RAID.."THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not away, reset keybinds
             -- ALso includes if we are already returning, reset keybinds
@@ -758,26 +832,72 @@ local function ApplySecondaryBind()
     end
 end
 
-function THAD_POLARITY:OnEvent()
-    local now = GetTime()
+local function CheckPolarityAuras()
+    if not PolarityState.Window then
+        return
+    end
+    
+    local chargeType = GetPolarityFromAuras()
+    if not chargeType then
+        return
+    end
+    
+    THAD_POLARITY:UnregisterEvent("PLAYER_AURAS_CHANGED")
+    PolarityState.Window = false
+    
+    local newState = "NONE"
+    if chargeType == NEGATIVE_TEXTURE then
+        newState = "NEGATIVE"
+    elseif chargeType == POSITIVE_TEXTURE then
+        newState = "POSITIVE"
+    end
+    
+    if newState ~= PolarityState.Current then
+        PolarityState.Current = newState
+    end
 
-    if (event == "UNIT_AURA" and arg1 == "player" and not Dead("player")) then
-        if now - PolarityState.LastProcessTime < 5 then
-            return
-        end
-        
-        PolarityState.Previous = PolarityState.Current
+    ApplySecondaryBind()
+end
 
-        if HasBuffOrDebuff("Negative Charge", "player", "debuff") then
-            PolarityState.Current = "NEGATIVE"
-            ApplySecondaryBind()
-        elseif HasBuffOrDebuff("Positive Charge", "player", "debuff") then
-            PolarityState.Current = "POSITIVE"
-            ApplySecondaryBind()
-        end
+function THAD_POLARITY:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+    self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
+    self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
+end
 
-        PolarityState.LastProcessTime = now
+function THAD_POLARITY:CloseWindow()
+    if PolarityState.Window then
+        PolarityState.Window = false
+        self:UnregisterEvent("PLAYER_AURAS_CHANGED")
     end
 end
 
-THAD_POLARITY:SetScript("OnEvent", THAD_POLARITY.OnEvent)
+function THAD_POLARITY:CHAT_MSG_MONSTER_YELL()
+    if string.find(arg1 or "", "Now YOU feel pain") then
+        PolarityState.Window = true
+        self:RegisterEvent("PLAYER_AURAS_CHANGED")
+        self:ScheduleEvent("PolarityWindowClose", self.CloseWindow, 6, self)
+    end
+end
+
+function THAD_POLARITY:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE()
+    if string.find(arg1 or "", "begins to cast Polarity Shift") then
+        PolarityState.Window = true
+        self:RegisterEvent("PLAYER_AURAS_CHANGED")
+        self:ScheduleEvent("PolarityWindowClose", self.CloseWindow, 3, self)
+    end
+end
+
+function THAD_POLARITY:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF()
+    if string.find(arg1 or "", "begins to cast Polarity Shift") then
+        PolarityState.Window = true
+        self:RegisterEvent("PLAYER_AURAS_CHANGED")
+        self:ScheduleEvent("PolarityWindowClose", self.CloseWindow, 3, self)
+    end
+end
+
+function THAD_POLARITY:PLAYER_AURAS_CHANGED()
+    CheckPolarityAuras()
+end
+
+THAD_POLARITY:OnInitialize()
