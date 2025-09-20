@@ -108,6 +108,13 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function FollowRaidLeader()
+	if MB_raidLeader then
+		FollowByName(MB_raidLeader, 1)
+		SetView(5)
+	end
+end
+
 function mb_followFocus()
     if SpecialFollowing() then
         return
@@ -121,9 +128,9 @@ function mb_followFocus()
 		return
 	end
 
-	if MB_raidLeader then		
-		FollowByName(MB_raidLeader, 1)
-		SetView(5) 
+	if Instance.NAXX() and THAD_IsFollowThaddius() then
+	else
+		FollowRaidLeader()
 	end
 end
 
@@ -140,9 +147,11 @@ function mb_casterFollow()
 		return
 	end
 
-	if ImRangedDPS() then
-		mb_followFocus()
+	if not ImRangedDPS() then
+		return
 	end
+
+	FollowRaidLeader()
 end
 
 function mb_meleeFollow()
@@ -207,13 +216,13 @@ function mb_meleeFollow()
 		end
     else
         if ImMeleeDPS() then		
-            mb_followFocus()
+            FollowRaidLeader()
         end
 
         if ImTank() and not MB_myOTTarget
             and not (TankTarget("Instructor Razuvious") or TankTarget("Razorgore the Untamed") 
             or TankTarget("Chromaggus") or IsAtTwinsEmps()) then
-            mb_followFocus()
+            FollowRaidLeader()
         end
     end
 end
@@ -228,7 +237,7 @@ function mb_tankFollow()
 	end
 
 	if ImTank() then		
-		mb_followFocus()
+		FollowRaidLeader()
 	end
 end
 
@@ -241,7 +250,13 @@ function mb_healerFollow()
 		return
 	end
 
-	if ImHealer() then		
-		mb_followFocus()
+	if not ImHealer() then
+		return
+	end
+
+	if Instance.NAXX() and THAD_IsAtThaddiusP1() then 
+		THAD_IsFollowThaddiusHealers()
+	else
+		FollowRaidLeader()
 	end
 end

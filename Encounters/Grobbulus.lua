@@ -86,6 +86,7 @@ local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
+local MyNameInTable = mb_myNameInTable
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -116,19 +117,24 @@ end
 local MB_myGrobbulusBoxStrategy = true 
 local MB_myGrobbulusNaturePotStrategy = true
 
-local MB_myGrobbulusDecurseFollow = "Ayag"
+-- Healing Assignments (REQUIRED)
+local MB_myGrobbulusCleanser = "Midavellir"
+local MB_myGrobbulusCleanseHealers = {
+	["Healdazor"] = MB_myGrobbulusCleanser,
+	["Niroxs"] = nil
+}
 
 -- Tank Assignments (REQUIRED)
 local MB_myGrobbulusMainTank = "Moron"
 local MB_myGrobbulusSlimeTanks = {
 	"Kungen",
-	"Likalottapus"
+	"Tyamies"
 }
 
 -- Follow Targets (REQUIRED)
 local MB_myGrobbulusRaidFollowers = {
 	"Kungen",
-	"Likalottapus"
+	"Tyamies"
 }
 
 --[####################################################################################################]--
@@ -268,13 +274,30 @@ function GROB_GetOUT()
 			return false
 		end
 
-		local decurseId = MBID[MB_myGrobbulusDecurseFollow]
+		local decurseId = MBID[MB_myGrobbulusCleanser]
 		if not decurseId then
 			CdRaidWarning(">> You Don't Have Decurse Follow! <<")
 			return false
 		end
 
-		if myName == MB_myGrobbulusDecurseFollow then
+		if MyNameInTable(MB_myGrobbulusCleanseHealers) then
+			local assigned = MB_myGrobbulusCleanseHealers[myName]
+
+			if assigned ~= nil then
+				MB_myAssignedHealTarget = assigned
+			else
+				local targetId = GetTargetWithInjection()
+				if targetId then
+					local name = UnitName(targetId)
+					MB_myAssignedHealTarget = name
+					CdMessage(">> Healing "..name.."! <<", 60)
+				else
+					MB_myAssignedHealTarget = nil
+				end
+			end
+		end
+
+		if myName == MB_myGrobbulusCleanser then
 			GROB_Decurse()
 			return false
 		end

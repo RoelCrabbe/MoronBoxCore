@@ -101,7 +101,6 @@ local RequestInviteSummon = mb_requestInviteSummon
 local Ress = mb_ress
 local ReturnEquippedItemType = mb_returnEquippedItemType
 local SelfBuff = mb_selfBuff
-local SmartDrink = mb_smartDrink
 local SpellExists = mb_spellExists
 local SpellReady = mb_spellReady
 local TankShoot = mb_tankShoot
@@ -214,22 +213,22 @@ end
 function mb_ress()
 	if ImHealer() then
 		if UnitMana("player") < 1368 and myClass == "Shaman" then 			
-			SmartDrink()
+			mb_smartDrink()
 		end
 
 		if UnitMana("player") < 1090 and myClass == "Priest" then 			
-			SmartDrink()
+			mb_smartDrink()
 		end
 
 		if UnitMana("player") < 1209 and myClass == "Paladin" then			
-			SmartDrink()
+			mb_smartDrink()
 		end
 
 		MBH_Resurrection()
 	end
 
 	if ImRangedDPS() then		
-		SmartDrink()
+		mb_smartDrink()
 	end
 end
 

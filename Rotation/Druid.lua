@@ -394,7 +394,10 @@ function Druid:MTHeals(assignedTarget)
 end
 
 function Druid:HealerDebuffs()
-	if Instance.BWL() then		
+    if Instance.NAXX() and THAD_DruidDebuffP1() then
+        return true
+
+	elseif Instance.BWL() then		
 		if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
             return
         end
@@ -419,29 +422,28 @@ function Druid:HealerDebuffs()
                 CastSpellByName("Faerie Fire")
                 TargetLastTarget()
             end
+        end	
+	else
+        local focusTarget = nil
+        if MB_raidLeader then
+            focusTarget = MBID[MB_raidLeader]    
+        elseif MB_raidInviter then
+            focusTarget = MBID[MB_raidInviter]
         end
-        return		
-	end
 
-    local focusTarget = nil
-    if MB_raidLeader then
-        focusTarget = MBID[MB_raidLeader]    
-    elseif MB_raidInviter then
-        focusTarget = MBID[MB_raidInviter]
-    end
+        if not focusTarget then
+            return
+        end
 
-    if not focusTarget then
-        return
-    end
+        local targetUnit = focusTarget.."target"
+        if UnitCanAttack("player", targetUnit)
+            and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
+            or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
 
-    local targetUnit = focusTarget.."target"
-    if UnitCanAttack("player", targetUnit)
-        and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-        or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
-
-        AssistUnit(focusTarget)
-        CastSpellByName("Faerie Fire")
-        TargetLastTarget()
+            AssistUnit(focusTarget)
+            CastSpellByName("Faerie Fire")
+            TargetLastTarget()
+        end
     end
 end
 

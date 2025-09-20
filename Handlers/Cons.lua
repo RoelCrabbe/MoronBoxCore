@@ -156,6 +156,7 @@ local OptionalUniversalReagents = {
     "Greater Shadow Protection Potion",
     "Limited Invulnerability Potion",
     "Greater Fire Protection Potion",
+    "Noggenfogger Elixir"
 }
 
 local ClassSpecificReagents = {
@@ -296,7 +297,8 @@ local ReagentsLimit = {
     ["Spirit of Zanza"] = { 1, 1 },
     ["Onyxia Scale Cloak"] = { 1, 1 },
 
-    ["Conjured Crystal Water"] = { 60, 1 },
+    ["Conjured Crystal Water"] = { 80, 1 },
+    ["Noggenfogger Elixir"] = { 200, 1 },
 
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
@@ -328,7 +330,7 @@ local ReagentsLimit = {
     -- ========================================
     
     -- Protection Potions
-    ["Greater Nature Protection Potion"] = { 15, 1 },
+    ["Greater Nature Protection Potion"] = { 20, 1 },
     ["Greater Shadow Protection Potion"] = { 55, 1 },
     ["Greater Fire Protection Potion"] = { 5, 1 },
     ["Frozen Rune"] = { 5, 1 },
@@ -436,6 +438,8 @@ function mb_buyReagentsAndConsumables()
             if myNeededItems > 0 then
                 if item == "Symbol of Kings" then
                     myNeededItems = math.floor(myNeededItems / 20)
+                elseif item == "Noggenfogger Elixir" then
+                    myNeededItems = math.floor(myNeededItems / 5)
                 end
 
                 for itemID = 1, GetMerchantNumItems() do
