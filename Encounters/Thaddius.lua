@@ -662,19 +662,6 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function THAD_WarlockCurseP1()
-    local tName = UnitName("target")
-
-    if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        if tName == "Feugen" or tName == "Stalagg" then
-            if not HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
-                CastSpellByName("Curse of the Elements")
-                return true
-            end
-        end
-    end
-end
-
 function THAD_DruidDebuffP1()
     local tName = UnitName("target")
 
