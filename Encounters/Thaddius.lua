@@ -218,10 +218,10 @@ local function GetClosestMainTankForSide()
     end
 
     local data
-    if MyNameInTable(MB_myFeugenDPSERS) or MyNameInTable(MB_myFeugenHEALERS) then
-        data = { tank = MB_myFeugenMainTank, off = MB_myStalaggMainTank, side = "Feugen" }
-    elseif MyNameInTable(MB_myStalaggDPSERS) or MyNameInTable(MB_myStalaggHEALERS) then
+    if MyNameInTable(MB_myStalaggDPSERS) or MyNameInTable(MB_myStalaggHEALERS) then
         data = { tank = MB_myStalaggMainTank, off = MB_myFeugenMainTank, side = "Stalagg" }
+    elseif MyNameInTable(MB_myFeugenDPSERS) or MyNameInTable(MB_myFeugenHEALERS) then
+        data = { tank = MB_myFeugenMainTank, off = MB_myStalaggMainTank, side = "Feugen" }
     elseif MyNameInTable(MB_myThaddiusHEALERS) then
         data = { tank = MB_myThaddiusMainTank, off = MB_myThaddiusMainTank, side = "Thaddius" }
     else
@@ -497,10 +497,10 @@ local function GetPlatformBossHealthPct(mobName)
     end
 
     local members = {}
-    if mobName == "Feugen" then
-        members = MB_myFeugenDPSERS
-    elseif mobName == "Stalagg" then
+    if mobName == "Stalagg" then
         members = MB_myStalaggDPSERS
+    elseif mobName == "Feugen" then
+        members = MB_myFeugenDPSERS
     end
 
     local lowestHp = nil
@@ -618,14 +618,14 @@ function THAD_TargetingPostFocus()
 			return true
 
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
-            if MyNameInTable(MB_myFeugenDPSERS) then
-                if LockOnTarget("Feugen") then
+            if MyNameInTable(MB_myStalaggDPSERS) then
+                if LockOnTarget("Stalagg") then
                     return true
                 end
             end
 
-            if MyNameInTable(MB_myStalaggDPSERS) then
-                if LockOnTarget("Stalagg") then
+            if MyNameInTable(MB_myFeugenDPSERS) then
+                if LockOnTarget("Feugen") then
                     return true
                 end
             end
@@ -643,11 +643,7 @@ end
 function THAD_IsFollowThaddius()
     if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         local closestTankId = GetClosestMainTankForSide()
-
-        if closestTankId then
-            FollowUnit(closestTankId)
-        end
-
+        if closestTankId then FollowUnit(closestTankId) end
         return true
     end
 end
@@ -658,6 +654,65 @@ function THAD_IsFollowThaddiusHealers()
         if closestTankId and MyNameInTable(MB_myThaddiusHEALERS) then
             FollowUnit(closestTankId)
             return true
+        end
+    end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function THAD_WarlockCurseP1()
+    local tName = UnitName("target")
+
+    if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+        if tName == "Feugen" or tName == "Stalagg" then
+            if not HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
+                CastSpellByName("Curse of the Elements")
+                return true
+            end
+        end
+    end
+end
+
+function THAD_DruidDebuffP1()
+    local tName = UnitName("target")
+
+    if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+        if MyNameInTable(MB_myStalaggHEALERS) then
+            local tankId = MBID[MB_myStalaggMainTank]
+            if not tankId then
+                return false
+            end
+
+            local targetUnit = tankId.."target"
+            if UnitCanAttack("player", targetUnit)
+                and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
+                or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
+
+                AssistUnit(tankId)
+                CastSpellByName("Faerie Fire")
+                TargetLastTarget()
+                return true
+            end
+        end
+
+        if MyNameInTable(MB_myFeugenHEALERS) then
+            local tankId = MBID[MB_myFeugenMainTank]
+            if not tankId then
+                return false
+            end
+
+            local targetUnit = tankId.."target"
+            if UnitCanAttack("player", targetUnit)
+                and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
+                or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
+
+                AssistUnit(tankId)
+                CastSpellByName("Faerie Fire")
+                TargetLastTarget()
+                return true
+            end
         end
     end
 end

@@ -652,11 +652,11 @@ end
 --[####################################################################################################]--
 
 local function ZanzaPotions()
-    -- if Instance.NAXX() then
-    --     mb_takePotionsWhenPossible("Spirit of Zanza")
-    -- else
+    if Instance.NAXX() then
+        mb_takePotionsWhenPossible("Spirit of Zanza")
+    else
         mb_takePotionsWhenPossible("Swiftness of Zanza")
-    -- end
+    end
 end
 
 local function ProtectionPotions()

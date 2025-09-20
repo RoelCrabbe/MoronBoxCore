@@ -84,7 +84,11 @@ local function GetTargetIfNone()
 end
 
 local function HandleNAXXTargetingPreFocus()
-	return THAD_TargetingPreFocus()
+	if THAD_TargetingPreFocus() then
+		return true
+	end
+
+	return false
 end
 
 local function HandleAQ40TargetingPreFocus()
