@@ -1,4 +1,4 @@
---[####################################################################################################]--
+﻿--[####################################################################################################]--
 --[########################################### THADDIUS CODE ##########################################]--
 --[####################################################################################################]--
 
@@ -78,9 +78,10 @@ local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
+local HaveInBags = mb_haveInBags
 local HealthPct = mb_healthPct
-local ImFocus = mb_imFocus
 local ImBusy = mb_imBusy
+local ImFocus = mb_imFocus
 local ImHealer = mb_imHealer
 local ImMeleeDPS = mb_imMeleeDPS
 local ImRangedDPS = mb_imRangedDPS
@@ -88,6 +89,8 @@ local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAlive = mb_isAlive
+local IsDruidShapeShifted = mb_isDruidShapeShifted
+local IsItemInBagCoolDown = mb_isItemInBagCoolDown
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
@@ -95,6 +98,7 @@ local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 local UnitInRange = mb_unitInRange
+local UseFromBags = mb_useFromBags
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -122,10 +126,10 @@ MB_myThaddiusBoxStrategy = true
 MB_myThaddiusNaturePotStrategy = true
 MB_myThaddiusSlowFallPotStrategy = true
 
--- Tank & DPS Assignments (REQUIRED) PHASE 1
-MB_myStalaggMainTank = "Kungen"
+-- Tank & DPS Assignments (REQUIRED) PHASE 1 - Left Side
+local MB_myStalaggMainTank = "Kungen"
 
-MB_myStalaggDPSERS = {
+local MB_myStalaggDPSERS = {
     -- Mages
     "Grimpeh",
     "Alionex",
@@ -144,7 +148,7 @@ MB_myStalaggDPSERS = {
 
 local MB_myStalaggHEALERS = {
     -- Shaman
-    "Healdazor",
+    "Lillifee",
     "Shaitan",
     "Bayo",
 
@@ -156,9 +160,10 @@ local MB_myStalaggHEALERS = {
     "Kugal"
 }
 
-MB_myFeugenMainTank = "Tyamies"
+-- Tank & DPS Assignments (REQUIRED) PHASE 1 - Right Side
+local MB_myFeugenMainTank = "Tyamies"
 
-MB_myFeugenDPSERS = {
+local MB_myFeugenDPSERS = {
     -- Mages
     "Dogles",
     "Kelseran",
@@ -191,12 +196,12 @@ local MB_myFeugenHEALERS = {
 }
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 2
-MB_myThaddiusMainTank = "Moron"
-MB_myThaddiusMainPriest = "Midavellir"
+local MB_myThaddiusMainTank = "Moron"
+local MB_myThaddiusMainPriest = "Midavellir"
 
 local MB_myThaddiusHEALERS = {
     -- Shaman
-    "Lillifee",
+    "Shamuk",
 
     -- Priest
     MB_myThaddiusMainPriest,
@@ -208,30 +213,20 @@ local MB_myThaddiusHEALERS = {
 --[####################################################################################################]--
 
 local function GetClosestMainTankForSide()
-    local data = { tank = nil, off = nil, side = nil }
+    if (myName == MB_myThaddiusMainTank or myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) then
+        return false
+    end
 
+    local data
     if MyNameInTable(MB_myFeugenDPSERS) or MyNameInTable(MB_myFeugenHEALERS) then
-        data = {
-            tank = MB_myFeugenMainTank,
-            off = MB_myStalaggMainTank,
-            side = "Feugen"
-        }
-    end
-
-    if MyNameInTable(MB_myStalaggDPSERS) or MyNameInTable(MB_myStalaggHEALERS) then
-        data = {
-            tank = MB_myStalaggMainTank,
-            off = MB_myFeugenMainTank,
-            side = "Stalagg"
-        }
-    end
-
-    if MyNameInTable(MB_myThaddiusHEALERS) then
-        data = {
-            tank = MB_myThaddiusMainTank,
-            off = MB_myThaddiusMainTank,
-            side = "Thaddius"
-        }
+        data = { tank = MB_myFeugenMainTank, off = MB_myStalaggMainTank, side = "Feugen" }
+    elseif MyNameInTable(MB_myStalaggDPSERS) or MyNameInTable(MB_myStalaggHEALERS) then
+        data = { tank = MB_myStalaggMainTank, off = MB_myFeugenMainTank, side = "Stalagg" }
+    elseif MyNameInTable(MB_myThaddiusHEALERS) then
+        data = { tank = MB_myThaddiusMainTank, off = MB_myThaddiusMainTank, side = "Thaddius" }
+    else
+        CdMessage(">> Could not determine side! <<")
+        return false
     end
 
     local closestTankId = MBID[data.tank]
@@ -242,22 +237,25 @@ local function GetClosestMainTankForSide()
 
     if UnitInRange(closestTankId) then
         return closestTankId
-    else
-        local offTankId = MBID[data.off]
-        if offTankId and UnitInRange(offTankId) then
-            CdAddonMessage(MB_RAID.."THADDIUS_TRANSITION", data.off)
-            return offTankId
-        else
-            CdAddonMessage(MB_RAID.."THADDIUS_EMERGENCY", data.side)
-            return false
-        end
     end
+
+    local offTankId = MBID[data.off]
+    if offTankId and UnitInRange(offTankId) then
+        CdAddonMessage(MB_RAID.."THADDIUS_TRANSITION", data.off)
+        return offTankId
+    end
+
+    CdAddonMessage(MB_RAID.."THADDIUS_EMERGENCY", data.side)
+    return false
 end
 
 local function CheckThaddiusHealersSlowFall()
     local healerList = {}
     table.insert(healerList, MB_myThaddiusMainTank)
-    for _, n in ipairs(MB_myThaddiusHEALERS) do table.insert(healerList, n) end
+
+    for _, n in ipairs(MB_myThaddiusHEALERS) do
+        table.insert(healerList, n)
+    end
 
     if MyNameInTable(healerList) then
         if myName == MB_myThaddiusMainPriest and not MB_myAssignedHealTarget then
@@ -265,25 +263,13 @@ local function CheckThaddiusHealersSlowFall()
         end
 
         for i, healerName in pairs(healerList) do
-            if not mb_hasBuffOrDebuff("Slow Fall", MBID[healerName], "buff") then
+            if not HasBuffOrDebuff("Slow Fall", MBID[healerName], "buff") then
                 return false
             end
         end
 
         CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
         return true
-    end
-
-    if myName == MB_myStalaggMainTank then
-        local tankId = MBID[MB_myStalaggMainTank]
-        if not mb_hasBuffOrDebuff("Slow Fall", tankId, "buff") then
-            CdPrint("WARNING: MANUAL JUMP NEEDED!")
-        end
-    elseif myName == MB_myFeugenMainTank then
-        local tankId = MBID[MB_myFeugenMainTank]
-        if not mb_hasBuffOrDebuff("Slow Fall", tankId, "buff") then
-            CdPrint("WARNING: MANUAL JUMP NEEDED!")
-        end
     end
 end
 
@@ -307,7 +293,7 @@ local function UseNaturePotsOnThaddius()
     TakePotionsWhenPossible("Greater Nature Protection Potion")
 end
 
-local function UseSlowFallPotsOnThaddius()
+local function UseSlowFallPotsOnThaddiusP1()
     if not MB_myThaddiusSlowFallPotStrategy then
         return
     end
@@ -321,17 +307,17 @@ local function UseSlowFallPotsOnThaddius()
         return
     end
 
-    if not mb_haveInBags("Noggenfogger Elixir") and not mb_isItemInBagCoolDown("Noggenfogger Elixir") then
+    if not HaveInBags("Noggenfogger Elixir") and not IsItemInBagCoolDown("Noggenfogger Elixir") then
         return
     end
 
     CheckThaddiusHealersSlowFall()
 
-    if mb_hasBuffOrDebuff("Slow Fall", "player", "buff") then
+    if HasBuffOrDebuff("Slow Fall", "player", "buff") then
         return
     end
 
-    if mb_isDruidShapeShifted() then
+    if IsDruidShapeShifted() then
         return
     end
 
@@ -339,37 +325,40 @@ local function UseSlowFallPotsOnThaddius()
 
     if (potTimer == nil or GetTime() - potTimer > 3) then
         potTimer = GetTime()
-        mb_useFromBags("Noggenfogger Elixir")
+        UseFromBags("Noggenfogger Elixir")
     end
+end
+
+local function GetChargeDebuff(unitId)
+    if HasBuffOrDebuff("Negative Charge", unitId, "buff") then
+        return "Negative Charge"
+    elseif HasBuffOrDebuff("Positive Charge", unitId, "buff") then
+        return "Positive Charge"
+    end
+    return "NONE"
 end
 
 local function CheckClosestHealerDebuff()
     if not ImFocus() then
         return
     end
-    
-    local mainTankDebuff = "NONE"
-    if mb_hasBuffOrDebuff("Negative Charge", MBID[MB_myThaddiusMainTank], "buff") then
-        mainTankDebuff = "Negative Charge"
-    elseif mb_hasBuffOrDebuff("Positive Charge", MBID[MB_myThaddiusMainTank], "buff") then
-        mainTankDebuff = "Positive Charge"
+
+    local mainTankId = MBID[MB_myThaddiusMainTank]
+    local mainTankHealerId = MBID[MB_myThaddiusMainPriest]
+    if not mainTankId or not mainTankHealerId then
+        return
     end
-    
-    local mainTankHealerDebuff = "NONE"
-    if mb_hasBuffOrDebuff("Negative Charge", MBID[MB_myThaddiusMainPriest], "buff") then
-        mainTankHealerDebuff = "Negative Charge"
-    elseif mb_hasBuffOrDebuff("Positive Charge", MBID[MB_myThaddiusMainPriest], "buff") then
-        mainTankHealerDebuff = "Positive Charge"
-    end
+
+    local mainTankDebuff = GetChargeDebuff(mainTankId)
+    local mainTankHealerDebuff = GetChargeDebuff(mainTankHealerId)
 
     if mainTankDebuff == "NONE" and mainTankHealerDebuff == "NONE" then
         return
     end
 
-    if mainTankDebuff == mainTankHealerDebuff then
-        SetRaidTarget(MBID[MB_myThaddiusMainPriest], 1)
-    else
-        SetRaidTarget(MBID[MB_myThaddiusMainPriest], 8)
+    local desiredMark = (mainTankDebuff == mainTankHealerDebuff) and 1 or 8
+    if GetRaidTargetIndex(mainTankHealerId) ~= desiredMark then
+        SetRaidTarget(mainTankHealerId, desiredMark)
     end
 end
 
@@ -382,12 +371,14 @@ local THAD_PHASE_2_ACTIVE = false
 
 function THAD_IsAtThaddiusP1()
     if THAD_PHASE_1_ACTIVE then
-        UseSlowFallPotsOnThaddius()
+        UseSlowFallPotsOnThaddiusP1()
         UseNaturePotsOnThaddius()
         return true
     end
 
-    local inP1 = false    
+    local inP1 = false
+    local tName = UnitName("target")
+
     if TargetFromSpecificPlayer("Stalagg", MB_myStalaggMainTank) then
         inP1 = true
     elseif TargetFromSpecificPlayer("Feugen", MB_myFeugenMainTank) then
@@ -395,7 +386,6 @@ function THAD_IsAtThaddiusP1()
     elseif (TankTarget("Stalagg") or TankTarget("Feugen")) then
         inP1 = true
     else
-        local tName = UnitName("target")
         if tName and (tName == "Stalagg" or tName == "Feugen") then
             inP1 = true
         end
@@ -412,12 +402,15 @@ end
 
 function THAD_IsAtThaddiusP2()
     if THAD_PHASE_2_ACTIVE then
+        THAD_EnablePolaritySystem()
         UseNaturePotsOnThaddius()
         CheckClosestHealerDebuff()
         return true
     end
 
-    local inP2 = false    
+    local inP2 = false
+    local tName = UnitName("target")
+
     if TargetFromSpecificPlayer("Thaddius", MB_myThaddiusMainTank) then
         inP2 = true
     elseif TargetFromSpecificPlayer("Thaddius", MB_myStalaggMainTank) then
@@ -427,7 +420,6 @@ function THAD_IsAtThaddiusP2()
     elseif TankTarget("Thaddius") then
         inP2 = true
     else
-        local tName = UnitName("target")
         if tName and tName == "Thaddius" then
             inP2 = true
         end
@@ -449,10 +441,10 @@ end
 function THAD:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
         if (arg1 == MB_RAID.."THADDIUS_EMERGENCY") then     
-            CdRaidWarning(">> "..arg2.." Side Tank Emergency! <<")  
+            CdRaidWarning(">> "..arg2.." Side Tank Emergency! <<")
 
         elseif (arg1 == MB_RAID.."THADDIUS_TRANSITION") then    
-            CdRaidWarning(">> "..arg2.." Is Follow Tank! <<")  
+            CdRaidWarning(">> "..arg2.." Is Follow Tank! <<")
 
         elseif (arg1 == MB_RAID.."THADDIUS_HEALERS_SLOWFALL") then
             if (arg2 == "ALL_READY") then
@@ -461,15 +453,16 @@ function THAD:OnEvent()
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE1") then
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Thaddius Phase 1 <<")  
+                CdRaidWarning(">> Thaddius Phase 1 <<")
                 THAD_PHASE_1_ACTIVE = true
                 THAD_PHASE_2_ACTIVE = false
 
             elseif (arg2 == "AWAIT_NUKE") then
-                CdRaidWarning(">> WRONG TANK ON PLATFORM <<") 
+                CdRaidWarning(">> WRONG TANK ON PLATFORM <<")
 
             elseif (arg2 == "NUKE_PLATFORM") then
-                CdRaidWarning(">> NUKE PLATFORM <<") 
+                CdRaidWarning(">> NUKE PLATFORM <<")
+                THAD_EnablePolaritySystem()
             end
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE2") then
@@ -477,16 +470,18 @@ function THAD:OnEvent()
                 CdRaidWarning(">> Thaddius Phase 2 - Position Casters <<")
                 THAD_PHASE_1_ACTIVE = false
                 THAD_PHASE_2_ACTIVE = true
-            
+                THAD_EnablePolaritySystem()
+
             elseif (arg2 == "POLARITY_MOVE") then
                 CdRaidWarning(">> MOVE NOW <<")
+                CheckClosestHealerDebuff()
             end
         end
 
     elseif (event == "PLAYER_REGEN_ENABLED") then
         THAD_PHASE_1_ACTIVE = false
         THAD_PHASE_2_ACTIVE = false
-        THAD_ResetBossSync()
+        THAD_DisablePolaritySystem()
     end
 end
 
@@ -497,100 +492,53 @@ THAD:SetScript("OnEvent", THAD.OnEvent)
 --[####################################################################################################]--
 
 local function GetPlatformBossHealthPct(mobName)
-    local members = {}
     if not mobName then
         return
     end
+
+    local members = {}
     if mobName == "Feugen" then
         members = MB_myFeugenDPSERS
     elseif mobName == "Stalagg" then
         members = MB_myStalaggDPSERS
     end
+
     local lowestHp = nil
     for _, playerName in ipairs(members) do
         local playerId = MBID[playerName]
-        if playerId and mb_targetFromSpecificPlayer(mobName, playerName) then
+        if playerId and TargetFromSpecificPlayer(mobName, playerName) then
             local hp = HealthPct(playerId.."target")
             if not lowestHp or hp < lowestHp then
                 lowestHp = hp
             end
         end
     end
+
     return lowestHp or 1.0
 end
 
--- Global state for synchronization
-SyncState = {
-    WaitThreshold = 0.25,    -- Start waiting when either hits 25%
-    ResumeThreshold = 0.20,  -- Resume when both are at 20%
-    FeugenWaiting = false,   -- Track each mob's waiting state separately
-    StalaggWaiting = false,
-    LastCheck = 0            -- Prevent spam
-}
+local function CheckPlatformPhase(tName)
+    local assignments = {
+        [MB_myFeugenMainTank] = {
+            self = "Feugen",
+            other = "Stalagg"
+        },
+        [MB_myStalaggMainTank] = {
+            self = "Stalagg",
+            other = "Feugen"
+        },
+    }
 
-local function CanDPSMob(mobName)
-    local feugenHp = GetPlatformBossHealthPct("Feugen")
-    local stalaggHp = GetPlatformBossHealthPct("Stalagg")
-    
-    -- Debug output (limit spam)
-    local currentTime = GetTime() or 0
-    if currentTime - SyncState.LastCheck > 1 then
-        CdPrint("Feugen HP: " .. (feugenHp and string.format("%.1f%%", feugenHp*100) or "nil") .. 
-                ", Stalagg HP: " .. (stalaggHp and string.format("%.1f%%", stalaggHp*100) or "nil"))
-        SyncState.LastCheck = currentTime
+    local assignment = assignments[myName]
+    if not assignment then
+        return
     end
-    
-    if not feugenHp or not stalaggHp then
-        return false
-    end
-    
-    -- Determine if each mob should be waiting
-    local feugenShouldWait = feugenHp <= SyncState.WaitThreshold and stalaggHp > SyncState.ResumeThreshold
-    local stalaggShouldWait = stalaggHp <= SyncState.WaitThreshold and feugenHp > SyncState.ResumeThreshold
-    
-    -- Update waiting states
-    SyncState.FeugenWaiting = feugenShouldWait
-    SyncState.StalaggWaiting = stalaggShouldWait
-    
-    -- Allow DPS if:
-    -- 1. Both mobs are above wait threshold (normal phase)
-    -- 2. Both mobs are at or below resume threshold (synchronized kill phase)
-    -- 3. This specific mob is not in waiting state
-    
-    if feugenHp > SyncState.WaitThreshold and stalaggHp > SyncState.WaitThreshold then
-        -- Normal DPS phase - both above threshold
-        return true
-    elseif feugenHp <= SyncState.ResumeThreshold and stalaggHp <= SyncState.ResumeThreshold then
-        -- Synchronized kill phase - both ready
-        if currentTime - SyncState.LastCheck > 1 then
-            CdPrint("SYNCHRONIZED KILL PHASE - Both mobs ready!")
-        end
-        return true
-    else
-        -- Waiting phase - check if THIS mob should wait
-        if mobName == "Feugen" and SyncState.FeugenWaiting then
-            if currentTime - SyncState.LastCheck > 1 then
-                CdPrint("Feugen WAITING for Stalagg to catch up")
-            end
-            return false
-        elseif mobName == "Stalagg" and SyncState.StalaggWaiting then
-            if currentTime - SyncState.LastCheck > 1 then
-                CdPrint("Stalagg WAITING for Feugen to catch up")
-            end
-            return false
-        else
-            -- This mob is not waiting, continue DPS
-            return true
-        end
-    end
-end
 
--- Reset function for encounter start
-function THAD_ResetBossSync()
-    SyncState.FeugenWaiting = false
-    SyncState.StalaggWaiting = false
-    SyncState.LastCheck = 0
-    CdPrint("Boss sync state RESET")
+    if tName == assignment.self and HealthPct("target") <= 0.1 then
+        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
+    elseif tName == assignment.other and HealthPct("target") <= 0.1 then
+        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
+    end
 end
 
 function THAD_TargetingPreFocus()
@@ -625,29 +573,7 @@ function THAD_TargetingPreFocus()
                 TargetNearestEnemy()
             end
 
-            if myName == MB_myFeugenMainTank then
-                if tName == "Feugen" then
-                    if HealthPct("target") <= 0.1 then
-                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
-                    end
-                elseif tName == "Stalagg" then
-                    if HealthPct("target") <= 0.1 then
-                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
-                    end
-                end
-            end
-
-            if myName == MB_myStalaggMainTank then
-                if tName == "Stalagg" then
-                    if HealthPct("target") <= 0.1 then
-                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
-                    end
-                elseif tName == "Feugen" then
-                    if HealthPct("target") <= 0.1 then
-                        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
-                    end
-                end
-            end
+            CheckPlatformPhase(tName)
             return true
         end
     end
@@ -675,10 +601,11 @@ function THAD_TargetingPostFocus()
                 MB_targetNearestDistanceChanged = true
             end
 
-            if (tName == nil or Dead("target") or not InMeleeRange()) then                 
+            if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
-                return true
             end
+
+            CheckPlatformPhase(tName)
             return true
 
         elseif ImTank() then
@@ -687,18 +614,18 @@ function THAD_TargetingPostFocus()
 				MB_targetNearestDistanceChanged = true
 			end
 
-			mb_getTargetNotOnTank()
+			GetTargetNotOnTank()
 			return true
 
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             if MyNameInTable(MB_myFeugenDPSERS) then
-                if CanDPSMob("Feugen") and LockOnTarget("Feugen") then
+                if LockOnTarget("Feugen") then
                     return true
                 end
             end
 
             if MyNameInTable(MB_myStalaggDPSERS) then
-                if CanDPSMob("Stalagg") and LockOnTarget("Stalagg") then
+                if LockOnTarget("Stalagg") then
                     return true
                 end
             end
@@ -740,6 +667,7 @@ end
 --[####################################################################################################]--
 
 local THAD_POLARITY = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
+local THAD_POLARITY_ENABLED = false
 
 local NEGATIVE_KEYBINDS = { ["LEFT"] = "STRAFELEFT", ["RIGHT"] = "STRAFERIGHT" }
 local POSITIVE_KEYBINDS = { ["LEFT"] = "STRAFERIGHT", ["RIGHT"] = "STRAFELEFT" }
@@ -900,4 +828,18 @@ function THAD_POLARITY:PLAYER_AURAS_CHANGED()
     CheckPolarityAuras()
 end
 
-THAD_POLARITY:OnInitialize()
+function THAD_EnablePolaritySystem()
+    if not THAD_POLARITY_ENABLED then
+        THAD_POLARITY:OnInitialize()
+        THAD_POLARITY_ENABLED = true
+    end
+end
+
+function THAD_DisablePolaritySystem()
+    if THAD_POLARITY_ENABLED then
+        THAD_POLARITY:UnregisterAllEvents()
+        SetBinding("SHIFT-W", nil)
+        PolarityState = { Current = "NONE", Position = "HOME", Window = false }
+        THAD_POLARITY_ENABLED = false
+    end
+end
