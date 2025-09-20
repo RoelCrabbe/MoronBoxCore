@@ -330,9 +330,9 @@ local function UseSlowFallPotsOnThaddiusP1()
 end
 
 local function GetChargeDebuff(unitId)
-    if HasBuffOrDebuff("Negative Charge", unitId, "buff") then
+    if HasBuffOrDebuff("Negative Charge", unitId, "debuff") then
         return "Negative Charge"
-    elseif HasBuffOrDebuff("Positive Charge", unitId, "buff") then
+    elseif HasBuffOrDebuff("Positive Charge", unitId, "debuff") then
         return "Positive Charge"
     end
     return "NONE"
