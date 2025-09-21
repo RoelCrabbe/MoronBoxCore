@@ -753,10 +753,6 @@ local function DruidSingle()
 
 	if MB_mySpecc == "Feral" then
 		if Instance.AQ40() then			
-			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                TargetByName("The Prophet Skeram")
-            end
-
 			AnubisathAlert()
 		end
 
@@ -1008,11 +1004,7 @@ local function DruidMulti()
 	end
 
 	if MB_mySpecc == "Feral" then
-		if Instance.AQ40() then			
-			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                TargetByName("The Prophet Skeram")
-            end
-
+		if Instance.AQ40() then
 			AnubisathAlert()
 		end
 

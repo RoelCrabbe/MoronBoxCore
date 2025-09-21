@@ -80,7 +80,6 @@ local ImRangedDPS = mb_imRangedDPS
 local ImTank = mb_imTank
 local IsAtRazorgore = mb_isAtRazorgore
 local IsAtRazorgorePhase = mb_isAtRazorgorePhase
-local IsAtSkeram = mb_isAtSkeram
 local IsAtTwinsEmps = mb_isAtTwinsEmps
 local MeleeFollow = mb_meleeFollow
 local MyNameInTable = mb_myNameInTable
@@ -163,36 +162,8 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then	
-		if MyNameInTable(MB_mySkeramLeftTank) then
-			return
-		end
-
-		if MyNameInTable(MB_mySkeramMiddleTank) then
-			return
-		end
-
-		if MyNameInTable(MB_mySkeramRightTank) then
-			return
-		end
-	
-		if MyNameInTable(MB_mySkeramLeftOFFTANKS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_mySkeramLeftTank), 1)
-			return
-		end
-
-		if MyNameInTable(MB_mySkeramMiddleOFFTANKS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_mySkeramMiddleTank), 1)
-			return
-		end
-
-		if MyNameInTable(MB_mySkeramMiddleDPSERS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_mySkeramMiddleTank), 1)
-			return
-		end
-
-		if MyNameInTable(MB_mySkeramRightOFFTANKS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_mySkeramRightTank), 1)
+	if Instance.AQ40() then	
+		if SKERAM_IsFollowSkeram() then
 			return
 		end
 

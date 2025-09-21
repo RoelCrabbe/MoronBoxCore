@@ -48,6 +48,7 @@ Encounters\Gluth.lua
 Encounters\Grobbulus.lua
 Encounters\Loatheb.lua
 Encounters\Thaddius.lua
+Encounters\Skeram.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua

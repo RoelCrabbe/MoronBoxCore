@@ -156,7 +156,8 @@ local OptionalUniversalReagents = {
     "Greater Shadow Protection Potion",
     "Limited Invulnerability Potion",
     "Greater Fire Protection Potion",
-    "Noggenfogger Elixir"
+    "Noggenfogger Elixir",
+    "Greater Arcane Protection Potion"
 }
 
 local ClassSpecificReagents = {
@@ -333,6 +334,7 @@ local ReagentsLimit = {
     ["Greater Nature Protection Potion"] = { 20, 1 },
     ["Greater Shadow Protection Potion"] = { 55, 1 },
     ["Greater Fire Protection Potion"] = { 5, 1 },
+    ["Greater Arcane Protection Potion"] = { 5, 1 },
     ["Frozen Rune"] = { 5, 1 },
 
     -- Mana Restoration

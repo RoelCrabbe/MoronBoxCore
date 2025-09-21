@@ -453,7 +453,7 @@ function THAD:OnEvent()
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE1") then
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Thaddius Phase 1 <<")
+                CdRaidWarning(">> Thaddius Phase 1! <<")
                 THAD_PHASE_1_ACTIVE = true
                 THAD_PHASE_2_ACTIVE = false
 
@@ -467,7 +467,7 @@ function THAD:OnEvent()
 
         elseif (arg1 == MB_RAID.."THADDIUS_PHASE2") then
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Thaddius Phase 2 - Position Casters <<")
+                CdRaidWarning(">> Thaddius Phase 2 - Position Casters! <<")
                 THAD_PHASE_1_ACTIVE = false
                 THAD_PHASE_2_ACTIVE = true
                 THAD_EnablePolaritySystem()

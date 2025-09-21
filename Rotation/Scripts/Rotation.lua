@@ -77,9 +77,6 @@ local CrowdControl = mb_crowdControl
 local CrowdControlledMob = mb_crowdControlledMob
 local CrowdControlMCedRaidMemberHakkar = mb_crowdControlMCedRaidMemberHakkar
 local CrowdControlMCedRaidMemberNefarian = mb_crowdControlMCedRaidMemberNefarian
-local CrowdControlMCedRaidMemberSkeram = mb_crowdControlMCedRaidMemberSkeram
-local CrowdControlMCedRaidMemberSkeramAOE = mb_crowdControlMCedRaidMemberSkeramAOE
-local CrowdControlMCedRaidMemberSkeramFear = mb_crowdControlMCedRaidMemberSkeramFear
 local Dead = mb_dead
 local Decurse = mb_decurse
 local DoFaerlinaActions = mb_doFaerlinaActions
@@ -103,7 +100,6 @@ local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtNefarianPhase = mb_isAtNefarianPhase
 local IsAtRazorgore = mb_isAtRazorgore
-local IsAtSkeram = mb_isAtSkeram
 local IsAtTwinsEmps = mb_isAtTwinsEmps
 local IsDruidShapeShifted = mb_isDruidShapeShifted
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
@@ -128,24 +124,10 @@ local UseSpeedRunPots = mb_useSpeedRunPots
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local PriestCounter = {
-    Cycle = function()
-        MB_buffingCounterPriest = (MB_buffingCounterPriest >= TableLength(MB_classList["Priest"]))
-                                  and 1 or (MB_buffingCounterPriest + 1)
-    end
-}
-
 local MageCounter = {
     Cycle = function()
         MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
                                   and 1 or (MB_buffingCounterMage + 1)
-    end
-}
-
-local WarlockCounter = {
-    Cycle = function()
-        MB_buffingCounterWarlock = (MB_buffingCounterWarlock >= TableLength(MB_classList["Warlock"]))
-                                  and 1 or (MB_buffingCounterWarlock + 1)
     end
 }
 
@@ -515,47 +497,11 @@ local function SpecialHealAndTankSituation()
         end
 
 	elseif Instance.AQ40() then
-		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-            ClearTarget()
-            return true
+        if SKERAM_CrowdControl() then
+            return
         end
-
-		if IsAtSkeram() then
-			if myClass == "Mage" then
-                if not MB_autoToggleSheeps.Active then
-                    MB_autoToggleSheeps.Active = true
-                    MB_autoToggleSheeps.Time = GetTime() + 2
-                    MageCounter.Cycle()
-                end
-
-                if MyClassAlphabeticalOrder() == MB_buffingCounterMage then					
-                    CrowdControlMCedRaidMemberSkeram()
-                end
-				
-			elseif myClass == "Priest" then
-                if not MB_autoToggleSheeps.Active then
-                    MB_autoToggleSheeps.Active = true
-                    MB_autoToggleSheeps.Time = GetTime() + 3
-                    PriestCounter.Cycle()
-                end
-
-                if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-                    CrowdControlMCedRaidMemberSkeramAOE()
-                end
-				
-			elseif myClass == "Warlock" and MB_mySkeramBoxStrategyWarlock then
-                if not MB_autoToggleSheeps.Active then
-                    MB_autoToggleSheeps.Active = true
-                    MB_autoToggleSheeps.Time = GetTime() + 6
-                    WarlockCounter.Cycle()
-                end
-
-				if MyClassAlphabeticalOrder() == MB_buffingCounterWarlock then
-					CrowdControlMCedRaidMemberSkeramFear()
-				end	
-			end
 		
-		elseif myClass == "Warlock" and IsAtTwinsEmps() and MB_myTwinsBoxStrategy then
+		if myClass == "Warlock" and IsAtTwinsEmps() and MB_myTwinsBoxStrategy then
             if MyNameInTable(MB_myTwinsWarlockTank) then
                 local SingleRotation = MB_mySingleList[myClass]
                 ExecuteRotation(SingleRotation, "Twins Tank SINGLE")

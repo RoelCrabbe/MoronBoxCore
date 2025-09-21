@@ -92,27 +92,9 @@ local function HandleNAXXTargetingPreFocus()
 end
 
 local function HandleAQ40TargetingPreFocus()
-	local tName = UnitName("target")
-
-    if not mb_imTank() then
-        return false
-    end
-
-    if tName == "The Prophet Skeram" then
-        if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramLeftOFFTANKS)) then
-            if not GetRaidTargetIndex("target") then
-                SetRaidTarget("target", 4)                          
-            end
-        elseif (mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramMiddleOFFTANKS)) then
-            if not GetRaidTargetIndex("target") then
-                SetRaidTarget("target", 1)
-            end
-        elseif (mb_myNameInTable(MB_mySkeramRightTank) or mb_myNameInTable(MB_mySkeramRightOFFTANKS)) then
-            if not GetRaidTargetIndex("target") then
-                SetRaidTarget("target", 6)                          
-            end
-        end
-    end
+	if SKERAM_TargetingPreFocus() then
+		return true
+	end
 
 	return false
 end
@@ -251,27 +233,11 @@ end
 local function HandleAQ40TargetingPostFocus()
 	local tName = UnitName("target")
 
-	if mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then	
-		if (mb_myNameInTable(MB_mySkeramLeftTank) or mb_myNameInTable(MB_mySkeramMiddleTank) or mb_myNameInTable(MB_mySkeramRightTank)) then		
-			mb_getTargetNotOnTank()
-			return true
-
-		elseif mb_imTank() then
-			mb_getTargetNotOnTank()
-			return true
-
-		elseif mb_imMeleeDPS() or mb_imRangedDPS() then
-			if mb_hasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-				ClearTarget()
-			end
-
-			mb_assistFocus()
-			return true
-		end
-
+	if SKERAM_TargetingPostFocus() then
 		return true
+	end
 
-	elseif mb_tankTarget("Fankriss the Unyielding") and MB_myFankrissBoxStrategy then
+	if mb_tankTarget("Fankriss the Unyielding") and MB_myFankrissBoxStrategy then
 		if mb_imTank() then				
 			if mb_myNameInTable(MB_myFankrissOFFTANKS) then
 				if mb_lockOnTarget("Fankriss the Unyielding") then
@@ -688,7 +654,7 @@ function mb_getTarget()
 		if HandleNAXXTargetingPreFocus() then
 			return
 		end
-	elseif Instance.AQ40() and mb_isAtSkeram() and MB_mySkeramBoxStrategyFollow then
+	elseif Instance.AQ40() then
 		if HandleAQ40TargetingPreFocus() then
 			return
 		end

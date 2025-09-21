@@ -586,35 +586,6 @@ function mb_isAtNefarianPhase()
 	return false
 end
 
-function mb_isAtSkeram()
-	local targetName = UnitName("target")
-	
-	if mb_tankTarget("The Prophet Skeram") then
-		return true
-	end
-	
-	local leftTank = mb_returnPlayerInRaidFromTable(MB_mySkeramLeftTank)
-	if mb_targetFromSpecificPlayer("The Prophet Skeram", leftTank) then
-		return true
-	end
-	
-	local middleTank = mb_returnPlayerInRaidFromTable(MB_mySkeramMiddleTank)
-	if mb_targetFromSpecificPlayer("The Prophet Skeram", middleTank) then
-		return true
-	end
-	
-	local rightTank = mb_returnPlayerInRaidFromTable(MB_mySkeramRightTank)
-	if mb_targetFromSpecificPlayer("The Prophet Skeram", rightTank) then
-		return true
-	end
-	
-	if targetName and targetName == "The Prophet Skeram" then
-		return true
-	end
-	
-	return false
-end
-
 function mb_isAtTwinsEmps()
 	local targetName = UnitName("target")
 	
@@ -757,80 +728,7 @@ function mb_crowdControlMCedRaidMemberHakkar()
 	return false
 end
 
-function mb_crowdControlMCedRaidMemberSkeram()
-	if mb_dead("player") then
-		return
-	end
 
-	for i = 1, GetNumRaidMembers() do				
-		if UnitName("raid"..i) and mb_isAlive("raid"..i) and mb_in28yardRange("raid"..i) then			
-			if mb_hasBuffOrDebuff("True Fulfillment", "raid"..i, "debuff")
-				and not mb_hasBuffOrDebuff("Polymorph", "raid"..i, "debuff") then				
-				TargetUnit("raid"..i)
-
-				if not MB_isCastingMyCCSpell then					
-					SpellStopCasting()
-				end
-
-				CastSpellByName("Polymorph")
-				return true
-			end
-		end
-	end
-	return false
-end
-
-function mb_crowdControlMCedRaidMemberSkeramFear()
-	if mb_dead("player") then
-		return
-	end
-
-	for i = 1, GetNumRaidMembers() do				
-		if UnitName("raid"..i) and mb_isAlive("raid"..i) and mb_in28yardRange("raid"..i) then		
-			if mb_hasBuffOrDebuff("True Fulfillment", "raid"..i, "debuff") 
-				and not mb_hasBuffOrDebuff("Polymorph", "raid"..i, "debuff") 
-				and not mb_hasBuffOrDebuff("Fear", "raid"..i, "debuff") then				
-				TargetUnit("raid"..i)
-
-				if not MB_isCastingMyCCSpell then					
-					SpellStopCasting()
-				end
-
-				CastSpellByName("Fear")
-				return true
-			end
-		end
-	end
-	return false
-end
-
-function mb_crowdControlMCedRaidMemberSkeramAOE()
-	if mb_dead("player") then 
-		return
-	end
-
-	if not mb_spellReady("Psychic Scream") then
-		return
-	end
-
-	for i = 1, GetNumRaidMembers() do				
-		if UnitName("raid"..i) and mb_isAlive("raid"..i) then			
-			if mb_hasBuffOrDebuff("True Fulfillment", "raid"..i, "debuff") 
-				and not mb_hasBuffOrDebuff("Polymorph", "raid"..i, "debuff") 
-				and not mb_hasBuffOrDebuff("Psychic Scream", "raid"..i, "debuff") 
-				and not mb_hasBuffOrDebuff("Fear", "raid"..i, "debuff") and CheckInteractDistance("raid"..i, 3 ) then
-
-				if mb_imBusy() then
-					SpellStopCasting()
-				end
-				
-				CastSpellByName("Psychic Scream")
-				return true
-			end
-		end
-	end
-	return false
-end
 
 function mb_crowdControlMCedRaidMemberNefarian()
 	if mb_dead("player") then
