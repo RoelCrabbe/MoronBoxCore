@@ -318,6 +318,94 @@ function Warlock:ShadowBoltWhoring()
     end
 end
 
+local function WarlockCurses()
+    if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+        return THAD_WarlockDebuffP1()
+
+    elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
+
+        local skeramTankMap = {
+            [1] = MB_mySkeramLeftTank,
+            [2] = MB_mySkeramMiddleTank,
+            [3] = MB_mySkeramRightTank,
+            [4] = MB_mySkeramLeftTank,
+            [5] = MB_mySkeramMiddleTank,
+            [6] = MB_mySkeramRightTank
+        }
+
+        local myOrder = MyClassAlphabeticalOrder()
+        local tankName = skeramTankMap[myOrder] and ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
+
+        if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
+            local targetID = MBID[tankName].."target"
+
+            if not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
+                AssistUnit(MBID[tankName])
+
+                if ImBusy() then
+                    SpellStopCasting()
+                end
+
+                CastSpellByName("Curse of Tongues")
+                TargetLastTarget()
+                return true
+            end
+        end
+
+    elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+
+        local razorgoreTankMap = {
+            [1] = MB_myRazorgoreRightTank,
+            [2] = MB_myRazorgoreLeftTank
+        }
+
+        local myOrder = MyClassAlphabeticalOrder()
+        local tankName = razorgoreTankMap[myOrder] and ReturnPlayerInRaidFromTable(razorgoreTankMap[myOrder])
+
+        if tankName and TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
+            local targetID = MBID[tankName].."target"
+
+            if not HasBuffOrDebuff("Curse of Recklessness", targetID, "debuff") then
+                AssistUnit(MBID[tankName])
+                CastSpellByName("Curse of Recklessness")
+                TargetLastTarget()
+                return true
+            end
+        end          
+    else
+        local casters = mb_numberOfClassInRaid("Mage") + mb_numberOfClassInRaid("Warlock")
+        local melee = mb_numberOfClassInRaid("Warrior") + mb_numberOfClassInRaid("Rogue") + mb_numberOfClassInRaid("Hunter")
+
+        local curseAssignments
+        if casters > melee then
+            curseAssignments = {
+                [1] = "Curse of the Elements",
+                [2] = "Curse of Shadow", 
+                [3] = "Curse of Recklessness",
+                [4] = "Curse of the Elements",
+                [5] = "Curse of Shadow",
+                [6] = "Curse of Recklessness"
+            }
+        else
+            curseAssignments = {
+                [1] = "Curse of Recklessness",
+                [2] = "Curse of the Elements",
+                [3] = "Curse of Shadow", 
+                [4] = "Curse of Recklessness",
+                [5] = "Curse of the Elements",
+                [6] = "Curse of Shadow"
+            }
+        end
+
+        local myOrder = MyClassAlphabeticalOrder()
+        local assignedCurse = curseAssignments[myOrder]
+        if assignedCurse and not HasBuffOrDebuff(assignedCurse, "target", "debuff") then
+            CastSpellByName(assignedCurse)
+            return true
+        end
+    end
+end
+
 function Warlock:BossSpecificDPS()
 
 	if UnitName("target") == "Emperor Vek\'nilash" then
@@ -330,97 +418,9 @@ function Warlock:BossSpecificDPS()
     end
 
 	if not HasBuffNamed("Shadow and Frost Reflect", "target") then
-        if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-
-            if UnitName("target") == "Feugen" or UnitName("target") == "Stalagg" then
-                if not HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
-                    CastSpellByName("Curse of the Elements")
-                    return true
-                end
-            end
-
-        elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
-
-            local skeramTankMap = {
-                [1] = MB_mySkeramLeftTank,
-                [2] = MB_mySkeramMiddleTank,
-                [3] = MB_mySkeramRightTank,
-                [4] = MB_mySkeramLeftTank,
-                [5] = MB_mySkeramMiddleTank,
-                [6] = MB_mySkeramRightTank
-            }
-
-            local myOrder = MyClassAlphabeticalOrder()
-            local tankName = skeramTankMap[myOrder] and ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
-
-            if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
-                local targetID = MBID[tankName].."target"
-
-                if not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
-                    AssistUnit(MBID[tankName])
-
-                    if ImBusy() then
-                        SpellStopCasting()
-                    end
-
-                    CastSpellByName("Curse of Tongues")
-                    TargetLastTarget()
-                    return true
-                end
-            end
-
-        elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
-
-            local razorgoreTankMap = {
-                [1] = MB_myRazorgoreRightTank,
-                [2] = MB_myRazorgoreLeftTank
-            }
-
-            local myOrder = MyClassAlphabeticalOrder()
-            local tankName = razorgoreTankMap[myOrder] and ReturnPlayerInRaidFromTable(razorgoreTankMap[myOrder])
-
-            if tankName and TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
-                local targetID = MBID[tankName].."target"
-
-                if not HasBuffOrDebuff("Curse of Recklessness", targetID, "debuff") then
-                    AssistUnit(MBID[tankName])
-                    CastSpellByName("Curse of Recklessness")
-                    TargetLastTarget()
-                    return true
-                end
-            end          
-        else
-            local casters = mb_numberOfClassInRaid("Mage") + mb_numberOfClassInRaid("Warlock")
-            local melee = mb_numberOfClassInRaid("Warrior") + mb_numberOfClassInRaid("Rogue") + mb_numberOfClassInRaid("Hunter")
-
-            local curseAssignments
-            if casters > melee then
-                curseAssignments = {
-                    [1] = "Curse of the Elements",
-                    [2] = "Curse of Shadow", 
-                    [3] = "Curse of Recklessness",
-                    [4] = "Curse of the Elements",
-                    [5] = "Curse of Shadow",
-                    [6] = "Curse of Recklessness"
-                }
-            else
-                curseAssignments = {
-                    [1] = "Curse of Recklessness",
-                    [2] = "Curse of the Elements",
-                    [3] = "Curse of Shadow", 
-                    [4] = "Curse of Recklessness",
-                    [5] = "Curse of the Elements",
-                    [6] = "Curse of Shadow"
-                }
-            end
-
-            local myOrder = MyClassAlphabeticalOrder()
-            local assignedCurse = curseAssignments[myOrder]
-            if assignedCurse and not HasBuffOrDebuff(assignedCurse, "target", "debuff") then
-                CastSpellByName(assignedCurse)
-                return true
-            end
-		end
+        if WarlockCurses() then
+            return true
+        end
 	end
 
 	if not HasBuffOrDebuff("Shadow Ward", "player", "buff") and SpellReady("Shadow Ward") then

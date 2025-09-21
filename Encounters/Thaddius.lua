@@ -662,46 +662,50 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function THAD_DruidDebuffP1()
+local function ApplyFaerieFireIfNeeded(tankKey, healerList)
+    if not MyNameInTable(healerList) then
+        return false
+    end
+
+    local tankId = MBID[tankKey]
+    if not tankId then
+        return false
+    end
+
+    local targetUnit = tankId.."target"
+    local needsFF = not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
+            or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")
+
+    if UnitCanAttack("player", targetUnit) and needsFF then
+        AssistUnit(tankId)
+        CastSpellByName("Faerie Fire")
+        TargetLastTarget()
+        return true
+    end
+
+    return false
+end
+
+function THAD_WarlockDebuffP1()
     local tName = UnitName("target")
 
-    if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        if MyNameInTable(MB_myStalaggHEALERS) then
-            local tankId = MBID[MB_myStalaggMainTank]
-            if not tankId then
-                return false
-            end
+    if not tName then
+        return false
+    end
 
-            local targetUnit = tankId.."target"
-            if UnitCanAttack("player", targetUnit)
-                and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-                or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
-
-                AssistUnit(tankId)
-                CastSpellByName("Faerie Fire")
-                TargetLastTarget()
-                return true
-            end
-        end
-
-        if MyNameInTable(MB_myFeugenHEALERS) then
-            local tankId = MBID[MB_myFeugenMainTank]
-            if not tankId then
-                return false
-            end
-
-            local targetUnit = tankId.."target"
-            if UnitCanAttack("player", targetUnit)
-                and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-                or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
-
-                AssistUnit(tankId)
-                CastSpellByName("Faerie Fire")
-                TargetLastTarget()
-                return true
-            end
+    if tName == "Feugen" or tName == "Stalagg" then
+        if not HasBuffOrDebuff("Curse of the Elements", "target", "debuff") then
+            CastSpellByName("Curse of the Elements")
+            return true
         end
     end
+
+    return false
+end
+
+function THAD_DruidDebuffP1()
+    return ApplyFaerieFireIfNeeded(MB_myStalaggMainTank, MB_myStalaggHEALERS)
+        or ApplyFaerieFireIfNeeded(MB_myFeugenMainTank, MB_myFeugenHEALERS)
 end
 
 --[####################################################################################################]--

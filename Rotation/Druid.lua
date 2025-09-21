@@ -394,8 +394,8 @@ function Druid:MTHeals(assignedTarget)
 end
 
 function Druid:HealerDebuffs()
-    if Instance.NAXX() and THAD_DruidDebuffP1() then
-        return true
+    if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+        return THAD_DruidDebuffP1()
 
 	elseif Instance.BWL() then		
 		if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
