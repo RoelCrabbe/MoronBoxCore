@@ -109,9 +109,7 @@ local THAD = CreateFrame("Button", "THAD", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
-        "PLAYER_REGEN_ENABLED",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD"
+        "PLAYER_REGEN_ENABLED"
 		}
 		do THAD:RegisterEvent(event)
 	end
@@ -123,8 +121,10 @@ end
 
 -- Strategy Configuration
 MB_myThaddiusBoxStrategy = true 
-MB_myThaddiusNaturePotStrategy = true
-MB_myThaddiusSlowFallPotStrategy = true
+
+-- Potion Configuration
+local MB_myThaddiusNaturePotStrategy = true
+local MB_myThaddiusSlowFallPotStrategy = true
 
 -- Tank & DPS Assignments (REQUIRED) PHASE 1 - Left Side
 local MB_myStalaggMainTank = "Kungen"

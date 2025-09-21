@@ -105,8 +105,7 @@ local LOA = CreateFrame("Button", "LOA", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD"
+        "PLAYER_REGEN_ENABLED"
 		}
 		do LOA:RegisterEvent(event)
 	end
@@ -118,14 +117,12 @@ end
 
 -- Strategy Configuration
 MB_myLoathebBoxStrategy = true
-MB_myLoathebShadowPotStrategy = true
+
+-- Potion Configuration
+local MB_myLoathebShadowPotStrategy = true
 
 -- Tank Assignments (REQUIRED)
-MB_myLoathebMainTank = "Kungen"
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
+local MB_myLoathebMainTank = "Kungen"
 
 -- Healer Rotation Configuration
 local MB_myLoathebHealerIndex = 1
@@ -356,25 +353,35 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LOA_IsAtLoatheb()   
-	if TargetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
-		return true
-	end
+local LOA_ACTIVE = false
 
-	if (TankTarget("Loatheb") or TankTarget("Spore")) then
-		return true
-	end
+function LOA_IsAtLoatheb()
+    if LOA_ACTIVE then
+        UseShadowPotsOnLoatheb()
+        return true
+    end
 
+    local inF = false
     local tName = UnitName("target")
-	if not tName then
-		return false
-	end
 
-    if (tName == "Loatheb" or tName == "Spore") then
-		return true
-	end
 
-	return false
+    if TargetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
+        inF = true
+    elseif (TankTarget("Loatheb") or TankTarget("Spore")) then
+        inF = true
+    else
+        if tName and (tName == "Loatheb" or tName == "Spore") then
+            inF = true
+        end
+    end
+
+    if inF then
+        CdAddonMessage(MB_RAID.."LOATHEB", "ENGAGE", 30)
+        LOA_ACTIVE = true
+        return true
+    end
+
+	return LOA_ACTIVE
 end
 
 --[####################################################################################################]--
@@ -396,10 +403,17 @@ function LOA:OnEvent()
         elseif (arg1 == MB_RAID.."LOATHEB_IGNITE") then
             if (arg2 == "REFRESH") then
                 CdRaidWarning(">> Refresh Fungal Bloom on MAGES! <<")
-            end 
+            end
+
+        elseif (arg1 == MB_RAID.."LOATHEB") then
+            if (arg2 == "ENGAGE") then
+                InitializeHealerRotation()
+                LOA_ACTIVE = true
+            end
         end
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") and Instance.NAXX() then
-        InitializeHealerRotation()
+
+    elseif (event == "PLAYER_REGEN_ENABLED") then
+        LOA_ACTIVE = false
     end
 end
 
