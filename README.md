@@ -17,16 +17,16 @@ _Designed for the Vmangos core (2017-19). I ran boxing operations from 2018-2024
 
 ## Progress & Supported Content
 
-As of 03/01/2024, the following content has been completed:
+As of 03/01/2024, the following content has been completed (solo):
 
 - **AQ40:** Everything up to Twins (Ouro ~70%) - Horde & Alliance
 - **BWL:** Everything up to Chromagus (Nefarian 64%) - Horde & Alliance
 - **MC:** Full clear
 - **Naxxramas:**
   - Full Spider Wing
-  - Noth, Heigan, Loatheb (Solo)
-  - Razuvious (Solo MC), Gothik, Four Horsemen (I once killed a horse :D)
-  - Patchwerk, Grobbulus (World First Solo), Gluth (World First Solo), Thaddius (98% :D)
+  - Noth, Heigan, Loatheb
+  - Razuvious, Gothik
+  - Patchwerk, Grobbulus, Gluth, Thaddius
 - **Level 20 Raids:** Everything
 
 > All features have been tested and work as intended.
