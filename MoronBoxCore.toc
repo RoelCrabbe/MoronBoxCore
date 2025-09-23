@@ -44,11 +44,12 @@ Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
 
-Encounters\Gluth.lua
-Encounters\Grobbulus.lua
-Encounters\Loatheb.lua
-Encounters\Thaddius.lua
-Encounters\Skeram.lua
+Encounters\AQ40\Skeram.lua
+
+Encounters\Naxxramas\Gluth.lua
+Encounters\Naxxramas\Grobbulus.lua
+Encounters\Naxxramas\Loatheb.lua
+Encounters\Naxxramas\Thaddius.lua
 
 Rotation\Scripts\Extra.lua
 Rotation\Scripts\Totem.lua
