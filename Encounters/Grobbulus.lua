@@ -215,7 +215,6 @@ function GROB:OnEvent()
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Grobbulus dies") then
             CdRaidWarning(">> Grobbulus Died! <<")
-            GROB_ACTIVE = false
         end
     
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then

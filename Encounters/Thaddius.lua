@@ -476,16 +476,12 @@ function THAD:OnEvent()
 
             elseif (arg2 == "POLARITY_MOVE") then
                 CdRaidWarning(">> MOVE NOW <<")
-                CheckClosestHealerDebuff()
             end
         end
 
     elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Thaddius dies") then
             CdRaidWarning(">> Thaddius Died! <<")
-            THAD_PHASE_1_ACTIVE = false
-            THAD_PHASE_2_ACTIVE = false
-            THAD_DisablePolaritySystem()
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then

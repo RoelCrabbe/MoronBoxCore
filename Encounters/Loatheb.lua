@@ -416,7 +416,6 @@ function LOA:OnEvent()
     elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Loatheb dies") then
             CdRaidWarning(">> Loatheb Died! <<")
-            LOA_ACTIVE = false
         end
     
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
