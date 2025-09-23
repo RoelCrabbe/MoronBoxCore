@@ -283,3 +283,32 @@ See `Functions/Healing.lua` for details.
 - Hand of Justice: 11815
 - Blackhand's Breadth: 13965
 - Unyielding Maul: 18531
+
+**Warrior Tank**
+
+- Lionheart Helm: 12640
+- Helm of the Executioner: 22411
+- Beads of Ogre Might : 22150
+- Spaulders of Valor: 16733
+- Stoneskin Gargoyle Cape: 13397
+- Savage Gladiator Chain: 11726
+- Battleborn Armbraces: 12936
+- Omokk's Girth Restrainer: 13959
+- Brigam Girdle: 13142
+- Cloudkeeper Legplates: 14554
+- Bloodmail Boots: 14616
+- Myrmidon's Signet: 2246
+- Blackstone Ring: 17713
+- Diamond Flask: 20130
+- Hand of Justice: 11815
+- Blackhand's Breadth: 13965
+- Blackcrow: 12651
+- Draconian Deflector: 12602
+
+- Voone's Vice Grips: 13963
+- Ebon Hand: 19170
+- Dal'Rend's Tribal Guardian: 12939
+
+- Edgemaster's Handguards: 14551
+- Dal'Rend's Sacred Charge: 12940
+- Dal'Rend's Tribal Guardian: 12939
