@@ -91,7 +91,6 @@ local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtNoth = mb_isAtNoth
 local LOA_IsAtLoatheb = LOA_IsAtLoatheb
-local IsAtSkeram = mb_isAtSkeram
 local IsExcludedWW = mb_isExcludedWW
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
@@ -289,10 +288,6 @@ local function WarriorSingle()
     if InMeleeRange() then
         if Instance.AQ40() then
             UseNaturePotsOnHuhuran()
-
-            if IsAtSkeram() and SpellReady("Intimidating Shout") then
-                CastSpellByName("Intimidating Shout")
-            end
         end
 
         if MobsToAutoBreakFear() then
@@ -307,11 +302,7 @@ local function WarriorSingle()
             Warrior:TANKCooldowns(myRage)
         end
 
-		if Instance.AQ40() then			
-			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                TargetByName("The Prophet Skeram")
-            end
-
+		if Instance.AQ40() then
 			AnubisathAlert()
 		end
 
@@ -354,10 +345,6 @@ local function WarriorMulti()
     if InMeleeRange() then
         if Instance.AQ40() then
             UseNaturePotsOnHuhuran()
-
-            if IsAtSkeram() and SpellReady("Intimidating Shout") then
-                CastSpellByName("Intimidating Shout")
-            end
         end
 
         if MobsToAutoBreakFear() then
@@ -372,11 +359,7 @@ local function WarriorMulti()
             Warrior:TANKCooldowns(myRage)
         end
 
-		if Instance.AQ40() then			
-			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                TargetByName("The Prophet Skeram")
-            end
-
+		if Instance.AQ40() then
 			AnubisathAlert()
 		end
 
@@ -598,7 +581,7 @@ end
 local lastAnnihilatorTime = 0
 
 function Warrior:Annihilator()
-    if TableLength(MB_raidAssist.Warrior.AnnihilatorWeavers) == 0 or not MB_raidAssist.Warrior.Active or IsAtSkeram() then
+    if TableLength(MB_raidAssist.Warrior.AnnihilatorWeavers) == 0 or not MB_raidAssist.Warrior.Active then
         return
     end
     

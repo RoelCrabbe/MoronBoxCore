@@ -81,7 +81,6 @@ local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
 local CrowdControl = mb_crowdControl
 local CrowdControlledMob = mb_crowdControlledMob
-local CrowdControlMCedRaidMemberSkeramAOE = mb_crowdControlMCedRaidMemberSkeramAOE
 local Dead = mb_dead
 local DebuffShadowWeavingAmount = mb_debuffShadowWeavingAmount
 local Decurse = mb_decurse
@@ -101,7 +100,6 @@ local InCombat = mb_inCombat
 local InstructorRazAddsHeal = mb_instructorRazAddsHeal
 local IsAlive = mb_isAlive
 local IsAtInstructorRazuvious = mb_isAtInstructorRazuvious
-local IsAtSkeram = mb_isAtSkeram
 local IsValidEnemyTargetWithin28YardRange = mb_isValidEnemyTargetWithin28YardRange
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
 local IsValidFriendlyTargetWithin28YardRange = mb_isValidFriendlyTargetWithin28YardRange
@@ -647,23 +645,9 @@ local function PriestSingle()
         end
 
 	elseif Instance.AQ40() then
-		
-		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-            ClearTarget()
+		if SKERAM_CrowdControl() then
             return
         end
-
-		if IsAtSkeram() then
-            if not MB_autoToggleSheeps.Active then
-                MB_autoToggleSheeps.Active = true
-                MB_autoToggleSheeps.Time = GetTime() + 3
-                PriestCounter.Cycle()
-            end
-
-            if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-                CrowdControlMCedRaidMemberSkeramAOE()
-            end
-		end
 	end
 
 	Priest:Fade()

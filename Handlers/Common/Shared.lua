@@ -558,22 +558,18 @@ function mb_myNameInTable(table)
    return false
 end
 
-function mb_returnPlayerInRaidFromTable(table)
-   if not table then
-       return nil
-   end
-   
-   for k, name in pairs(table) do
-       if not name then
-       else
-           local isInRaid = mb_isInRaid(name)
-           if isInRaid then
-               return name
-           end
-       end
-   end
-   
-   return nil
+function mb_returnPlayerInRaidFromTable(list)
+    if not list then
+        return nil
+    end
+
+    for _, name in ipairs(list) do
+        if name and mb_isInRaid(name) then
+            return name
+        end
+    end
+
+    return nil
 end
 
 function RaidIdx(qName)

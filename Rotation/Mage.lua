@@ -82,7 +82,6 @@ local CrowdControl = mb_crowdControl
 local CrowdControlledMob = mb_crowdControlledMob
 local CrowdControlMCedRaidMemberHakkar = mb_crowdControlMCedRaidMemberHakkar
 local CrowdControlMCedRaidMemberNefarian = mb_crowdControlMCedRaidMemberNefarian
-local CrowdControlMCedRaidMemberSkeram = mb_crowdControlMCedRaidMemberSkeram
 local Dead = mb_dead
 local DebuffScorchAmount = mb_debuffScorchAmount
 local DebuffWintersChillAmount = mb_debuffWintersChillAmount
@@ -100,7 +99,6 @@ local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local InMeleeRange = mb_inMeleeRange
 local IsAtNefarianPhase = mb_isAtNefarianPhase
-local IsAtSkeram = mb_isAtSkeram
 local IsFireImmune = mb_isFireImmune
 local IsFrostImmune = mb_isFrostImmune
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
@@ -254,22 +252,9 @@ local function MageSingle()
 	end
 
 	if Instance.AQ40() then		
-		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-            ClearTarget()
+        if SKERAM_CrowdControl() then
             return
         end
-
-		if IsAtSkeram() then
-            if not MB_autoToggleSheeps.Active then
-                MB_autoToggleSheeps.Active = true
-                MB_autoToggleSheeps.Time = GetTime() + 2
-                MageCounter.Cycle()
-            end
-
-			if MyClassAlphabeticalOrder() == MB_buffingCounterMage then					
-				CrowdControlMCedRaidMemberSkeram()
-			end
-		end
 
 	elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
 

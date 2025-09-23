@@ -80,7 +80,6 @@ local CoolDownCast = mb_coolDownCast
 local CorruptedTotems = mb_corruptedTotems
 local CrowdControl = mb_crowdControl
 local CrowdControlledMob = mb_crowdControlledMob
-local CrowdControlMCedRaidMemberSkeramFear = mb_crowdControlMCedRaidMemberSkeramFear
 local Dead = mb_dead
 local DebuffShadowBoltAmount = mb_debuffShadowBoltAmount
 local DebuffShadowWeavingAmount = mb_debuffShadowWeavingAmount
@@ -96,7 +95,6 @@ local ImBusy = mb_imBusy
 local InCombat = mb_inCombat
 local IsAtRazorgore = mb_isAtRazorgore
 local IsAtRazorgorePhase = mb_isAtRazorgorePhase
-local IsAtSkeram = mb_isAtSkeram
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
 local KnowSpell = mb_knowSpell
@@ -106,6 +104,7 @@ local MobsToShadowWard = mb_mobsToShadowWard
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyNameInTable = mb_myNameInTable
 local NumShards = mb_numShards
+local NumberOfClassInRaid = mb_numberOfClassInRaid
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
@@ -224,24 +223,11 @@ local function WarlockSingle()
         end
 	end
 
-	if Instance.AQ40() then
-		
+	if Instance.AQ40() then		
 		if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
         end
-
-        if IsAtSkeram() and MB_mySkeramBoxStrategyWarlock then
-            if not MB_autoToggleSheeps.Active then
-                MB_autoToggleSheeps.Active = true
-                MB_autoToggleSheeps.Time = GetTime() + 2
-                WarlockCounter.Cycle()
-            end
-
-			if MyClassAlphabeticalOrder() == MB_buffingCounterWarlock then
-				CrowdControlMCedRaidMemberSkeramFear()
-			end
-		end
     end
 
 	if not InCombat("target") then
@@ -322,35 +308,8 @@ local function WarlockCurses()
     if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         return THAD_WarlockDebuffP1()
 
-    elseif Instance.AQ40() and IsAtSkeram() and MB_mySkeramBoxStrategyFollow then
-
-        local skeramTankMap = {
-            [1] = MB_mySkeramLeftTank,
-            [2] = MB_mySkeramMiddleTank,
-            [3] = MB_mySkeramRightTank,
-            [4] = MB_mySkeramLeftTank,
-            [5] = MB_mySkeramMiddleTank,
-            [6] = MB_mySkeramRightTank
-        }
-
-        local myOrder = MyClassAlphabeticalOrder()
-        local tankName = skeramTankMap[myOrder] and ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
-
-        if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
-            local targetID = MBID[tankName].."target"
-
-            if not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
-                AssistUnit(MBID[tankName])
-
-                if ImBusy() then
-                    SpellStopCasting()
-                end
-
-                CastSpellByName("Curse of Tongues")
-                TargetLastTarget()
-                return true
-            end
-        end
+    elseif Instance.AQ40() and SKERAM_IsAtSkeram() and MB_mySkeramBoxStrategy then
+        return SKERAM_WarlockDebuff()
 
     elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 
@@ -373,11 +332,11 @@ local function WarlockCurses()
             end
         end          
     else
-        local casters = mb_numberOfClassInRaid("Mage") + mb_numberOfClassInRaid("Warlock")
-        local melee = mb_numberOfClassInRaid("Warrior") + mb_numberOfClassInRaid("Rogue") + mb_numberOfClassInRaid("Hunter")
+        local casters = NumberOfClassInRaid("Mage") + NumberOfClassInRaid("Warlock")
+        local melees = NumberOfClassInRaid("Warrior") + NumberOfClassInRaid("Rogue") + NumberOfClassInRaid("Hunter")
 
         local curseAssignments
-        if casters > melee then
+        if casters > melees then
             curseAssignments = {
                 [1] = "Curse of the Elements",
                 [2] = "Curse of Shadow", 
