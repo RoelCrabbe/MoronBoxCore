@@ -102,10 +102,11 @@ local GROB = CreateFrame("Button", "GROB", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
+        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD"
-		}
-		do GROB:RegisterEvent(event)
+        "PLAYER_ENTERING_WORLD",
+        "PLAYER_REGEN_ENABLED"
+		} do GROB:RegisterEvent(event)
 	end
 end
 
@@ -157,31 +158,41 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local GROB_ACTIVE = false
+
 function GROB_IsAtGrobbulus()
+	if GROB_ACTIVE then
+        UseNaturePotsOnGrobbulus()
+        return true
+    end
+
+	local inF = false
+    local tName = UnitName("target")
+
 	if TargetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
-		return true
-	end
-
-	for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
-		if TargetFromSpecificPlayer("Fallout Slime", tankName) then
-			return true
+		inF = true
+	elseif (TankTarget("Grobbulus") or TankTarget("Fallout Slime")) then
+		inF = true
+	else
+		for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
+			if TargetFromSpecificPlayer("Fallout Slime", tankName) then
+				inF = true
+				break
+			end
 		end
+
+		if tName and (tName == "Grobbulus" or tName == "Fallout Slime") then
+            inF = true
+        end
 	end
 
-	if (TankTarget("Grobbulus") or TankTarget("Fallout Slime")) then
-		return true
-	end
+    if inF then
+        CdAddonMessage(MB_RAID.."GROBBULUS", "ENGAGE", 30)
+        GROB_ACTIVE = true
+        return true
+    end
 
-	local tName = UnitName("target")
-	if not tName then
-		return false
-	end
-
-	if (tName == "Grobbulus" or tName == "Fallout Slime") then
-		return true
-	end
-
-	return false
+	return GROB_ACTIVE
 end
 
 --[####################################################################################################]--
@@ -194,7 +205,21 @@ function GROB:OnEvent()
             if (arg2 == "PRIEST_OOR") then
                 CdRaidWarning(">> Priest Out of Range! <<")
             end
-		end
+
+		elseif (arg1 == MB_RAID.."GROBBULUS") then
+            if (arg2 == "ENGAGE") then
+                GROB_ACTIVE = true
+            end
+        end
+
+	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "Grobbulus dies") then
+            CdRaidWarning(">> Grobbulus Died! <<")
+            GROB_ACTIVE = false
+        end
+    
+    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
+        GROB_ACTIVE = false
     end
 end
 

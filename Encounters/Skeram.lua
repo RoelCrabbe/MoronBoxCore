@@ -96,6 +96,7 @@ local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
+local SpellReady = mb_spellReady
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -112,9 +113,10 @@ local SKERAM = CreateFrame("Button", "SKERAM", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
-        "PLAYER_REGEN_ENABLED"
-		}
-		do SKERAM:RegisterEvent(event)
+        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
+        "ZONE_CHANGED_NEW_AREA",
+        "PLAYER_ENTERING_WORLD"
+		} do SKERAM:RegisterEvent(event)
 	end
 end
 
@@ -240,7 +242,13 @@ function SKERAM:OnEvent()
             SKERAM_ACTIVE = true
         end
 
-    elseif (event == "PLAYER_REGEN_ENABLED") then
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "The Prophet Skeram dies") then
+            CdRaidWarning(">> Skeram Died! <<")
+            SKERAM_ACTIVE = false
+        end
+    
+    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") then
         SKERAM_ACTIVE = false
     end
 end

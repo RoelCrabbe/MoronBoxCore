@@ -105,9 +105,11 @@ local LOA = CreateFrame("Button", "LOA", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
+        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
+        "ZONE_CHANGED_NEW_AREA",
+        "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		}
-		do LOA:RegisterEvent(event)
+		} do LOA:RegisterEvent(event)
 	end
 end
 
@@ -364,7 +366,6 @@ function LOA_IsAtLoatheb()
     local inF = false
     local tName = UnitName("target")
 
-
     if TargetFromSpecificPlayer("Loatheb", MB_myLoathebMainTank) then
         inF = true
     elseif (TankTarget("Loatheb") or TankTarget("Spore")) then
@@ -412,7 +413,13 @@ function LOA:OnEvent()
             end
         end
 
-    elseif (event == "PLAYER_REGEN_ENABLED") then
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "Loatheb dies") then
+            CdRaidWarning(">> Loatheb Died! <<")
+            LOA_ACTIVE = false
+        end
+    
+    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         LOA_ACTIVE = false
     end
 end

@@ -86,6 +86,7 @@ local FreezingTrap = mb_freezingTrap
 local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
 local GetMCActions = mb_getMCActions
 local GetTarget = mb_getTarget
+local GetMyInterruptTarget = mb_getMyInterruptTarget
 local GTFO = mb_GTFO
 local GLUTH_IsAtGluth = GLUTH_IsAtGluth
 local HasBuffNamed = mb_hasBuffNamed

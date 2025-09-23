@@ -109,9 +109,11 @@ local THAD = CreateFrame("Button", "THAD", UIParent)
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
+        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
+        "ZONE_CHANGED_NEW_AREA",
+        "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		}
-		do THAD:RegisterEvent(event)
+		} do THAD:RegisterEvent(event)
 	end
 end
 
@@ -478,7 +480,15 @@ function THAD:OnEvent()
             end
         end
 
-    elseif (event == "PLAYER_REGEN_ENABLED") then
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "Thaddius dies") then
+            CdRaidWarning(">> Thaddius Died! <<")
+            THAD_PHASE_1_ACTIVE = false
+            THAD_PHASE_2_ACTIVE = false
+            THAD_DisablePolaritySystem()
+        end
+
+    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         THAD_PHASE_1_ACTIVE = false
         THAD_PHASE_2_ACTIVE = false
         THAD_DisablePolaritySystem()
