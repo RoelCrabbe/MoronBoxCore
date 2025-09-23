@@ -104,6 +104,7 @@ local MobsToShadowWard = mb_mobsToShadowWard
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyNameInTable = mb_myNameInTable
 local NumShards = mb_numShards
+local NumberOfClassInRaid = mb_numberOfClassInRaid
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
@@ -331,11 +332,11 @@ local function WarlockCurses()
             end
         end          
     else
-        local casters = mb_numberOfClassInRaid("Mage") + mb_numberOfClassInRaid("Warlock")
-        local melee = mb_numberOfClassInRaid("Warrior") + mb_numberOfClassInRaid("Rogue") + mb_numberOfClassInRaid("Hunter")
+        local casters = NumberOfClassInRaid("Mage") + NumberOfClassInRaid("Warlock")
+        local melees = NumberOfClassInRaid("Warrior") + NumberOfClassInRaid("Rogue") + NumberOfClassInRaid("Hunter")
 
         local curseAssignments
-        if casters > melee then
+        if casters > melees then
             curseAssignments = {
                 [1] = "Curse of the Elements",
                 [2] = "Curse of Shadow", 
