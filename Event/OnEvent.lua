@@ -145,6 +145,11 @@ function MMB:OnEvent()
 		mb_mySpecc()
 		mb_initializeClasslists()
 
+		MB_raidInviter = MB_hordeRaidInviter
+		if not Faction.IsHorde() then
+			MB_raidInviter = MB_allianceRaidInviter
+		end
+
 		MMB_Post_Init:SetScript("OnUpdate", MMB_Post_Init.OnUpdate)
 		TakeTaxiNode = mb_takeTaxiNode
 
@@ -891,8 +896,6 @@ function mb_mySpecc()
 	local GetMySpecc = MB_mySpeccList[myClass]
     if GetMySpecc and type(GetMySpecc) == "function" then
         GetMySpecc()
-    else
-        mb_cdMessage("I don\'t know what to do.", 500)
     end
 end
 

@@ -507,7 +507,7 @@ local function MultiBuffPriest(spell)
 	end
 end
 
-function MultiBuffBlessing(spell)
+function mb_multiBuffBlessing(spell)
 	local n, r
 
 	if UnitInRaid("player") then
@@ -885,6 +885,7 @@ BuffData["Devotion Aura"]   				 =  "Interface\\Icons\\Spell_Holy_DevotionAura"
 BuffData["Concentration Aura"] 			 =  "Interface\\Icons\\Spell_Holy_MindSooth"
 BuffData["Fire Resistance Aura"]			 =  "Interface\\Icons\\Spell_Fire_SealOfFire"
 BuffData["Frost Resistance Aura"]		 =  "Interface\\Icons\\Spell_Frost_WizardMark"
+BuffData["Shadow Resistance Aura"]		 =  "Interface\\Icons\\Spell_Shadow_SealOfKings"
 BuffData["Retribution Aura"]				 =  "Interface\\Icons\\Spell_Holy_AuraOfLight"
 BuffData["Greater Blessing of Wisdom"]   = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom" 
 BuffData["Greater Blessing of Kings"]	 =  "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings" 

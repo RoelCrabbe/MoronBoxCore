@@ -2,7 +2,10 @@
 --[######################################### CONFIGURATION ############################################]--
 --[####################################################################################################]--
 
-MB_raidInviter = "Moron" -- Handling Raidinvites
+MB_raidInviter = nil -- Handling Raidinvites
+MB_hordeRaidInviter = "Moron"
+MB_allianceRaidInviter = "Sceto"
+
 MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
 MB_inviteMessage = "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
 
@@ -130,7 +133,11 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
 	"Sabo",
 
     -- Alliance
-    "Alliance Tank 1"
+    "Sceto",
+
+	-- Normal Tanks
+	"Laty",
+	"Myosin"
 }
 
 MB_extraTanks = { -- These tanks will be added to the 'no taunt off' list

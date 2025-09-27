@@ -228,7 +228,7 @@ local function PaladinHeal()
 		return
     end
 
-	MBH_CastHeal("Flash of Light", 5, 6)
+	MBH_CastHeal("Flash of Light", 6, 6)
 end
 
 local FlashOfLight = { Time = 0, Interrupt = false }
@@ -482,6 +482,11 @@ function Paladin:Cooldowns()
 end
 
 function Paladin:ChooseAura()
+	if TankTarget("Lord Kazzak") then
+		SelfBuff("Shadow Resistance Aura")
+		return
+	end
+
 	if TankTarget("Sapphiron") or TankTarget("Azuregos") then
 		SelfBuff("Frost Resistance Aura")
 		return
