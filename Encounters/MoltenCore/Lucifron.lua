@@ -186,8 +186,9 @@ function LUCI:OnEvent()
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Lucifron dies") then
             CdRaidWarning(">> Lucifron Died! <<")
+            LUCI_ACTIVE = false
         end
-    
+
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         LUCI_ACTIVE = false
     end
