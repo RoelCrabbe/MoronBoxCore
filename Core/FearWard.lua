@@ -145,6 +145,7 @@ local CdAddonMessage = mb_cdAddonMessage
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local ImBusy = mb_imBusy
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
+local SpellReady = mb_spellReady
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -171,10 +172,10 @@ local MB_fearwardQueue = {} -- local priest only, unitId is the key because its 
 local MB_fearwardClaimedQueue = {} -- local list BUT its filled with addonMessage broadcast, unitId is not the key because its shared.
 
 local function GetMyFearwardPriority()
-    if myClass == "Rogue" then
-        return 1
-    elseif FindInTable(MB_raidTanks, myName) then
+    if FindInTable(MB_raidTanks, myName) then
         return 2
+    elseif myClass == "Rogue" then
+        return 1
     elseif myClass == "Priest" then
         return 3
     else
@@ -324,25 +325,27 @@ function FW_ProcessFearwardQueue()
     if not targetUnitId or not priority then
         return false
     end
-    
-    local targetName = UnitName(targetUnitId)
-    if not targetName then
+
+    local spellName = "Fear Ward"    
+    local tName = UnitName(targetUnitId)
+
+    if not tName then
         return false
     end
 
-    if ImBusy() then
+    if ImBusy() or not SpellReady(spellName) then
         return false
     end
 
     local spell = "Fear Ward"
-    if IsValidFriendlyTarget(targetUnitId, spell) and not HasBuffOrDebuff(spell, targetUnitId, "buff") then
-        CastSpellByName(spell, false)
+    if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true
     end
 
-    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..targetName)
+    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..tName)
     return false
 end
 
