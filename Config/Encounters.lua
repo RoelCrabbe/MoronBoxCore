@@ -2,7 +2,7 @@
 --[#################################### BOSS ENCOUNTER CONFIGURATIONS ###{#############################]--
 --[####################################################################################################]--
 
-MB_mySpeedRunStrategy = true
+MB_mySpeedRunStrategy = false
 MB_myGigaWorldBuffsStrategy = false
 
 --[[

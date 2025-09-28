@@ -446,6 +446,14 @@ local function HandleBWLTargetingPostFocus()
 	return false
 end
 
+local function HandleMCTargetingPostFocus()
+	if LUCI_TargetingPostFocus() then
+		return true
+	end
+
+	return false
+end
+
 local function HandleONYTargetingPostFocus()
 	local tName = UnitName("target")
 
@@ -687,6 +695,11 @@ function mb_getTarget()
 
 	elseif Instance.BWL() then		
 		if HandleBWLTargetingPostFocus() then
+			return
+		end
+
+	elseif Instance.MC() then
+		if HandleMCTargetingPostFocus() then
 			return
 		end
 

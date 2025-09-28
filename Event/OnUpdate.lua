@@ -145,7 +145,7 @@ function MMB:OnUpdate()
 
         if MB_myGigaWorldBuffsStrategy then
             if option2 == "Steroid WorldBuffs" then
-                SelectGossipOption(1)
+                SelectGossipOption(2)
             end
         else
             if option1 == "Normal WorldBuffs" then
