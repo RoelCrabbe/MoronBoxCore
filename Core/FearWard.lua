@@ -203,7 +203,7 @@ local function GetDwarfPriestInGroup()
         for i = 1, GetNumRaidMembers() do
             local rName, _, _, _, rClass = GetRaidRosterInfo(i)
             if rClass == "Priest" then
-                local unitId = "raid" .. i
+                local unitId = "raid"..i
                 if UnitRace(unitId) == "Dwarf" then
                     table.insert(dwarfPriests, rName)
                 end
@@ -251,7 +251,7 @@ local function HandleFearwardRequest(message, sender)
     end
 
     if HasBuffOrDebuff("Fear Ward", requestPlayerId, "buff") then
-        CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:" .. requestPlayer)
+        CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..requestPlayer)
         return
     end
 
@@ -264,7 +264,7 @@ local function HandleFearwardRequest(message, sender)
     end
 
     MB_fearwardQueue[requestPlayerId] = tonumber(priority)
-    CdAddonMessage(MB_RAID.."CLAIM_FEARWARD", "CLAIMING:" .. requestPlayer)
+    CdAddonMessage(MB_RAID.."CLAIM_FEARWARD", "CLAIMING:"..requestPlayer)
 end
 
 local function HandleFearwardClaim(message, claimer)
@@ -313,7 +313,7 @@ function FW_RequestFearward()
     end
 
     local myPriority = GetMyFearwardPriority()
-    local message = "BUFF_INFO:" .. myPriority .. ":" .. myBuffingPriest
+    local message = "BUFF_INFO:"..myPriority..":"..myBuffingPriest
 
     CdAddonMessage(MB_RAID.."NEED_FEARWARD", message, 15)
 end
@@ -342,7 +342,7 @@ function FW_ProcessFearwardQueue()
         return true
     end
 
-    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:" .. targetName)
+    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..targetName)
     return false
 end
 
@@ -351,12 +351,12 @@ end
 --     Print("My Queue:")
 --     for unitId, priority in pairs(MB_fearwardQueue) do
 --         local name = UnitName(unitId) or "Unknown"
---         Print("  " .. name .. " (" .. unitId .. ") = priority " .. priority)
+--         Print("  "..name.." ("..unitId..") = priority "..priority)
 --     end
     
 --     Print("Claimed Queue:")
 --     for playerName, claimer in pairs(MB_fearwardClaimedQueue) do
---         Print("  " .. playerName .. " claimed by " .. claimer)
+--         Print("  "..playerName.." claimed by "..claimer)
 --     end
 -- end
 
