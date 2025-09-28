@@ -147,6 +147,8 @@ local LUCI_ACTIVE = false
 function LUCI_IsAtLucifron()
 	if LUCI_ACTIVE then
         UseShadowPotsOnLucifron()
+        FW_RequestFearward()
+        FW_ProcessFearwardQueue()
         return true
     end
 
