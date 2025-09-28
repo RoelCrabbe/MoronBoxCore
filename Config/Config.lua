@@ -27,7 +27,7 @@ MB_raidAssist = { -- Raid tools
 		-- Encounter, follower
 		Baron = { -- Baron bomb
 			"Suecia", -- Horde
-			"Alliance Soak 1" -- Alliance
+			"Laty" -- Alliance
 		},
 		Vaelastrasz = { -- Vaelastrasz
 			"Suecia", -- Horde
