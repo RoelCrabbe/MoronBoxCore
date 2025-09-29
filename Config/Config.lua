@@ -137,7 +137,8 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
 
 	-- Normal Tanks
 	"Laty",
-	"Myosin"
+	"Myosin",
+	"Subsmash"
 }
 
 MB_extraTanks = { -- These tanks will be added to the 'no taunt off' list
