@@ -142,6 +142,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 local CdAddonMessage = mb_cdAddonMessage
+local CdMessage = mb_cdMessage
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local ImBusy = mb_imBusy
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
@@ -370,6 +371,8 @@ function FW_ProcessFearwardQueue()
 
     local spell = "Fear Ward"
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        CdMessage("I FW'ed "..GetColors(tName))
+
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()

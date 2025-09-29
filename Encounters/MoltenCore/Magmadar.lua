@@ -97,7 +97,7 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local LUCI = CreateFrame("Button", "LUCI", UIParent)
+local MAGMA = CreateFrame("Button", "MAGMA", UIParent)
 
 do
 	for _, event in {
@@ -106,7 +106,7 @@ do
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do LUCI:RegisterEvent(event)
+		} do MAGMA:RegisterEvent(event)
 	end
 end
 
@@ -115,19 +115,15 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myLucifronBoxStrategy = true 
-local MB_myLucifronShadowPotStrategy = false
-local MB_myLucifronKillAddsStrategy = false 
-
--- Alliance Preparations
-local MB_myLucifronFearwardPreparation = true
+local MB_myMagmadarBoxStrategy = true 
+local MB_myMagmadarFirePotStrategy = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseShadowPotsOnLucifron()
-    if not MB_myLucifronShadowPotStrategy then
+local function UseFirePotsOnMagmadar()
+    if not MB_myMagmadarFirePotStrategy then
         return
     end
 
@@ -135,7 +131,7 @@ local function UseShadowPotsOnLucifron()
 		return
 	end
 
-    TakePotionsWhenPossible("Greater Shadow Protection Potion")
+    TakePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 local function PrepareForMagmadar()
@@ -149,18 +145,17 @@ local function PrepareForMagmadar()
     return 5
 end
 
-FW_RegisterFearwardPriority("Lucifron", PrepareForMagmadar)
-FW_RegisterFearwardPriority("Flamewaker Protector", PrepareForMagmadar)
+FW_RegisterFearwardPriority("Magmadar", PrepareForMagmadar)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local LUCI_ACTIVE = false
+local MAGMA_ACTIVE = false
 
-function LUCI_IsAtLucifron()
-	if LUCI_ACTIVE then
-        UseShadowPotsOnLucifron()
+function MAGMA_IsAtMagmadar()
+	if MAGMA_ACTIVE then
+        UseFirePotsOnMagmadar()
         FW_RequestFearward()
         FW_ProcessFearwardQueue()
         return true
@@ -169,57 +164,53 @@ function LUCI_IsAtLucifron()
 	local inF = false
     local tName = UnitName("target")
 
-    if (TankTarget("Lucifron") or TankTarget("Flamewaker Protector")) then
+    if TankTarget("Magmadar") then
         inF = true
     else
-        if tName and (tName == "Lucifron" or tName == "Flamewaker Protector") then
+        if tName and tName == "Magmadar" then
             inF = true
         end
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "ENGAGE", 30)
-        LUCI_ACTIVE = true
+        CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
+        MAGMA_ACTIVE = true
         return true
     end
 
-	return LUCI_ACTIVE
+	return MAGMA_ACTIVE
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCI:OnEvent()
+function MAGMA:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."LUCIFRON" and arg2 == "ENGAGE") then
-            CdRaidWarning(">> Lucifron Engaged! <<")
-            LUCI_ACTIVE = true
+		if (arg1 == MB_RAID.."MAGMADAR" and arg2 == "ENGAGE") then
+            CdRaidWarning(">> Magmadar Engaged! <<")
+            MAGMA_ACTIVE = true
         end
 
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Lucifron dies") then
-            CdRaidWarning(">> Lucifron Died! <<")
-            LUCI_ACTIVE = false
+        if string.find(arg1, "Magmadar dies") then
+            CdRaidWarning(">> Magmadar Died! <<")
+            MAGMA_ACTIVE = false
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        LUCI_ACTIVE = false
+        MAGMA_ACTIVE = false
     end
 end
 
-LUCI:SetScript("OnEvent", LUCI.OnEvent) 
+MAGMA:SetScript("OnEvent", MAGMA.OnEvent) 
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCI_TargetingPostFocus()
-    if not MB_myLucifronKillAddsStrategy then
-        return false
-    end
-
-	if LUCI_IsAtLucifron() and MB_myLucifronBoxStrategy then
+function MAGMA_TargetingPostFocus()
+	if MAGMA_IsAtMagmadar() and MB_myMagmadarBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -230,10 +221,6 @@ function LUCI_TargetingPostFocus()
 			return true
 
 		elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
-            if LockOnTarget("Flamewaker Protector") then
-                return true
-            end
-
 			if not tName or Dead("target") then
 				AssistFocus()
 			end

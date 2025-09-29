@@ -451,6 +451,10 @@ local function HandleMCTargetingPostFocus()
 		return true
 	end
 
+	if MAGMA_TargetingPostFocus() then
+		return true
+	end
+
 	return false
 end
 
