@@ -171,15 +171,22 @@ end
 local MB_fearwardQueue = {} -- local priest only, unitId is the key because its not shared.
 local MB_fearwardClaimedQueue = {} -- local list BUT its filled with addonMessage broadcast, unitId is not the key because its shared.
 
+local PRIORITY = {
+    HIGH   = 10,
+    MEDIUM = 20,
+    LOW    = 30,
+    NONE   = 40,
+}
+
 local function GetMyFearwardPriority()
     if FindInTable(MB_raidTanks, myName) then
-        return 2
+        return PRIORITY.MEDIUM
     elseif myClass == "Rogue" then
-        return 1
+        return PRIORITY.HIGH
     elseif myClass == "Priest" then
-        return 3
+        return PRIORITY.LOW
     else
-        return 4
+        return PRIORITY.NONE
     end
 end
 
