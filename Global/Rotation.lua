@@ -92,12 +92,12 @@ MB_myLoathebList = {}
 
 Instance = {
     NAXX = function() return GetRealZoneText() == "Naxxramas" end,
-    AQ40 = function() return GetRealZoneText() == "Ahn'Qiraj" end,
-    AQ20 = function() return GetRealZoneText() == "The Ruins of Ahn'Qiraj" end,
+    AQ40 = function() return GetRealZoneText() == "Ahn\'Qiraj" end,
+    AQ20 = function() return GetRealZoneText() == "Ruins of Ahn\'Qiraj" end,
     MC   = function() return GetRealZoneText() == "Molten Core" end,
-    BWL  = function() return GetRealZoneText() == "Blackwing Lair" end,
-    ONY  = function() return GetRealZoneText() == "Onyxia's Lair" end,
-    ZG   = function() return GetRealZoneText() == "Zul'Gurub" end,    
+    BWL  = function() return GetRealZoneText() == "Blackwing Lair" end,  
+    ONY  = function() return GetRealZoneText() == "Onyxia\'s Lair" end,
+    ZG   = function() return GetRealZoneText() == "Zul\'Gurub" end,
     IsWorldBoss = function()
         return UnitClassification("target") == "worldboss"
     end,    
