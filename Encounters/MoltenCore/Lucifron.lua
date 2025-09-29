@@ -138,6 +138,18 @@ local function UseShadowPotsOnLucifron()
     TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
+local function PrepareForMagmadar()
+    if FindInTable(MB_raidTanks, myName) then
+        return 1
+    elseif myClass == "Priest" then
+        return 2
+    end
+    return 5
+end
+
+RegisterFearwardPriority("Lucifron", PrepareForMagmadar())
+RegisterFearwardPriority("Flamewaker Protector", PrepareForMagmadar())
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--

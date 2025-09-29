@@ -170,6 +170,7 @@ end
 
 local MB_fearwardQueue = {} -- local priest only, unitId is the key because its not shared.
 local MB_fearwardClaimedQueue = {} -- local list BUT its filled with addonMessage broadcast, unitId is not the key because its shared.
+local MB_bossFearwardRegistry = {}
 
 local PRIORITY = {
     HIGH   = 10,
@@ -178,7 +179,7 @@ local PRIORITY = {
     NONE   = 40,
 }
 
-local function GetMyFearwardPriority()
+local function GlobalFearwardPriority()
     if FindInTable(MB_raidTanks, myName) then
         return PRIORITY.MEDIUM
     elseif myClass == "Rogue" then
@@ -188,6 +189,21 @@ local function GetMyFearwardPriority()
     else
         return PRIORITY.NONE
     end
+end
+
+local function GetMyFearwardPriority()
+    local targetName = nil
+    local focId = MBID[MB_raidLeader]
+
+    if focId then
+        targetName = UnitName(focId.."target")
+    end
+    
+    if targetName and MB_bossFearwardRegistry[targetName] then
+        return MB_bossFearwardRegistry[targetName]()
+    end
+    
+    return GlobalFearwardPriority()
 end
 
 local function GetNextFearwardTarget()
@@ -310,6 +326,10 @@ FW:SetScript("OnEvent", FW.OnEvent)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+function FW_RegisterFearwardPriority(fightName, fn)
+    MB_bossFearwardRegistry[fightName] = fn
+end
+
 function FW_RequestFearward()
     if HasBuffOrDebuff("Fear Ward", "player", "buff") then
         return false
@@ -327,6 +347,10 @@ function FW_RequestFearward()
 end
 
 function FW_ProcessFearwardQueue()
+    if myClass ~= "Priest" then
+        return false
+    end
+
     local targetUnitId, priority = GetNextFearwardTarget()
     
     if not targetUnitId or not priority then
