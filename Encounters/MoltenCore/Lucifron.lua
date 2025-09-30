@@ -117,10 +117,6 @@ end
 -- Strategy Configuration
 local MB_myLucifronBoxStrategy = true 
 local MB_myLucifronShadowPotStrategy = false
-local MB_myLucifronKillAddsStrategy = false 
-
--- Alliance Preparations
-local MB_myLucifronFearwardPreparation = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -138,19 +134,38 @@ local function UseShadowPotsOnLucifron()
     TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
-local function PrepareForMagmadar()
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function PriorityOnMagmadar()
+    local PRIORITY = {
+        HIGH   = 10,
+        MEDIUM = 20,
+        LOW    = 30,
+        NONE   = 40
+    }
+
     if FindInTable(MB_raidTanks, myName) then
-        return 1
+        if myClass == "Druid" then
+            return PRIORITY.HIGH
+        end
+
+        return PRIORITY.MEDIUM
     elseif myClass == "Rogue" then
-        return 2
+        return PRIORITY.LOW
     elseif myClass == "Priest" then
-        return 3
+        return PRIORITY.NONE
     end
-    return 5
 end
 
-FW_RegisterFearwardPriority("Lucifron", PrepareForMagmadar)
-FW_RegisterFearwardPriority("Flamewaker Protector", PrepareForMagmadar)
+local function PrepareMagmadarOnLucifron()
+    FW_RequestFearward()
+    FW_ProcessFearwardQueue()
+end
+
+FW_RegisterFearwardPriority("Lucifron", PriorityOnMagmadar)
+FW_RegisterFearwardPriority("Flamewaker Protector", PriorityOnMagmadar)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -161,8 +176,7 @@ local LUCI_ACTIVE = false
 function LUCI_IsAtLucifron()
 	if LUCI_ACTIVE then
         UseShadowPotsOnLucifron()
-        FW_RequestFearward()
-        FW_ProcessFearwardQueue()
+        PrepareMagmadarOnLucifron()
         return true
     end
 
@@ -215,10 +229,6 @@ LUCI:SetScript("OnEvent", LUCI.OnEvent)
 --[####################################################################################################]--
 
 function LUCI_TargetingPostFocus()
-    if not MB_myLucifronKillAddsStrategy then
-        return false
-    end
-
 	if LUCI_IsAtLucifron() and MB_myLucifronBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
@@ -230,10 +240,6 @@ function LUCI_TargetingPostFocus()
 			return true
 
 		elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
-            if LockOnTarget("Flamewaker Protector") then
-                return true
-            end
-
 			if not tName or Dead("target") then
 				AssistFocus()
 			end

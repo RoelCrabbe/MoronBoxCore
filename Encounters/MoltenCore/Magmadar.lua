@@ -134,18 +134,37 @@ local function UseFirePotsOnMagmadar()
     TakePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
-local function PrepareForMagmadar()
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function PriorityOnMagmadar()
+    local PRIORITY = {
+        HIGH   = 10,
+        MEDIUM = 20,
+        LOW    = 30,
+        NONE   = 40
+    }
+
     if FindInTable(MB_raidTanks, myName) then
-        return 1
+        if myClass == "Druid" then
+            return PRIORITY.HIGH
+        end
+
+        return PRIORITY.MEDIUM
     elseif myClass == "Rogue" then
-        return 2
+        return PRIORITY.LOW
     elseif myClass == "Priest" then
-        return 3
+        return PRIORITY.NONE
     end
-    return 5
 end
 
-FW_RegisterFearwardPriority("Magmadar", PrepareForMagmadar)
+local function PrepareOnMagmadar()
+    FW_RequestFearward()
+    FW_ProcessFearwardQueue()
+end
+
+FW_RegisterFearwardPriority("Magmadar", PriorityOnMagmadar)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -156,8 +175,7 @@ local MAGMA_ACTIVE = false
 function MAGMA_IsAtMagmadar()
 	if MAGMA_ACTIVE then
         UseFirePotsOnMagmadar()
-        FW_RequestFearward()
-        FW_ProcessFearwardQueue()
+        PrepareOnMagmadar()
         return true
     end
 

@@ -143,6 +143,7 @@ local myRace = UnitRace("player")
 
 local CdAddonMessage = mb_cdAddonMessage
 local CdMessage = mb_cdMessage
+local CdPrint = mb_cdPrint
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local ImBusy = mb_imBusy
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
@@ -173,14 +174,14 @@ local MB_fearwardQueue = {} -- local priest only, unitId is the key because its 
 local MB_fearwardClaimedQueue = {} -- local list BUT its filled with addonMessage broadcast, unitId is not the key because its shared.
 local MB_bossFearwardRegistry = {}
 
-local PRIORITY = {
-    HIGH   = 10,
-    MEDIUM = 20,
-    LOW    = 30,
-    NONE   = 40,
-}
-
 local function GlobalFearwardPriority()
+    local PRIORITY = {
+        HIGH   = 10,
+        MEDIUM = 20,
+        LOW    = 30,
+        NONE   = 40
+    }
+
     if FindInTable(MB_raidTanks, myName) then
         return PRIORITY.MEDIUM
     elseif myClass == "Rogue" then
@@ -294,13 +295,22 @@ end
 
 local function HandleFearwardClaim(message, claimer)
     local _, _, requestPlayer = string.find(message, "CLAIMING:(.+)")
+    if not requestPlayer then return end
+
     MB_fearwardClaimedQueue[requestPlayer] = claimer
 end
 
 local function HandleFearwardBuffed(message, sender)
     local _, _, requestPlayer = string.find(message, "BUFFED:(.+)")
+    if not requestPlayer then return end
+
+    if myName == sender then
+        MB_fearwardQueue[MBID[requestPlayer]] = nil
+    elseif myName == requestPlayer then
+        CdPrint("I got Fear Ward from "..sender)
+    end
+
     MB_fearwardClaimedQueue[requestPlayer] = nil
-    MB_fearwardQueue[MBID[requestPlayer]] = nil
 end
 
 --[####################################################################################################]--
@@ -332,6 +342,10 @@ function FW_RegisterFearwardPriority(fightName, fn)
 end
 
 function FW_RequestFearward()
+    if Faction.IsHorde() then
+        return false
+    end
+
     if HasBuffOrDebuff("Fear Ward", "player", "buff") then
         return false
     end
@@ -348,7 +362,7 @@ function FW_RequestFearward()
 end
 
 function FW_ProcessFearwardQueue()
-    if myClass ~= "Priest" then
+    if myClass ~= "Priest" or Faction.IsHorde() then
         return false
     end
 
@@ -371,8 +385,6 @@ function FW_ProcessFearwardQueue()
 
     local spell = "Fear Ward"
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
-        CdMessage("I FW'ed "..GetColors(tName))
-
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
