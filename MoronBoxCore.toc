@@ -38,11 +38,15 @@ Handlers\Target.lua
 Core\Target.lua
 Core\Decurse.lua
 Core\GTFO.lua
+Core\FearWard.lua
 
 Event\Flash.lua
 Event\Turning.lua
 Event\OnUpdate.lua
 Event\OnEvent.lua
+
+Encounters\MoltenCore\Lucifron.lua
+Encounters\MoltenCore\Magmadar.lua
 
 Encounters\AQ40\Skeram.lua
 
