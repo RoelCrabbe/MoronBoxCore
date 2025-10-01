@@ -378,7 +378,6 @@ function FW_ProcessFearwardQueue()
         return false
     end
 
-    local spell = "Fear Ward"
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
