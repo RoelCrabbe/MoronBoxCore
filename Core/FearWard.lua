@@ -342,40 +342,35 @@ function FW_RegisterFearwardPriority(fightName, fn)
 end
 
 function FW_RequestFearward()
-    if Faction.IsHorde() then
-        return false
-    end
-
-    if HasBuffOrDebuff("Fear Ward", "player", "buff") then
+    if Faction.IsHorde() or HasBuffOrDebuff("Fear Ward", "player", "buff") then
         return false
     end
 
     local myBuffingPriest = GetDwarfPriestInGroup()
-    if not myBuffingPriest or myName == myBuffingPriest then
+    local myPriority = GetMyFearwardPriority()
+
+    if myName == myBuffingPriest then
         return
     end
 
-    local myPriority = GetMyFearwardPriority()
-    local message = "BUFF_INFO:"..myPriority..":"..myBuffingPriest
+    if not myBuffingPriest or not myPriority then
+        return
+    end
 
+    local message = "BUFF_INFO:"..myPriority..":"..myBuffingPriest
     CdAddonMessage(MB_RAID.."NEED_FEARWARD", message, 15)
 end
 
 function FW_ProcessFearwardQueue()
-    if myClass ~= "Priest" or Faction.IsHorde() then
+    if Faction.IsHorde() or myClass ~= "Priest" then
         return false
     end
 
+    local spellName = "Fear Ward"
     local targetUnitId, priority = GetNextFearwardTarget()
-    
-    if not targetUnitId or not priority then
-        return false
-    end
+    local targetName = UnitName(targetUnitId)
 
-    local spellName = "Fear Ward"    
-    local tName = UnitName(targetUnitId)
-
-    if not tName then
+    if not targetName or not priority then
         return false
     end
 
@@ -391,7 +386,8 @@ function FW_ProcessFearwardQueue()
         return true
     end
 
-    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..tName)
+    local message = "BUFFED:"..targetName
+    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", message)
     return false
 end
 
