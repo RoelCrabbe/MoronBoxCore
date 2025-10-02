@@ -898,15 +898,15 @@ function Warrior:TANKSurvival()
             SelfBuff("Last Stand")
         end
 
-        UseJujuWhenPossible("Juju Escape")
+        TakeJujuWhenPossible("Juju Escape")
 
     elseif Instance.NAXX() and TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
         if HealthPct("target") <= 0.05 then
             Warrior:BigTANKCooldowns()
         end
 
-        UseJujuWhenPossible("Juju Escape")
-        UsePotionsWhenPossible("Greater Stoneshield Potion")
+        TakeJujuWhenPossible("Juju Escape")
+        TakePotionsWhenPossible("Greater Stoneshield Potion")
 
     elseif Instance.AQ40() and TankTarget("Princess Huhuran") and MB_myHuhuranBoxStrategy then            
         if HealthPct("target") <= MB_myHuhuranTankDefensivePercentage then
@@ -921,7 +921,7 @@ function Warrior:TANKSurvival()
             Warrior:BigTANKCooldowns()                 
         end
 
-        UseJujuWhenPossible("Juju Ember")
+        TakeJujuWhenPossible("Juju Ember")
 
     elseif Instance.BWL() and TankTarget("Chromaggus") and HealthPct("target") <= 0.07 and HealthPct("player") <= 0.3 then
         Warrior:BigTANKCooldowns()
