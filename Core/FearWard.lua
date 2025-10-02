@@ -170,8 +170,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MB_fearwardQueue = {} -- local priest only, unitId is the key because its not shared.
-local MB_fearwardClaimedQueue = {} -- local list BUT its filled with addonMessage broadcast, unitId is not the key because its shared.
+local MB_fearwardQueue = {}
+local MB_fearwardClaimedQueue = {}
 local MB_bossFearwardRegistry = {}
 
 local function GlobalFearwardPriority()
@@ -390,22 +390,24 @@ function FW_ProcessFearwardQueue()
     return false
 end
 
--- function FW_DebugQueues()
---     Print("=== FEARWARD QUEUES ===")
---     Print("My Queue:")
---     for unitId, priority in pairs(MB_fearwardQueue) do
---         local name = UnitName(unitId) or "Unknown"
---         Print("  "..name.." ("..unitId..") = priority "..priority)
---     end
-    
---     Print("Claimed Queue:")
---     for playerName, claimer in pairs(MB_fearwardClaimedQueue) do
---         Print("  "..playerName.." claimed by "..claimer)
---     end
--- end
+--[[
+    function FW_DebugQueues()
+        Print("=== FEARWARD QUEUES ===")
+        Print("My Queue:")
+        for unitId, priority in pairs(MB_fearwardQueue) do
+            local name = UnitName(unitId) or "Unknown"
+            Print("  "..name.." ("..unitId..") = priority "..priority)
+        end
+        
+        Print("Claimed Queue:")
+        for playerName, claimer in pairs(MB_fearwardClaimedQueue) do
+            Print("  "..playerName.." claimed by "..claimer)
+        end
+    end
 
--- function FW_ClearQueues()
---     MB_fearwardQueue = {}
---     MB_fearwardClaimedQueue = {}
---     Print("Queues cleared")
--- end
+    function FW_ClearQueues()
+        MB_fearwardQueue = {}
+        MB_fearwardClaimedQueue = {}
+        Print("Queues cleared")
+    end
+]]
