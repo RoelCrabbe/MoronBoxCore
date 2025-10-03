@@ -455,6 +455,14 @@ local function HandleMCTargetingPostFocus()
 		return true
 	end
 
+	if GEH_TargetingPostFocus() then
+		return true
+	end
+
+	if SHAZ_TargetingPostFocus() then
+		return true
+	end
+
 	return false
 end
 

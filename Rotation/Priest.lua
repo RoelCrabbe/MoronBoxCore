@@ -679,12 +679,6 @@ function Priest:Shadow()
     end
 
     if InCombat("player") then
-        if Instance.MC() then
-            if TankTarget("Shazzrah") and HasBuffOrDebuff("Deaden Magic", "target", "buff") then
-                CastSpellByName("Dispel Magic")
-            end
-        end
-
 		TakeManaPotionAndRunes()
 
 		if ManaDown("player") > 600 then
