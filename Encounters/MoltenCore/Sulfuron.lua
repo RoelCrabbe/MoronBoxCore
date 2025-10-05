@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[########################################### SULFURON CODE ##########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -97,7 +97,7 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA = CreateFrame("Button", "MAGMA", UIParent)
+local SULF = CreateFrame("Button", "SULF", UIParent)
 
 do
 	for _, event in {
@@ -106,7 +106,7 @@ do
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do MAGMA:RegisterEvent(event)
+		} do SULF:RegisterEvent(event)
 	end
 end
 
@@ -115,15 +115,15 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myMagmadarBoxStrategy = true 
-local MB_myMagmadarFirePotStrategy = true
+local MB_mySulfuronBoxStrategy = true 
+local MB_mySulfuronShadowPotStrategy = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseFirePotsOnMagmadar()
-    if not MB_myMagmadarFirePotStrategy then
+local function UseShadowPotsOnSulfuron()
+    if not MB_mySulfuronShadowPotStrategy then
         return
     end
 
@@ -131,108 +131,75 @@ local function UseFirePotsOnMagmadar()
 		return
 	end
 
-    TakePotionsWhenPossible("Greater Fire Protection Potion")
+    TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function PriorityOnMagmadar()
-    local PRIORITY = {
-        HIGH   = 10,
-        MEDIUM = 20,
-        LOW    = 30,
-        NONE   = 40
-    }
+local SULF_ACTIVE = false
 
-    if FindInTable(MB_raidTanks, myName) then
-        if myClass == "Druid" then
-            return PRIORITY.HIGH
-        end
-
-        return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
-    elseif myClass == "Priest" then
-        return PRIORITY.NONE
-    end
-end
-
-local function PrepareOnMagmadar()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
-end
-
-FW_RegisterFearwardPriority("Magmadar", PriorityOnMagmadar)
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-local MAGMA_ACTIVE = false
-
-function MAGMA_IsAtMagmadar()
-	if MAGMA_ACTIVE then
-        UseFirePotsOnMagmadar()
-        PrepareOnMagmadar()
+function SULF_IsAtSulfuron()
+	if SULF_ACTIVE then
+        UseShadowPotsOnSulfuron()
         return true
     end
 
 	local inF = false
     local tName = UnitName("target")
 
-    if TankTarget("Magmadar") then
+    if (TankTarget("Sulfuron Harbinger") or TankTarget("Flamewaker Priest")) then
         inF = true
     else
-        if tName and tName == "Magmadar" then
+        if tName and (tName == "Sulfuron Harbinger" or tName == "Flamewaker Priest") then
             inF = true
         end
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
-        MAGMA_ACTIVE = true
+        CdAddonMessage(MB_RAID.."SULFURON", "ENGAGE", 30)
+        SULF_ACTIVE = true
         return true
     end
 
-	return MAGMA_ACTIVE
+	return SULF_ACTIVE
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA:OnEvent()
+function SULF:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."MAGMADAR") then            
+		if (arg1 == MB_RAID.."SULFURON") then            
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Magmadar Engaged! <<")
-                MAGMA_ACTIVE = true
+                CdRaidWarning(">> Sulfuron Engaged! <<")
+                SULF_ACTIVE = true
             elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Magmadar Died! <<")
-                MAGMA_ACTIVE = false
+                CdRaidWarning(">> Sulfuron Died! <<")
+                SULF_ACTIVE = false
             end
         end
 
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Magmadar dies") and MAGMA_ACTIVE then
-            CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
+        if string.find(arg1, "Sulfuron Harbinger dies") and SULF_ACTIVE then
+            CdAddonMessage(MB_RAID.."SULFURON", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        MAGMA_ACTIVE = false
+        SULF_ACTIVE = false
     end
 end
 
-MAGMA:SetScript("OnEvent", MAGMA.OnEvent) 
+SULF:SetScript("OnEvent", SULF.OnEvent) 
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA_TargetingPostFocus()
-	if MAGMA_IsAtMagmadar() and MB_myMagmadarBoxStrategy then
+function SULF_TargetingPostFocus()
+	if SULF_IsAtSulfuron() and MB_mySulfuronBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")

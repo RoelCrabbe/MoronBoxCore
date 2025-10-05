@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[############################################# GARR CODE ############################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -97,7 +97,8 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA = CreateFrame("Button", "MAGMA", UIParent)
+local GARR = CreateFrame("Button", "GARR", UIParent)
+local GARR_ACTIVE = false
 
 do
 	for _, event in {
@@ -106,7 +107,7 @@ do
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do MAGMA:RegisterEvent(event)
+		} do GARR:RegisterEvent(event)
 	end
 end
 
@@ -115,124 +116,165 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myMagmadarBoxStrategy = true 
-local MB_myMagmadarFirePotStrategy = true
+local MB_myGarrBoxStrategy = true 
+local MB_myGarrHealers = {}
+
+local MB_myGarrTankAssignment = { -- [Tank Number] = [Number of Players Assigned]
+    [1] = 2,  -- Main Tank
+    [2] = 2,  -- Off Tank
+    [3] = 1,  -- Extra Tank
+    [4] = 1   -- Extra Tank
+}
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseFirePotsOnMagmadar()
-    if not MB_myMagmadarFirePotStrategy then
-        return
-    end
+local function GARR_START()
+    GARR_ACTIVE = true
+end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    TakePotionsWhenPossible("Greater Fire Protection Potion")
+local function GARR_END()
+    GARR_ACTIVE = false
+    MB_myGarrHealers = {}
+    MB_myAssignedHealTarget = nil
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function PriorityOnMagmadar()
-    local PRIORITY = {
-        HIGH   = 10,
-        MEDIUM = 20,
-        LOW    = 30,
-        NONE   = 40
-    }
+local function GetAllHealersOnGarr()
+    if not ImHealer() then
+        return false
+    end
 
-    if FindInTable(MB_raidTanks, myName) then
-        if myClass == "Druid" then
-            return PRIORITY.HIGH
+    if MyNameInTable(MB_myGarrHealers) then
+        return true
+    end
+    
+    CdAddonMessage(MB_RAID.."GARR", "HEALERS", 30)
+    return true
+end
+
+local function HandleHealersOnGarr()
+    if not ImHealer() then
+        return false
+    end
+
+    if MyNameInTable(MB_myGarrHealers) then
+        return true
+    end
+    
+    table.insert(MB_myGarrHealers, myName)
+    CdPrint(">> You are now registered as a Garr Healer! <<")
+    return true
+end
+
+local function AssignHealersToTanks()
+    if not ImHealer() then
+        return false
+    end
+
+    MB_myAssignedHealTarget = nil
+
+    local myPosition = nil
+    for i = 1, TableLength(MB_myGarrHealers) do
+        if MB_myGarrHealers[i] == myName then
+            myPosition = i
+            break
         end
-
-        return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
-    elseif myClass == "Priest" then
-        return PRIORITY.NONE
     end
+    
+    if not myPosition then
+        return false
+    end
+    
+    local healerIndex = 0
+    for tankNum = 1, TableLength(MB_raidTanks) do
+        local tankName = MB_raidTanks[tankNum]
+        local healersNeeded = MB_myGarrTankAssignment[tankNum] or 0
+        
+        for h = 1, healersNeeded do
+            healerIndex = healerIndex + 1
+            if healerIndex == myPosition then
+                MB_myAssignedHealTarget = tankName
+                CdPrint(">> Assigned to heal: "..tankName.." <<")
+                return true
+            end
+        end
+    end
+
+    return false
 end
 
-local function PrepareOnMagmadar()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
-end
-
-FW_RegisterFearwardPriority("Magmadar", PriorityOnMagmadar)
-
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA_ACTIVE = false
-
-function MAGMA_IsAtMagmadar()
-	if MAGMA_ACTIVE then
-        UseFirePotsOnMagmadar()
-        PrepareOnMagmadar()
+function GARR_IsAtGarr()
+	if GARR_ACTIVE then
+        GetAllHealersOnGarr()
         return true
     end
 
 	local inF = false
     local tName = UnitName("target")
 
-    if TankTarget("Magmadar") then
+    if (TankTarget("Garr") or TankTarget("Firesworn")) then
         inF = true
     else
-        if tName and tName == "Magmadar" then
+        if tName and (tName == "Garr" or tName == "Firesworn") then
             inF = true
         end
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
-        MAGMA_ACTIVE = true
+        CdAddonMessage(MB_RAID.."GARR", "ENGAGE", 30)
+        GARR_ACTIVE = true
         return true
     end
 
-	return MAGMA_ACTIVE
+	return GARR_ACTIVE
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."MAGMADAR") then            
+function GARR:OnEvent()
+    if (event == "CHAT_MSG_ADDON") then
+        if (arg1 == MB_RAID.."GARR") then            
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Magmadar Engaged! <<")
-                MAGMA_ACTIVE = true
+                CdRaidWarning(">> Garr Engaged! <<")
+                GARR_START()
+                
             elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Magmadar Died! <<")
-                MAGMA_ACTIVE = false
+                CdRaidWarning(">> Garr Died! <<")
+                GARR_END()
+            elseif (arg2 == "HEALERS") then
+                HandleHealersOnGarr()
             end
         end
 
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Magmadar dies") and MAGMA_ACTIVE then
-            CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "Garr dies") and GARR_ACTIVE then
+            CdAddonMessage(MB_RAID.."GARR", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        MAGMA_ACTIVE = false
+        GARR_END()
     end
 end
 
-MAGMA:SetScript("OnEvent", MAGMA.OnEvent) 
+GARR:SetScript("OnEvent", GARR.OnEvent) 
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA_TargetingPostFocus()
-	if MAGMA_IsAtMagmadar() and MB_myMagmadarBoxStrategy then
+function GARR_TargetingPostFocus()
+	if GARR_IsAtGarr() and MB_myGarrBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -256,3 +298,36 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+local GARR_HEALERS = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
+
+function GARR_HEALERS:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
+end
+
+function GARR_HEALERS:CHAT_MSG_ADDON()
+    if (arg1 == MB_RAID.."GARR") then
+        if (arg2 == "ENGAGE") then
+            self:ScheduleEvent("GarrHealerAssignment", AssignHealersToTanks, 3)
+        elseif (arg2 == "DISENGAGE") then
+            self:CancelScheduledEvent("GarrHealerAssignment")
+        end
+    end
+end
+
+function GARR_HEALERS:ZONE_CHANGED_NEW_AREA()
+    self:CancelScheduledEvent("GarrHealerAssignment")
+end
+
+function GARR_HEALERS:PLAYER_ENTERING_WORLD()
+    self:CancelScheduledEvent("GarrHealerAssignment")
+end
+
+function GARR_HEALERS:PLAYER_REGEN_ENABLED()
+    self:CancelScheduledEvent("GarrHealerAssignment")
+end
+
+GARR_HEALERS:OnInitialize()

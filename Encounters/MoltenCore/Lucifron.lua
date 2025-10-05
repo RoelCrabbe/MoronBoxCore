@@ -206,15 +206,19 @@ end
 
 function LUCI:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."LUCIFRON" and arg2 == "ENGAGE") then
-            CdRaidWarning(">> Lucifron Engaged! <<")
-            LUCI_ACTIVE = true
+		if (arg1 == MB_RAID.."LUCIFRON") then            
+            if (arg2 == "ENGAGE") then
+                CdRaidWarning(">> Lucifron Engaged! <<")
+                LUCI_ACTIVE = true
+            elseif (arg2 == "DISENGAGE") then
+                CdRaidWarning(">> Lucifron Died! <<")
+                LUCI_ACTIVE = false
+            end
         end
 
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Lucifron dies") then
-            CdRaidWarning(">> Lucifron Died! <<")
-            LUCI_ACTIVE = false
+        if string.find(arg1, "Lucifron dies") and LUCI_ACTIVE then
+            CdAddonMessage(MB_RAID.."LUCIFRON", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then

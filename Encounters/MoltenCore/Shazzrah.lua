@@ -117,7 +117,7 @@ end
 
 -- Strategy Configuration
 local MB_myShazzrahBoxStrategy = true
-local MB_myShazzrahArcanePotStrategy = false
+local MB_myShazzrahArcanePotStrategy = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -175,15 +175,19 @@ end
 
 function SHAZ:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."SHAZZRAH" and arg2 == "ENGAGE") then
-            CdRaidWarning(">> Shazzrah Engaged! <<")
-            SHAZ_ACTIVE = true
+		if (arg1 == MB_RAID.."SHAZZRAH") then            
+            if (arg2 == "ENGAGE") then
+                CdRaidWarning(">> Shazzrah Engaged! <<")
+                SHAZ_ACTIVE = true
+            elseif (arg2 == "DISENGAGE") then
+                CdRaidWarning(">> Shazzrah Died! <<")
+                SHAZ_ACTIVE = false
+            end
         end
 
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Shazzrah dies") then
-            CdRaidWarning(">> Shazzrah Died! <<")
-            SHAZ_ACTIVE = false
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+        if string.find(arg1, "Shazzrah dies") and SHAZ_ACTIVE then
+            CdAddonMessage(MB_RAID.."SHAZZRAH", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then

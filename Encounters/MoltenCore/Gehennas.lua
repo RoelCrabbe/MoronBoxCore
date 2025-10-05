@@ -118,10 +118,10 @@ end
 local MB_myGehennasBoxStrategy = true
 
 -- Ranged DPS/Healer Fire Pot Strategy
-local MB_myGehennasFirePotStrategy = false
+local MB_myGehennasFirePotStrategy = true
 
 -- Melee DPS/Healer FAP Pot Strategy
-local MB_myGehennasFAPPotStrategy = false
+local MB_myGehennasFAPPotStrategy = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -198,15 +198,19 @@ end
 
 function GEH:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."GEHENNAS" and arg2 == "ENGAGE") then
-            CdRaidWarning(">> Gehennas Engaged! <<")
-            GEH_ACTIVE = true
+		if (arg1 == MB_RAID.."GEHENNAS") then            
+            if (arg2 == "ENGAGE") then
+                CdRaidWarning(">> Gehennas Engaged! <<")
+                GEH_ACTIVE = true
+            elseif (arg2 == "DISENGAGE") then
+                CdRaidWarning(">> Gehennas Died! <<")
+                GEH_ACTIVE = false
+            end
         end
 
 	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Gehennas dies") then
-            CdRaidWarning(">> Gehennas Died! <<")
-            GEH_ACTIVE = false
+        if string.find(arg1, "Gehennas dies") and GEH_ACTIVE then
+            CdAddonMessage(MB_RAID.."GEHENNAS", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then

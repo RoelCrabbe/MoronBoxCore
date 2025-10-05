@@ -463,6 +463,18 @@ local function HandleMCTargetingPostFocus()
 		return true
 	end
 
+	if SULF_TargetingPostFocus() then
+		return true
+	end
+
+	if DOMO_TargetingPostFocus() then
+		return true
+	end
+
+	if RAG_TargetingPostFocus() then
+		return true
+	end
+
 	return false
 end
 

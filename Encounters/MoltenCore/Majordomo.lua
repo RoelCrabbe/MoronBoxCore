@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[########################################## MAJORDOMO CODE ##########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -97,16 +97,17 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA = CreateFrame("Button", "MAGMA", UIParent)
+local DOMO = CreateFrame("Button", "DOMO", UIParent)
 
 do
 	for _, event in {
 		"CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
+        "CHAT_MSG_MONSTER_YELL",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do MAGMA:RegisterEvent(event)
+		} do DOMO:RegisterEvent(event)
 	end
 end
 
@@ -115,15 +116,15 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myMagmadarBoxStrategy = true 
-local MB_myMagmadarFirePotStrategy = true
+local MB_myMajordomoBoxStrategy = true
+local MB_myMajordomoFirePotStrategy = true
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseFirePotsOnMagmadar()
-    if not MB_myMagmadarFirePotStrategy then
+local function UseFirePotsOnMajordomo()
+    if not MB_myMajordomoFirePotStrategy then
         return
     end
 
@@ -138,101 +139,68 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function PriorityOnMagmadar()
-    local PRIORITY = {
-        HIGH   = 10,
-        MEDIUM = 20,
-        LOW    = 30,
-        NONE   = 40
-    }
+local DOMO_ACTIVE = false
 
-    if FindInTable(MB_raidTanks, myName) then
-        if myClass == "Druid" then
-            return PRIORITY.HIGH
-        end
-
-        return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
-    elseif myClass == "Priest" then
-        return PRIORITY.NONE
-    end
-end
-
-local function PrepareOnMagmadar()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
-end
-
-FW_RegisterFearwardPriority("Magmadar", PriorityOnMagmadar)
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-local MAGMA_ACTIVE = false
-
-function MAGMA_IsAtMagmadar()
-	if MAGMA_ACTIVE then
-        UseFirePotsOnMagmadar()
-        PrepareOnMagmadar()
+function DOMO_IsAtMajordomo()
+	if DOMO_ACTIVE then
+        UseFirePotsOnMajordomo()
         return true
     end
 
 	local inF = false
     local tName = UnitName("target")
 
-    if TankTarget("Magmadar") then
+    if (TankTarget("Majordomo Executus") or TankTarget("Flamewaker Healer") or TankTarget("Flamewaker Elite")) then
         inF = true
     else
-        if tName and tName == "Magmadar" then
+        if tName and (tName == "Majordomo Executus" or tName == "Flamewaker Healer" or tName == "Flamewaker Elite") then
             inF = true
         end
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
-        MAGMA_ACTIVE = true
+        CdAddonMessage(MB_RAID.."MAJORDOMO", "ENGAGE", 30)
+        DOMO_ACTIVE = true
         return true
     end
 
-	return MAGMA_ACTIVE
+	return DOMO_ACTIVE
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA:OnEvent()
+function DOMO:OnEvent()
 	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."MAGMADAR") then            
+		if (arg1 == MB_RAID.."MAJORDOMO") then
             if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Magmadar Engaged! <<")
-                MAGMA_ACTIVE = true
+                CdRaidWarning(">> Majordomo Engaged! <<")
+                DOMO_ACTIVE = true
             elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Magmadar Died! <<")
-                MAGMA_ACTIVE = false
+                CdRaidWarning(">> Majordomo Died! <<")
+                DOMO_ACTIVE = false
             end
         end
 
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Magmadar dies") and MAGMA_ACTIVE then
-            CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
+	elseif (event == "CHAT_MSG_MONSTER_YELL") then
+        if string.find(arg1, "I go now to summon the lord whose house this is") then
+            CdAddonMessage(MB_RAID.."MAJORDOMO", "DISENGAGE", 30)
         end
 
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        MAGMA_ACTIVE = false
+        DOMO_ACTIVE = false
     end
 end
 
-MAGMA:SetScript("OnEvent", MAGMA.OnEvent) 
+DOMO:SetScript("OnEvent", DOMO.OnEvent) 
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA_TargetingPostFocus()
-	if MAGMA_IsAtMagmadar() and MB_myMagmadarBoxStrategy then
+function DOMO_TargetingPostFocus()
+	if DOMO_IsAtMajordomo() and MB_myMajordomoBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")

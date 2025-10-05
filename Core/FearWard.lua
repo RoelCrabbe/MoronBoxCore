@@ -368,11 +368,12 @@ function FW_ProcessFearwardQueue()
 
     local spellName = "Fear Ward"
     local targetUnitId, priority = GetNextFearwardTarget()
-    local targetName = UnitName(targetUnitId)
 
-    if not targetName or not priority then
+    if not targetUnitId or not priority then
         return false
     end
+
+    local targetName = UnitName(targetUnitId)
 
     if ImBusy() or not SpellReady(spellName) then
         return false

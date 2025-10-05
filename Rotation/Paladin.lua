@@ -434,16 +434,7 @@ local function PaladinSetup()
 		return
 	end
 
-    if not MB_autoBuff.Active then
-        MB_autoBuff.Active = true
-        MB_autoBuff.Time = GetTime() + 1
-        PaladinCounter.Cycle()
-    end
-
-	if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
-		Paladin:BlessMyAssignedBlessing()
-	end
-
+	Paladin:BlessMyAssignedBlessing()
 	Paladin:ChooseAura()
 
 	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
