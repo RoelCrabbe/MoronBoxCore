@@ -447,31 +447,43 @@ local function HandleBWLTargetingPostFocus()
 end
 
 local function HandleMCTargetingPostFocus()
-	if LUCI_TargetingPostFocus() then
+	if LUCIFRON_TargetingPostFocus() then
 		return true
 	end
 
-	if MAGMA_TargetingPostFocus() then
+	if MAGMADAR_TargetingPostFocus() then
 		return true
 	end
 
-	if GEH_TargetingPostFocus() then
+	if GEHENNAS_TargetingPostFocus() then
 		return true
 	end
 
-	if SHAZ_TargetingPostFocus() then
+	if GARR_TargetingPostFocus() then
 		return true
 	end
 
-	if SULF_TargetingPostFocus() then
+	if SHAZZRAH_TargetingPostFocus() then
 		return true
 	end
 
-	if DOMO_TargetingPostFocus() then
+	if GEDDON_TargetingPostFocus() then
 		return true
 	end
 
-	if RAG_TargetingPostFocus() then
+	if GOLEMAGG_TargetingPostFocus() then
+		return true
+	end
+
+	if SULFURON_TargetingPostFocus() then
+		return true
+	end
+
+	if MAJORDOMO_TargetingPostFocus() then
+		return true
+	end
+
+	if RAGNAROS_TargetingPostFocus() then
 		return true
 	end
 

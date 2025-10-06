@@ -49,7 +49,9 @@ Encounters\MoltenCore\Lucifron.lua
 Encounters\MoltenCore\Magmadar.lua
 Encounters\MoltenCore\Gehennas.lua
 Encounters\MoltenCore\Garr.lua
+Encounters\MoltenCore\Geddon.lua
 Encounters\MoltenCore\Shazzrah.lua
+Encounters\MoltenCore\Golemagg.lua
 Encounters\MoltenCore\Sulfuron.lua
 Encounters\MoltenCore\Majordomo.lua
 Encounters\MoltenCore\Ragnaros.lua

@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[############################################ GEDDON CODE ###########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -90,6 +90,7 @@ local MyNameInTable = mb_myNameInTable
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
+local TankName = mb_tankName
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 local UnitInRange = mb_unitInRange
 
@@ -97,9 +98,9 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local LUCIFRON = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
+local GEDDON = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-function LUCIFRON:OnInitialize()
+function GEDDON:OnInitialize()
     self:RegisterEvent("CHAT_MSG_ADDON")
     self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -112,101 +113,114 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myLucifronBoxStrategy = true 
-local MB_myLucifronShadowPotStrategy = false
+local MB_myGeddonBoxStrategy = true 
+local MB_myGeddonHealers = {}
+
+local MB_myGeddonHealerAssignment = { -- [Player Number] = [Number of Players Assigned]
+    [1] = 3  -- Main Tank
+}
 
 -- Strategy Configuration -- No changes below this line
-local LucifronEncounter = {
+local GeddonEncounter = {
     Active = false
 }
 
-function LUCIFRON:OnEnable()
-    LucifronEncounter.Active = true
+function GEDDON:OnEnable()
+    GeddonEncounter.Active = true
 end
 
-function LUCIFRON:OnReset()
-    LucifronEncounter.Active = false
+function GEDDON:OnReset()
+    GeddonEncounter.Active = false
+    MB_myGeddonHealers = {}
+    MB_myAssignedHealTarget = nil
+
+    self:CancelScheduledEvent("GetGeddonHealers")
+    self:CancelScheduledEvent("GeddonHealerAssignments")
 end
 
-function LUCIFRON:OnCleanUp()
+function GEDDON:OnCleanUp()
     self.OnReset()
     self:UnregisterAllEvents()
-    CdPrint(">> LUCIFRON - CLEANUP <<")
+    CdPrint(">> GEDDON - CLEANUP <<")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseShadowPotsOnLucifron()
-    if not MB_myLucifronShadowPotStrategy then
-        return
+local function GetHealersOnGeddon()
+    if not ImHealer() then
+        return false
     end
 
-    TakePotionsWhenPossible("Greater Shadow Protection Potion")
-end
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-local function PriorityOnMagmadar()
-    local PRIORITY = {
-        HIGH   = 10,
-        MEDIUM = 20,
-        LOW    = 30,
-        NONE   = 40
-    }
-
-    if FindInTable(MB_raidTanks, myName) then
-        if myClass == "Druid" then
-            return PRIORITY.HIGH
-        end
-
-        return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
-    elseif myClass == "Priest" then
-        return PRIORITY.NONE
+    if myClass == "Priest" then
+        CdPrint(">> Priest healers are not allowed to register as Geddon Healers! <<", 60)
+        return false
     end
-end
 
-local function PrepareMagmadarOnLucifron()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
-end
-
-FW_RegisterFearwardPriority("Lucifron", PriorityOnMagmadar)
-FW_RegisterFearwardPriority("Flamewaker Protector", PriorityOnMagmadar)
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-local function LUCIFRON_CheckEncounter()
-    if LucifronEncounter.Active then
-        UseShadowPotsOnLucifron()
-        PrepareMagmadarOnLucifron()
+    if MyNameInTable(MB_myGeddonHealers) then
         return true
     end
-
-    local inF = false
-    local tName = UnitName("target")
     
-    if (TankTarget("Lucifron") or TankTarget("Flamewaker Protector")) then
-        inF = true
-    else
-        if tName and (tName == "Lucifron" or tName == "Flamewaker Protector") then
-            inF = true
-        end
+    CdAddonMessage(MB_RAID.."GEDDON", "HEALERS", 30)
+    return true
+end
+
+local function HandleHealersOnGeddon()
+    if not ImHealer() then
+        return false
     end
 
-    if inF then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "ENGAGE", 30)
-        LucifronEncounter.Active = true
+    if myClass == "Priest" then
+        return false
+    end
+
+    if MyNameInTable(MB_myGeddonHealers) then
         return true
     end
+    
+    table.insert(MB_myGeddonHealers, myName)
+    CdPrint(">> You are now registered as a Geddon Healer! <<")
+    return true
+end
 
+local function AssignHealersToTanks()
+    if not ImHealer() then
+        return false
+    end
+
+    if not MyNameInTable(MB_myGeddonHealers) then
+        return false
+    end
+
+    MB_myAssignedHealTarget = nil
+
+    local myPosition = nil
+    for i = 1, TableLength(MB_myGeddonHealers) do
+        if MB_myGeddonHealers[i] == myName then
+            myPosition = i
+            break
+        end
+    end
+    
+    if not myPosition then
+        return false
+    end
+    
+    local tankHealers = MB_myGeddonHealerAssignment[1] or 0
+    if myPosition > tankHealers then
+        return false
+    end
+
+    local tankName = TankName()
+    local tankUnit = MBID[tankName]
+    local tankToHeal = tankUnit and UnitName(tankUnit.."targettarget")
+
+    if not tankToHeal then
+        return false
+    end
+
+    MB_myAssignedHealTarget = tankToHeal
     return false
 end
 
@@ -214,45 +228,80 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCIFRON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."LUCIFRON" then
+local function GEDDON_CheckEncounter()
+	if GeddonEncounter.Active then
+        return true
+    end
+
+	local inF = false
+    local tName = UnitName("target")
+
+    if TankTarget("Baron Geddon") then
+        inF = true
+    else
+        if tName and tName == "Baron Geddon" then
+            inF = true
+        end
+    end
+
+    if inF then
+        CdAddonMessage(MB_RAID.."GEDDON", "ENGAGE", 30)
+        GeddonEncounter.Active = true
+        return true
+    end
+
+	return false
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function GEDDON:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."GEDDON" then
         if arg2 == "ENGAGE" then
-            CdRaidWarning(">> Fighting Lucifron! <<")
+            CdRaidWarning(">> Fighting Geddon! <<")
             self:OnEnable()
+    
+            GetHealersOnGeddon()
+            self:ScheduleEvent("GetGeddonHealers", GetHealersOnGeddon, 3)
+            self:ScheduleEvent("GeddonHealerAssignments", AssignHealersToTanks, 5)
         elseif arg2 == "DISENGAGE" then
-            CdRaidWarning(">> Lucifron has died! <<")
-            self:ScheduleEvent("LUCIFRON_CLEANUP", self.OnCleanUp, 15, self)
+            CdRaidWarning(">> Geddon has died! <<")
+            self:ScheduleEvent("GEDDON_CLEANUP", self.OnCleanUp, 15, self)
+        elseif (arg2 == "HEALERS") then
+            HandleHealersOnGeddon()
         end
     end
 end
 
-function LUCIFRON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
-    if string.find(arg1, "Lucifron dies") and LucifronEncounter.Active then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "DISENGAGE", 30)
+function GEDDON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Baron Geddon dies") and GeddonEncounter.Active then
+        CdAddonMessage(MB_RAID.."GEDDON", "DISENGAGE", 30)
     end
 end
 
-function LUCIFRON:ZONE_CHANGED_NEW_AREA()
+function GEDDON:ZONE_CHANGED_NEW_AREA()
     self:OnReset()
 end
 
-function LUCIFRON:PLAYER_ENTERING_WORLD()
+function GEDDON:PLAYER_ENTERING_WORLD()
     self:OnReset()
 end
 
-function LUCIFRON:PLAYER_REGEN_ENABLED()
+function GEDDON:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("LUCIFRON_CLEANUP")
+    self:CancelScheduledEvent("GEDDON_CLEANUP")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCIFRON_TargetingPostFocus()
-	if LUCIFRON_CheckEncounter() and MB_myLucifronBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
+function GEDDON_TargetingPostFocus()
+	if GEDDON_CheckEncounter() and MB_myGeddonBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then				
 				SetCVar("targetNearestDistance", "10")
 				MB_targetNearestDistanceChanged = true
 			end
@@ -275,4 +324,4 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-LUCIFRON:OnInitialize()
+GEDDON:OnInitialize()

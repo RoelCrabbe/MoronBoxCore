@@ -97,18 +97,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GARR = CreateFrame("Button", "GARR", UIParent)
-local GARR_ACTIVE = false
+local GARR = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do GARR:RegisterEvent(event)
-	end
+function GARR:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -126,25 +122,35 @@ local MB_myGarrTankAssignment = { -- [Tank Number] = [Number of Players Assigned
     [4] = 1   -- Extra Tank
 }
 
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
+-- Strategy Configuration -- No changes below this line
+local GarrEncounter = {
+    Active = false
+}
 
-local function GARR_START()
-    GARR_ACTIVE = true
+function GARR:OnEnable()
+    GarrEncounter.Active = true
 end
 
-local function GARR_END()
-    GARR_ACTIVE = false
+function GARR:OnReset()
+    GarrEncounter.Active = false
     MB_myGarrHealers = {}
     MB_myAssignedHealTarget = nil
+
+    self:CancelScheduledEvent("GetGarrHealers")
+    self:CancelScheduledEvent("GarrHealerAssignments")
+end
+
+function GARR:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> GARR - CLEANUP <<")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function GetAllHealersOnGarr()
+local function GetHealersOnGarr()
     if not ImHealer() then
         return false
     end
@@ -173,6 +179,10 @@ end
 
 local function AssignHealersToTanks()
     if not ImHealer() then
+        return false
+    end
+
+    if not MyNameInTable(MB_myGarrHealers) then
         return false
     end
 
@@ -212,9 +222,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function GARR_IsAtGarr()
-	if GARR_ACTIVE then
-        GetAllHealersOnGarr()
+local function GARR_CheckEncounter()
+	if GarrEncounter.Active then
         return true
     end
 
@@ -231,52 +240,62 @@ function GARR_IsAtGarr()
 
     if inF then
         CdAddonMessage(MB_RAID.."GARR", "ENGAGE", 30)
-        GARR_ACTIVE = true
+        GarrEncounter.Active = true
         return true
     end
 
-	return GARR_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function GARR:OnEvent()
-    if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID.."GARR") then            
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Garr Engaged! <<")
-                GARR_START()
-                
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Garr Died! <<")
-                GARR_END()
-            elseif (arg2 == "HEALERS") then
-                HandleHealersOnGarr()
-            end
-        end
+function GARR:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."GARR" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Garr! <<")
+            self:OnEnable()
 
-    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Garr dies") and GARR_ACTIVE then
-            CdAddonMessage(MB_RAID.."GARR", "DISENGAGE", 30)
+            GetHealersOnGarr()
+            self:ScheduleEvent("GetGarrHealers", GetHealersOnGarr, 3)
+            self:ScheduleEvent("GarrHealerAssignments", AssignHealersToTanks, 5)
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Garr has died! <<")
+            self:ScheduleEvent("GARR_CLEANUP", self.OnCleanUp, 15, self)
+        elseif (arg2 == "HEALERS") then
+            HandleHealersOnGarr()
         end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        GARR_END()
     end
 end
 
-GARR:SetScript("OnEvent", GARR.OnEvent) 
+function GARR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Garr dies") and GarrEncounter.Active then
+        CdAddonMessage(MB_RAID.."GARR", "DISENGAGE", 30)
+    end
+end
+
+function GARR:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function GARR:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function GARR:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("GARR_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function GARR_TargetingPostFocus()
-	if GARR_IsAtGarr() and MB_myGarrBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
+	if GARR_CheckEncounter() and MB_myGarrBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then				
 				SetCVar("targetNearestDistance", "10")
 				MB_targetNearestDistanceChanged = true
 			end
@@ -299,35 +318,4 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GARR_HEALERS = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
-
-function GARR_HEALERS:OnInitialize()
-    self:RegisterEvent("CHAT_MSG_ADDON")
-    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-    self:RegisterEvent("PLAYER_ENTERING_WORLD")
-    self:RegisterEvent("PLAYER_REGEN_ENABLED")
-end
-
-function GARR_HEALERS:CHAT_MSG_ADDON()
-    if (arg1 == MB_RAID.."GARR") then
-        if (arg2 == "ENGAGE") then
-            self:ScheduleEvent("GarrHealerAssignment", AssignHealersToTanks, 3)
-        elseif (arg2 == "DISENGAGE") then
-            self:CancelScheduledEvent("GarrHealerAssignment")
-        end
-    end
-end
-
-function GARR_HEALERS:ZONE_CHANGED_NEW_AREA()
-    self:CancelScheduledEvent("GarrHealerAssignment")
-end
-
-function GARR_HEALERS:PLAYER_ENTERING_WORLD()
-    self:CancelScheduledEvent("GarrHealerAssignment")
-end
-
-function GARR_HEALERS:PLAYER_REGEN_ENABLED()
-    self:CancelScheduledEvent("GarrHealerAssignment")
-end
-
-GARR_HEALERS:OnInitialize()
+GARR:OnInitialize()

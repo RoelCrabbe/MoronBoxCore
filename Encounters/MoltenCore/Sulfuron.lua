@@ -97,17 +97,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SULF = CreateFrame("Button", "SULF", UIParent)
+local SULFURON = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do SULF:RegisterEvent(event)
-	end
+function SULFURON:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -118,6 +115,25 @@ end
 local MB_mySulfuronBoxStrategy = true 
 local MB_mySulfuronShadowPotStrategy = true
 
+-- Strategy Configuration -- No changes below this line
+local SulfuronEncounter = {
+    Active = false
+}
+
+function SULFURON:OnEnable()
+    SulfuronEncounter.Active = true
+end
+
+function SULFURON:OnReset()
+    SulfuronEncounter.Active = false
+end
+
+function SULFURON:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> SULFURON - CLEANUP <<")
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -127,10 +143,6 @@ local function UseShadowPotsOnSulfuron()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
     TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
@@ -138,10 +150,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SULF_ACTIVE = false
-
-function SULF_IsAtSulfuron()
-	if SULF_ACTIVE then
+local function SULFURON_CheckEncounter()
+	if SulfuronEncounter.Active then
         UseShadowPotsOnSulfuron()
         return true
     end
@@ -159,47 +169,54 @@ function SULF_IsAtSulfuron()
 
     if inF then
         CdAddonMessage(MB_RAID.."SULFURON", "ENGAGE", 30)
-        SULF_ACTIVE = true
+        SulfuronEncounter.Active = true
         return true
     end
 
-	return SULF_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SULF:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."SULFURON") then            
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Sulfuron Engaged! <<")
-                SULF_ACTIVE = true
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Sulfuron Died! <<")
-                SULF_ACTIVE = false
-            end
+function SULFURON:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."SULFURON" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Sulfuron! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Sulfuron has died! <<")
+            self:ScheduleEvent("SULFURON_CLEANUP", self.OnCleanUp, 15, self)
         end
-
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Sulfuron Harbinger dies") and SULF_ACTIVE then
-            CdAddonMessage(MB_RAID.."SULFURON", "DISENGAGE", 30)
-        end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        SULF_ACTIVE = false
     end
 end
 
-SULF:SetScript("OnEvent", SULF.OnEvent) 
+function SULFURON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Sulfuron Harbinger dies") and SulfuronEncounter.Active then
+        CdAddonMessage(MB_RAID.."SULFURON", "DISENGAGE", 30)
+    end
+end
+
+function SULFURON:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function SULFURON:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function SULFURON:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("SULFURON_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SULF_TargetingPostFocus()
-	if SULF_IsAtSulfuron() and MB_mySulfuronBoxStrategy then
+function SULFURON_TargetingPostFocus()
+	if SULFURON_CheckEncounter() and MB_mySulfuronBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -223,3 +240,5 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+SULFURON:OnInitialize()

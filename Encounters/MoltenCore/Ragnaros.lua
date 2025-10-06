@@ -97,18 +97,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local RAG = CreateFrame("Button", "RAG", UIParent)
+local RAGNAROS = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "CHAT_MSG_MONSTER_YELL",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do RAG:RegisterEvent(event)
-	end
+function RAGNAROS:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -119,6 +115,25 @@ end
 local MB_myRagnarosBoxStrategy = true
 local MB_myRagnarosFirePotStrategy = true
 
+-- Strategy Configuration -- No changes below this line
+local RagnarosEncounter = {
+    Active = false
+}
+
+function RAGNAROS:OnEnable()
+    RagnarosEncounter.Active = true
+end
+
+function RAGNAROS:OnReset()
+    RagnarosEncounter.Active = false
+end
+
+function RAGNAROS:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> RAGNAROS - CLEANUP <<")
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -128,10 +143,6 @@ local function UseFirePotsOnRagnaros()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
     TakePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
@@ -139,10 +150,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local RAG_ACTIVE = false
-
-function RAG_IsAtRagnaros()
-	if RAG_ACTIVE then
+local function RAGNAROS_CheckEncounter()
+	if RagnarosEncounter.Active then
         UseFirePotsOnRagnaros()
         return true
     end
@@ -160,47 +169,54 @@ function RAG_IsAtRagnaros()
 
     if inF then
         CdAddonMessage(MB_RAID.."RAGNAROS", "ENGAGE", 30)
-        RAG_ACTIVE = true
+        RagnarosEncounter.Active = true
         return true
     end
 
-	return RAG_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function RAG:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."RAGNAROS") then
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Ragnaros Engaged! <<")
-                RAG_ACTIVE = true
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Ragnaros Died! <<")
-                RAG_ACTIVE = false
-            end
+function RAGNAROS:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."RAGNAROS" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Ragnaros! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Ragnaros has died! <<")
+            self:ScheduleEvent("RAGNAROS_CLEANUP", self.OnCleanUp, 15, self)
         end
-
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Ragnaros dies") and RAG_ACTIVE then
-            CdAddonMessage(MB_RAID.."RAGNAROS", "DISENGAGE", 30)
-        end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        RAG_ACTIVE = false
     end
 end
 
-RAG:SetScript("OnEvent", RAG.OnEvent) 
+function RAGNAROS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Ragnaros dies") and RagnarosEncounter.Active then
+        CdAddonMessage(MB_RAID.."RAGNAROS", "DISENGAGE", 30)
+    end
+end
+
+function RAGNAROS:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function RAGNAROS:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function RAGNAROS:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("RAGNAROS_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function RAG_TargetingPostFocus()
-	if RAG_IsAtRagnaros() and MB_myRagnarosBoxStrategy then
+function RAGNAROS_TargetingPostFocus()
+	if RAGNAROS_CheckEncounter() and MB_myRagnarosBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -224,3 +240,5 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+RAGNAROS:OnInitialize()

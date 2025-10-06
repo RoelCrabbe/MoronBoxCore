@@ -97,17 +97,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GEH = CreateFrame("Button", "GEH", UIParent)
+local GEHENNAS = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do GEH:RegisterEvent(event)
-	end
+function GEHENNAS:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -116,12 +113,27 @@ end
 
 -- Strategy Configuration
 local MB_myGehennasBoxStrategy = true
-
--- Ranged DPS/Healer Fire Pot Strategy
 local MB_myGehennasFirePotStrategy = true
-
--- Melee DPS/Healer FAP Pot Strategy
 local MB_myGehennasFAPPotStrategy = true
+
+-- Strategy Configuration -- No changes below this line
+local GehennasEncounter = {
+    Active = false
+}
+
+function GEHENNAS:OnEnable()
+    GehennasEncounter.Active = true
+end
+
+function GEHENNAS:OnReset()
+    GehennasEncounter.Active = false
+end
+
+function GEHENNAS:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> GEHENNAS - CLEANUP <<")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -131,10 +143,6 @@ local function UseFirePotsOnGehennas()
     if not MB_myGehennasFirePotStrategy then
         return
     end
-
-    if ImBusy() or not InCombat("player") then
-		return
-	end
 
     if ImMeleeDPS() or ImTank() then
         return
@@ -148,10 +156,6 @@ local function UseFAPPotsOnGehennas()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
     if ImRangedDPS() or ImHealer() then
         return
     end
@@ -163,10 +167,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GEH_ACTIVE = false
-
-function GEH_IsAtGehennas()
-	if GEH_ACTIVE then
+local function GEHENNAS_CheckEncounter()
+	if GehennasEncounter.Active then
         UseFirePotsOnGehennas()
         UseFAPPotsOnGehennas()
         return true
@@ -185,48 +187,55 @@ function GEH_IsAtGehennas()
 
     if inF then
         CdAddonMessage(MB_RAID.."GEHENNAS", "ENGAGE", 30)
-        GEH_ACTIVE = true
+        GehennasEncounter.Active = true
         return true
     end
 
-	return GEH_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function GEH:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."GEHENNAS") then            
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Gehennas Engaged! <<")
-                GEH_ACTIVE = true
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Gehennas Died! <<")
-                GEH_ACTIVE = false
-            end
+function GEHENNAS:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."GEHENNAS" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Gehennas! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Gehennas has died! <<")
+            self:ScheduleEvent("GEHENNAS_CLEANUP", self.OnCleanUp, 15, self)
         end
-
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Gehennas dies") and GEH_ACTIVE then
-            CdAddonMessage(MB_RAID.."GEHENNAS", "DISENGAGE", 30)
-        end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        GEH_ACTIVE = false
     end
 end
 
-GEH:SetScript("OnEvent", GEH.OnEvent) 
+function GEHENNAS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Gehennas dies") and GehennasEncounter.Active then
+        CdAddonMessage(MB_RAID.."GEHENNAS", "DISENGAGE", 30)
+    end
+end
+
+function GEHENNAS:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function GEHENNAS:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function GEHENNAS:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("GEHENNAS_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function GEH_TargetingPostFocus()
-	if GEH_IsAtGehennas() and MB_myGehennasBoxStrategy then
-        if ImTank() then				
+function GEHENNAS_TargetingPostFocus()
+	if GEHENNAS_CheckEncounter() and MB_myGehennasBoxStrategy then
+        if ImTank() then			
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
 				MB_targetNearestDistanceChanged = true
@@ -249,3 +258,5 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+GEHENNAS:OnInitialize()

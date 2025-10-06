@@ -98,17 +98,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SHAZ = CreateFrame("Button", "SHAZ", UIParent)
+local SHAZZRAH = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do SHAZ:RegisterEvent(event)
-	end
+function SHAZZRAH:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -119,6 +116,25 @@ end
 local MB_myShazzrahBoxStrategy = true
 local MB_myShazzrahArcanePotStrategy = true
 
+-- Strategy Configuration -- No changes below this line
+local ShazzrahEncounter = {
+    Active = false
+}
+
+function SHAZZRAH:OnEnable()
+    ShazzrahEncounter.Active = true
+end
+
+function SHAZZRAH:OnReset()
+    ShazzrahEncounter.Active = false
+end
+
+function SHAZZRAH:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> SHAZZRAH - CLEANUP <<")
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -128,10 +144,6 @@ local function UseArcanePotsOnShazzrah()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
     TakePotionsWhenPossible("Greater Arcane Protection Potion")
 end
 
@@ -139,13 +151,11 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SHAZ_ACTIVE = false
-
-function SHAZ_IsAtShazzrah()
-	if SHAZ_ACTIVE then
+local function SHAZZRAH_CheckEncounter()
+	if ShazzrahEncounter.Active then
         UseArcanePotsOnShazzrah()
-        SHAZ_DetectDebuff()
-        SHAZ_DispellDebuff()
+        SHAZZRAH_DetectDebuff()
+        SHAZZRAH_DispellDebuff()
         return true
     end
 
@@ -162,46 +172,18 @@ function SHAZ_IsAtShazzrah()
 
     if inF then
         CdAddonMessage(MB_RAID.."SHAZZRAH", "ENGAGE", 30)
-        SHAZ_ACTIVE = true
+        ShazzrahEncounter.Active = true
         return true
     end
 
-	return SHAZ_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SHAZ:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."SHAZZRAH") then            
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Shazzrah Engaged! <<")
-                SHAZ_ACTIVE = true
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Shazzrah Died! <<")
-                SHAZ_ACTIVE = false
-            end
-        end
-
-    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Shazzrah dies") and SHAZ_ACTIVE then
-            CdAddonMessage(MB_RAID.."SHAZZRAH", "DISENGAGE", 30)
-        end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        SHAZ_ACTIVE = false
-    end
-end
-
-SHAZ:SetScript("OnEvent", SHAZ.OnEvent) 
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-function SHAZ_DetectDebuff()
+function SHAZZRAH_DetectDebuff()
     if myClass ~= "Mage" then
         return false
     end
@@ -222,7 +204,7 @@ function SHAZ_DetectDebuff()
     return false
 end
 
-function SHAZ_DispellDebuff()
+function SHAZZRAH_DispellDebuff()
     if myClass ~= "Priest" then
         return false
     end
@@ -237,6 +219,10 @@ function SHAZ_DispellDebuff()
     end
     
     local targetId = focId.."target"
+    if not targetId then
+        return false
+    end
+
     local targetName = UnitName(targetId)
     if not targetName then
         return false
@@ -255,8 +241,43 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SHAZ_TargetingPostFocus()
-	if SHAZ_IsAtShazzrah() and MB_myShazzrahBoxStrategy then
+function SHAZZRAH:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."SHAZZRAH" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Shazzrah! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Shazzrah has died! <<")
+            self:ScheduleEvent("SHAZZRAH_CLEANUP", self.OnCleanUp, 15, self)
+        end
+    end
+end
+
+function SHAZZRAH:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Shazzrah dies") and ShazzrahEncounter.Active then
+        CdAddonMessage(MB_RAID.."SHAZZRAH", "DISENGAGE", 30)
+    end
+end
+
+function SHAZZRAH:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function SHAZZRAH:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function SHAZZRAH:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("SHAZZRAH_CLEANUP")
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+function SHAZZRAH_TargetingPostFocus()
+	if SHAZZRAH_CheckEncounter() and MB_myShazzrahBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -280,3 +301,5 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+SHAZZRAH:OnInitialize()

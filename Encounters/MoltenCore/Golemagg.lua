@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[########################################### GOLEMAGG CODE ##########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -97,9 +97,9 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local LUCIFRON = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
+local GOLEMAGG = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-function LUCIFRON:OnInitialize()
+function GOLEMAGG:OnInitialize()
     self:RegisterEvent("CHAT_MSG_ADDON")
     self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -112,145 +112,111 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myLucifronBoxStrategy = true 
-local MB_myLucifronShadowPotStrategy = false
+local MB_myGolemaggBoxStrategy = true 
+local MB_myGolemaggFirePotStrategy = false
 
 -- Strategy Configuration -- No changes below this line
-local LucifronEncounter = {
+local GolemaggEncounter = {
     Active = false
 }
 
-function LUCIFRON:OnEnable()
-    LucifronEncounter.Active = true
+function GOLEMAGG:OnEnable()
+    GolemaggEncounter.Active = true
 end
 
-function LUCIFRON:OnReset()
-    LucifronEncounter.Active = false
+function GOLEMAGG:OnReset()
+    GolemaggEncounter.Active = false
 end
 
-function LUCIFRON:OnCleanUp()
+function GOLEMAGG:OnCleanUp()
     self.OnReset()
     self:UnregisterAllEvents()
-    CdPrint(">> LUCIFRON - CLEANUP <<")
+    CdPrint(">> GOLEMAGG - CLEANUP <<")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function UseShadowPotsOnLucifron()
-    if not MB_myLucifronShadowPotStrategy then
+local function UseFirePotsOnGolemagg()
+    if not MB_myGolemaggFirePotStrategy then
         return
     end
 
-    TakePotionsWhenPossible("Greater Shadow Protection Potion")
+    TakePotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function PriorityOnMagmadar()
-    local PRIORITY = {
-        HIGH   = 10,
-        MEDIUM = 20,
-        LOW    = 30,
-        NONE   = 40
-    }
-
-    if FindInTable(MB_raidTanks, myName) then
-        if myClass == "Druid" then
-            return PRIORITY.HIGH
-        end
-
-        return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
-    elseif myClass == "Priest" then
-        return PRIORITY.NONE
-    end
-end
-
-local function PrepareMagmadarOnLucifron()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
-end
-
-FW_RegisterFearwardPriority("Lucifron", PriorityOnMagmadar)
-FW_RegisterFearwardPriority("Flamewaker Protector", PriorityOnMagmadar)
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-local function LUCIFRON_CheckEncounter()
-    if LucifronEncounter.Active then
-        UseShadowPotsOnLucifron()
-        PrepareMagmadarOnLucifron()
+local function GOLEMAGG_CheckEncounter()
+	if GolemaggEncounter.Active then
+        UseFirePotsOnGolemagg()
         return true
     end
 
-    local inF = false
+	local inF = false
     local tName = UnitName("target")
-    
-    if (TankTarget("Lucifron") or TankTarget("Flamewaker Protector")) then
+
+    if TankTarget("Golemagg the Incinerator") then
         inF = true
     else
-        if tName and (tName == "Lucifron" or tName == "Flamewaker Protector") then
+        if tName and tName == "Golemagg the Incinerator" then
             inF = true
         end
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "ENGAGE", 30)
-        LucifronEncounter.Active = true
+        CdAddonMessage(MB_RAID.."GOLEMAGG", "ENGAGE", 30)
+        GolemaggEncounter.Active = true
         return true
     end
 
-    return false
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCIFRON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."LUCIFRON" then
+function GOLEMAGG:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."GOLEMAGG" then
         if arg2 == "ENGAGE" then
-            CdRaidWarning(">> Fighting Lucifron! <<")
+            CdRaidWarning(">> Fighting Golemagg! <<")
             self:OnEnable()
         elseif arg2 == "DISENGAGE" then
-            CdRaidWarning(">> Lucifron has died! <<")
-            self:ScheduleEvent("LUCIFRON_CLEANUP", self.OnCleanUp, 15, self)
+            CdRaidWarning(">> Golemagg has died! <<")
+            self:ScheduleEvent("GOLEMAGG_CLEANUP", self.OnCleanUp, 15, self)
         end
     end
 end
 
-function LUCIFRON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
-    if string.find(arg1, "Lucifron dies") and LucifronEncounter.Active then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "DISENGAGE", 30)
+function GOLEMAGG:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Golemagg the Incinerator dies") and GolemaggEncounter.Active then
+        CdAddonMessage(MB_RAID.."GOLEMAGG", "DISENGAGE", 30)
     end
 end
 
-function LUCIFRON:ZONE_CHANGED_NEW_AREA()
+function GOLEMAGG:ZONE_CHANGED_NEW_AREA()
     self:OnReset()
 end
 
-function LUCIFRON:PLAYER_ENTERING_WORLD()
+function GOLEMAGG:PLAYER_ENTERING_WORLD()
     self:OnReset()
 end
 
-function LUCIFRON:PLAYER_REGEN_ENABLED()
+function GOLEMAGG:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("LUCIFRON_CLEANUP")
+    self:CancelScheduledEvent("GOLEMAGG_CLEANUP")
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function LUCIFRON_TargetingPostFocus()
-	if LUCIFRON_CheckEncounter() and MB_myLucifronBoxStrategy then
+function GOLEMAGG_TargetingPostFocus()
+	if GOLEMAGG_CheckEncounter() and MB_myGolemaggBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -275,4 +241,4 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-LUCIFRON:OnInitialize()
+GOLEMAGG:OnInitialize()

@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[########################################### LUCIFRON CODE ##########################################]--
+--[########################################### MAGMADAR CODE ##########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -97,17 +97,14 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA = CreateFrame("Button", "MAGMA", UIParent)
+local MAGMADAR = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD",
-        "PLAYER_REGEN_ENABLED"
-		} do MAGMA:RegisterEvent(event)
-	end
+function MAGMADAR:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -118,6 +115,25 @@ end
 local MB_myMagmadarBoxStrategy = true 
 local MB_myMagmadarFirePotStrategy = true
 
+-- Strategy Configuration -- No changes below this line
+local MagmadarEncounter = {
+    Active = false
+}
+
+function MAGMADAR:OnEnable()
+    MagmadarEncounter.Active = true
+end
+
+function MAGMADAR:OnReset()
+    MagmadarEncounter.Active = false
+end
+
+function MAGMADAR:OnCleanUp()
+    self.OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> MAGMADAR - CLEANUP <<")
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -126,10 +142,6 @@ local function UseFirePotsOnMagmadar()
     if not MB_myMagmadarFirePotStrategy then
         return
     end
-
-    if ImBusy() or not InCombat("player") then
-		return
-	end
 
     TakePotionsWhenPossible("Greater Fire Protection Potion")
 end
@@ -170,10 +182,8 @@ FW_RegisterFearwardPriority("Magmadar", PriorityOnMagmadar)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MAGMA_ACTIVE = false
-
-function MAGMA_IsAtMagmadar()
-	if MAGMA_ACTIVE then
+local function MAGMADAR_CheckEncounter()
+	if MagmadarEncounter.Active then
         UseFirePotsOnMagmadar()
         PrepareOnMagmadar()
         return true
@@ -192,47 +202,54 @@ function MAGMA_IsAtMagmadar()
 
     if inF then
         CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
-        MAGMA_ACTIVE = true
+        MagmadarEncounter.Active = true
         return true
     end
 
-	return MAGMA_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-		if (arg1 == MB_RAID.."MAGMADAR") then            
-            if (arg2 == "ENGAGE") then
-                CdRaidWarning(">> Magmadar Engaged! <<")
-                MAGMA_ACTIVE = true
-            elseif (arg2 == "DISENGAGE") then
-                CdRaidWarning(">> Magmadar Died! <<")
-                MAGMA_ACTIVE = false
-            end
+function MAGMADAR:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."MAGMADAR" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Magmadar! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Magmadar has died! <<")
+            self:ScheduleEvent("MAGMADAR_CLEANUP", self.OnCleanUp, 15, self)
         end
-
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "Magmadar dies") and MAGMA_ACTIVE then
-            CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
-        end
-
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
-        MAGMA_ACTIVE = false
     end
 end
 
-MAGMA:SetScript("OnEvent", MAGMA.OnEvent) 
+function MAGMADAR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Magmadar dies") and MagmadarEncounter.Active then
+        CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
+    end
+end
+
+function MAGMADAR:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function MAGMADAR:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function MAGMADAR:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("MAGMADAR_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MAGMA_TargetingPostFocus()
-	if MAGMA_IsAtMagmadar() and MB_myMagmadarBoxStrategy then
+function MAGMADAR_TargetingPostFocus()
+	if MAGMADAR_CheckEncounter() and MB_myMagmadarBoxStrategy then
         if ImTank() then				
             if not MB_targetNearestDistanceChanged then						
 				SetCVar("targetNearestDistance", "10")
@@ -256,3 +273,5 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
+
+MAGMADAR:OnInitialize()
