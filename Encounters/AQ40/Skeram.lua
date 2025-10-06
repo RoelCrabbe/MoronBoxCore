@@ -108,16 +108,14 @@ local UseFromBags = mb_useFromBags
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SKERAM = CreateFrame("Button", "SKERAM", UIParent)
+local SKERAM = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
-do
-	for _, event in {
-		"CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "ZONE_CHANGED_NEW_AREA",
-        "PLAYER_ENTERING_WORLD"
-		} do SKERAM:RegisterEvent(event)
-	end
+function SKERAM:OnInitialize()
+    self:RegisterEvent("CHAT_MSG_ADDON")
+    self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 --[####################################################################################################]--
@@ -125,9 +123,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_mySkeramBoxStrategy = true
-
--- Potion Configuration
+local MB_mySkeramBoxStrategy = true
 local MB_mySkeramArcanePotStrategy = true
 
 -- Platform Assignments
@@ -167,6 +163,25 @@ local MB_mySkeramRightOFFTANKS = {
     "Alliance Offtank 3" -- Alliance
 }
 
+-- Strategy Configuration -- No changes below this line
+local SkeramEncounter = {
+    Active = false
+}
+
+function SKERAM:OnEnable()
+    SkeramEncounter.Active = true
+end
+
+function SKERAM:OnReset()
+    SkeramEncounter.Active = false
+end
+
+function SKERAM:OnCleanUp()
+    self:OnReset()
+    self:UnregisterAllEvents()
+    CdPrint(">> SKERAM - CLEANUP <<")
+end
+
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -176,10 +191,6 @@ local function UseArcanePotsOnSkeram()
         return
     end
 
-    if ImBusy() or not InCombat("player") then
-		return
-	end
-
     TakePotionsWhenPossible("Greater Arcane Protection Potion")
 end
 
@@ -187,10 +198,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SKERAM_ACTIVE = false
-
-function SKERAM_IsAtSkeram()
-    if SKERAM_ACTIVE then
+function SKERAM_CheckEncounter()
+    if SkeramEncounter.Active then
         if SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
         end
@@ -224,36 +233,47 @@ function SKERAM_IsAtSkeram()
 
     if inF then
         CdAddonMessage(MB_RAID.."SKERAM", "ENGAGE", 30)
-        SKERAM_ACTIVE = true
+        SkeramEncounter.Active = true
         return true
     end
 
-	return SKERAM_ACTIVE
+	return false
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SKERAM:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID.."SKERAM" and arg2 == "ENGAGE") then
-            CdRaidWarning(">> Skeram Engaged! <<")
-            SKERAM_ACTIVE = true
+function SKERAM:CHAT_MSG_ADDON()
+    if arg1 == MB_RAID.."SKERAM" then
+        if arg2 == "ENGAGE" then
+            CdRaidWarning(">> Fighting Skeram! <<")
+            self:OnEnable()
+        elseif arg2 == "DISENGAGE" then
+            CdRaidWarning(">> Skeram has died! <<")
+            self:ScheduleEvent("SKERAM_CLEANUP", self.OnCleanUp, 15, self)
         end
-
-    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
-        if string.find(arg1, "The Prophet Skeram dies") then
-            CdRaidWarning(">> Skeram Died! <<")
-            SKERAM_ACTIVE = false
-        end
-    
-    elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD") then
-        SKERAM_ACTIVE = false
     end
 end
 
-SKERAM:SetScript("OnEvent", SKERAM.OnEvent) 
+function SKERAM:CHAT_MSG_MONSTER_YELL()
+    if string.find(arg1, "The screams of the dying will fill the air") and SkeramEncounter.Active then
+        CdAddonMessage(MB_RAID.."SKERAM", "DISENGAGE", 30)
+    end
+end
+
+function SKERAM:ZONE_CHANGED_NEW_AREA()
+    self:OnReset()
+end
+
+function SKERAM:PLAYER_ENTERING_WORLD()
+    self:OnReset()
+end
+
+function SKERAM:PLAYER_REGEN_ENABLED()
+    self:OnReset()
+    self:CancelScheduledEvent("SKERAM_CLEANUP")
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -262,7 +282,7 @@ SKERAM:SetScript("OnEvent", SKERAM.OnEvent)
 function SKERAM_TargetingPreFocus()
     local tName = UnitName("target")
 
-	if SKERAM_IsAtSkeram() and MB_mySkeramBoxStrategy then
+	if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
         if not tName then
             return false
         end
@@ -299,7 +319,7 @@ end
 function SKERAM_TargetingPostFocus()
     local tName = UnitName("target")
 
-	if SKERAM_IsAtSkeram() and MB_mySkeramBoxStrategy then
+	if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
         if MyNameInTable(MB_mySkeramLeftTanks) or MyNameInTable(MB_mySkeramMiddleTanks) or MyNameInTable(MB_mySkeramRightTanks) then     
             if not MB_targetNearestDistanceChanged then            
                 SetCVar("targetNearestDistance", "15")
@@ -341,6 +361,12 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+SKERAM:OnInitialize()
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function SKERAM_WarlockDebuff()
     local skeramTankMap = {
         [1] = MB_mySkeramLeftTanks,
@@ -372,6 +398,10 @@ function SKERAM_WarlockDebuff()
     end
 
     return false
+end
+
+function SKERAM_WarlockEnable()
+    return MB_mySkeramBoxStrategy
 end
 
 --[####################################################################################################]--
@@ -444,7 +474,7 @@ local function CrowdControlMCedRaidMemberSkeramAOE()
 end
 
 function SKERAM_CrowdControl()
-    if not SKERAM_IsAtSkeram() or not MB_mySkeramBoxStrategy then
+    if not SKERAM_CheckEncounter() or not MB_mySkeramBoxStrategy then
         return false
     end
 
@@ -482,7 +512,7 @@ end
 --[####################################################################################################]--
 
 function SKERAM_IsFollowSkeram()
-    if not SKERAM_IsAtSkeram() or not MB_mySkeramBoxStrategy then
+    if not SKERAM_CheckEncounter() or not MB_mySkeramBoxStrategy then
         return false
     end
 
@@ -514,3 +544,7 @@ function SKERAM_IsFollowSkeram()
         return true
     end
 end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
