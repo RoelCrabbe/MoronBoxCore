@@ -129,38 +129,41 @@ local MB_mySkeramArcanePotStrategy = true
 -- Platform Assignments
 local MB_mySkeramLeftTanks = {
     "Suecia",           -- Horde
-    "Alliance Tank 1"   -- Alliance
+    "Laty"              -- Alliance
 }
 
 local MB_mySkeramLeftOFFTANKS = {
     "Rows",             -- Horde
-    "Alliance Offtank 1" -- Alliance
+    "Subsmash" -- Alliance
 }
 
 local MB_mySkeramMiddleTanks = {
     "Moron",            -- Horde
-    "Alliance Tank 2"   -- Alliance
+    "Sceto"             -- Alliance
 }
 
 local MB_mySkeramMiddleOFFTANKS = {
     "Almisael",         -- Horde
-    "Alliance Offtank 2" -- Alliance
+    "Droodood"          -- Alliance
 }
 
 local MB_mySkeramMiddleDPSERS = {
     -- Horde DPS
     "Moonspawn", "Likez", "Angerissues", "Tazmahdingo", 
-    "Gogopwranger", "Chabalala", "Weedzy", "Miagi"
+    "Gogopwranger", "Chabalala", "Weedzy", "Miagi",
+    -- Alliance DPS
+    "Kazic", "Kankan", "Nharz", "Hotani", 
+    "Kurayami", "Purplemane"
 }
 
 local MB_mySkeramRightTanks = { 
     "Ajlano",           -- Horde
-    "Alliance Tank 3"   -- Alliance
+    "Myosin"            -- Alliance
 }
 
 local MB_mySkeramRightOFFTANKS = {
     "Sabo",             -- Horde
-    "Alliance Offtank 3" -- Alliance
+    "Algoritam" -- Alliance
 }
 
 -- Strategy Configuration -- No changes below this line
@@ -257,7 +260,7 @@ function SKERAM:CHAT_MSG_ADDON()
 end
 
 function SKERAM:CHAT_MSG_MONSTER_YELL()
-    if string.find(arg1, "The screams of the dying will fill the air") and SkeramEncounter.Active then
+    if string.find(arg1, "You only delay... the inevitatable") and SkeramEncounter.Active then
         CdAddonMessage(MB_RAID.."SKERAM", "DISENGAGE", 30)
     end
 end

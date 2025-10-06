@@ -332,9 +332,9 @@ local ReagentsLimit = {
     
     -- Protection Potions
     ["Greater Nature Protection Potion"] = { 20, 1 },
-    ["Greater Shadow Protection Potion"] = { 55, 1 },
-    ["Greater Fire Protection Potion"] = { 5, 1 },
-    ["Greater Arcane Protection Potion"] = { 5, 1 },
+    ["Greater Shadow Protection Potion"] = { 40, 1 },
+    ["Greater Fire Protection Potion"] = { 10, 1 },
+    ["Greater Arcane Protection Potion"] = { 10, 1 },
     ["Frozen Rune"] = { 5, 1 },
 
     -- Mana Restoration
