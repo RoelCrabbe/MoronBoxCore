@@ -129,7 +129,7 @@ function SULFURON:OnReset()
 end
 
 function SULFURON:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> SULFURON - CLEANUP <<")
 end

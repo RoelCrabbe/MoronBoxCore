@@ -129,7 +129,7 @@ function RAGNAROS:OnReset()
 end
 
 function RAGNAROS:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> RAGNAROS - CLEANUP <<")
 end

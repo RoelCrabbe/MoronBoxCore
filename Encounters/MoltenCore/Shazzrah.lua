@@ -130,7 +130,7 @@ function SHAZZRAH:OnReset()
 end
 
 function SHAZZRAH:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> SHAZZRAH - CLEANUP <<")
 end

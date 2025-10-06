@@ -129,7 +129,7 @@ function MAGMADAR:OnReset()
 end
 
 function MAGMADAR:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> MAGMADAR - CLEANUP <<")
 end

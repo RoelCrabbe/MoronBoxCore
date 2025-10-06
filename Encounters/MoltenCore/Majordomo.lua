@@ -139,7 +139,7 @@ function MAJORDOMO:OnReset()
 end
 
 function MAJORDOMO:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> MAJORDOMO - CLEANUP <<")
 end

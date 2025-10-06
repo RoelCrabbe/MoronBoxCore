@@ -129,7 +129,7 @@ function LUCIFRON:OnReset()
 end
 
 function LUCIFRON:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> LUCIFRON - CLEANUP <<")
 end

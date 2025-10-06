@@ -139,7 +139,7 @@ function GEDDON:OnReset()
 end
 
 function GEDDON:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> GEDDON - CLEANUP <<")
 end

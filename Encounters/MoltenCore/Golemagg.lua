@@ -129,7 +129,7 @@ function GOLEMAGG:OnReset()
 end
 
 function GOLEMAGG:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> GOLEMAGG - CLEANUP <<")
 end

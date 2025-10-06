@@ -141,7 +141,7 @@ function GARR:OnReset()
 end
 
 function GARR:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> GARR - CLEANUP <<")
 end

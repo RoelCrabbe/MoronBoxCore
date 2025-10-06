@@ -130,7 +130,7 @@ function GEHENNAS:OnReset()
 end
 
 function GEHENNAS:OnCleanUp()
-    self.OnReset()
+    self:OnReset()
     self:UnregisterAllEvents()
     CdPrint(">> GEHENNAS - CLEANUP <<")
 end
