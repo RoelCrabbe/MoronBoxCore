@@ -89,7 +89,7 @@ local myRace = UnitRace("player")
 --    │ ├─ Check: Target already has buff? → CLEANUP    │
 --    │ ├─ Check: Someone else claimed target? → EXIT   │
 --    │ ├─ CLAIM: Broadcast "CLAIMING_FEARWARD:Player"  │
---    │ └─ Queue: Add to MB_fearWardQueue[unitId]=prio  │
+--    │ └─ Queue: Add to MB_FWQueue[unitId]=prio  │
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 3. PROCESSING PHASE
@@ -111,12 +111,12 @@ local myRace = UnitRace("player")
 --
 -- KEY DATA STRUCTURES
 -- ==================
--- MB_fearWardQueue = {
+-- MB_FWQueue = {
 --     ["party1"] = 1,    -- unitId → priority (LOCAL to each priest)
 --     ["raid5"] = 2      -- Uses MBID system for targeting
 -- }
 --
--- MB_fearWardClaimedQueue = {
+-- MB_FWClaimedQueue = {
 --     ["PlayerName"] = "ClaimingPriest"  -- Who claimed who (SHARED via addon messages)
 -- }
 --
@@ -170,9 +170,9 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MB_fearWardQueue = {}
-local MB_fearWardClaimedQueue = {}
-local MB_bossFearWardRegistry = {}
+local MB_FWQueue = {}
+local MB_FWClaimedQueue = {}
+local MB_FWRegistry = {}
 
 local function GlobalFearWardPriority()
     local PRIORITY = {
@@ -201,8 +201,8 @@ local function GetMyFearWardPriority()
         targetName = UnitName(focId.."target")
     end
     
-    if targetName and MB_bossFearWardRegistry[targetName] then
-        return MB_bossFearWardRegistry[targetName]()
+    if targetName and MB_FWRegistry[targetName] then
+        return MB_FWRegistry[targetName]()
     end
     
     return GlobalFearWardPriority()
@@ -212,7 +212,7 @@ local function GetNextFearWardTarget()
     local bestUnitId = nil
     local bestPriority = nil
     
-    for unitId, priority in pairs(MB_fearWardQueue) do
+    for unitId, priority in pairs(MB_FWQueue) do
         if bestPriority == nil or priority < bestPriority then
             bestPriority = priority
             bestUnitId = unitId
@@ -281,15 +281,15 @@ local function HandleFearWardRequest(message, sender)
         return
     end
 
-    if MB_fearWardQueue[requestPlayerId] then
+    if MB_FWQueue[requestPlayerId] then
         return
     end
 
-    if MB_fearWardClaimedQueue[requestPlayer] and MB_fearWardClaimedQueue[requestPlayer] ~= myName then
+    if MB_FWClaimedQueue[requestPlayer] and MB_FWClaimedQueue[requestPlayer] ~= myName then
         return
     end
 
-    MB_fearWardQueue[requestPlayerId] = tonumber(priority)
+    MB_FWQueue[requestPlayerId] = tonumber(priority)
     CdAddonMessage(MB_RAID.."CLAIM_FEARWARD", "CLAIMING:"..requestPlayer)
 end
 
@@ -297,7 +297,7 @@ local function HandleFearWardClaim(message, claimer)
     local _, _, requestPlayer = string.find(message, "CLAIMING:(.+)")
     if not requestPlayer then return end
 
-    MB_fearWardClaimedQueue[requestPlayer] = claimer
+    MB_FWClaimedQueue[requestPlayer] = claimer
 end
 
 local function HandleFearWardBuffed(message, sender)
@@ -305,10 +305,10 @@ local function HandleFearWardBuffed(message, sender)
     if not requestPlayer then return end
 
     if myName == sender then
-        MB_fearWardQueue[MBID[requestPlayer]] = nil
+        MB_FWQueue[MBID[requestPlayer]] = nil
     end
 
-    MB_fearWardClaimedQueue[requestPlayer] = nil
+    MB_FWClaimedQueue[requestPlayer] = nil
 end
 
 --[####################################################################################################]--
@@ -336,7 +336,7 @@ FW:SetScript("OnEvent", FW.OnEvent)
 --[####################################################################################################]--
 
 function FW_RegisterFearWardPriority(fightName, fn)
-    MB_bossFearWardRegistry[fightName] = fn
+    MB_FWRegistry[fightName] = fn
 end
 
 function FW_RequestFearWard()

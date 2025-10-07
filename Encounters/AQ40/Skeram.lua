@@ -112,7 +112,8 @@ local SKERAM = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 
 function SKERAM:OnInitialize()
     self:RegisterEvent("CHAT_MSG_ADDON")
-    self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+    self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
@@ -151,7 +152,7 @@ local MB_mySkeramMiddleDPSERS = {
     "Gogopwranger", "Chabalala", "Weedzy", "Miagi",
     -- Alliance DPS
     "Kazic", "Kankan", "Nharz", "Hotani", 
-    "Kurayami", "Purplemane"
+    "Shieceofpit", "Arent", "Kurayami", "Purplemane"
 }
 
 local MB_mySkeramRightTanks = { 
@@ -245,6 +246,12 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function CheckIfRealDeath()
+    if SkeramEncounter.Active and not InCombat() then
+        CdAddonMessage(MB_RAID.."SKERAM", "DISENGAGE", 30)
+    end
+end
+
 function SKERAM:CHAT_MSG_ADDON()
     if arg1 == MB_RAID.."SKERAM" then
         if arg2 == "ENGAGE" then
@@ -257,13 +264,20 @@ function SKERAM:CHAT_MSG_ADDON()
     end
 end
 
-function SKERAM:CHAT_MSG_MONSTER_YELL()
-    if string.find(arg1, "You only delay... the inevitatable") and SkeramEncounter.Active then
-        CdAddonMessage(MB_RAID.."SKERAM", "DISENGAGE", 30)
+function SKERAM:CHAT_MSG_COMBAT_HOSTILE_DEATH()
+    if string.find(arg1, "Prophet Skeram dies") and SkeramEncounter.Active then
+        self:ScheduleEvent("SKERAM_DEATH_CHECK", CheckIfRealDeath, 5)
     end
 end
 
+function SKERAM:PLAYER_ENTERING_WORLD()
+    self:CancelScheduledEvent("SKERAM_DEATH_CHECK")
+    self:CancelScheduledEvent("SKERAM_CLEANUP")
+    self:OnReset()
+end
+
 function SKERAM:PLAYER_REGEN_ENABLED()
+    self:CancelScheduledEvent("SKERAM_DEATH_CHECK")
     self:CancelScheduledEvent("SKERAM_CLEANUP")
 end
 
@@ -318,6 +332,10 @@ function SKERAM_TargetingPostFocus()
                 MB_targetNearestDistanceChanged = true
             end
 
+            if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+				ClearTarget()
+			end
+
             if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
             end
@@ -327,6 +345,10 @@ function SKERAM_TargetingPostFocus()
             if not MB_targetNearestDistanceChanged then				
 				SetCVar("targetNearestDistance", "10")
 				MB_targetNearestDistanceChanged = true
+			end
+
+            if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+				ClearTarget()
 			end
 
             if tName == nil or Dead("target") or not InMeleeRange() then
@@ -339,9 +361,7 @@ function SKERAM_TargetingPostFocus()
 				ClearTarget()
 			end
 
-            if not tName or Dead("target") then
-                AssistFocus()
-            end
+            AssistFocus()
 			return true
         end
     end
@@ -441,18 +461,18 @@ local function CrowdControlMCedRaidMemberSkeram()
 end
 
 local function CrowdControlMCedRaidMemberSkeramAOE()
-    if mb_dead("player") or not mb_spellReady("Psychic Scream") then
+    if Dead("player") or not SpellReady("Psychic Scream") then
         return
     end
 
     for i = 1, GetNumRaidMembers() do
         local unit = "raid"..i
-        if unit and mb_isAlive(unit) and CheckInteractDistance(unit, 3) then
-            if mb_hasBuffOrDebuff("True Fulfillment", unit, "debuff")
-                and not mb_hasBuffOrDebuff("Polymorph", unit, "debuff")
-                and not mb_hasBuffOrDebuff("Psychic Scream", unit, "debuff") then
+        if unit and IsAlive(unit) and CheckInteractDistance(unit, 3) then
+            if HasBuffOrDebuff("True Fulfillment", unit, "debuff")
+                and not HasBuffOrDebuff("Polymorph", unit, "debuff")
+                and not HasBuffOrDebuff("Psychic Scream", unit, "debuff") then
 
-                if mb_imBusy() then
+                if ImBusy() then
                     SpellStopCasting()
                 end
 

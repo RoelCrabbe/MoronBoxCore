@@ -250,11 +250,6 @@ local MB_PIQueue = {}
 local MB_PIClaimedQueue = {}
 local MB_PIRegistry = {}
 
-local MB_magePowerInfusionList = {
-    "Name1",
-    "Name2"
-}
-
 local function GlobalPowerInfusionPriority()
     local PRIORITY = {
         HIGH   = 10,
@@ -263,7 +258,7 @@ local function GlobalPowerInfusionPriority()
         NONE   = 40
     }
 
-    if FindInTable(MB_magePowerInfusionList, myName) then
+    if FindInTable(MB_raidAssist.Mage.PowerInfusionPriority, myName) then
         if myClass == "Mage" then
             return PRIORITY.HIGH
         else
@@ -306,8 +301,6 @@ local function GetNextPowerInfusionTarget()
 end
 
 local function GetPriestInGroup()
-    -- If we have priests then return those
-    -- If not broadcast a message to find priest with PI
     if TableLength(MB_PIList) > 0 then
         return MB_PIList[math.random(TableLength(MB_PIList))]
     end
@@ -455,6 +448,10 @@ function PI_ProcessPowerInfusionQueue()
     local targetName = UnitName(targetUnitId)
 
     if ImBusy() or not SpellReady(spellName) then
+        return false
+    end
+
+    if HasBuffOrDebuff("Arcane Power", targetUnitId, "buff") then
         return false
     end
 

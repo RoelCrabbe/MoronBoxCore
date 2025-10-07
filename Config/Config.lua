@@ -58,15 +58,6 @@ MB_raidAssist = { -- Raid tools
 		PrioritizePriestsAtieshBuff = true -- If enabled, prevents druid from re-equipping Atiesh so priest can keep the buff
 	},
 
-	Priest = { -- Priest options
-		PowerInfusion = { -- Players in this list can receive Power Infusion (randomly selected)
-			["Draub"] = { "Drogles" },
-			["Liket"] = { "Alionex" },			
-			["Ayag"] = { "Xlimidrizer" },
-			["Blaidzy"] = { "Oxg" }
-		}
-	},
-
 	Warrior = { -- Warrior options, only for Annihilator
 		Active = true, -- Set to true to enable, false to disable
 		AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
@@ -89,7 +80,22 @@ MB_raidAssist = { -- Raid tools
 		SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
 		AllowFireBlastDuringIgnite = true, -- Indicates whether instant cast spells should be allowed like fireblast when igniting	
 		-- Forst
-		SpellToKeepWintersChillUp =  "Frostbolt(Rank 1)"
+		SpellToKeepWintersChillUp =  "Frostbolt(Rank 1)",
+
+		-- Power Infusion
+		PowerInfusionPriority = { -- Mages that get Power Infusion from priests with HIGH PRIORITY
+			-- Horde	
+			"Drogles",
+			"Alionex",
+			"Xlimidrizer",
+			"Oxg",
+
+			-- Alliance
+			"Vbobber",
+			"Vesco",
+			"Cybersparkz",
+			"Yonda"
+		},
 	},
 
 	Debugger = { -- Tells me some stuff on X and Y encounters
@@ -139,7 +145,8 @@ MB_tankList = { -- Add your tanks to this list for the login tank list
 	"Laty",
 	"Myosin",
 	"Droodood",
-	"Subsmash"
+	"Subsmash",
+	"Algoritam"
 }
 
 MB_extraTanks = { -- These tanks will be added to the 'no taunt off' list

@@ -757,6 +757,8 @@ function Mage:Cooldowns()
         SelfBuff("Arcane Power")			
     end
 
+    PI_RequestPowerInfusion()
+
     HealerTrinkets()
 	CasterTrinkets()
 end

@@ -952,7 +952,7 @@ function Priest:ManaDrain()
 end
 
 function Priest:PowerInfusion()
-	if ImBusy() or not InCombat("player") then
+	if not InCombat("player") then
 		return false
 	end
 
@@ -960,34 +960,7 @@ function Priest:PowerInfusion()
         return false
     end
 
-	if not SpellReady("Power Infusion") then
-		return false
-	end
-
-	local casters = MB_raidAssist.Priest.PowerInfusion[myName] 
-	if not casters or TableLength(casters) == 0 then 
-		return false
-	end
-
-	for _, target in ipairs(casters) do
-		local unit = MBID[target]
-
-		if unit and InCombat(unit) then
-			if not (HasBuffOrDebuff("Power Infusion", unit, "buff") or HasBuffOrDebuff("Arcane Power", unit, "buff")) then
-				if IsValidFriendlyTargetWithin28YardRange(unit) and ManaPct(unit) < 0.95 and ManaPct(unit) > 0.1 then
-					if UnitIsFriend("player", unit) then
-						ClearTarget()
-					end
-
-					CastSpellByName("Power Infusion")
-					CdMessage("Power Infusion on "..GetColors(UnitName(unit)).."!")
-					SpellTargetUnit(unit)
-					SpellStopTargeting()
-					return true
-				end
-			end
-		end
-	end
+	PI_ProcessPowerInfusionQueue()
 	return false
 end
 
