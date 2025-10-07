@@ -113,8 +113,6 @@ local SKERAM = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 function SKERAM:OnInitialize()
     self:RegisterEvent("CHAT_MSG_ADDON")
     self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
-    self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-    self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
@@ -265,16 +263,7 @@ function SKERAM:CHAT_MSG_MONSTER_YELL()
     end
 end
 
-function SKERAM:ZONE_CHANGED_NEW_AREA()
-    self:OnReset()
-end
-
-function SKERAM:PLAYER_ENTERING_WORLD()
-    self:OnReset()
-end
-
 function SKERAM:PLAYER_REGEN_ENABLED()
-    self:OnReset()
     self:CancelScheduledEvent("SKERAM_CLEANUP")
 end
 

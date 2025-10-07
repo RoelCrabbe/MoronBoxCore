@@ -93,3 +93,15 @@ function TableInvert(tbl)
 	end
 	return rv
 end
+
+function TableAddUnique(list, value)
+    for _, item in ipairs(list) do
+        if item == value then
+            return false
+        end
+    end
+
+    table.insert(list, value)
+    table.sort(list)
+    return true
+end

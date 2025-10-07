@@ -38,7 +38,9 @@ Handlers\Target.lua
 Core\Target.lua
 Core\Decurse.lua
 Core\GTFO.lua
-Core\FearWard.lua
+
+Core\Buffs\FearWard.lua
+Core\Buffs\PowerInfusion.lua
 
 Event\Flash.lua
 Event\Turning.lua

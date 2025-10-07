@@ -172,12 +172,12 @@ local function PriorityOnMagmadar()
 end
 
 local function PrepareMagmadarOnLucifron()
-    FW_RequestFearward()
-    FW_ProcessFearwardQueue()
+    FW_RequestFearWard()
+    FW_ProcessFearWardQueue()
 end
 
-FW_RegisterFearwardPriority("Lucifron", PriorityOnMagmadar)
-FW_RegisterFearwardPriority("Flamewaker Protector", PriorityOnMagmadar)
+FW_RegisterFearWardPriority("Lucifron", PriorityOnMagmadar)
+FW_RegisterFearWardPriority("Flamewaker Protector", PriorityOnMagmadar)
 
 --[####################################################################################################]--
 --[####################################################################################################]--

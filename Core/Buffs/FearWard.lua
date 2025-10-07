@@ -89,7 +89,7 @@ local myRace = UnitRace("player")
 --    │ ├─ Check: Target already has buff? → CLEANUP    │
 --    │ ├─ Check: Someone else claimed target? → EXIT   │
 --    │ ├─ CLAIM: Broadcast "CLAIMING_FEARWARD:Player"  │
---    │ └─ Queue: Add to MB_fearwardQueue[unitId]=prio  │
+--    │ └─ Queue: Add to MB_fearWardQueue[unitId]=prio  │
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 3. PROCESSING PHASE
@@ -111,12 +111,12 @@ local myRace = UnitRace("player")
 --
 -- KEY DATA STRUCTURES
 -- ==================
--- MB_fearwardQueue = {
+-- MB_fearWardQueue = {
 --     ["party1"] = 1,    -- unitId → priority (LOCAL to each priest)
 --     ["raid5"] = 2      -- Uses MBID system for targeting
 -- }
 --
--- MB_fearwardClaimedQueue = {
+-- MB_fearWardClaimedQueue = {
 --     ["PlayerName"] = "ClaimingPriest"  -- Who claimed who (SHARED via addon messages)
 -- }
 --
@@ -170,11 +170,11 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MB_fearwardQueue = {}
-local MB_fearwardClaimedQueue = {}
-local MB_bossFearwardRegistry = {}
+local MB_fearWardQueue = {}
+local MB_fearWardClaimedQueue = {}
+local MB_bossFearWardRegistry = {}
 
-local function GlobalFearwardPriority()
+local function GlobalFearWardPriority()
     local PRIORITY = {
         HIGH   = 10,
         MEDIUM = 20,
@@ -193,7 +193,7 @@ local function GlobalFearwardPriority()
     end
 end
 
-local function GetMyFearwardPriority()
+local function GetMyFearWardPriority()
     local targetName = nil
     local focId = MBID[MB_raidLeader]
 
@@ -201,18 +201,18 @@ local function GetMyFearwardPriority()
         targetName = UnitName(focId.."target")
     end
     
-    if targetName and MB_bossFearwardRegistry[targetName] then
-        return MB_bossFearwardRegistry[targetName]()
+    if targetName and MB_bossFearWardRegistry[targetName] then
+        return MB_bossFearWardRegistry[targetName]()
     end
     
-    return GlobalFearwardPriority()
+    return GlobalFearWardPriority()
 end
 
-local function GetNextFearwardTarget()
+local function GetNextFearWardTarget()
     local bestUnitId = nil
     local bestPriority = nil
     
-    for unitId, priority in pairs(MB_fearwardQueue) do
+    for unitId, priority in pairs(MB_fearWardQueue) do
         if bestPriority == nil or priority < bestPriority then
             bestPriority = priority
             bestUnitId = unitId
@@ -262,7 +262,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function HandleFearwardRequest(message, sender)
+local function HandleFearWardRequest(message, sender)
     local _, _, priority, assignedPriest = string.find(message, "BUFF_INFO:(%d+):(.+)")
     
     local requestPlayer = sender
@@ -281,36 +281,34 @@ local function HandleFearwardRequest(message, sender)
         return
     end
 
-    if MB_fearwardQueue[requestPlayerId] then
+    if MB_fearWardQueue[requestPlayerId] then
         return
     end
 
-    if MB_fearwardClaimedQueue[requestPlayer] and MB_fearwardClaimedQueue[requestPlayer] ~= myName then
+    if MB_fearWardClaimedQueue[requestPlayer] and MB_fearWardClaimedQueue[requestPlayer] ~= myName then
         return
     end
 
-    MB_fearwardQueue[requestPlayerId] = tonumber(priority)
+    MB_fearWardQueue[requestPlayerId] = tonumber(priority)
     CdAddonMessage(MB_RAID.."CLAIM_FEARWARD", "CLAIMING:"..requestPlayer)
 end
 
-local function HandleFearwardClaim(message, claimer)
+local function HandleFearWardClaim(message, claimer)
     local _, _, requestPlayer = string.find(message, "CLAIMING:(.+)")
     if not requestPlayer then return end
 
-    MB_fearwardClaimedQueue[requestPlayer] = claimer
+    MB_fearWardClaimedQueue[requestPlayer] = claimer
 end
 
-local function HandleFearwardBuffed(message, sender)
+local function HandleFearWardBuffed(message, sender)
     local _, _, requestPlayer = string.find(message, "BUFFED:(.+)")
     if not requestPlayer then return end
 
     if myName == sender then
-        MB_fearwardQueue[MBID[requestPlayer]] = nil
-    elseif myName == requestPlayer then
-        CdPrint("I got Fear Ward from "..sender)
+        MB_fearWardQueue[MBID[requestPlayer]] = nil
     end
 
-    MB_fearwardClaimedQueue[requestPlayer] = nil
+    MB_fearWardClaimedQueue[requestPlayer] = nil
 end
 
 --[####################################################################################################]--
@@ -322,11 +320,11 @@ function FW:OnEvent()
         local message, sender = arg2, arg4
 
         if (arg1 == MB_RAID.."NEED_FEARWARD") then
-            HandleFearwardRequest(message, sender)
+            HandleFearWardRequest(message, sender)
         elseif (arg1 == MB_RAID.."CLAIM_FEARWARD") then
-            HandleFearwardClaim(message, sender)
+            HandleFearWardClaim(message, sender)
         elseif (arg1 == MB_RAID.."BUFFED_FEARWARD") then
-            HandleFearwardBuffed(message, sender)
+            HandleFearWardBuffed(message, sender)
         end
     end
 end
@@ -337,17 +335,17 @@ FW:SetScript("OnEvent", FW.OnEvent)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function FW_RegisterFearwardPriority(fightName, fn)
-    MB_bossFearwardRegistry[fightName] = fn
+function FW_RegisterFearWardPriority(fightName, fn)
+    MB_bossFearWardRegistry[fightName] = fn
 end
 
-function FW_RequestFearward()
+function FW_RequestFearWard()
     if Faction.IsHorde() or HasBuffOrDebuff("Fear Ward", "player", "buff") then
         return false
     end
 
     local myBuffingPriest = GetDwarfPriestInGroup()
-    local myPriority = GetMyFearwardPriority()
+    local myPriority = GetMyFearWardPriority()
 
     if myName == myBuffingPriest then
         return
@@ -361,13 +359,13 @@ function FW_RequestFearward()
     CdAddonMessage(MB_RAID.."NEED_FEARWARD", message, 15)
 end
 
-function FW_ProcessFearwardQueue()
+function FW_ProcessFearWardQueue()
     if Faction.IsHorde() or myClass ~= "Priest" then
         return false
     end
 
     local spellName = "Fear Ward"
-    local targetUnitId, priority = GetNextFearwardTarget()
+    local targetUnitId, priority = GetNextFearWardTarget()
 
     if not targetUnitId or not priority then
         return false
@@ -381,6 +379,8 @@ function FW_ProcessFearwardQueue()
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
         CastSpellByName(spellName, false)
+        CdMessage(spellName.." on "..GetColors(targetName).."!")
+
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true
@@ -390,25 +390,3 @@ function FW_ProcessFearwardQueue()
     CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", message)
     return false
 end
-
---[[
-    function FW_DebugQueues()
-        Print("=== FEARWARD QUEUES ===")
-        Print("My Queue:")
-        for unitId, priority in pairs(MB_fearwardQueue) do
-            local name = UnitName(unitId) or "Unknown"
-            Print("  "..name.." ("..unitId..") = priority "..priority)
-        end
-        
-        Print("Claimed Queue:")
-        for playerName, claimer in pairs(MB_fearwardClaimedQueue) do
-            Print("  "..playerName.." claimed by "..claimer)
-        end
-    end
-
-    function FW_ClearQueues()
-        MB_fearwardQueue = {}
-        MB_fearwardClaimedQueue = {}
-        Print("Queues cleared")
-    end
-]]
