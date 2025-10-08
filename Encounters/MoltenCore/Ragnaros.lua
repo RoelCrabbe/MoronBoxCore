@@ -226,12 +226,10 @@ function RAGNAROS_TargetingPostFocus()
 			GetTargetNotOnTank()
 			return true
 
-		elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
-			if not tName or Dead("target") then
-				AssistFocus()
-			end
+        elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
+            AssistFocus()
 			return true
-		end
+        end
     end
 
     return false
