@@ -186,7 +186,7 @@ local function PrepareOnBugTrio()
 end
 
 FW_RegisterFearWardPriority("Lord Kri", PriorityOnBugTrio)
-FW_RegisterFearWardPriority("Priness Yauj", PriorityOnBugTrio)
+FW_RegisterFearWardPriority("Princess Yauj", PriorityOnBugTrio)
 FW_RegisterFearWardPriority("Vem", PriorityOnBugTrio)
 
 --[####################################################################################################]--
@@ -203,10 +203,10 @@ function BUGTRIO_CheckEncounter()
     local inF = false
     local tName = UnitName("target")
 
-    if (TankTarget("Lord Kri") or TankTarget("Priness Yauj") or TankTarget("Vem")) then
+    if (TankTarget("Lord Kri") or TankTarget("Princess Yauj") or TankTarget("Vem")) then
         inF = true
     else
-        if tName and (tName == "Lord Kri" or tName == "Priness Yauj" or tName == "Vem") then
+        if tName and (tName == "Lord Kri" or tName == "Princess Yauj" or tName == "Vem") then
             inF = true
         end
     end
