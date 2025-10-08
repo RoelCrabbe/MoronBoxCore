@@ -175,10 +175,8 @@ local function PriorityOnBugTrio()
         end
 
         return PRIORITY.MEDIUM
-    elseif myClass == "Rogue" then
-        return PRIORITY.LOW
     elseif myClass == "Priest" then
-        return PRIORITY.NONE
+        return PRIORITY.LOW
     end
 end
 
@@ -272,13 +270,25 @@ function BUGTRIO_TargetingPreFocus()
     return false
 end
 
+local function TankSurvive()
+    if HealthPct("player") <= 0.25 then				
+        SelfBuff("Last Stand") 
+    end
+
+    if HealthPct("player") <= 0.2 then				
+        SelfBuff("Shield Wall") 
+    end
+end
+
 function BUGTRIO_TargetingPostFocus()
     local tName = UnitName("target")
 
 	if BUGTRIO_CheckEncounter() and MB_myBugTrioBoxStrategy then
         if ImTank() then
+            TankSurvive()
+
             if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "10")
+				SetCVar("targetNearestDistance", "15")
 				MB_targetNearestDistanceChanged = true
 			end
 

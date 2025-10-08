@@ -96,6 +96,10 @@ local function HandleAQ40TargetingPreFocus()
 		return true
 	end
 
+	if BUGTRIO_TargetingPreFocus() then
+		return true
+	end
+
 	return false
 end
 
@@ -234,6 +238,10 @@ local function HandleAQ40TargetingPostFocus()
 	local tName = UnitName("target")
 
 	if SKERAM_TargetingPostFocus() then
+		return true
+	end
+
+	if BUGTRIO_TargetingPostFocus() then
 		return true
 	end
 
