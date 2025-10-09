@@ -366,7 +366,7 @@ end
 
 function mb_fearBreak()	
 	if IsShiftKeyDown() then 		
-		CleanseTotem()
+		mb_cleanseTotem()
 		return 
 	end
 

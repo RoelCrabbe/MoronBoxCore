@@ -111,6 +111,7 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyNameInTable = mb_myNameInTable
 local NumShards = mb_numShards
 local OrbControlling = mb_orbControlling
+local PlayerIsPoisoned = mb_playerIsPoisoned
 local ReEquipAtieshIfNoAtieshBuff = mb_reEquipAtieshIfNoAtieshBuff
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SpellReady = mb_spellReady
@@ -193,6 +194,22 @@ local function CheckWarStomp()
     CastSpellByName("War Stomp")
 end
 
+local function CheckStoneForm()
+    if not InCombat("player") then
+        return
+    end
+
+    if not SpellReady("Stoneform") then
+        return
+    end
+
+    if not PlayerIsPoisoned() then
+        return
+    end
+
+    CastSpellByName("Stoneform", 1)
+end
+
 --[####################################################################################################]--
 --[########################################## Single Code! ############################################]--
 --[####################################################################################################]--
@@ -225,6 +242,7 @@ function mb_single()
     end
 
     CheckWarStomp()
+    CheckStoneForm()
 
     if LOA_Rotation() then
         return
@@ -267,6 +285,7 @@ function mb_multi()
     end
 
     CheckWarStomp()
+    CheckStoneForm()
 
     if LOA_Rotation() then
         return
@@ -309,6 +328,7 @@ function mb_AOE()
     end
 
     CheckWarStomp()
+    CheckStoneForm()
 
     if LOA_Rotation() then
         return
@@ -569,6 +589,7 @@ function mb_healAndTank()
     end
 
     CheckWarStomp()
+    CheckStoneForm()
 	InterruptingHealAndTank()
 
     if SpecialHealAndTankClass() then

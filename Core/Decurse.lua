@@ -205,10 +205,10 @@ end
 function mb_playerIsPoisoned()
 	if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
 		return false
-	end	
+	end
 
 	for x = 1, 16 do
-		local name, count, debuffType = UnitDebuff("player", x, 1)
+		local name, count, debuffType = UnitDebuff("player", x)
 		if debuffType == "Poison" then 
 			return true 
 		end

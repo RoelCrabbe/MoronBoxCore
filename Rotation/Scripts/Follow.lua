@@ -162,7 +162,7 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.AQ40() then	
+	if Instance.AQ40() and SKERAM_CheckEncounter() then	
 		if SKERAM_IsFollowSkeram() then
 			return
 		end

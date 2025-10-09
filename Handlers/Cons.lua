@@ -151,13 +151,14 @@ local UniversalReagents = {
 }
 
 local OptionalUniversalReagents = {
-    "Swiftness of Zanza",
-    "Spirit of Zanza",
+    "Greater Arcane Protection Potion",
+    "Greater Fire Protection Potion",
+    "Greater Nature Protection Potion",
     "Greater Shadow Protection Potion",
     "Limited Invulnerability Potion",
-    "Greater Fire Protection Potion",
     "Noggenfogger Elixir",
-    "Greater Arcane Protection Potion"
+    "Spirit of Zanza",
+    "Swiftness of Zanza"
 }
 
 local ClassSpecificReagents = {
@@ -177,7 +178,6 @@ local ClassSpecificReagents = {
         "Tea with Sugar",
         "Doomshot",
         "Flask of the Titans",
-        "Greater Nature Protection Potion",
         "Major Mana Potion",
         "Elixir of the Mongoose",
         "Juju Might",
@@ -232,7 +232,6 @@ local ClassSpecificReagents = {
     ["Rogue"] = {
         "Flash Powder",
         "Flask of the Titans",
-        "Greater Nature Protection Potion",
         "Elixir of the Mongoose",
         "Juju Might",
         "Juju Power",
@@ -271,7 +270,6 @@ local ClassSpecificReagents = {
         "Elixir of the Mongoose",
         "Flask of the Titans",
         "Gift of Arthas",
-        "Greater Nature Protection Potion",
         "Greater Stoneshield Potion",
         "Juju Might",
         "Juju Power",
