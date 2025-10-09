@@ -224,19 +224,6 @@ local MB_shadowWardDebuffsSet = {
     "Corruption of the Earth"
 }
 
-local MB_mobsToFearWardSet = {
-    ["Nefarian"] = true,
-    ["Magmadar"] = true,
-    ["Princess Yauj"] = true,
-    ["Lord Kri"] = true,
-    ["Vem"] = true,
-    ["Onyxia"] = true,
-    ["Deathknight"] = true,
-    ["High Priestess Jeklik"] = true,
-    ["Gurubashi Berserker"] = true,
-    ["Gluth"] = true
-}
-
 -- Magic Detection/Manipulation
 local MB_mobsToDetectMagicSet = {
     ["Anubisath Sentinel"] = true,
@@ -432,8 +419,6 @@ local MB_TremorBossSet = {
     ["Ysondre"] = true,
     ["Nefarian"] = true,
     ["Princess Yauj"] = true,
-    ["Lord Kri"] = true,
-    ["Vem"] = true,
     ["Onyxia"] = true
 }
 
@@ -636,10 +621,6 @@ function mb_debuffsToShadowWard()
     end
     
     return mb_hasBuffNamed("Shadow and Frost Reflect", "target")
-end
-
-function mb_mobsToFearWard()
-    return mb_tankTargetInSet(MB_mobsToFearWardSet)
 end
 
 function mb_mobsToDetectMagic()
