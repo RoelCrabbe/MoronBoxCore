@@ -291,7 +291,6 @@ end
 
 function GEDDON:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("GEDDON_CLEANUP")
 end
 
 --[####################################################################################################]--

@@ -226,7 +226,6 @@ end
 
 function GEHENNAS:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("GEHENNAS_CLEANUP")
 end
 
 --[####################################################################################################]--

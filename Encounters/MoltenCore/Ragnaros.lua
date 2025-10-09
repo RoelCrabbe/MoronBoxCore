@@ -208,7 +208,6 @@ end
 
 function RAGNAROS:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("RAGNAROS_CLEANUP")
 end
 
 --[####################################################################################################]--

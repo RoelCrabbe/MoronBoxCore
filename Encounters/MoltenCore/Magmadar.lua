@@ -241,7 +241,6 @@ end
 
 function MAGMADAR:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("MAGMADAR_CLEANUP")
 end
 
 --[####################################################################################################]--

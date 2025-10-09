@@ -272,13 +272,11 @@ end
 
 function SKERAM:PLAYER_ENTERING_WORLD()
     self:CancelScheduledEvent("SKERAM_DEATH_CHECK")
-    self:CancelScheduledEvent("SKERAM_CLEANUP")
     self:OnReset()
 end
 
 function SKERAM:PLAYER_REGEN_ENABLED()
     self:CancelScheduledEvent("SKERAM_DEATH_CHECK")
-    self:CancelScheduledEvent("SKERAM_CLEANUP")
 end
 
 --[####################################################################################################]--

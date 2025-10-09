@@ -242,7 +242,6 @@ end
 
 function LUCIFRON:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("LUCIFRON_CLEANUP")
 end
 
 --[####################################################################################################]--
