@@ -252,7 +252,6 @@ end
 
 function BUGTRIO:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("BUGTRIO_CLEANUP")
 end
 
 --[####################################################################################################]--
