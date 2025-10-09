@@ -100,6 +100,10 @@ local function HandleAQ40TargetingPreFocus()
 		return true
 	end
 
+	if FANKRISS_TargetingPreFocus() then
+		return true
+	end
+
 	return false
 end
 
@@ -245,72 +249,11 @@ local function HandleAQ40TargetingPostFocus()
 		return true
 	end
 
-	if mb_tankTarget("Fankriss the Unyielding") and MB_myFankrissBoxStrategy then
-		if mb_imTank() then				
-			if mb_myNameInTable(MB_myFankrissOFFTANKS) then
-				if mb_lockOnTarget("Fankriss the Unyielding") then
-					return true
-				end
-
-				GetTargetIfNone()
-				return true
-			end
-			
-			mb_getTargetNotOnTank()
-			return true
-
-		elseif mb_imMeleeDPS() and myClass == "Warrior" then
-			if mb_lockOnTarget("Fankriss the Unyielding") then
-				return true
-			end
-
-			GetTargetIfNone()
-			return true
-
-		elseif mb_imMeleeDPS() and myClass == "Rogue" then
-			local tankOne = mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne)
-			if mb_assistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", tankOne) then 
-				mb_debugger(MB_raidAssist.Debugger.Rogue, "Rogues assisting "..tankOne.." on Spawn of Fankriss!") 
-				return true
-			end
-
-			local tankTwo = mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankTwo)
-			if mb_assistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", tankTwo) then 
-				mb_debugger(MB_raidAssist.Debugger.Rogue, "Rogues assisting "..tankTwo.." on Spawn of Fankriss!") 
-				return true
-			end
-
-			if mb_lockOnTarget("Fankriss the Unyielding") then
-				return true
-			end
-
-			GetTargetIfNone()
-			return true
-
-		elseif mb_imRangedDPS() or mb_imHealer() then
-			local tankOne = mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankOne)
-			if mb_assistSpecificTargetFromPlayer("Spawn of Fankriss", tankOne) then 
-				mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..tankOne.." on Spawn of Fankriss!") 
-				return true
-			end
-
-			local tankTwo = mb_returnPlayerInRaidFromTable(MB_myFankrissSnakeTankTwo)
-			if mb_assistSpecificTargetFromPlayer("Spawn of Fankriss", tankTwo) then 
-				mb_debugger(MB_raidAssist.Debugger.Mage, "Casters assisting "..tankTwo.." on Spawn of Fankriss!") 
-				return true
-			end
-
-			if mb_lockOnTarget("Fankriss the Unyielding") then
-				return true
-			end
-
-			GetTargetIfNone()
-			return true
-		end
-
+	if FANKRISS_TargetingPostFocus() then
 		return true
-			
-	elseif mb_tankTarget("Anubisath Defender") then
+	end
+	
+	if mb_tankTarget("Anubisath Defender") then
 		if mb_imTank() then			
 			mb_getTargetNotOnTank()
 			return true

@@ -659,7 +659,7 @@ function mb_getTargetNotOnTank()
     end
 
 	if (UnitName("target") == "Deathknight Understudy" or UnitName("target") == "Hakkar"
-        or UnitName("target") == "Fallout Slime" or UnitName("target") == "Spawn of Fankriss") then
+        or UnitName("target") == "Fallout Slime") then
         return
     end
 

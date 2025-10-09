@@ -130,32 +130,6 @@ MB_myFaerlinaPriest = {
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_myFankrissBoxStrategy = true
-
--- Tank Assignments (REQUIRED)
-MB_myFankrissOFFTANKS = {
-    "Suecia",               -- Horde (Targets boss, manual taunt)
-    "Alliance Offtank 1"    -- Alliance
-}
-
-MB_myFankrissSnakeTankOne = {
-    "Ajlano",              -- Horde (Targets snakes, caster assist)
-    "Alliance Snake Tank 1" -- Alliance
-}
-
-MB_myFankrissSnakeTankTwo = {
-    "Almisael",            -- Horde (Targets snakes, caster assist)  
-    "Alliance Snake Tank 2" -- Alliance
-}
-
---[[
-    Fankriss Tactics:
-    - Offtanks handle boss taunting manually
-    - Snake tanks manage add spawns
-    - Casters assist snake tanks
---]]
-
--- Strategy Configuration
 MB_myHuhuranBoxStrategy = true
 MB_myHuhuranNaturePotStrategy = true
 
