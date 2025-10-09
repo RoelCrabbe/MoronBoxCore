@@ -269,7 +269,6 @@ end
 
 function SHAZZRAH:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("SHAZZRAH_CLEANUP")
 end
 
 --[####################################################################################################]--

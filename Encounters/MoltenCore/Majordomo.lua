@@ -218,7 +218,6 @@ end
 
 function MAJORDOMO:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("MAJORDOMO_CLEANUP")
 end
 
 --[####################################################################################################]--

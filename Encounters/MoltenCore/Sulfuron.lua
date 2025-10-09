@@ -208,7 +208,6 @@ end
 
 function SULFURON:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("SULFURON_CLEANUP")
 end
 
 --[####################################################################################################]--

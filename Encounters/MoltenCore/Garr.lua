@@ -285,7 +285,6 @@ end
 
 function GARR:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("GARR_CLEANUP")
 end
 
 --[####################################################################################################]--

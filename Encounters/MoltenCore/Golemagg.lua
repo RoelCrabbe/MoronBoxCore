@@ -208,7 +208,6 @@ end
 
 function GOLEMAGG:PLAYER_REGEN_ENABLED()
     self:OnReset()
-    self:CancelScheduledEvent("GOLEMAGG_CLEANUP")
 end
 
 --[####################################################################################################]--
