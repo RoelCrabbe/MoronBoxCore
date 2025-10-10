@@ -77,6 +77,7 @@ local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
 local CdRaidWarning = mb_cdRaidWarning
 local Dead = mb_dead
+local FixateOnTarget = mb_fixateOnTarget
 local GetTargetNotOnTank = mb_getTargetNotOnTank
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HaveInBags = mb_haveInBags
@@ -229,6 +230,41 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+function FANKRISS_MageDPS(Mage)
+    local tName = UnitName("target")
+
+    if tName ~= "Spawn of Fankriss" then
+        return false
+    end
+
+    if SpellReady("Fireblast") and InMeleeRange() then
+        CastSpellByName("Fire Blast")
+    end
+
+    if MB_mySpecc == "Fire" then    
+        Mage:Fire()
+    elseif MB_mySpecc == "Frost" then
+        Mage:Frost()
+    end
+
+    return true
+end
+
+function FANKRISS_WarlockDPS(Warlock)
+    local tName = UnitName("target")
+
+    if tName ~= "Spawn of Fankriss" then
+        return false
+    end
+
+    Warlock:SaveShardShadowBurn(9)
+    return true
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 function FANKRISS_TargetingPreFocus()
     local tName = UnitName("target")
 
@@ -270,7 +306,7 @@ function FANKRISS_TargetingPostFocus()
         local mySnakeTANKtwo = ReturnPlayerInRaidFromTable(MB_myFankrissSpawnTANKtwo)
 
         if (myName == myFankrissOFFTANK) then
-            if not MB_targetNearestDistanceChanged then                
+            if not MB_targetNearestDistanceChanged then             
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
@@ -283,14 +319,14 @@ function FANKRISS_TargetingPostFocus()
                 TargetNearestEnemy()
             end
             return true
-        
+
         elseif (myName == mySnakeTANKone or myName == mySnakeTANKtwo) then				
-            if not MB_targetNearestDistanceChanged then						
+            if not MB_targetNearestDistanceChanged then				
 				SetCVar("targetNearestDistance", "25")
 				MB_targetNearestDistanceChanged = true
 			end
 
-            if LockOnTarget("Spawn of Fankriss") then
+            if FixateOnTarget("Spawn of Fankriss") then
                 return true
             end
 
@@ -298,7 +334,7 @@ function FANKRISS_TargetingPostFocus()
 			return true
 
         elseif ImTank() then
-            if not MB_targetNearestDistanceChanged then						
+            if not MB_targetNearestDistanceChanged then				
 				SetCVar("targetNearestDistance", "10")
 				MB_targetNearestDistanceChanged = true
 			end
@@ -315,11 +351,11 @@ function FANKRISS_TargetingPostFocus()
             return true
 
         elseif (ImMeleeDPS() and myClass == "Rogue") or ImHealer() then
-            if AssistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mySnakeTANKone) then 
+            if AssistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mySnakeTANKone) then
                 return true
             end
 
-            if AssistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mySnakeTANKtwo) then 
+            if AssistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mySnakeTANKtwo) then
                 return true
             end
 
@@ -331,15 +367,15 @@ function FANKRISS_TargetingPostFocus()
             return true
 
         elseif ImRangedDPS() then
-            if AssistSpecificTargetFromPlayer("Spawn of Fankriss", mySnakeTANKone) then 
+            if AssistSpecificTargetFromPlayer("Spawn of Fankriss", mySnakeTANKone) then
                 return true
             end
 
-            if AssistSpecificTargetFromPlayer("Spawn of Fankriss", mySnakeTANKtwo) then 
+            if AssistSpecificTargetFromPlayer("Spawn of Fankriss", mySnakeTANKtwo) then
                 return true
             end
 
-            if mb_lockOnTarget("Fankriss the Unyielding") then
+            if LockOnTarget("Fankriss the Unyielding") then
                 return true
             end
 

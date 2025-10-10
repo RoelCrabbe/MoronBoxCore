@@ -416,30 +416,28 @@ function Warlock:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40() then		
+	if Instance.AQ40() then
 		if UnitName("target") == "Emperor Vek\'lor" and MyNameInTable(MB_myTwinsWarlockTank) then
-			
+
             SelfBuff("Shadow Ward")
 			Warlock:SaveShardShadowBurn(3)
-			
-			if HealthPct("player") < 0.25 and SpellReady("Death Coil") then				
+
+			if HealthPct("player") < 0.25 and SpellReady("Death Coil") then		
 				CastSpellByName("Death Coil")
 			end
-			
+
 			CastSpellByName("Searing Pain")
 			return true
-		
+
         elseif UnitName("target") == "Obsidian Eradicator" and ManaPct("target") > 0.7 and not ImBusy() then
 			
-            CastSpellByName("Drain Mana")			
-			return true
-        
-        elseif UnitName("target") == "Spawn of Fankriss" then	
-
-			Warlock:SaveShardShadowBurn(9)
-			CastSpellOrWand("Shadow Bolt")
+            CastSpellByName("Drain Mana")
 			return true
 		end
+
+        if FANKRISS_WarlockDPS(Warlock) then
+            return true
+        end
 
 	elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then
 
