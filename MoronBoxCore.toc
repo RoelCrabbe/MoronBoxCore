@@ -60,6 +60,8 @@ Encounters\MoltenCore\Ragnaros.lua
 
 Encounters\AQ40\Skeram.lua
 Encounters\AQ40\BugTrio.lua
+Encounters\AQ40\Sartura.lua
+Encounters\AQ40\Fankriss.lua
 
 Encounters\Naxxramas\Gluth.lua
 Encounters\Naxxramas\Grobbulus.lua

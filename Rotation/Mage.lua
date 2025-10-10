@@ -393,30 +393,20 @@ function Mage:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40() then		
-		if TankTarget("Viscidus") then			
-			if HealthPct("target") <= 0.35 then				
+	if Instance.AQ40() then
+		if TankTarget("Viscidus") then
+			if HealthPct("target") <= 0.35 then			
 				CastSpellByName("Frostbolt(Rank 1)")
 				return true
 			end
 
 			Mage:Fire()
-			return true			
-		end
-
-		if tName == "Spawn of Fankriss" then			
-			if SpellReady("Fireblast") and InMeleeRange() then
-				CastSpellByName("Fire Blast")
-			end
-
-            if MB_mySpecc == "Fire" then    
-                Mage:Fire()
-
-            elseif MB_mySpecc == "Frost" then
-                Mage:Frost()
-            end
 			return true
 		end
+
+        if FANKRISS_MageDPS(Mage) then
+            return true
+        end
 
 	elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then	
         if SpellReady("Fireblast") then

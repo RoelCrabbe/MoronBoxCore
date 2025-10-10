@@ -295,6 +295,10 @@ function mb_lockOnTarget(target)
 	return false
 end
 
+function mb_fixateOnTarget(target)
+    return UnitName("target") == target and not mb_dead("target")
+end
+
 function mb_isAtJindo()
     local targetName = UnitName("target")
     
@@ -659,7 +663,7 @@ function mb_getTargetNotOnTank()
     end
 
 	if (UnitName("target") == "Deathknight Understudy" or UnitName("target") == "Hakkar"
-        or UnitName("target") == "Fallout Slime" or UnitName("target") == "Spawn of Fankriss") then
+        or UnitName("target") == "Fallout Slime") then
         return
     end
 
