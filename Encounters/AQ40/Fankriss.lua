@@ -130,8 +130,7 @@ local MB_myFankrissBoxStrategy = true
 -- Tank Assignments (REQUIRED)
 local MB_myFankrissOFFTANKS = {
     "Suecia",               -- Horde (Targets boss, manual taunt)
-    "Laty",                  -- Alliance
-    "Priestas"
+    "Laty"                  -- Alliance
 }
 
 local MB_myFankrissSpawnTANKone = {
