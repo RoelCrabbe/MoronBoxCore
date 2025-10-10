@@ -241,10 +241,8 @@ function FANKRISS_MageDPS(Mage)
         CastSpellByName("Fire Blast")
     end
 
-    if MB_mySpecc == "Fire" then    
-        Mage:Fire()
-    elseif MB_mySpecc == "Frost" then
-        Mage:Frost()
+    if Mage[MB_mySpecc] then
+        Mage[MB_mySpecc](Mage)
     end
 
     return true
