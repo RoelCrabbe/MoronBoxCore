@@ -130,7 +130,8 @@ local MB_myFankrissBoxStrategy = true
 -- Tank Assignments (REQUIRED)
 local MB_myFankrissOFFTANKS = {
     "Suecia",               -- Horde (Targets boss, manual taunt)
-    "Laty"                  -- Alliance
+    "Laty",                  -- Alliance
+    "Priestas"
 }
 
 local MB_myFankrissSpawnTANKone = {
@@ -166,7 +167,39 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function FANKRISS_CheckEncounter()
+local function TankHasMortalWound(targetId)
+    local mortalWound = "Interface\\Icons\\Ability_CriticalStrike"
+
+    if not targetId then
+        return false
+    end
+
+    for x = 1, 16 do
+        local name, count = UnitDebuff(targetId, x)
+        if name == mortalWound and count and count >= 4 then
+            return true
+        end
+    end
+    return false
+end
+
+local function AnnounceMortalWound()
+    local focId = MBID[MB_raidLeader]
+    if not focId then
+        return
+    end
+    
+    local targetName = UnitName(focId.."target")
+    if targetName == "Fankriss the Unyielding" and TankHasMortalWound(focId) then
+        CdAddonMessage(MB_RAID.."FANKRISS", "TAUNT_BOSS", 30)
+    end
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
+local function FANKRISS_CheckEncounter()
     if FankrissEncounter.Active then
         return true
     end
@@ -204,6 +237,8 @@ function FANKRISS:CHAT_MSG_ADDON()
         elseif arg2 == "DISENGAGE" then
             CdRaidWarning(">> Fankriss has died! <<")
             self:ScheduleEvent("FANKRISS_CLEANUP", self.OnCleanUp, 15, self)
+        elseif arg2 == "TAUNT_BOSS" then
+            CdRaidWarning(">> TANK: Taunt Boss NOW! <<")
         end
     end
 end
@@ -277,19 +312,22 @@ function FANKRISS_TargetingPreFocus()
             return false
         end
 
-        if not MB_targetNearestDistanceChanged then                
-            SetCVar("targetNearestDistance", "15")
-            MB_targetNearestDistanceChanged = true
-        end
+        if myName == myFankrissOFFTANK then
+            if not MB_targetNearestDistanceChanged then                
+                SetCVar("targetNearestDistance", "15")
+                MB_targetNearestDistanceChanged = true
+            end
 
-        if LockOnTarget("Fankriss the Unyielding") then
+            if LockOnTarget("Fankriss the Unyielding") then
+                AnnounceMortalWound()
+                return true
+            end
+
+            if tName == nil or Dead("target") or not InMeleeRange() then
+                TargetNearestEnemy()
+            end
             return true
         end
-
-        if tName == nil or Dead("target") or not InMeleeRange() then
-            TargetNearestEnemy()
-        end
-        return true
     end
 
     return false
