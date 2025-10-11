@@ -221,12 +221,12 @@ local AnnihilatorWeaverWeapons = {
 	},
 
 	-- Alliance
-	["Alliance Warrior 1"] = {
+	["Miksmaks"] = {
 		["BMH"] = "Annihilator", -- HM
-		["BOH"] = "The Hungering Cold", -- OH
+		["BOH"] = "Harbinger of Doom", -- OH
 
-		["NMH"] = "Gressil, Dawn of Ruin", -- HM
-		["NOH"] = "The Hungering Cold" -- OH
+		["NMH"] = "Misplaced Servo Arm", -- HM
+		["NOH"] = "Harbinger of Doom" -- OH
 	},
 }
 

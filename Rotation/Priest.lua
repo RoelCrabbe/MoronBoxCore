@@ -842,10 +842,6 @@ local function PriestSetup()
 		if Instance.NAXX() and not IsAtInstructorRazuvious() then										
 			MultiBuff("Prayer of Shadow Protection")
 		end
-
-		if SpellReady("Fear Ward") and MobsToFearWard() then
-			MultiBuff("Fear Ward")
-		end
 	end
 
 	SelfBuff("Inner Fire")

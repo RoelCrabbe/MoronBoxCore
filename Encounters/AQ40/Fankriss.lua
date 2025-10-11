@@ -130,17 +130,17 @@ local MB_myFankrissBoxStrategy = true
 -- Tank Assignments (REQUIRED)
 local MB_myFankrissOFFTANKS = {
     "Suecia",               -- Horde (Targets boss, manual taunt)
-    "Laty"                  -- Alliance
+    "Droodood"              -- Alliance
 }
 
 local MB_myFankrissSpawnTANKone = {
     "Ajlano",               -- Horde (Targets snakes, caster assist)
-    "Myosin"                -- Alliance
+    "Laty"                  -- Alliance
 }
 
 local MB_myFankrissSpawnTANKtwo = {
     "Almisael",             -- Horde (Targets snakes, caster assist)  
-    "Droodood"              -- Alliance
+    "Myosin"                -- Alliance
 }
 
 -- Strategy Configuration -- No changes below this line
@@ -231,7 +231,6 @@ function FANKRISS:CHAT_MSG_ADDON()
     if arg1 == MB_RAID.."FANKRISS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Fankriss! <<")
-            Print(">> Fankriss - ENGAGE <<")
             self:OnEnable()
         elseif arg2 == "DISENGAGE" then
             CdRaidWarning(">> Fankriss has died! <<")
@@ -332,6 +331,16 @@ function FANKRISS_TargetingPreFocus()
     return false
 end
 
+local function TankSurviveSnake()
+    if HealthPct("player") <= 0.4 then				
+        SelfBuff("Last Stand") 
+    end
+
+    if HealthPct("player") <= 0.3 then				
+        SelfBuff("Shield Wall") 
+    end
+end
+
 function FANKRISS_TargetingPostFocus()
     local tName = UnitName("target")
 
@@ -362,6 +371,7 @@ function FANKRISS_TargetingPostFocus()
 			end
 
             if FixateOnTarget("Spawn of Fankriss") then
+                TankSurviveSnake()
                 return true
             end
 

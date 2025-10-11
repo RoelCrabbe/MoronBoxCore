@@ -70,7 +70,7 @@ MB_raidAssist = { -- Raid tools
 			"Almisael", -- Tank
 
 			-- Alliance
-			"Alliance Warrior 1",
+			"Miksmaks",
 		}
 	},
 
