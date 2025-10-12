@@ -15,8 +15,13 @@
                       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝                         
 </pre>
 
-MORON-BOX CORE
-A custom multiboxing framework for World of Warcraft Vanilla (1.12.1)
+<div align="center">
+
+### **MORON-BOX CORE**
+
+_A custom multiboxing framework for World of Warcraft Vanilla (1.12.1)_
+
+</div>
 
 </div>
 
