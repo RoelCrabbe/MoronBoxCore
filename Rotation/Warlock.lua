@@ -308,7 +308,7 @@ local function WarlockCurses()
     if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         return THAD_WarlockDebuffP1()
 
-    elseif Instance.AQ40() and SKERAM_CheckEncounter() and SKERAM_WarlockEnable() then
+    elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
         return SKERAM_WarlockDebuff()
 
     elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then

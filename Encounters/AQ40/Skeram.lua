@@ -200,7 +200,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function SKERAM_CheckEncounter()
+local function SKERAM_CheckEncounter()
     if SkeramEncounter.Active then
         if SpellReady("Intimidating Shout") then
             CastSpellByName("Intimidating Shout")
@@ -240,6 +240,14 @@ function SKERAM_CheckEncounter()
     end
 
 	return false
+end
+
+function SKERAM_BoxStrategyEnabled()
+    return MB_mySkeramBoxStrategy
+end
+
+function SKERAM_InFight()
+    return SkeramEncounter.Active
 end
 
 --[####################################################################################################]--
@@ -410,10 +418,6 @@ function SKERAM_WarlockDebuff()
     return false
 end
 
-function SKERAM_WarlockEnable()
-    return MB_mySkeramBoxStrategy
-end
-
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -484,10 +488,6 @@ local function CrowdControlMCedRaidMemberSkeramAOE()
 end
 
 function SKERAM_CrowdControl()
-    if not SKERAM_CheckEncounter() or not MB_mySkeramBoxStrategy then
-        return false
-    end
-
     if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
         ClearTarget()
         return true
@@ -522,11 +522,9 @@ end
 --[####################################################################################################]--
 
 function SKERAM_IsFollowSkeram()
-    if not SKERAM_CheckEncounter() or not MB_mySkeramBoxStrategy then
-        return false
-    end
-
-    if MyNameInTable(MB_mySkeramLeftTanks) or MyNameInTable(MB_mySkeramMiddleTanks) or MyNameInTable(MB_mySkeramRightTanks) then
+    if MyNameInTable(MB_mySkeramLeftTanks) or 
+        MyNameInTable(MB_mySkeramMiddleTanks) or 
+        MyNameInTable(MB_mySkeramRightTanks) then
         return true
     end
 
@@ -539,12 +537,8 @@ function SKERAM_IsFollowSkeram()
         return true
     end
 
-    if MyNameInTable(MB_mySkeramMiddleOFFTANKS) then
-        FollowByName(middleTank, 1)
-        return true
-    end
-
-    if MyNameInTable(MB_mySkeramMiddleDPSERS) then
+    if MyNameInTable(MB_mySkeramMiddleOFFTANKS) or 
+       MyNameInTable(MB_mySkeramMiddleDPSERS) then
         FollowByName(middleTank, 1)
         return true
     end
@@ -553,6 +547,8 @@ function SKERAM_IsFollowSkeram()
         FollowByName(rightTank, 1)
         return true
     end
+
+    return false
 end
 
 --[####################################################################################################]--

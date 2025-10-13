@@ -251,11 +251,10 @@ local function MageSingle()
         end
 	end
 
-	if Instance.AQ40() then		
+	if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then		
         if SKERAM_CrowdControl() then
             return
         end
-
 	elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then 
 
         if HasBuffOrDebuff("Shadow Command", "target", "debuff") then

@@ -193,7 +193,7 @@ FW_RegisterFearWardPriority("Vem", PriorityOnBugTrio)
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function BUGTRIO_CheckEncounter()
+local function BUGTRIO_CheckEncounter()
     if BugTrioEncounter.Active then
         UseNaturePotsOnBugTrio()
         PrepareOnBugTrio()

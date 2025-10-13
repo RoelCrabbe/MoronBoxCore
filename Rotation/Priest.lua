@@ -644,8 +644,8 @@ local function PriestSingle()
             return
         end
 
-	elseif Instance.AQ40() then
-		if SKERAM_CrowdControl() then
+	elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then		
+        if SKERAM_CrowdControl() then
             return
         end
 	end

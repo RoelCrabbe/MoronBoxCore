@@ -517,18 +517,10 @@ local function SpecialHealAndTankSituation()
             CrowdControlMCedRaidMemberHakkar()
         end
 
-	elseif Instance.AQ40() then
+	elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then		
         if SKERAM_CrowdControl() then
             return
         end
-		
-		if myClass == "Warlock" and IsAtTwinsEmps() and MB_myTwinsBoxStrategy then
-            if MyNameInTable(MB_myTwinsWarlockTank) then
-                local SingleRotation = MB_mySingleList[myClass]
-                ExecuteRotation(SingleRotation, "Twins Tank SINGLE")
-            end
-		end
-
     elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then
         if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
             ClearTarget()

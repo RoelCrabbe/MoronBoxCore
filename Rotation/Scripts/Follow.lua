@@ -162,11 +162,10 @@ function mb_meleeFollow()
 		return
 	end
 
-	if Instance.AQ40() and SKERAM_CheckEncounter() then	
+	if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then	
 		if SKERAM_IsFollowSkeram() then
 			return
 		end
-
 	elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
 		if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) then
 			return

@@ -85,7 +85,7 @@ function mb_decurse()
 		end
 	end
 
-	if (SKERAM_CheckEncounter() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
+	if (SKERAM_InFight() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
         or mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Princess Huhuran")
         or mb_tankTarget("Garr") or mb_tankTarget("Firesworn") or mb_tankTarget("Anubisath Guardian")) then
 		return false
