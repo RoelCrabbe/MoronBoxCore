@@ -126,6 +126,7 @@ end
 
 -- Strategy Configuration
 local MB_myFankrissBoxStrategy = true
+local MB_myFankrissStoneShieldPotStrategy = true
 
 -- Tank Assignments (REQUIRED)
 local MB_myFankrissOFFTANKS = {
@@ -198,8 +199,25 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+local function UseStoneShieldPotsOnFankriss()
+    if not MB_myFankrissStoneShieldPotStrategy then
+        return
+    end
+
+    if not ImTank() then
+        return
+    end
+
+    TakePotionsWhenPossible("Greater Arcane Protection Potion")
+end
+
+--[####################################################################################################]--
+--[####################################################################################################]--
+--[####################################################################################################]--
+
 local function FANKRISS_CheckEncounter()
     if FankrissEncounter.Active then
+        UseStoneShieldPotsOnFankriss()
         return true
     end
 
