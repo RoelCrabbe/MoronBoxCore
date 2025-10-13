@@ -34,10 +34,10 @@ _A custom multiboxing framework for World of Warcraft Vanilla (1.12.1)_
 ## 📖 Project History
 
 > 💬 **The Journey**  
-> I started multiboxing on VanillaGaming in **2018** and spent years developing this custom framework to solo 40-man raid content. When that server shut down in **2024**, I launched my own private server and have been actively maintaining and updating MoronBoxCore ever since. This system represents **6+ years** of continuous development, testing, and refinement through live multiboxing operations.
+> I started multiboxing on VanillaGaming in **2018** and spent years developing this custom framework to solo 40-man raid content. When that server shut down in **2024**, I launched my own private server a year later and have been maintaining and updating MoronBoxCore since then. This system represents **6+ years** of continuous development, testing, and refinement through live server multiboxing operations.
 
 > ⚠️ **Technical Foundation**  
-> Initially designed for the **Vmangos core (2017-19)**, this addon has evolved significantly since then. While it was built during the Vmangos era, it's been continuously updated and tested on VanillaGaming **2018-2024** and on my private server from **2025-now**. The codebase reflects both its legacy origins and ongoing modern improvements.
+> Initially designed on the **VMaNGOS core (2017-19)**, this addon has evolved significantly since then. While it is build on the live server VanillaGaming and refinded on my own server. Newer version or updates or custom VMaNGOS core's might cause different boss or mob beheviour. But the codebase reflects both its legacy origins and ongoing modern improvements.
 
 > ⚙️ **Important Notes**
 >
@@ -128,7 +128,7 @@ As of **24/09/2025**, the following content has been completed (solo):
 
 > _"Built for chaos. Tuned for precision."_
 
-This project represents **six years** of active development, testing, and refinement through real multiboxing operations. From public server play (2018-2024) to running my own private server (2025-now), MoronBoxCore has been battle-tested against Vanilla's hardest content. While some code reflects its legacy origins, it remains a living, evolving system that continues to prove itself in live raid environments.
+This project represents **six years** of active development, testing, and refinement through real multiboxing operations. From public server play (2018-2024) to running my own private server (2025-now), MoronBoxCore has been battle-tested against Vanilla's hardest content, that is possible to solo. While some code reflects its legacy origins, it remains a living, evolving system that continues to prove itself in live raid environments.
 
 Feel free to adapt it to your needs, and may your raids be smooth and your DPS parses legendary.
 
