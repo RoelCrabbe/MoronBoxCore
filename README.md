@@ -77,23 +77,23 @@ As of **24/09/2025**, the following content has been completed (solo):
 
 ### Warrior
 
-- [Fury Dual Wield](https://classicdb.ch/?talent#LhhxzhbZVV0VgxoVo)
+- [Fury DW](https://classicdb.ch/?talent#LhhxzhbZVV0VgxoVo)
 - [Fury 2H](https://classicdb.ch/?talent#LhhxzIbZVVbVMxoVo)
-- [Fury Tank](https://classicdb.ch/?talent#LhZVV0VLxoVoxfzox)
-- [Improved Demo Tank](https://classicdb.ch/?talent#LhZVv0V0xoVoxfzox)
-- [Full Prot 1](https://classicdb.ch/?talent#LV0hZVZEizoeMdVo)
-- [Full Prot 2](https://classicdb.ch/?talent#LV0hZVVZxizoeMdVo)
+- [Fury Tank](https://classicdb.ch/?talent#LhZVV0VxxoVoVfz0x)
+- [Fury OffTank](https://classicdb.ch/?talent#LhZVv0V0xoVoxfzox)
+- [Prot Tank](https://classicdb.ch/?talent#LV0hZVVZxizoeMdVo)
 
 ### Priest
 
-- [Heal](https://classicdb.ch/?talent#bxRhsV0oZrxxccMcx)
-- [Shadowweaver](https://classicdb.ch/?talent#bxMhsZfbxccZx0gd0L)
+- [Holy](https://classicdb.ch/?talent#bxRhsV0oZrxxccMcx)
+- [Disc](https://classicdb.ch/?talent#bERhsVV0obxxcf)
+- [Bitch](https://classicdb.ch/?talent#bxMhRZbxxccZxMgz0x)
 
 ### Mage
 
 - [Fire](https://classicdb.ch/?talent#of0E00MZxg0zfcut0h)
-- [Deep Frost](https://classicdb.ch/?talent#of0EM0cZZVA0c0fzAo)
-- [Arcane Frost](https://classicdb.ch/?talent#of0ycocquZVA0c0r)
+- [Frost](https://classicdb.ch/?talent#of0EM0cZZVA0c0fzAo)
+- [Arcane](https://classicdb.ch/?talent#of0ycocquZVA0c0r)
 
 ### Warlock
 
