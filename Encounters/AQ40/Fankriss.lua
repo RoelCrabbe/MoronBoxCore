@@ -208,7 +208,7 @@ local function UseStoneShieldPotsOnFankriss()
         return
     end
 
-    TakePotionsWhenPossible("Greater Arcane Protection Potion")
+    TakePotionsWhenPossible("Greater Stoneshield Potion")
 end
 
 --[####################################################################################################]--
