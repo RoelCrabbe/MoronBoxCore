@@ -249,6 +249,10 @@ local function HandleAQ40TargetingPostFocus()
 		return true
 	end
 
+	if SARTURA_TargetingPostFocus() then
+		return true
+	end
+
 	if FANKRISS_TargetingPostFocus() then
 		return true
 	end

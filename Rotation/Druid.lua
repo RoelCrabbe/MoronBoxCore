@@ -867,9 +867,9 @@ function Druid:BossSpecificDPS()
 		return true
 	end
 
-	if Instance.AQ40() and TankTarget("Battleguard Sartura") then			
-		CoolDownCast("Moonfire", 24)
-	
+	if Instance.AQ40() then
+		SARTURA_DruidDPS()
+
     elseif Instance.ZG() then	
 
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then

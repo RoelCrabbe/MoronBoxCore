@@ -764,9 +764,9 @@ function Priest:BossSpecificDPS()
 
 	Priest:ManaDrain()
 
-	if Instance.AQ40() and TankTarget("Battleguard Sartura") then			
-		CoolDownCast("Shadow Word: Pain", 24)
-	
+	if Instance.AQ40() then
+		SARTURA_PriestDPS()
+
 	elseif Instance.MC() then
         CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
 
