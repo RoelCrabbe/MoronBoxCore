@@ -830,8 +830,11 @@ local function PriestSetup()
 		PriestCounter.Cycle()
 	end
 
+	FORT_RequestFortitude()
+	FORT_ProcessFortitudeQueue()
+
 	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-		MultiBuff("Prayer of Fortitude")
+		-- MultiBuff("Prayer of Fortitude")
 
 		if Instance.NAXX() or Instance.AQ40() then
 			if KnowSpell("Prayer of Spirit") then				

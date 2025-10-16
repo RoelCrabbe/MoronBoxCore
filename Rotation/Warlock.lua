@@ -551,6 +551,8 @@ MB_myAOEList["Warlock"] = WarlockAOE
 
 local function WarlockSetup()
 
+    FORT_RequestFortitude()
+
 	if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
 		return
 	end

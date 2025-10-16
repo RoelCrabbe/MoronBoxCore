@@ -41,6 +41,7 @@ Core\GTFO.lua
 
 Core\Buffs\FearWard.lua
 Core\Buffs\PowerInfusion.lua
+Core\Buffs\Fortitude.lua
 
 Event\Flash.lua
 Event\Turning.lua

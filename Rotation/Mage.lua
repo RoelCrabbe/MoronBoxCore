@@ -654,6 +654,8 @@ MB_myAOEList["Mage"] = MageAOE
 
 local function MageSetup()
    
+    FORT_RequestFortitude()
+
     if HasBuffOrDebuff("Evocation", "player", "buff") then
         return
     end
