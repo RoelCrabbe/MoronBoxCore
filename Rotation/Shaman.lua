@@ -485,8 +485,6 @@ MB_myAOEList["Shaman"] = ShamanAOE
 
 local function ShamanSetup()
 
-	FORT_RequestFortitude()
-
     if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
 		return
 	end

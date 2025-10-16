@@ -830,7 +830,6 @@ local function PriestSetup()
 		PriestCounter.Cycle()
 	end
 
-	FORT_RequestFortitude()
 	FORT_ProcessFortitudeQueue()
 
 	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then

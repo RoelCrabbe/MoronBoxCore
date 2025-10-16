@@ -387,6 +387,8 @@ function mb_setup()
         end
     end
 
+    FORT_RequestFortitude()
+
     if myClass == "Warrior" then
         return
     end
