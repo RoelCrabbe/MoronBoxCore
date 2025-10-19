@@ -39,9 +39,13 @@ Core\Target.lua
 Core\Decurse.lua
 Core\GTFO.lua
 
-Core\Buffs\FearWard.lua
-Core\Buffs\PowerInfusion.lua
-Core\Buffs\Fortitude.lua
+Core\Buffs\Druid\Mark.lua
+
+Core\Buffs\Priest\FearWard.lua
+Core\Buffs\Priest\PowerInfusion.lua
+Core\Buffs\Priest\Fortitude.lua
+Core\Buffs\Priest\ShadowResistance.lua
+Core\Buffs\Priest\Spirit.lua
 
 Event\Flash.lua
 Event\Turning.lua

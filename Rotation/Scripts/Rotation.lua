@@ -387,7 +387,11 @@ function mb_setup()
         end
     end
 
+    MOTW_RequestMarkOfTheWild()
+
     FORT_RequestFortitude()
+    -- SPIRIT_RequestSpirit()
+    SPROT_RequestShadowProtection()
 
     if myClass == "Warrior" then
         return

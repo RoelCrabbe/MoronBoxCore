@@ -1,5 +1,5 @@
 --[####################################################################################################]--
---[###################################### FORTITUDE BUFF SYSTEM ########################################]--
+--[####################################### SPIRIT BUFF SYSTEM #########################################]--
 --[####################################################################################################]--
 
 -- Unit Functions
@@ -69,11 +69,11 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
--- FORTITUDE BUFF SYSTEM - COMPLETE FLOW
+-- SPIRIT BUFF SYSTEM - COMPLETE FLOW
 -- ======================================
 -- 1. REQUEST PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Player needs Fortitude:                         │
+--    │ Player needs Spirit:                         │
 --    │ ├─ Check: Already have buff? → EXIT             │
 --    │ ├─ Find: Priest in raid (any class)             │
 --    │ ├─ Get: Player group number (1-8)               │
@@ -89,9 +89,9 @@ local myRace = UnitRace("player")
 --    │ ├─ Check: Target already has buff? → CLEANUP    │
 --    │ ├─ Check: Group already claimed? → EXIT         │
 --    │ ├─ Create: Group queue if needed                │
---    │ ├─ Queue: Add to MB_FORTQueue[groupNum][unitId] │
+--    │ ├─ Queue: Add to MB_SPIRITQueue[groupNum][unitId] │
 --    │ ├─ CLAIM: Broadcast "CLAIMING_GROUP:GroupNum"   │
---    │ └─ Record: Mark in MB_FORTClaimedQueue[groupNum]│
+--    │ └─ Record: Mark in MB_SPIRITClaimedQueue[groupNum]│
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 3. PROCESSING PHASE
@@ -101,7 +101,7 @@ local myRace = UnitRace("player")
 --    │ ├─ Get: GroupNum from queue                     │
 --    │ ├─ Validate: Target in range and valid?         │
 --    │ ├─ Check: Not busy casting?                     │
---    │ ├─ Cast: Prayer of Fortitude on target          │
+--    │ ├─ Cast: Prayer of Spirit on target          │
 --    │ └─ Broadcast: "BUFFED:UnitId:GroupNum"          │
 --    └─────────────────────────────────────────────────┘
 --                             ↓
@@ -116,7 +116,7 @@ local myRace = UnitRace("player")
 --
 -- KEY DATA STRUCTURES
 -- ==================
--- MB_FORTQueue = {
+-- MB_SPIRITQueue = {
 --     [1] = {                    -- GroupNum
 --         ["raid1"] = 10,        -- unitId → priority
 --         ["raid2"] = 20
@@ -128,7 +128,7 @@ local myRace = UnitRace("player")
 --     -- Max 8 groups (raid size limit)
 -- }
 --
--- MB_FORTClaimedQueue = {
+-- MB_SPIRITClaimedQueue = {
 --     [1] = "PriestA",          -- GroupNum → Claiming Priest (SHARED via addon)
 --     [2] = "PriestB"
 -- }
@@ -163,12 +163,13 @@ local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local ImBusy = mb_imBusy
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
 local SpellReady = mb_spellReady
+local SelfBuff = mb_selfBuff
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local FORT = CreateFrame("Button", "FORT", UIParent)
+local SPIRIT = CreateFrame("Button", "SPIRIT", UIParent)
 
 do
 	for _, event in {
@@ -177,7 +178,7 @@ do
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do FORT:RegisterEvent(event)
+		} do SPIRIT:RegisterEvent(event)
 	end
 end
 
@@ -185,8 +186,8 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MB_FORTQueue = {}
-local MB_FORTClaimedQueue = {}
+local MB_SPIRITQueue = {}
+local MB_SPIRITClaimedQueue = {}
 
 local function GetPriority()
     local PRIORITY = {
@@ -212,7 +213,7 @@ local function GetNextTarget()
     local bestPriority = nil
     local bestGroupNum = nil
    
-    for groupNum, playersInGroup in pairs(MB_FORTQueue) do
+    for groupNum, playersInGroup in pairs(MB_SPIRITQueue) do
         for unitId, priority in pairs(playersInGroup) do
             if bestPriority == nil or priority < bestPriority then
                 bestPriority = priority
@@ -249,7 +250,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function HandleFortitudeRequest(message, sender)
+local function HandleSpiritRequest(message, sender)
     local _, _, priority, groupNum, assignedPriest = string.find(message, "BUFF_INFO:(%d+):(%d+):(.+)")
 
     local requestPlayer = sender
@@ -266,37 +267,37 @@ local function HandleFortitudeRequest(message, sender)
         return
     end
 
-    if HasBuffOrDebuff("Power Word: Fortitude", requestPlayerId, "buff") or
-        HasBuffOrDebuff("Prayer of Fortitude", requestPlayerId, "buff") then
+    if HasBuffOrDebuff("Divine Spirit", requestPlayerId, "buff") or
+        HasBuffOrDebuff("Prayer of Spirit", requestPlayerId, "buff") then
         local message = string.format("BUFFED:%s:%d", requestPlayer, groupNum)
-        CdAddonMessage(MB_RAID.."BUFFED_FORTITUDE", message)
+        CdAddonMessage(MB_RAID.."BUFFED_SPIRIT", message)
         return
     end
 
-    if not MB_FORTQueue[groupNum] then
-        MB_FORTQueue[groupNum] = {}
+    if not MB_SPIRITQueue[groupNum] then
+        MB_SPIRITQueue[groupNum] = {}
     end
 
-    if MB_FORTQueue[groupNum][requestPlayerId] then
+    if MB_SPIRITQueue[groupNum][requestPlayerId] then
         return
     end
 
-    MB_FORTQueue[groupNum][requestPlayerId] = priority
-    CdAddonMessage(MB_RAID.."CLAIM_FORTITUDE", "CLAIMING_GROUP:"..groupNum)
+    MB_SPIRITQueue[groupNum][requestPlayerId] = priority
+    CdAddonMessage(MB_RAID.."CLAIM_SPIRIT", "CLAIMING_GROUP:"..groupNum)
 end
 
-local function HandleFortitudeClaim(message, claimer)
+local function HandleSpiritClaim(message, claimer)
     local _, _, groupNum = string.find(message, "CLAIMING_GROUP:(%d+)")
     groupNum = tonumber(groupNum)
 
-    if not groupNum or MB_FORTClaimedQueue[groupNum] then
+    if not groupNum or MB_SPIRITClaimedQueue[groupNum] then
         return
     end
 
-    MB_FORTClaimedQueue[groupNum] = claimer
+    MB_SPIRITClaimedQueue[groupNum] = claimer
 end
 
-local function HandleFortitudeBuffed(message, sender)
+local function HandleSpiritBuffed(message, sender)
     local _, _, requestPlayerId, groupNum = string.find(message, "BUFFED:(.+):(%d+)")
     if not requestPlayerId or not groupNum then
         return
@@ -305,39 +306,39 @@ local function HandleFortitudeBuffed(message, sender)
     groupNum = tonumber(groupNum)
 
     if myName == sender then
-        MB_FORTQueue[groupNum][requestPlayerId] = nil
+        MB_SPIRITQueue[groupNum][requestPlayerId] = nil
     end
 
-    MB_FORTClaimedQueue[groupNum] = nil
+    MB_SPIRITClaimedQueue[groupNum] = nil
 end
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function FORT:OnEvent()
+function SPIRIT:OnEvent()
     if event == "CHAT_MSG_ADDON" then
         local message, sender = arg2, arg4
         
-        if arg1 == MB_RAID.."NEED_FORTITUDE" then
-            HandleFortitudeRequest(message, sender)
-        elseif arg1 == MB_RAID.."CLAIM_FORTITUDE" then
-            HandleFortitudeClaim(message, sender)
-        elseif arg1 == MB_RAID.."BUFFED_FORTITUDE" then
-            HandleFortitudeBuffed(message, sender)
+        if arg1 == MB_RAID.."NEED_SPIRIT" then
+            HandleSpiritRequest(message, sender)
+        elseif arg1 == MB_RAID.."CLAIM_SPIRIT" then
+            HandleSpiritClaim(message, sender)
+        elseif arg1 == MB_RAID.."BUFFED_SPIRIT" then
+            HandleSpiritBuffed(message, sender)
         end
     end
 end
 
-FORT:SetScript("OnEvent", FORT.OnEvent) 
+SPIRIT:SetScript("OnEvent", SPIRIT.OnEvent) 
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function FORT_RequestFortitude()
-    if HasBuffOrDebuff("Power Word: Fortitude", "player", "buff") or 
-        HasBuffOrDebuff("Prayer of Fortitude", "player", "buff") then
+function SPIRIT_RequestSpirit()
+    if HasBuffOrDebuff("Divine Spirit", "player", "buff") or 
+        HasBuffOrDebuff("Prayer of Spirit", "player", "buff") then
         return
     end
 
@@ -350,15 +351,15 @@ function FORT_RequestFortitude()
     end
 
     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingPriest)
-    CdAddonMessage(MB_RAID.."NEED_FORTITUDE", message, 15)
+    CdAddonMessage(MB_RAID.."NEED_SPIRIT", message, 15)
 end
 
-function FORT_ProcessFortitudeQueue()
+function SPIRIT_ProcessSpiritQueue()
     if myClass ~= "Priest" then
         return false
     end
 
-    local spellName = "Prayer of Fortitude"
+    local spellName = "Prayer of Spirit"
     if ImBusy() or not SpellReady(spellName) then
         return false
     end
@@ -369,6 +370,8 @@ function FORT_ProcessFortitudeQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        SelfBuff("Inner Focus")
+
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
@@ -376,7 +379,7 @@ function FORT_ProcessFortitudeQueue()
     end
 
     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID.."BUFFED_FORTITUDE", message)
+    CdAddonMessage(MB_RAID.."BUFFED_SPIRIT", message)
     return false
 end
 
@@ -385,9 +388,9 @@ end
 --[####################################################################################################]--
 
 -- DEBUGGING FUNCTIONS
--- function DebugFortQueue()
---     CdPrint("[DEBUG] MB_FORTQueue:")
---     for groupNum, players in pairs(MB_FORTQueue) do
+-- function DebugQueue()
+--     CdPrint("[DEBUG] MB_SPIRITQueue:")
+--     for groupNum, players in pairs(MB_SPIRITQueue) do
 --         local playerList = ""
 --         for playerId, priority in pairs(players) do
 --             playerList = playerList .. playerId .. "(" .. priority .. ") "
@@ -397,8 +400,8 @@ end
 -- end
 
 -- function DebugClaimedQueue()
---     CdPrint("[DEBUG] MB_FORTClaimedQueue:")
---     for groupNum, claimer in pairs(MB_FORTClaimedQueue) do
+--     CdPrint("[DEBUG] MB_SPIRITClaimedQueue:")
+--     for groupNum, claimer in pairs(MB_SPIRITClaimedQueue) do
 --         CdPrint("  Group " .. groupNum .. ": " .. claimer)
 --     end
 -- end

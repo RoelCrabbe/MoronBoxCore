@@ -824,27 +824,9 @@ local function PriestSetup()
 		return
 	end
 
-	if not MB_autoBuff.Active then
-		MB_autoBuff.Active = true
-		MB_autoBuff.Time = GetTime() + 0.25
-		PriestCounter.Cycle()
-	end
-
 	FORT_ProcessFortitudeQueue()
-
-	if MyClassAlphabeticalOrder() == MB_buffingCounterPriest then
-		-- MultiBuff("Prayer of Fortitude")
-
-		if Instance.NAXX() or Instance.AQ40() then
-			if KnowSpell("Prayer of Spirit") then				
-				MultiBuff("Prayer of Spirit")
-			end
-		end
-
-		if Instance.NAXX() and not IsAtInstructorRazuvious() then										
-			MultiBuff("Prayer of Shadow Protection")
-		end
-	end
+	SPIRIT_ProcessSpiritQueue()
+	SPROT_ProcessShadowProtectionQueue()
 
 	SelfBuff("Inner Fire")
 	SelfBuff("Shadowform")

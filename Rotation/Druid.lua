@@ -1190,21 +1190,13 @@ local function DruidSetup()
 		return
 	end
 
-    if not MB_autoBuff.Active then
-        MB_autoBuff.Active = true
-        MB_autoBuff.Time = GetTime() + 0.25
-        DruidCounter.Cycle()
-    end
-
-	SelfBuff("Omen of Clarity")
-
-	if MyClassAlphabeticalOrder() == MB_buffingCounterDruid then				
-		MultiBuff("Gift of the Wild")
-	end
+    MOTW_ProcessMarkOfTheWildQueue()
 
 	if MB_raidAssist.Druid.BuffTanksWithThorns then		
 		TankBuff("Thorns")
 	end
+
+    SelfBuff("Omen of Clarity")
 
 	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
 		SmartDrink()
