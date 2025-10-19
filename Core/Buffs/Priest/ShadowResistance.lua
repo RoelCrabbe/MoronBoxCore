@@ -269,7 +269,7 @@ local function HandleShadowProtectionRequest(message, sender)
 
     if HasBuffOrDebuff("Shadow Protection", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Shadow Protection", requestPlayerId, "buff") then
-        local message = string.format("BUFFED:%s:%d", requestPlayer, groupNum)
+        local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
         CdAddonMessage(MB_RAID.."BUFFED_SHADOW_RESISTANCE", message)
         return
     end
@@ -279,6 +279,10 @@ local function HandleShadowProtectionRequest(message, sender)
     end
 
     if MB_SPROTQueue[groupNum][requestPlayerId] then
+        return
+    end
+
+    if MB_SPROTClaimedQueue[groupNum] and MB_SPROTClaimedQueue[groupNum] ~= myName then
         return
     end
 
@@ -308,7 +312,7 @@ local function HandleShadowProtectionBuffed(message, sender)
     if myName == sender then
         MB_SPROTQueue[groupNum][requestPlayerId] = nil
     end
-
+    
     MB_SPROTClaimedQueue[groupNum] = nil
 end
 
@@ -370,7 +374,9 @@ function SPROT_ProcessShadowProtectionQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
-        SelfBuff("Inner Focus")
+        if UnitIsFriend("player", targetUnitId) then
+            ClearTarget()
+        end
 
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)

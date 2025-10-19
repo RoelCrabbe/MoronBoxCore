@@ -269,7 +269,7 @@ local function HandleMarkOfTheWildRequest(message, sender)
 
     if HasBuffOrDebuff("Mark of the Wild", requestPlayerId, "buff") or
         HasBuffOrDebuff("Gift of the Wild", requestPlayerId, "buff") then
-        local message = string.format("BUFFED:%s:%d", requestPlayer, groupNum)
+        local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
         CdAddonMessage(MB_RAID.."BUFFED_MOTW", message)
         return
     end
@@ -279,6 +279,10 @@ local function HandleMarkOfTheWildRequest(message, sender)
     end
 
     if MB_MOTWQueue[groupNum][requestPlayerId] then
+        return
+    end
+
+    if MB_MOTWClaimedQueue[groupNum] and MB_MOTWClaimedQueue[groupNum] ~= myName then
         return
     end
 
@@ -370,6 +374,10 @@ function MOTW_ProcessMarkOfTheWildQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        if UnitIsFriend("player", targetUnitId) then
+            ClearTarget()
+        end
+
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()

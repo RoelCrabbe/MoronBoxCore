@@ -269,7 +269,7 @@ local function HandleSpiritRequest(message, sender)
 
     if HasBuffOrDebuff("Divine Spirit", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Spirit", requestPlayerId, "buff") then
-        local message = string.format("BUFFED:%s:%d", requestPlayer, groupNum)
+        local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
         CdAddonMessage(MB_RAID.."BUFFED_SPIRIT", message)
         return
     end
@@ -279,6 +279,10 @@ local function HandleSpiritRequest(message, sender)
     end
 
     if MB_SPIRITQueue[groupNum][requestPlayerId] then
+        return
+    end
+
+    if MB_SPIRITClaimedQueue[groupNum] and MB_SPIRITClaimedQueue[groupNum] ~= myName then
         return
     end
 
@@ -308,7 +312,7 @@ local function HandleSpiritBuffed(message, sender)
     if myName == sender then
         MB_SPIRITQueue[groupNum][requestPlayerId] = nil
     end
-
+    
     MB_SPIRITClaimedQueue[groupNum] = nil
 end
 
@@ -370,7 +374,9 @@ function SPIRIT_ProcessSpiritQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
-        SelfBuff("Inner Focus")
+        if UnitIsFriend("player", targetUnitId) then
+            ClearTarget()
+        end
 
         CastSpellByName(spellName, false)
         SpellTargetUnit(targetUnitId)

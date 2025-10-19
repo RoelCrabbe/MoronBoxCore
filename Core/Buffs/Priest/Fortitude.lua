@@ -269,7 +269,7 @@ local function HandleFortitudeRequest(message, sender)
 
     if HasBuffOrDebuff("Power Word: Fortitude", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Fortitude", requestPlayerId, "buff") then
-        local message = string.format("BUFFED:%s:%d", requestPlayer, groupNum)
+        local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
         CdAddonMessage(MB_RAID.."BUFFED_FORTITUDE", message)
         return
     end
@@ -279,6 +279,10 @@ local function HandleFortitudeRequest(message, sender)
     end
 
     if MB_FORTQueue[groupNum][requestPlayerId] then
+        return
+    end
+
+    if MB_FORTClaimedQueue[groupNum] and MB_FORTClaimedQueue[groupNum] ~= myName then
         return
     end
 
@@ -370,6 +374,10 @@ function FORT_ProcessFortitudeQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        if UnitIsFriend("player", targetUnitId) then
+            ClearTarget()
+        end
+
         SelfBuff("Inner Focus")
 
         CastSpellByName(spellName, false)
