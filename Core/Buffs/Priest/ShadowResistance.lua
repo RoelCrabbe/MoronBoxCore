@@ -341,6 +341,10 @@ SPROT:SetScript("OnEvent", SPROT.OnEvent)
 --[####################################################################################################]--
 
 function SPROT_RequestShadowProtection()
+    if Instance.MC() then
+        return
+    end
+
     if HasBuffOrDebuff("Shadow Protection", "player", "buff") or 
         HasBuffOrDebuff("Prayer of Shadow Protection", "player", "buff") then
         return
@@ -359,7 +363,7 @@ function SPROT_RequestShadowProtection()
 end
 
 function SPROT_ProcessShadowProtectionQueue()
-    if myClass ~= "Priest" then
+    if myClass ~= "Priest" or Instance.MC() then
         return false
     end
 
