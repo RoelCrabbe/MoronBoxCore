@@ -3,7 +3,8 @@
     "runtime.version": "Lua 5.1",
     "workspace.library": [
         "../../wow-api-type-definitions/Client",
-        "../../wow-api-type-definitions/UI_Vanilla"
+        "../../wow-api-type-definitions/UI_Vanilla",
+        "../../wow-api-type-definitions/UI_Turtle"
     ],
     "diagnostics.globals": [
         "this",
@@ -20,7 +21,6 @@
         "arg9",
         "AceLibrary",
         "RunLine",
-
         "CancelBuff",
         "UseItemByName",
         "AcceptResurrect",
@@ -32,7 +32,13 @@
         "TaxiNodeName",
         "CanMerchantRepair",
         "GetRepairAllCost",
-        "RepairAllItems"
+        "RepairAllItems",
+        "SetBinding",
+        "UnitFactionGroup",
+        "IsRaidLeader",
+        "SpellStopCasting",
+        "SpellTargetUnit",
+        "SpellStopTargeting"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],
     "format.enable": true
