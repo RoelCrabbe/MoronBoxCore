@@ -371,7 +371,7 @@ function Druid:MTHeals(assignedTarget)
         return
     end
 
-    local HealTouchSpell = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. "\)"
+    local HealTouchSpell = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. ")"
     if TankTarget("Vaelastrasz the Corrupt") then
         HealTouchSpell = "Healing Touch"
     end
@@ -605,7 +605,7 @@ function Druid:RejuvAggroedPlayer()
                 ClearTarget()
             end
 
-            CastSpellByName("Rejuvenation(" .. MB_druidRejuvenationAggroedPlayerRank .. "\)")
+            CastSpellByName("Rejuvenation(" .. MB_druidRejuvenationAggroedPlayerRank .. ")")
             SpellTargetUnit(rejuvTarget)
             SpellStopTargeting()
         end
@@ -638,7 +638,7 @@ function Druid:RegrowthAggroedPlayer()
                 ClearTarget()
             end
 
-            CastSpellByName("Regrowth(" .. MB_druidSwiftmendRegrowthAggroedPlayerRank .. "\)")
+            CastSpellByName("Regrowth(" .. MB_druidSwiftmendRegrowthAggroedPlayerRank .. ")")
             SpellTargetUnit(regroTarget)
             SpellStopTargeting()
         end

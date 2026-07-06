@@ -147,40 +147,40 @@ MB_myFlashHealerList                             = {
 MB_myInstructorRazuviousAddHealer                = {
 
     -- Horde
-    "Mvenna",   -- 8T1 Shammy
-    "Azøg",     -- 8T1 Shammy
-    "Chimando", -- 8T1 Shammy
+    "Mvenna",      -- 8T1 Shammy
+    "Azøg",        -- 8T1 Shammy
+    "Chimando",    -- 8T1 Shammy
     --"Purges", -- 8T1 Shammy
-    "Superkoe", -- 8T1 Shammy
-    "Bogeycrap", -- 8T1 Shammy
+    "Superkoe",    -- 8T1 Shammy
+    "Bogeycrap",   -- 8T1 Shammy
 
     "Laitelaismo", -- 8T3 Shammy
-    "Shamuk",   -- 8T3 Shammy
+    "Shamuk",      -- 8T3 Shammy
 
-    "Corinn",   -- 8T2 Priest
-    "Healdealz", -- 8T2 Priest
-    "Draub",    -- 8T2 Priest
-    "Ayag",     -- T3 Priest
+    "Corinn",      -- 8T2 Priest
+    "Healdealz",   -- 8T2 Priest
+    "Draub",       -- 8T2 Priest
+    "Ayag",        -- T3 Priest
 
-    "Smalheal", -- Druid
-    "Drushgor", -- Druid
+    "Smalheal",    -- Druid
+    "Drushgor",    -- Druid
 
     -- Alliance
-    "Bubblebumm", -- Pala never oom
+    "Bubblebumm",   -- Pala never oom
     "Breachedhull", -- Pala never oom
-    "Candylane", -- Pala never oom
-    "Fatnun",    -- Pala never oom
+    "Candylane",    -- Pala never oom
+    "Fatnun",       -- Pala never oom
 
-    "Murdrum",   -- 8T3 Priest
-    "Wiccana",   -- 8T2 Priest
-    "Nouveele",  -- 8T2 Priest
-    "Hms",       -- 8T2 Priest
+    "Murdrum",      -- 8T3 Priest
+    "Wiccana",      -- 8T2 Priest
+    "Nouveele",     -- 8T2 Priest
+    "Hms",          -- 8T2 Priest
 
-    "Jahetsu",   -- Druid
-    "Kusch"      -- Druid
+    "Jahetsu",      -- Druid
+    "Kusch"         -- Druid
 }
 
-MB_myMainTankOverhealingPercentage               = 0.89 --> 11% overheal
+MB_myMainTankOverhealingPercentage               = 0.89     --> 11% overheal
 
 MB_myDruidMainTankHealingRank                    = "Rank 7" -- Healing Touch
 MB_myDruidMainTankHealingBossList                = {
@@ -446,7 +446,7 @@ function mb_castSpellOnRandomRaidMember(spell, rank, percentage)
             if spell == "Weakened Soul" then
                 CastSpellByName("Power Word: Shield", false)
             else
-                CastSpellByName(spell .. "\(" .. rank .. "\)", false)
+                CastSpellByName(spell .. "(" .. rank .. ")", false)
             end
 
             SpellTargetUnit("raid" .. j)
@@ -531,20 +531,20 @@ function mb_instructorRazAddsHeal()
 
             if myClass == "Shaman" then
                 allowedOverHeal = GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) *
-                MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. "\)"
+                    MB_myMainTankOverhealingPercentage * 4
+                spellToCast = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. ")"
             elseif myClass == "Paladin" then
                 allowedOverHeal = GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) *
-                MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. "\)"
+                    MB_myMainTankOverhealingPercentage * 4
+                spellToCast = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. ")"
             elseif myClass == "Priest" then
                 allowedOverHeal = GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) *
-                MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Greater Heal(" .. MB_myPriestMainTankHealingRank .. "\)"
+                    MB_myMainTankOverhealingPercentage * 4
+                spellToCast = "Greater Heal(" .. MB_myPriestMainTankHealingRank .. ")"
             elseif myClass == "Druid" then
                 allowedOverHeal = GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) *
-                MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. "\)"
+                    MB_myMainTankOverhealingPercentage * 4
+                spellToCast = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. ")"
             end
 
             if mb_isValidFriendlyTarget("target", spellToCast) and mb_healthDown("target") >= allowedOverHeal then

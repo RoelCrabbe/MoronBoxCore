@@ -388,7 +388,7 @@ function Priest:MTHeals(assignedTarget)
         CastSpellByName("Power Word: Shield")
     end
 
-    local GreatHealSpell = "Greater Heal(" .. MB_myPriestMainTankHealingRank .. "\)"
+    local GreatHealSpell = "Greater Heal(" .. MB_myPriestMainTankHealingRank .. ")"
     if TankTarget("Vaelastrasz the Corrupt") then
         GreatHealSpell = "Greater Heal"
     end

@@ -120,6 +120,7 @@ local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class Shaman: Frame
 local Shaman = CreateFrame("Frame", "Shaman")
 
 --[####################################################################################################]--
@@ -304,7 +305,7 @@ function Shaman:MTHeals(assignedTarget)
         return
     end
 
-    local HealWaveSpell = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. "\)"
+    local HealWaveSpell = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. ")"
     if TankTarget("Vaelastrasz the Corrupt") then
         HealWaveSpell = "Healing Wave"
     end
