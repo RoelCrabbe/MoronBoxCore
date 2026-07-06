@@ -144,7 +144,7 @@ local Druid = CreateFrame("Frame", "Druid")
 local DruidCounter = {
     Cycle = function()
         MB_buffingCounterDruid = (MB_buffingCounterDruid >= TableLength(MB_classList["Druid"]))
-                                  and 1 or (MB_buffingCounterDruid + 1)
+            and 1 or (MB_buffingCounterDruid + 1)
     end
 }
 
@@ -158,25 +158,25 @@ local function DruidSpecc()
     _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
     if TalentsIn > 0 then
         MB_mySpecc = "Balance"
-        return 
+        return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(2, 16)
     if TalentsIn > 0 then
         MB_mySpecc = "Feral"
-        return 
+        return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
     if TalentsIn > 0 then
         MB_mySpecc = "Swiftmend"
-        return 
+        return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 3)
     if TalentsIn > 4 then
         MB_mySpecc = "Resto"
-        return 
+        return
     end
 
     MB_mySpecc = nil
@@ -189,10 +189,10 @@ MB_mySpeccList["Druid"] = DruidSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Battle Shout"]                = "Battle Shout",
-    ["Fengus' Ferocity"]            = "Fengus' Ferocity",
-    ["Polished Armor"]		        = "Polished Armor",
-    ["R.O.I.D.S."]                  = "Rage of Ages"
+    ["Battle Shout"]     = "Battle Shout",
+    ["Fengus' Ferocity"] = "Fengus' Ferocity",
+    ["Polished Armor"]   = "Polished Armor",
+    ["R.O.I.D.S."]       = "Rage of Ages"
 }
 
 local function DruidCancelAuras()
@@ -217,77 +217,74 @@ end
 --[####################################################################################################]--
 
 local function DruidHeal()
-	
-	if NatureSwiftnessLowAggroedPlayer() then
+    if NatureSwiftnessLowAggroedPlayer() then
         return
     end
 
-	Decurse()
+    Decurse()
 
-	if InCombat("player") then
-		Druid:HealerDebuffs()
-		Druid:Innervate()
+    if InCombat("player") then
+        Druid:HealerDebuffs()
+        Druid:Innervate()
 
-		TakeManaPotionAndRunes()
+        TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()
         end
-	end
+    end
 
-	if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
+    if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
         return
     end
 
-	if Instance.MC() and TankTarget("Shazzrah") then
+    if Instance.MC() and TankTarget("Shazzrah") then
         return
     end
 
-	if HealLieutenantAQ20() then
+    if HealLieutenantAQ20() then
         return
     end
 
-	if InstructorRazAddsHeal() then
+    if InstructorRazAddsHeal() then
         return
     end
 
-	if MB_myAssignedHealTarget then
-		if IsAlive(MBID[MB_myAssignedHealTarget]) then			
-			Druid:MTHeals(MB_myAssignedHealTarget)
-			return
-		else
-			MB_myAssignedHealTarget = nil
-			RunLine("/raid My healtarget died, time to ALT-F4.")
-		end
-	end
+    if MB_myAssignedHealTarget then
+        if IsAlive(MBID[MB_myAssignedHealTarget]) then
+            Druid:MTHeals(MB_myAssignedHealTarget)
+            return
+        else
+            MB_myAssignedHealTarget = nil
+            RunLine("/raid My healtarget died, time to ALT-F4.")
+        end
+    end
 
-	for k, bossName in pairs(MB_myDruidMainTankHealingBossList) do		
-		if TankTarget(bossName) then			
-			Druid:MTHeals()
-			return
-		end
-	end
+    for k, bossName in pairs(MB_myDruidMainTankHealingBossList) do
+        if TankTarget(bossName) then
+            Druid:MTHeals()
+            return
+        end
+    end
 
-	if MB_isMoving.Active then
+    if MB_isMoving.Active then
         if Instance.ONY() and TankTarget("Onyxia") then
-            CoolDownCast("Moonfire", 12)            
+            CoolDownCast("Moonfire", 12)
         end
 
-        CastSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomMovingRank, MB_druidRejuvenationLowRandomMovingPercentage)
+        CastSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomMovingRank,
+            MB_druidRejuvenationLowRandomMovingPercentage)
     end
 
-	if Instance.AQ40() and TankTarget("Princess Huhuran") then
-	
+    if Instance.AQ40() and TankTarget("Princess Huhuran") then
         if MyGroupClassOrder() == 1 and TankTargetHealth() <= 0.32 then
             Druid:MTHeals()
             return
         end
 
-		MBH_CastHeal("Healing Touch")
+        MBH_CastHeal("Healing Touch")
         return
-
-	elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-
+    elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
         Druid:Cooldowns()
 
         if MB_myVaelastraszDruidHealing and not HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
@@ -300,105 +297,105 @@ local function DruidHeal()
         end
 
         if SpellReady("Swiftmend") and (swiftmendRaidThrottleTimer == nil or GetTime() - swiftmendRaidThrottleTimer > 1.5) then
-            swiftmendRaidThrottleTimer = GetTime();	
+            swiftmendRaidThrottleTimer = GetTime();
             Druid:SwiftmendOnRandomRaidMember("Swiftmend", 0.5)
-        end		
+        end
 
-        SelfBuff("Rejuvenation")			
+        SelfBuff("Rejuvenation")
         MBH_CastHeal("Regrowth", 9, 9)
-        return		
-	end
+        return
+    end
 
-	if not ImBusy() then		
-		if MB_myHealSpell == "Rejuvenation" and ManaDown("player") > 300 then
-			SelfBuff("Rejuvenation(Rank 1)")
-		end
+    if not ImBusy() then
+        if MB_myHealSpell == "Rejuvenation" and ManaDown("player") > 300 then
+            SelfBuff("Rejuvenation(Rank 1)")
+        end
 
-		Druid:RejuvAggroedPlayer()
+        Druid:RejuvAggroedPlayer()
 
-		if KnowSpell("Swiftmend") then		
-			if SpellReady("Swiftmend") then
+        if KnowSpell("Swiftmend") then
+            if SpellReady("Swiftmend") then
                 Druid:SwiftmendOnRandomRaidMember("Swiftmend", MB_druidSwiftmendAtPercentage)
             end
-				
-			if (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then 
-				rejuvenationRaidThrottleTimer = GetTime()	
-				CastSpellOnRandomRaidMember("Rejuvenation", MB_druidSwiftmendRejuvenationLowRandomRank, MB_druidSwiftmendRejuvenationLowRandomPercentage)
-			end
-		else
-			if (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then 
-				rejuvenationRaidThrottleTimer = GetTime()	
-				CastSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomRank, MB_druidRejuvenationLowRandomPercentage)
-			end
-		end
 
-		Druid:RegrowthAggroedPlayer()
-		
-		if (regrowthRaidThrottleTimer == nil or GetTime() - regrowthRaidThrottleTimer > 1.5) then 
-			regrowthRaidThrottleTimer = GetTime()
-			Druid:RegrowthLowRandom()
-		end		
-	end
+            if (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then
+                rejuvenationRaidThrottleTimer = GetTime()
+                CastSpellOnRandomRaidMember("Rejuvenation", MB_druidSwiftmendRejuvenationLowRandomRank,
+                    MB_druidSwiftmendRejuvenationLowRandomPercentage)
+            end
+        else
+            if (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then
+                rejuvenationRaidThrottleTimer = GetTime()
+                CastSpellOnRandomRaidMember("Rejuvenation", MB_druidRejuvenationLowRandomRank,
+                    MB_druidRejuvenationLowRandomPercentage)
+            end
+        end
 
-	MBH_CastHeal("Healing Touch")
+        Druid:RegrowthAggroedPlayer()
+
+        if (regrowthRaidThrottleTimer == nil or GetTime() - regrowthRaidThrottleTimer > 1.5) then
+            regrowthRaidThrottleTimer = GetTime()
+            Druid:RegrowthLowRandom()
+        end
+    end
+
+    MBH_CastHeal("Healing Touch")
 end
 
 local HealTouch = { Time = 0, Interrupt = false }
 function Druid:MTHeals(assignedTarget)
+    if assignedTarget then
+        TargetByName(assignedTarget, 1)
+    else
+        if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            TargetMyAssignedTankToHeal()
+        else
+            if not UnitName(MBID[TankName()] .. "targettarget") then
+                MBH_CastHeal("Healing Touch")
+            else
+                TargetByName(UnitName(MBID[TankName()] .. "targettarget"), 1)
+            end
+        end
+    end
 
-	if assignedTarget then		
-		TargetByName(assignedTarget, 1)
-	else
-		if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
-			TargetMyAssignedTankToHeal()
-		else
-			if not UnitName(MBID[TankName()].."targettarget") then				
-				MBH_CastHeal("Healing Touch")
-			else
-				TargetByName(UnitName(MBID[TankName()].."targettarget"), 1) 
-			end
-		end
-	end
+    if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
+        if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+            SpellStopCasting()
+        end
 
-	if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
-		if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then			
-			SpellStopCasting()
-		end
+        SelfBuff("Nature\'s Swiftness")
+    end
 
-		SelfBuff("Nature\'s Swiftness")
-	end
+    if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        CastSpellByName("Healing Touch")
+        return
+    end
 
-	if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then			
-		CastSpellByName("Healing Touch")
-		return
-	end
-
-	local HealTouchSpell = "Healing Touch("..MB_myDruidMainTankHealingRank.."\)"
-	if TankTarget("Vaelastrasz the Corrupt") then
-		HealTouchSpell = "Healing Touch"
-	end
+    local HealTouchSpell = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. "\)"
+    if TankTarget("Vaelastrasz the Corrupt") then
+        HealTouchSpell = "Healing Touch"
+    end
 
     if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
-		if GetTime() > HealTouch.Time and GetTime() < HealTouch.Time + 0.5 and HealTouch.Interrupt then
-			SpellStopCasting()			
-			HealTouch.Interrupt = false
-			SpellStopCasting()
-		end
-	end
+        if GetTime() > HealTouch.Time and GetTime() < HealTouch.Time + 0.5 and HealTouch.Interrupt then
+            SpellStopCasting()
+            HealTouch.Interrupt = false
+            SpellStopCasting()
+        end
+    end
 
-	if not ImBusy() then
-		CastSpellByName(HealTouchSpell)
-		HealTouch.Time = GetTime() + 1
-		HealTouch.Interrupt = true
-	end
+    if not ImBusy() then
+        CastSpellByName(HealTouchSpell)
+        HealTouch.Time = GetTime() + 1
+        HealTouch.Interrupt = true
+    end
 end
 
 function Druid:HealerDebuffs()
     if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         return THAD_DruidDebuffP1()
-
-	elseif Instance.BWL() then		
-		if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
+    elseif Instance.BWL() then
+        if UnitName("target") == "Death Talon Wyrmkin" or UnitName("target") == "Death Talon Flamescale" then
             return
         end
 
@@ -412,21 +409,20 @@ function Druid:HealerDebuffs()
         }
 
         for _, tank in pairs(tanks) do
-            local targetUnit = MBID[tank].."target"
-            if TargetFromSpecificPlayer("Death Talon Dragonspawn", tank) 
+            local targetUnit = MBID[tank] .. "target"
+            if TargetFromSpecificPlayer("Death Talon Dragonspawn", tank)
                 and UnitCanAttack("player", targetUnit)
                 and not (HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-                or HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
-
+                    or HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
                 AssistUnit(MBID[tank])
                 CastSpellByName("Faerie Fire")
                 TargetLastTarget()
             end
-        end	
-	else
+        end
+    else
         local focusTarget = nil
         if MB_raidLeader then
-            focusTarget = MBID[MB_raidLeader]    
+            focusTarget = MBID[MB_raidLeader]
         elseif MB_raidInviter then
             focusTarget = MBID[MB_raidInviter]
         end
@@ -435,11 +431,10 @@ function Druid:HealerDebuffs()
             return
         end
 
-        local targetUnit = focusTarget.."target"
+        local targetUnit = focusTarget .. "target"
         if UnitCanAttack("player", targetUnit)
             and (not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-            or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
-
+                or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
             AssistUnit(focusTarget)
             CastSpellByName("Faerie Fire")
             TargetLastTarget()
@@ -467,7 +462,6 @@ function Druid:Innervate()
             and HealthPct(unitID) <= 0.5
             and not HasBuffNamed("Innervate", unitID)
             and SpellReady("Innervate") then
-
             if UnitIsFriend("player", unitID) then
                 ClearTarget()
             end
@@ -476,7 +470,7 @@ function Druid:Innervate()
             SpellTargetUnit(unitID)
             SpellStopTargeting()
         end
-    end	
+    end
 end
 
 function Druid:MaxRejuvAggroedPlayer()
@@ -492,7 +486,7 @@ function Druid:MaxRejuvAggroedPlayer()
         return
     end
 
-    local rejuvTarget = MBID[MB_raidLeader].."targettarget"
+    local rejuvTarget = MBID[MB_raidLeader] .. "targettarget"
     if not IsValidFriendlyTarget(rejuvTarget, "Rejuvenation") then
         return
     end
@@ -527,7 +521,7 @@ function Druid:MaxRegrowthAggroedPlayer()
         return
     end
 
-    local regroTarget = MBID[MB_raidLeader].."targettarget"
+    local regroTarget = MBID[MB_raidLeader] .. "targettarget"
     if not IsValidFriendlyTarget(regroTarget, "Regrowth") then
         return
     end
@@ -569,15 +563,14 @@ function Druid:SwiftmendOnRandomRaidMember(spell, percentage)
         local j = i + offset
         if j > n then j = j - n end
 
-        local raidUnit = "raid"..j
+        local raidUnit = "raid" .. j
         local hasRejuv = HasBuffNamed("Rejuvenation", raidUnit)
         local hasRegrowth = HasBuffNamed("Regrowth", raidUnit)
 
-        if HealthPct(raidUnit) < percentage 
-           and InCombat(raidUnit) 
-           and IsValidFriendlyTarget(raidUnit, spell) 
-           and (hasRejuv or hasRegrowth) then
-
+        if HealthPct(raidUnit) < percentage
+            and InCombat(raidUnit)
+            and IsValidFriendlyTarget(raidUnit, spell)
+            and (hasRejuv or hasRegrowth) then
             if UnitIsFriend("player", raidUnit) then
                 ClearTarget()
             end
@@ -599,25 +592,24 @@ function Druid:RejuvAggroedPlayer()
         return
     end
 
-	local aggrox = AceLibrary("Banzai-1.0")
+    local aggrox = AceLibrary("Banzai-1.0")
 
-	for i =  1, GetNumRaidMembers() do		
-        local rejuvTarget = "raid"..i
+    for i = 1, GetNumRaidMembers() do
+        local rejuvTarget = "raid" .. i
 
         if aggrox:GetUnitAggroByUnitId(rejuvTarget)
-           and IsValidFriendlyTarget(rejuvTarget, "Rejuvenation")
-           and HealthPct(rejuvTarget) <= MB_druidRejuvenationAggroedPlayerPercentage
-           and not HasBuffNamed("Rejuvenation", rejuvTarget) then
-
+            and IsValidFriendlyTarget(rejuvTarget, "Rejuvenation")
+            and HealthPct(rejuvTarget) <= MB_druidRejuvenationAggroedPlayerPercentage
+            and not HasBuffNamed("Rejuvenation", rejuvTarget) then
             if UnitIsFriend("player", rejuvTarget) then
                 ClearTarget()
-            end	
-            
-            CastSpellByName("Rejuvenation("..MB_druidRejuvenationAggroedPlayerRank.."\)")
+            end
+
+            CastSpellByName("Rejuvenation(" .. MB_druidRejuvenationAggroedPlayerRank .. "\)")
             SpellTargetUnit(rejuvTarget)
             SpellStopTargeting()
         end
-	end
+    end
 end
 
 function Druid:RegrowthAggroedPlayer()
@@ -632,26 +624,25 @@ function Druid:RegrowthAggroedPlayer()
     if not ImprovedRegrowthCheck() or UnitMana("player") < 880 or MyClassOrder() ~= 1 then
         return
     end
-    
+
     local aggrox = AceLibrary("Banzai-1.0")
 
-	for i =  1, GetNumRaidMembers() do		
-        local regroTarget = "raid"..i
+    for i = 1, GetNumRaidMembers() do
+        local regroTarget = "raid" .. i
 
         if aggrox:GetUnitAggroByUnitId(regroTarget)
-           and IsValidFriendlyTarget(regroTarget, "Regrowth")
-           and HealthPct(regroTarget) <= MB_druidSwiftmendRegrowthAggroedPlayerPercentage
-           and not HasBuffNamed("Regrowth", regroTarget) then
-
+            and IsValidFriendlyTarget(regroTarget, "Regrowth")
+            and HealthPct(regroTarget) <= MB_druidSwiftmendRegrowthAggroedPlayerPercentage
+            and not HasBuffNamed("Regrowth", regroTarget) then
             if UnitIsFriend("player", regroTarget) then
                 ClearTarget()
-            end	
-            
-            CastSpellByName("Regrowth("..MB_druidSwiftmendRegrowthAggroedPlayerRank.."\)")
+            end
+
+            CastSpellByName("Regrowth(" .. MB_druidSwiftmendRegrowthAggroedPlayerRank .. "\)")
             SpellTargetUnit(regroTarget)
             SpellStopTargeting()
         end
-	end
+    end
 end
 
 function Druid:RegrowthLowRandom()
@@ -668,41 +659,35 @@ function Druid:RegrowthLowRandom()
     end
 
     if GetRaidRosterInfo(1) then
-
         for i = 1, GetNumRaidMembers() do
-            if HealthPct("raid"..i) < MB_druidSwiftmendRegrowthLowRandomPercentage and IsValidFriendlyTarget("raid"..i, "Regrowth") then
-                
-                if UnitIsFriend("player", "raid"..i) then
+            if HealthPct("raid" .. i) < MB_druidSwiftmendRegrowthLowRandomPercentage and IsValidFriendlyTarget("raid" .. i, "Regrowth") then
+                if UnitIsFriend("player", "raid" .. i) then
                     ClearTarget()
-                end	
-                
+                end
+
                 CastSpellByName("Regrowth")
-                SpellTargetUnit("raid"..i)
+                SpellTargetUnit("raid" .. i)
                 SpellStopTargeting()
                 return
             end
         end
-
     elseif GetNumPartyMembers() > 0 then
-
         for i = 1, GetNumPartyMembers() do
-            if HealthPct("party"..i) < MB_druidSwiftmendRegrowthLowRandomPercentage and IsValidFriendlyTarget("party"..i, "Regrowth") then
-
-                if UnitIsFriend("player", "party"..i) then
+            if HealthPct("party" .. i) < MB_druidSwiftmendRegrowthLowRandomPercentage and IsValidFriendlyTarget("party" .. i, "Regrowth") then
+                if UnitIsFriend("player", "party" .. i) then
                     ClearTarget()
-                end	
-                
+                end
+
                 CastSpellByName("Regrowth")
-                SpellTargetUnit("party"..i)
+                SpellTargetUnit("party" .. i)
                 SpellStopTargeting()
                 return
             end
-        end 
+        end
     end
 end
 
 function Druid:MaxAbolishAggroedPlayer()
-
     if not MBID[MB_raidLeader] then
         return
     end
@@ -715,7 +700,7 @@ function Druid:MaxAbolishAggroedPlayer()
         return
     end
 
-    local rejuvTarget = MBID[MB_raidLeader].."targettarget"
+    local rejuvTarget = MBID[MB_raidLeader] .. "targettarget"
     if not IsValidFriendlyTarget(rejuvTarget, "Abolish Poison") then
         return
     end
@@ -742,27 +727,26 @@ end
 --[####################################################################################################]--
 
 local function DruidSingle()
-	
     GetTarget()
     DruidCancelAuras()
 
-	if not MB_mySpecc then		
-		CdMessage("My specc is fucked. Defaulting to Resto.")
-		MB_mySpecc = "Resto"
-	end
+    if not MB_mySpecc then
+        CdMessage("My specc is fucked. Defaulting to Resto.")
+        MB_mySpecc = "Resto"
+    end
 
-	if MB_mySpecc == "Feral" then
-		if Instance.AQ40() then			
-			AnubisathAlert()
-		end
+    if MB_mySpecc == "Feral" then
+        if Instance.AQ40() then
+            AnubisathAlert()
+        end
 
-		Druid:TankSingle()
-		return
+        Druid:TankSingle()
+        return
     end
 
     if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
         CastSpellByName("Hibernate(Rank 1)")
-        return 
+        return
     end
 
     if CrowdControl() then
@@ -770,11 +754,11 @@ local function DruidSingle()
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
             if CrowdControl() then
                 return
             end
-        end        
+        end
 
         if CrowdControlledMob() then
             GetTarget()
@@ -785,7 +769,7 @@ local function DruidSingle()
         Druid:Balance()
         return
     end
-	
+
     if Instance.NAXX() and UnitFactionGroup("player") == "Alliance" then
         if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
             if ImBusy() then
@@ -808,28 +792,27 @@ MB_mySingleList["Druid"] = DruidSingle
 --[####################################################################################################]--
 
 function Druid:Balance()
-
     if not IsBoomForm() then
-		SelfBuff("Moonkin Form") 
-		CancelDruidShapeShift()
-	end
+        SelfBuff("Moonkin Form")
+        CancelDruidShapeShift()
+    end
 
     Decurse()
 
-	if not InCombat("target") then
+    if not InCombat("target") then
         return
     end
 
-	if InCombat("player") then
-		Druid:HealerDebuffs()
-		Druid:Innervate()
+    if InCombat("player") then
+        Druid:HealerDebuffs()
+        Druid:Innervate()
 
-		TakeManaPotionAndRunes()
+        TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()
         end
-	end
+    end
 
     if Druid:BossSpecificDPS() then
         return
@@ -839,60 +822,52 @@ function Druid:Balance()
         return
     end
 
-	CastSpellOrWand("Starfire") 
+    CastSpellOrWand("Starfire")
 end
 
 function Druid:BossSpecificDPS()
-
-	if UnitName("target") == "Emperor Vek\'nilash" then
+    if UnitName("target") == "Emperor Vek\'nilash" then
         return true
     end
 
-	if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+    if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+        if ImBusy() then
+            SpellStopCasting()
+        end
 
-		if ImBusy() then
-			SpellStopCasting()
-		end
+        AutoWandAttack()
+        return true
+    elseif TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
+        if ImBusy() then
+            SpellStopCasting()
+        end
 
-		AutoWandAttack()
-		return true
+        AutoWandAttack()
+        return true
+    end
 
-	elseif TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
-		
-		if ImBusy() then
-			SpellStopCasting()
-		end
-
-		AutoWandAttack()
-		return true
-	end
-
-	if Instance.AQ40() then
-		SARTURA_DruidDPS()
-
-    elseif Instance.ZG() then	
-
+    if Instance.AQ40() then
+        SARTURA_DruidDPS()
+    elseif Instance.ZG() then
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
-			if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
-				CastSpellOrWand("Wrath") 
-				return true
-			end
-		end
+            if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
+                CastSpellOrWand("Wrath")
+                return true
+            end
+        end
 
-		if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not Dead("target") then
-			CastSpellOrWand("Wrath") 
-			return true
-		end
-
-    elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
-
-        if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then        
+        if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not Dead("target") then
             CastSpellOrWand("Wrath")
             return true
         end
-	end
+    elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
+        if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
+            CastSpellOrWand("Wrath")
+            return true
+        end
+    end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -900,72 +875,71 @@ end
 --[####################################################################################################]--
 
 local function DruidTankSingleRotation()
-    if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff") 
+    if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff")
         and not HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
         CastSpellByName("Faerie Fire (Feral)()")
     end
 
-    if SpellReady("Enrage") and UnitMana("player") <= 15 then        
+    if SpellReady("Enrage") and UnitMana("player") <= 15 then
         CastSpellByName("Enrage")
     end
-    
-    if UnitMana("player") >= 7 then 
-        CastSpellByName("Maul") 
+
+    if UnitMana("player") >= 7 then
+        CastSpellByName("Maul")
     end
-    
-    if UnitMana("player") >= 36 then 
+
+    if UnitMana("player") >= 36 then
         CastSpellByName("Swipe")
     end
 end
 
 function Druid:TankSingle()
+    if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        CancelBuff("Greater Blessing of Salvation")
+    end
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
-	end
-
-	if not IsBearForm() then
-		SelfBuff("Dire Bear Form") 
-		CancelDruidShapeShift()
+    if not IsBearForm() then
+        SelfBuff("Dire Bear Form")
+        CancelDruidShapeShift()
         return
-	end
+    end
 
     if not InCombat("target") then
         return
     end
 
-	if InCombat("player") then
-		if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then			
-			CastSpellByName("Frenzied Regeneration") 
-		end
+    if InCombat("player") then
+        if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then
+            CastSpellByName("Frenzied Regeneration")
+        end
 
-		if InMeleeRange() then
-			if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
-				Druid:Cooldowns()
-			end
+        if InMeleeRange() then
+            if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+                Druid:Cooldowns()
+            end
 
-			if SpellReady("Bash") and StunnableMob() then				
-				CastSpellByName("Bash")
-			end
+            if SpellReady("Bash") and StunnableMob() then
+                CastSpellByName("Bash")
+            end
 
-			if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then 
-                if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
-                    if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then					
+            if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
+                if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then
+                    if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
                         CastSpellByName("Demoralizing Roar")
                     end
                 end
-			end
-		end
-	end
+            end
+        end
+    end
 
-	OffTank()
+    OffTank()
 
     local tOfTarget = UnitName("targettarget") or ""
     local tName = UnitName("target") or ""
 
-    local shouldTaunt = tName ~= "" 
-        and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
-        and UnitIsEnemy("player", "target") 
+    local shouldTaunt = tName ~= ""
+        and tOfTarget ~= "" and tOfTarget ~= "Unknown"
+        and UnitIsEnemy("player", "target")
         and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
@@ -978,14 +952,14 @@ function Druid:TankSingle()
         end
     end
 
-	if MB_myOTTarget then
-		if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == MB_myOTTarget and UnitIsDead("target") then
-			MB_myOTTarget = nil
-			ClearTarget()
-		end
-	end
+    if MB_myOTTarget then
+        if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == MB_myOTTarget and UnitIsDead("target") then
+            MB_myOTTarget = nil
+            ClearTarget()
+        end
+    end
 
-	AutoAttack()
+    AutoAttack()
     DruidTankSingleRotation()
 end
 
@@ -994,27 +968,26 @@ end
 --[####################################################################################################]--
 
 local function DruidMulti()
-	
     GetTarget()
     DruidCancelAuras()
 
-	if not MB_mySpecc then		
-		CdMessage("My specc is fucked. Defaulting to Resto.")
-		MB_mySpecc = "Resto"
-	end
+    if not MB_mySpecc then
+        CdMessage("My specc is fucked. Defaulting to Resto.")
+        MB_mySpecc = "Resto"
+    end
 
-	if MB_mySpecc == "Feral" then
-		if Instance.AQ40() then
-			AnubisathAlert()
-		end
+    if MB_mySpecc == "Feral" then
+        if Instance.AQ40() then
+            AnubisathAlert()
+        end
 
-		Druid:TankMulti()
-		return
+        Druid:TankMulti()
+        return
     end
 
     if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
         CastSpellByName("Hibernate(Rank 1)")
-        return 
+        return
     end
 
     if CrowdControl() then
@@ -1022,17 +995,17 @@ local function DruidMulti()
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
             if CrowdControl() then
                 return
             end
-        end        
+        end
 
         if CrowdControlledMob() then
             GetTarget()
         end
     end
-		
+
     if MB_mySpecc == "Balance" then
         Druid:Balance()
         return
@@ -1050,7 +1023,7 @@ local function DruidMulti()
     end
 
     HealerJindoRotation("Wrath")
-    DruidHeal()	
+    DruidHeal()
 end
 
 MB_myMultiList["Druid"] = DruidMulti
@@ -1060,53 +1033,52 @@ MB_myMultiList["Druid"] = DruidMulti
 --[####################################################################################################]--
 
 function Druid:TankMulti()
+    if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        CancelBuff("Greater Blessing of Salvation")
+    end
 
-	if FindInTable(MB_raidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then		
-		CancelBuff("Greater Blessing of Salvation") 
-	end
-
-	if not IsBearForm() then
-		SelfBuff("Dire Bear Form") 
-		CancelDruidShapeShift()
+    if not IsBearForm() then
+        SelfBuff("Dire Bear Form")
+        CancelDruidShapeShift()
         return
-	end
+    end
 
     if not InCombat("target") then
         return
     end
 
-	if InCombat("player") then
-		if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then			
-			CastSpellByName("Frenzied Regeneration") 
-		end
+    if InCombat("player") then
+        if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then
+            CastSpellByName("Frenzied Regeneration")
+        end
 
-		if InMeleeRange() then
-			if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
-				Druid:Cooldowns()
-			end
+        if InMeleeRange() then
+            if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+                Druid:Cooldowns()
+            end
 
-			if SpellReady("Bash") and StunnableMob() then				
-				CastSpellByName("Bash")
-			end
+            if SpellReady("Bash") and StunnableMob() then
+                CastSpellByName("Bash")
+            end
 
-			if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then 
-                if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then				
-                    if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then					
+            if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
+                if UnitName("target") ~= "Emperor Vek\'nilash" or UnitName("target") ~= "Emperor Vek\'lor" then
+                    if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
                         CastSpellByName("Demoralizing Roar")
                     end
                 end
-			end
-		end
-	end
+            end
+        end
+    end
 
-	OffTank()
+    OffTank()
 
     local tOfTarget = UnitName("targettarget") or ""
     local tName = UnitName("target") or ""
 
-    local shouldTaunt = tName ~= "" 
-        and tOfTarget ~= "" and tOfTarget ~= "Unknown" 
-        and UnitIsEnemy("player", "target") 
+    local shouldTaunt = tName ~= ""
+        and tOfTarget ~= "" and tOfTarget ~= "Unknown"
+        and UnitIsEnemy("player", "target")
         and not FindInTable(MB_raidTanks, tOfTarget)
 
     if shouldTaunt then
@@ -1119,30 +1091,30 @@ function Druid:TankMulti()
         end
     end
 
-	if MB_myOTTarget then
-		if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == MB_myOTTarget and UnitIsDead("target") then
-			MB_myOTTarget = nil
-			ClearTarget()
-		end
-	end
+    if MB_myOTTarget then
+        if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == MB_myOTTarget and UnitIsDead("target") then
+            MB_myOTTarget = nil
+            ClearTarget()
+        end
+    end
 
-	AutoAttack()
+    AutoAttack()
 
-    if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff") 
+    if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff")
         and not HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
         CastSpellByName("Faerie Fire (Feral)()")
     end
 
-    if SpellReady("Enrage") and UnitMana("player") <= 15 then        
+    if SpellReady("Enrage") and UnitMana("player") <= 15 then
         CastSpellByName("Enrage")
     end
-		
-    if UnitMana("player") > 12 then 
+
+    if UnitMana("player") > 12 then
         CastSpellByName("Swipe")
     end
-		
-    if UnitMana("player") > 19 then 
-        CastSpellByName("Maul") 
+
+    if UnitMana("player") > 19 then
+        CastSpellByName("Maul")
     end
 end
 
@@ -1151,10 +1123,9 @@ end
 --[####################################################################################################]--
 
 local function DruidAOE()
-
-	if TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy and ImHealer() then		
+    if TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy and ImHealer() then
         if MB_myAssignedHealTarget then
-            if IsAlive(MBID[MB_myAssignedHealTarget]) then			
+            if IsAlive(MBID[MB_myAssignedHealTarget]) then
                 Druid:MTHeals(MB_myAssignedHealTarget)
                 return
             else
@@ -1163,15 +1134,15 @@ local function DruidAOE()
             end
         end
 
-		if MyNameInTable(MB_myMaexxnaDruidHealer) then
-			Druid:MaxRejuvAggroedPlayer()
-			Druid:MaxAbolishAggroedPlayer()
-			Druid:MaxRegrowthAggroedPlayer()
-			return
-		end
-	end	
+        if MyNameInTable(MB_myMaexxnaDruidHealer) then
+            Druid:MaxRejuvAggroedPlayer()
+            Druid:MaxAbolishAggroedPlayer()
+            Druid:MaxRegrowthAggroedPlayer()
+            return
+        end
+    end
 
-	DruidMulti()
+    DruidMulti()
 end
 
 MB_myAOEList["Druid"] = DruidAOE
@@ -1181,26 +1152,25 @@ MB_myAOEList["Druid"] = DruidAOE
 --[####################################################################################################]--
 
 local function DruidSetup()
+    if IsDruidShapeShifted() and not InCombat("player") then
+        CancelDruidShapeShift()
+    end
 
-	if IsDruidShapeShifted() and not InCombat("player") then		
-		CancelDruidShapeShift()
-	end
-	
-	if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
-		return
-	end
+    if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+        return
+    end
 
     MOTW_ProcessMarkOfTheWildQueue()
 
-	if MB_raidAssist.Druid.BuffTanksWithThorns then		
-		TankBuff("Thorns")
-	end
+    if MB_raidAssist.Druid.BuffTanksWithThorns then
+        TankBuff("Thorns")
+    end
 
     SelfBuff("Omen of Clarity")
 
-	if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
-		SmartDrink()
-	end
+    if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
+        SmartDrink()
+    end
 end
 
 MB_mySetupList["Druid"] = DruidSetup
@@ -1215,16 +1185,16 @@ local function DruidPreCast()
         CancelDruidShapeShift()
         return
     end
-    
-	for k, trinket in pairs(MB_casterTrinkets) do
-		if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then 
-			use(13) 
-		end
 
-		if ItemNameOfEquippedSlot(14) == trinket and not TrinketOnCD(14) then 
-			use(14) 
-		end
-	end
+    for k, trinket in pairs(MB_casterTrinkets) do
+        if ItemNameOfEquippedSlot(13) == trinket and not TrinketOnCD(13) then
+            use(13)
+        end
+
+        if ItemNameOfEquippedSlot(14) == trinket and not TrinketOnCD(14) then
+            use(14)
+        end
+    end
 
     CastSpellByName("Starfire")
 end
@@ -1245,17 +1215,17 @@ function Druid:GetActiveVaelastraszDruid()
 end
 
 function Druid:Cooldowns()
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if ImBusy() or not InCombat("player") then
+        return
+    end
 
-    if MB_mySpecc == "Feral" then        
+    if MB_mySpecc == "Feral" then
         MeleeTrinkets()
         return
     end
 
     HealerTrinkets()
-    CasterTrinkets()    
+    CasterTrinkets()
 end
 
 function Druid:Taunt()
@@ -1263,16 +1233,16 @@ function Druid:Taunt()
         return
     end
 
-	if SpellReady("Growl") then		
-		CastSpellByName("Growl")
-		return
-	end
+    if SpellReady("Growl") then
+        CastSpellByName("Growl")
+        return
+    end
 
-	if UnitName("target") and InCombat("target") then
-		if SpellReady("Faerie Fire (Feral)()") then			
-			CastSpellByName("Faerie Fire (Feral)()")
-		end
-	end
+    if UnitName("target") and InCombat("target") then
+        if SpellReady("Faerie Fire (Feral)()") then
+            CastSpellByName("Faerie Fire (Feral)()")
+        end
+    end
 end
 
 --[####################################################################################################]--
@@ -1280,9 +1250,9 @@ end
 --[####################################################################################################]--
 
 local function LOA_Attack()
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if ImBusy() or not InCombat("player") then
+        return
+    end
 
     GetTarget()
 
@@ -1290,35 +1260,34 @@ local function LOA_Attack()
         return
     end
 
-	if SpellReady("Starfire") then
-		CoolDownCast("Starfire", 6)
-		return
-	end
+    if SpellReady("Starfire") then
+        CoolDownCast("Starfire", 6)
+        return
+    end
 
     AutoAttack()
 end
 
 local function LOA_Heal()
-	
     GetTarget()
     DruidCancelAuras()
 
-	if InCombat("player") then
-		Druid:HealerDebuffs()
-		Druid:Innervate()
+    if InCombat("player") then
+        Druid:HealerDebuffs()
+        Druid:Innervate()
 
-		TakeManaPotionAndRunes()
+        TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Druid:Cooldowns()
         end
-	end
+    end
 
     if LOA_Healing() then
-		return
-	end
+        return
+    end
 
-	LOA_Attack()
+    LOA_Attack()
 end
 
 MB_myLoathebList["Druid"] = LOA_Heal

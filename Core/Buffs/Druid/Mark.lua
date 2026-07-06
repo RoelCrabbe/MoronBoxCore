@@ -172,14 +172,15 @@ local SelfBuff = mb_selfBuff
 local MOTW = CreateFrame("Button", "MOTW", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do MOTW:RegisterEvent(event)
-	end
+    } do
+        MOTW:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -212,7 +213,7 @@ local function GetNextTarget()
     local bestUnitId = nil
     local bestPriority = nil
     local bestGroupNum = nil
-   
+
     for groupNum, playersInGroup in pairs(MB_MOTWQueue) do
         for unitId, priority in pairs(playersInGroup) do
             if bestPriority == nil or priority < bestPriority then
@@ -222,7 +223,7 @@ local function GetNextTarget()
             end
         end
     end
-   
+
     return bestUnitId, tonumber(bestPriority), tonumber(bestGroupNum)
 end
 
@@ -239,9 +240,9 @@ local function GetDruidInGroup()
 end
 
 local function GetGroupNumber()
-	if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
-		return
-	end
+    if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
+        return
+    end
 
     return MB_groupID[myName]
 end
@@ -270,7 +271,7 @@ local function HandleMarkOfTheWildRequest(message, sender)
     if HasBuffOrDebuff("Mark of the Wild", requestPlayerId, "buff") or
         HasBuffOrDebuff("Gift of the Wild", requestPlayerId, "buff") then
         local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
-        CdAddonMessage(MB_RAID.."BUFFED_MOTW", message)
+        CdAddonMessage(MB_RAID .. "BUFFED_MOTW", message)
         return
     end
 
@@ -287,7 +288,7 @@ local function HandleMarkOfTheWildRequest(message, sender)
     end
 
     MB_MOTWQueue[groupNum][requestPlayerId] = priority
-    CdAddonMessage(MB_RAID.."CLAIM_MOTW", "CLAIMING_GROUP:"..groupNum)
+    CdAddonMessage(MB_RAID .. "CLAIM_MOTW", "CLAIMING_GROUP:" .. groupNum)
 end
 
 local function HandleMarkOfTheWildClaim(message, claimer)
@@ -323,25 +324,25 @@ end
 function MOTW:OnEvent()
     if event == "CHAT_MSG_ADDON" then
         local message, sender = arg2, arg4
-        
-        if arg1 == MB_RAID.."NEED_MOTW" then
+
+        if arg1 == MB_RAID .. "NEED_MOTW" then
             HandleMarkOfTheWildRequest(message, sender)
-        elseif arg1 == MB_RAID.."CLAIM_MOTW" then
+        elseif arg1 == MB_RAID .. "CLAIM_MOTW" then
             HandleMarkOfTheWildClaim(message, sender)
-        elseif arg1 == MB_RAID.."BUFFED_MOTW" then
+        elseif arg1 == MB_RAID .. "BUFFED_MOTW" then
             HandleMarkOfTheWildBuffed(message, sender)
         end
     end
 end
 
-MOTW:SetScript("OnEvent", MOTW.OnEvent) 
+MOTW:SetScript("OnEvent", MOTW.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function MOTW_RequestMarkOfTheWild()
-    if HasBuffOrDebuff("Mark of the Wild", "player", "buff") or 
+    if HasBuffOrDebuff("Mark of the Wild", "player", "buff") or
         HasBuffOrDebuff("Gift of the Wild", "player", "buff") then
         return
     end
@@ -355,7 +356,7 @@ function MOTW_RequestMarkOfTheWild()
     end
 
     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingDruid)
-    CdAddonMessage(MB_RAID.."NEED_MOTW", message, 15)
+    CdAddonMessage(MB_RAID .. "NEED_MOTW", message, 15)
 end
 
 function MOTW_ProcessMarkOfTheWildQueue()
@@ -385,7 +386,7 @@ function MOTW_ProcessMarkOfTheWildQueue()
     end
 
     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID.."BUFFED_MOTW", message)
+    CdAddonMessage(MB_RAID .. "BUFFED_MOTW", message)
     return false
 end
 

@@ -212,12 +212,12 @@ local function BUGTRIO_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."BUGTRIO", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "BUGTRIO", "ENGAGE", 30)
         BugTrioEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -225,7 +225,7 @@ end
 --[####################################################################################################]--
 
 function BUGTRIO:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."BUGTRIO" then
+    if arg1 == MB_RAID .. "BUGTRIO" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Bug Trio! <<")
             self:OnEnable()
@@ -238,7 +238,7 @@ end
 
 function BUGTRIO:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Vem dies") and BugTrioEncounter.Active then
-        CdAddonMessage(MB_RAID.."BUGTRIO", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "BUGTRIO", "DISENGAGE", 30)
     end
 end
 
@@ -261,7 +261,7 @@ end
 function BUGTRIO_TargetingPreFocus()
     local tName = UnitName("target")
 
-	if BUGTRIO_CheckEncounter() and MB_myBugTrioBoxStrategy then
+    if BUGTRIO_CheckEncounter() and MB_myBugTrioBoxStrategy then
         -- This is pretty much only for my main tank to request his FW
         -- Might need to find a proper way
     end
@@ -270,35 +270,34 @@ function BUGTRIO_TargetingPreFocus()
 end
 
 local function TankSurvive()
-    if HealthPct("player") <= 0.25 then				
-        SelfBuff("Last Stand") 
+    if HealthPct("player") <= 0.25 then
+        SelfBuff("Last Stand")
     end
 
-    if HealthPct("player") <= 0.2 then				
-        SelfBuff("Shield Wall") 
+    if HealthPct("player") <= 0.2 then
+        SelfBuff("Shield Wall")
     end
 end
 
 function BUGTRIO_TargetingPostFocus()
     local tName = UnitName("target")
 
-	if BUGTRIO_CheckEncounter() and MB_myBugTrioBoxStrategy then
+    if BUGTRIO_CheckEncounter() and MB_myBugTrioBoxStrategy then
         if ImTank() then
             TankSurvive()
 
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "15")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "15")
+                MB_targetNearestDistanceChanged = true
+            end
 
             if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
             end
-			return true
-
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

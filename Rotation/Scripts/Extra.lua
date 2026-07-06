@@ -112,31 +112,31 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 
 local PlayerMounts = {
-	"Reins of the Winterspring Frostsaber",
-	"Deathcharger\'s Reins", 
-	"Black War Tiger", 
-	"Swift Zulian Tiger", 
-	"Swift Razzashi Raptor", 
-	"Swift Blue Raptor", 
-	"Black War Kodo", 
-	"Horn of the ", 
-	"Reins of the Swift ", 
-	"Swift White Steed", 
-	"Swift Brown Steed",
-	"Black Battlestrider",
-	"Warhorse", 
-	" Mare", 
-	"Horse", 
-	"Timber Wolf", 
-	"Kodo", 
-	"Raptor", 
-	" Ram", 
-	" Mechanostrider", 
-	" Bridle", 
-	"Charger", 
-	" Frostsaber", 
-	" Nightsaber", 
-	"Swift Palomino"
+    "Reins of the Winterspring Frostsaber",
+    "Deathcharger\'s Reins",
+    "Black War Tiger",
+    "Swift Zulian Tiger",
+    "Swift Razzashi Raptor",
+    "Swift Blue Raptor",
+    "Black War Kodo",
+    "Horn of the ",
+    "Reins of the Swift ",
+    "Swift White Steed",
+    "Swift Brown Steed",
+    "Black Battlestrider",
+    "Warhorse",
+    " Mare",
+    "Horse",
+    "Timber Wolf",
+    "Kodo",
+    "Raptor",
+    " Ram",
+    " Mechanostrider",
+    " Bridle",
+    "Charger",
+    " Frostsaber",
+    " Nightsaber",
+    "Swift Palomino"
 }
 
 --[####################################################################################################]--
@@ -144,66 +144,65 @@ local PlayerMounts = {
 --[####################################################################################################]--
 
 function mb_tankShoot()
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
-		return
-	end
-
-	if Instance.ZG() and TankTarget("Bloodlord Mandokir") then
-        if MandokirGaze() then
-            return
-        end
-	end
-
-	if not ImTank() then
-		if myClass == "Shaman" then
-			mb_dropTotems()
-		end
-		return
-	end
-
-	local rangedWep = ReturnEquippedItemType(18)
-	if not rangedWep then
-		return
-	end
-
-	if not SpellExists("Shoot "..rangedWep) then
-		return
-	end
-
-	if MB_myOTTarget or ImFocus() then		
-		CastSpellByName("Shoot "..rangedWep)
-	end	
-end
-
-function mb_manualTaunt()
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
-        CdPrint("WARNING: You have not chosen a raid leader")
+    if Dead("player") then
+        return
     end
-
-	if Dead("player") then
-		return
-	end
 
     if Instance.ZG() and TankTarget("Bloodlord Mandokir") then
         if MandokirGaze() then
             return
         end
-	end
+    end
 
-	if not ImTank() then
-		return
-	end
+    if not ImTank() then
+        if myClass == "Shaman" then
+            mb_dropTotems()
+        end
+        return
+    end
 
-	if myClass == "Warrior" and SpellReady("Taunt") then			
-		CastSpellByName("Taunt")
+    local rangedWep = ReturnEquippedItemType(18)
+    if not rangedWep then
+        return
+    end
 
-	elseif myClass == "Druid" and SpellReady("Growl") then
-		CastSpellByName("Growl")
-	end
+    if not SpellExists("Shoot " .. rangedWep) then
+        return
+    end
+
+    if MB_myOTTarget or ImFocus() then
+        CastSpellByName("Shoot " .. rangedWep)
+    end
+end
+
+function mb_manualTaunt()
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
+        CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if Dead("player") then
+        return
+    end
+
+    if Instance.ZG() and TankTarget("Bloodlord Mandokir") then
+        if MandokirGaze() then
+            return
+        end
+    end
+
+    if not ImTank() then
+        return
+    end
+
+    if myClass == "Warrior" and SpellReady("Taunt") then
+        CastSpellByName("Taunt")
+    elseif myClass == "Druid" and SpellReady("Growl") then
+        CastSpellByName("Growl")
+    end
 end
 
 --[####################################################################################################]--
@@ -211,25 +210,25 @@ end
 --[####################################################################################################]--
 
 function mb_ress()
-	if ImHealer() then
-		if UnitMana("player") < 1368 and myClass == "Shaman" then 			
-			mb_smartDrink()
-		end
+    if ImHealer() then
+        if UnitMana("player") < 1368 and myClass == "Shaman" then
+            mb_smartDrink()
+        end
 
-		if UnitMana("player") < 1090 and myClass == "Priest" then 			
-			mb_smartDrink()
-		end
+        if UnitMana("player") < 1090 and myClass == "Priest" then
+            mb_smartDrink()
+        end
 
-		if UnitMana("player") < 1209 and myClass == "Paladin" then			
-			mb_smartDrink()
-		end
+        if UnitMana("player") < 1209 and myClass == "Paladin" then
+            mb_smartDrink()
+        end
 
-		MBH_Resurrection()
-	end
+        MBH_Resurrection()
+    end
 
-	if ImRangedDPS() then		
-		mb_smartDrink()
-	end
+    if ImRangedDPS() then
+        mb_smartDrink()
+    end
 end
 
 --[####################################################################################################]--
@@ -237,98 +236,95 @@ end
 --[####################################################################################################]--
 
 function mb_disbandRaid()
-	if UnitInRaid("player") then
-		for i = 1, 40 do
-			local _, rank = GetRaidRosterInfo(i);
-			if rank ~= 2 then
-				UninviteFromParty("raid"..i)
-			end
-		end	
-	else
-		for i = 1, GetNumPartyMembers() do
-			UninviteFromParty("party"..i)
-		end
-	end
+    if UnitInRaid("player") then
+        for i = 1, 40 do
+            local _, rank = GetRaidRosterInfo(i);
+            if rank ~= 2 then
+                UninviteFromParty("raid" .. i)
+            end
+        end
+    else
+        for i = 1, GetNumPartyMembers() do
+            UninviteFromParty("party" .. i)
+        end
+    end
 
-	LeaveParty()
+    LeaveParty()
 end
 
 function mb_requestInviteSummon()
-	if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then		
-		if MB_raidInviter == myName then			
-			SetLootMethod("freeforall", myName)
-			
-			if GetNumPartyMembers() > 0 and not UnitInRaid("player") then 				
-				ConvertToRaid()
-			end
-			return
-		end
+    if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
+        if MB_raidInviter == myName then
+            SetLootMethod("freeforall", myName)
 
-		if MB_raidInviter then
-			if not (IsInRaid(MB_raidInviter) or IsInGroup(MB_raidInviter)) then			
-				mb_disbandRaid()
-				SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidInviter);
-			end
-		end
-		return
-	end
+            if GetNumPartyMembers() > 0 and not UnitInRaid("player") then
+                ConvertToRaid()
+            end
+            return
+        end
 
-	if IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown() then		
-		if MB_raidLeader then
-			if UnitInRaid("player") then				
-				if not UnitInRange("raid"..GetRaidIndexForPlayerName(MB_raidLeader)) then					
-					CdMessage("123", 10)
-					return 
-				end
-			else
-				if not UnitInRange("party"..GetRaidIndexForPlayerName(MB_raidLeader)) then					
-					CdMessage("123", 10)
-					return 
-				end
-			end
-		end
-	end
+        if MB_raidInviter then
+            if not (IsInRaid(MB_raidInviter) or IsInGroup(MB_raidInviter)) then
+                mb_disbandRaid()
+                SendChatMessage(MB_inviteMessage, "WHISPER", DEFAULT_CHAT_FRAME.editBox.languageID, MB_raidInviter);
+            end
+        end
+        return
+    end
 
-	if IsControlKeyDown() and not IsShiftKeyDown() and not IsAltKeyDown() then		
-		PromoteEveryone()
-		return 
-	end
+    if IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown() then
+        if MB_raidLeader then
+            if UnitInRaid("player") then
+                if not UnitInRange("raid" .. GetRaidIndexForPlayerName(MB_raidLeader)) then
+                    CdMessage("123", 10)
+                    return
+                end
+            else
+                if not UnitInRange("party" .. GetRaidIndexForPlayerName(MB_raidLeader)) then
+                    CdMessage("123", 10)
+                    return
+                end
+            end
+        end
+    end
+
+    if IsControlKeyDown() and not IsShiftKeyDown() and not IsAltKeyDown() then
+        PromoteEveryone()
+        return
+    end
 end
 
 --[####################################################################################################]--
 --[##################################### Interrupt Functions! #########################################]--
 --[####################################################################################################]--
 
-function mb_interruptSpell()	
-	if ImTank() then
+function mb_interruptSpell()
+    if ImTank() then
         return
     end
 
-	if not SpellReady(MB_myInterruptSpell[myClass]) then
+    if not SpellReady(MB_myInterruptSpell[myClass]) then
         return
     end
 
     GetMyInterruptTarget()
 
-    if myClass == "Warrior" then   
-        if UnitMana("player") >= 10 then                
+    if myClass == "Warrior" then
+        if UnitMana("player") >= 10 then
             CastSpellByName(MB_myInterruptSpell[myClass])
         end
-
     elseif myClass == "Shaman" then
-        if ImBusy() then            
+        if ImBusy() then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
-
+        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
     elseif myClass == "Rogue" then
-        if UnitMana("player") >= 25 then            
+        if UnitMana("player") >= 25 then
             CastSpellByName(MB_myInterruptSpell[myClass])
         end
-
     elseif myClass == "Mage" then
-        if ImBusy() then            
+        if ImBusy() then
             SpellStopCasting()
         end
 
@@ -341,68 +337,68 @@ end
 --[####################################################################################################]--
 
 function mb_cleanseTotem()
-	if myClass == "Shaman" then
-		if PartyIsPoisoned() then 			
-			if ImBusy() then				
-				SpellStopCasting()
-				return
-			end
+    if myClass == "Shaman" then
+        if PartyIsPoisoned() then
+            if ImBusy() then
+                SpellStopCasting()
+                return
+            end
 
-			CastSpellByName("Poison Cleansing Totem")
-		elseif PartyIsDiseased() then			
-			if ImBusy() then				
-				SpellStopCasting()
-				return
-			end
+            CastSpellByName("Poison Cleansing Totem")
+        elseif PartyIsDiseased() then
+            if ImBusy() then
+                SpellStopCasting()
+                return
+            end
 
-			CastSpellByName("Disease Cleansing Totem")
-		end
-	end
+            CastSpellByName("Disease Cleansing Totem")
+        end
+    end
 end
 
 --[####################################################################################################]--
 --[######################################### Break Fears! #############################################]--
 --[####################################################################################################]--
 
-function mb_fearBreak()	
-	if IsShiftKeyDown() then 		
-		mb_cleanseTotem()
-		return 
-	end
+function mb_fearBreak()
+    if IsShiftKeyDown() then
+        mb_cleanseTotem()
+        return
+    end
 
-	if myClass == "Warrior" then
-		if SpellReady("Berserker Rage") then		
-			SelfBuff("Berserker Stance")
-			CastSpellByName("Berserker Rage")
-			return
-		end
-	end
+    if myClass == "Warrior" then
+        if SpellReady("Berserker Rage") then
+            SelfBuff("Berserker Stance")
+            CastSpellByName("Berserker Rage")
+            return
+        end
+    end
 
-	if myClass == "Shaman" then		
-		if ImBusy() then				
-			SpellStopCasting()
-			return
-		end
+    if myClass == "Shaman" then
+        if ImBusy() then
+            SpellStopCasting()
+            return
+        end
 
-		CoolDownCast("Tremor Totem", 15)
-	end
+        CoolDownCast("Tremor Totem", 15)
+    end
 
-	if KnowSpell("Will of the Forsaken") then
-		if myClass == "Warrior" then
-			if HasBuffOrDebuff("Berserker Rage", "player", "buff") then
-				CdPrint("WARNING: You already have Berserker Rage!", 15)
-				return
-			end
+    if KnowSpell("Will of the Forsaken") then
+        if myClass == "Warrior" then
+            if HasBuffOrDebuff("Berserker Rage", "player", "buff") then
+                CdPrint("WARNING: You already have Berserker Rage!", 15)
+                return
+            end
 
-			if SpellReady("Will of the Forsaken") and not SpellReady("Berserker Rage") then		
-				CastSpellByName("Will of the Forsaken")
-			end
-		else
-			if SpellReady("Will of the Forsaken") then		
-				CastSpellByName("Will of the Forsaken")
-			end
-		end
-	end
+            if SpellReady("Will of the Forsaken") and not SpellReady("Berserker Rage") then
+                CastSpellByName("Will of the Forsaken")
+            end
+        else
+            if SpellReady("Will of the Forsaken") then
+                CastSpellByName("Will of the Forsaken")
+            end
+        end
+    end
 end
 
 --[####################################################################################################]--
@@ -410,33 +406,33 @@ end
 --[####################################################################################################]--
 
 function mb_mountUp()
-	if myClass == "Druid" and IsDruidShapeShifted() and not InCombat("player") then 
-		CancelDruidShapeShift() 
-	end
+    if myClass == "Druid" and IsDruidShapeShifted() and not InCombat("player") then
+        CancelDruidShapeShift()
+    end
 
-	if ImBusy() then
+    if ImBusy() then
         return
     end
 
-	if Instance.AQ40() then		
-		use(GetLink("Resonating"))
-		return
-	end
-		
-	for _, mount in PlayerMounts do
-		use(GetLink(mount))
-	end
+    if Instance.AQ40() then
+        use(GetLink("Resonating"))
+        return
+    end
 
-	if myClass == "Warlock" and KnowSpell("Summon Dreadsteed") then		
-		CastSpellByName("Summon Dreadsteed")
-		return
-	end
+    for _, mount in PlayerMounts do
+        use(GetLink(mount))
+    end
 
-	if myClass == "Paladin" and KnowSpell("Summon Charger") then		
-		CastSpellByName("Summon Charger")
-		return
-	end	
+    if myClass == "Warlock" and KnowSpell("Summon Dreadsteed") then
+        CastSpellByName("Summon Dreadsteed")
+        return
+    end
 
-	CastSpellByName("Summon Felsteed")
-	CastSpellByName("Summon Warhorse")	
+    if myClass == "Paladin" and KnowSpell("Summon Charger") then
+        CastSpellByName("Summon Charger")
+        return
+    end
+
+    CastSpellByName("Summon Felsteed")
+    CastSpellByName("Summon Warhorse")
 end

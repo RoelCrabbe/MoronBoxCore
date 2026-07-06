@@ -129,7 +129,7 @@ local UseSpeedRunPots = mb_useSpeedRunPots
 local MageCounter = {
     Cycle = function()
         MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
-                                  and 1 or (MB_buffingCounterMage + 1)
+            and 1 or (MB_buffingCounterMage + 1)
     end
 }
 
@@ -145,7 +145,7 @@ local function SpecialRotation()
             return true
         end
     elseif Instance.BWL() and not TankTarget("Razorgore the Untamed") then
-	    if IsAtRazorgore() and myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+        if IsAtRazorgore() and myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
             OrbControlling()
             return true
         end
@@ -161,13 +161,13 @@ local function SpecialRotation()
 end
 
 local function CheckWeapon()
-    if ImRangedDPS() or ImHealer() then		
-		ReEquipAtieshIfNoAtieshBuff()
-	end
+    if ImRangedDPS() or ImHealer() then
+        ReEquipAtieshIfNoAtieshBuff()
+    end
 
-	if ItemNameOfEquippedSlot(16) == nil then		
-		CdMessage("I don\'t have a weapon equipped.", 500)
-	end
+    if ItemNameOfEquippedSlot(16) == nil then
+        CdMessage("I don\'t have a weapon equipped.", 500)
+    end
 end
 
 local function CheckWarStomp()
@@ -215,16 +215,15 @@ end
 --[####################################################################################################]--
 
 function mb_single()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
-	if HasBuffNamed("Mind Control", "player") then
+    if HasBuffNamed("Mind Control", "player") then
         return
     end
 
@@ -233,9 +232,9 @@ function mb_single()
     end
 
     CheckWeapon()
-	TakeLIP()
-	TakeFAP()
-	GTFO()
+    TakeLIP()
+    TakeFAP()
+    GTFO()
 
     if HasBuffOrDebuff("First Aid", "player", "buff") and HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -257,16 +256,15 @@ end
 --[####################################################################################################]--
 
 function mb_multi()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
-	if HasBuffNamed("Mind Control", "player") then
+    if HasBuffNamed("Mind Control", "player") then
         return
     end
 
@@ -275,10 +273,10 @@ function mb_multi()
     end
 
     CheckWeapon()
-	TakeLIP()
-	TakeFAP()
+    TakeLIP()
+    TakeFAP()
 
-	GTFO()
+    GTFO()
 
     if HasBuffOrDebuff("First Aid", "player", "buff") and HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -300,16 +298,15 @@ end
 --[####################################################################################################]--
 
 function mb_AOE()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
-	if HasBuffNamed("Mind Control", "player") then
+    if HasBuffNamed("Mind Control", "player") then
         return
     end
 
@@ -318,10 +315,10 @@ function mb_AOE()
     end
 
     CheckWeapon()
-	TakeLIP()
-	TakeFAP()
+    TakeLIP()
+    TakeFAP()
 
-	GTFO()
+    GTFO()
 
     if HasBuffOrDebuff("First Aid", "player", "buff") and HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -343,16 +340,15 @@ end
 --[####################################################################################################]--
 
 function mb_setup()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
-	if HasBuffNamed("Mind Control", "player") then
+    if HasBuffNamed("Mind Control", "player") then
         return
     end
 
@@ -361,21 +357,21 @@ function mb_setup()
     end
 
     CheckWeapon()
-	TakeLIP()
-	TakeFAP()
+    TakeLIP()
+    TakeFAP()
 
-	GTFO()
+    GTFO()
 
     if HasBuffOrDebuff("First Aid", "player", "buff") and HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
     end
 
-	if IsControlKeyDown() then		
-		MakeALine()
-		return
-	end
+    if IsControlKeyDown() then
+        MakeALine()
+        return
+    end
 
-	UseSpeedRunPots()
+    UseSpeedRunPots()
 
     if myClass == "Mage" or myClass == "Warlock" then
         if Instance.NAXX() and MB_myLoathebBoxStrategy then
@@ -406,12 +402,11 @@ end
 --[####################################################################################################]--
 
 function mb_preCast()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
@@ -419,9 +414,9 @@ function mb_preCast()
         return
     end
 
-	AssistFocus()
+    AssistFocus()
 
-	if not UnitName("target") then
+    if not UnitName("target") then
         return
     end
 
@@ -433,8 +428,8 @@ end
 --[########################################## Heal and Tank! ##########################################]--
 --[####################################################################################################]--
 
-local function InterruptingHealAndTank()	
-	if ImTank() then
+local function InterruptingHealAndTank()
+    if ImTank() then
         return
     end
 
@@ -442,72 +437,69 @@ local function InterruptingHealAndTank()
         return
     end
 
-	if not MB_doInterrupt.Active then
+    if not MB_doInterrupt.Active then
         return
     end
 
     GetMyInterruptTarget()
 
-    if myClass == "Warrior" then		
-        if UnitMana("player") >= 10 then					
+    if myClass == "Warrior" then
+        if UnitMana("player") >= 10 then
             CastSpellByName(MB_myInterruptSpell[myClass])
         end
-
     elseif myClass == "Shaman" then
-        if ImBusy() then				
+        if ImBusy() then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
-
+        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
     elseif myClass == "Rogue" then
-        if UnitMana("player") >= 25 then				
+        if UnitMana("player") >= 25 then
             CastSpellByName(MB_myInterruptSpell[myClass])
         end
-
     elseif myClass == "Mage" then
-        if not MB_isCastingMyCCSpell then				
+        if not MB_isCastingMyCCSpell then
             SpellStopCasting()
         end
 
         CastSpellByName(MB_myInterruptSpell[myClass])
     end
 
-	MB_doInterrupt.Active = false
+    MB_doInterrupt.Active = false
 end
 
 local function SpecialHealAndTankClass()
-	if myClass == "Hunter" then
+    if myClass == "Hunter" then
         if UseTranquilizingShot() and SpellReady("Tranquilizing Shot") then
             CastSpellByName("Tranquilizing Shot")
         end
 
-		if GLUTH_IsAtGluth() then
-			FreezingTrap()
-		end
+        if GLUTH_IsAtGluth() then
+            FreezingTrap()
+        end
     end
 
-	if myClass == "Mage" then
-		Decurse()
+    if myClass == "Mage" then
+        Decurse()
 
-        if MobsToDetectMagic() and not HasBuffOrDebuff("Detect Magic", "target", "debuff") then		
+        if MobsToDetectMagic() and not HasBuffOrDebuff("Detect Magic", "target", "debuff") then
             if not HasBuffOrDebuff("Detect Magic", "player", "debuff") then
                 CastSpellByName("Detect Magic")
                 return true
             end
         end
-	end
-    
+    end
+
     if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
-		CastSpellByName("Life Tap(Rank 1)")
-		return true		
-	end
+        CastSpellByName("Life Tap(Rank 1)")
+        return true
+    end
 
     return false
 end
 
 local function SpecialHealAndTankSituation()
-	if Instance.ZG() and myClass == "Mage" and TankTarget("Hakkar") then		
+    if Instance.ZG() and myClass == "Mage" and TankTarget("Hakkar") then
         if HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
             return true
@@ -519,11 +511,10 @@ local function SpecialHealAndTankSituation()
             MageCounter.Cycle()
         end
 
-        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then                
+        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
             CrowdControlMCedRaidMemberHakkar()
         end
-
-	elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then		
+    elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
         if SKERAM_CrowdControl() then
             return
         end
@@ -533,40 +524,38 @@ local function SpecialHealAndTankSituation()
             return true
         end
 
-		if myClass == "Mage" then
+        if myClass == "Mage" then
             if not MB_autoToggleSheeps.Active then
                 MB_autoToggleSheeps.Active = true
                 MB_autoToggleSheeps.Time = GetTime() + 3
                 MageCounter.Cycle()
             end
 
-            if MyClassAlphabeticalOrder() == MB_buffingCounterMage then                
+            if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
                 CrowdControlMCedRaidMemberNefarian()
             end
-		end
-
-	elseif Instance.NAXX() and myClass == "Priest" then
+        end
+    elseif Instance.NAXX() and myClass == "Priest" then
         if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
             (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()
             return true
         end
-	end
+    end
 
     return false
 end
 
 function mb_healAndTank()
-
-	if not MB_raidLeader and (TableLength(MBID) > 1) then 
+    if not MB_raidLeader and (TableLength(MBID) > 1) then
         CdPrint("WARNING: You have not chosen a raid leader")
     end
 
-	if Dead("player") then
+    if Dead("player") then
         return
     end
 
-	GetTarget()
+    GetTarget()
 
     if HasBuffNamed("Mind Control", "player") then
         return
@@ -577,10 +566,10 @@ function mb_healAndTank()
     end
 
     CheckWeapon()
-	TakeLIP()
-	TakeFAP()
+    TakeLIP()
+    TakeFAP()
 
-	GTFO()
+    GTFO()
 
     if HasBuffOrDebuff("First Aid", "player", "buff") and HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
         return
@@ -588,7 +577,7 @@ function mb_healAndTank()
 
     CheckWarStomp()
     CheckStoneForm()
-	InterruptingHealAndTank()
+    InterruptingHealAndTank()
 
     if SpecialHealAndTankClass() then
         return
@@ -598,21 +587,21 @@ function mb_healAndTank()
         return
     end
 
-	if CrowdControl() then
+    if CrowdControl() then
         return
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then			
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
             if CrowdControl() then
                 return
             end
-        end        
+        end
 
         if CrowdControlledMob() then
             GetTarget()
         end
-	end
+    end
 
     if LOA_Rotation() then
         return
@@ -623,7 +612,7 @@ function mb_healAndTank()
         ExecuteRotation(SingleRotation, "Tank&Heal SINGLE")
     elseif ImHealer() then
         if myClass == "Druid" then
-            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then			
+            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
                 CastSpellByName("Hibernate(Rank 1)")
                 return
             end
@@ -632,4 +621,3 @@ function mb_healAndTank()
         ExecuteRotation(SingleRotation, "Tank&Heal SINGLE")
     end
 end
-

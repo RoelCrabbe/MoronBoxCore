@@ -1,6 +1,6 @@
 ## Interface: 11200
 ## Title: MoronBoxCore by |cff00ccffMoRoN|r
-## Author: MoRoN 
+## Author: MoRoN
 ## Notes: |cff00ccffMoronBoxCore|r is a advanced framework for MultiBoxers.
 ## Dependencies: SuperMacro
 

@@ -69,14 +69,14 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_imRangedDPS() 
+function mb_imRangedDPS()
     if myClass == "Hunter" or myClass == "Warlock" or myClass == "Mage" then
         return true
     elseif myClass == "Shaman" and MB_mySpecc == "Elemental" then
         return true
     elseif myClass == "Priest" and MB_mySpecc == "Shadow" then
         return true
-	elseif myClass == "Druid" and MB_mySpecc == "Balance" then
+    elseif myClass == "Druid" and MB_mySpecc == "Balance" then
         return true
     end
     return false
@@ -91,7 +91,7 @@ function mb_imMeleeDPS()
     return false
 end
 
-function mb_imTank() 
+function mb_imTank()
     if myClass == "Warrior" and (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
         return true
     elseif myClass == "Druid" and MB_mySpecc == "Feral" then
@@ -114,230 +114,230 @@ function mb_imHealer()
 end
 
 function mb_myGroupOrder()
-	local myParty = {}
+    local myParty = {}
 
-	table.insert(myParty, myName)
+    table.insert(myParty, myName)
 
-	for i = 1, GetNumPartyMembers() do
-		local name, _ =  UnitName("party"..i)
-		table.insert(myParty, name)
-	end
+    for i = 1, GetNumPartyMembers() do
+        local name, _ = UnitName("party" .. i)
+        table.insert(myParty, name)
+    end
 
-	table.sort(myParty)
+    table.sort(myParty)
 
-	local order = 1
-	for k, toon in pairs(myParty) do
-		if toon == myName then
+    local order = 1
+    for k, toon in pairs(myParty) do
+        if toon == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return order
+        order = order + 1
+    end
+    return order
 end
 
 function mb_myClassOrder()
-	local myClassToons = {}
+    local myClassToons = {}
 
-	for name, id in MBID do
-		class = UnitClass(id)
-		if class == myClass and mb_isAlive(id) then
-			if UnitPowerType(id) == 0 then
+    for name, id in MBID do
+        class = UnitClass(id)
+        if class == myClass and mb_isAlive(id) then
+            if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
-			else
+            else
                 myClassToons[name] = UnitHealthMax(id)
-                 end
-		end
-	end
+            end
+        end
+    end
 
-	local order = 1
-	for name, power in sPairs(myClassToons, function(t, a, b) return t[b] < t[a] end) do
-		if name == myName then
+    local order = 1
+    for name, power in sPairs(myClassToons, function(t, a, b) return t[b] < t[a] end) do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_myInvertedClassOrder()
-	local myClassToons = {}
+    local myClassToons = {}
 
-	for name, id in MBID do
-		class = UnitClass(id)
-		if class == myClass and mb_isAlive(id) then
-			if UnitPowerType(id) == 0 then
+    for name, id in MBID do
+        class = UnitClass(id)
+        if class == myClass and mb_isAlive(id) then
+            if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
-			else
+            else
                 myClassToons[name] = UnitHealthMax(id)
             end
-		end
-	end
+        end
+    end
 
-	local order = 1
-	for name, power in sPairs(myClassToons, function(t, a, b) return t[b] > t[a] end) do
-		if name == myName then
+    local order = 1
+    for name, power in sPairs(myClassToons, function(t, a, b) return t[b] > t[a] end) do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_myGroupClassOrder()
-	local myClassToons = {}
-	local name, realm =  UnitName("player")
+    local myClassToons = {}
+    local name, realm = UnitName("player")
 
-	if UnitPowerType("player") == 0 then 
-		myClassToons[name] = UnitManaMax("player")
-	else 
-		myClassToons[name] = UnitHealthMax("player") 
-	end
+    if UnitPowerType("player") == 0 then
+        myClassToons[name] = UnitManaMax("player")
+    else
+        myClassToons[name] = UnitHealthMax("player")
+    end
 
-	for i = 1, 4 do
-		class = UnitClass("party"..i)
-		local name, realm =  UnitName("party"..i)
-		if class == myClass and mb_isAlive("party"..i) then
-			if UnitPowerType("party"..i) == 0 then
-                myClassToons[name] = UnitManaMax("party"..i)
-			else
-                myClassToons[name] = UnitHealthMax("party"..i)
+    for i = 1, 4 do
+        class = UnitClass("party" .. i)
+        local name, realm = UnitName("party" .. i)
+        if class == myClass and mb_isAlive("party" .. i) then
+            if UnitPowerType("party" .. i) == 0 then
+                myClassToons[name] = UnitManaMax("party" .. i)
+            else
+                myClassToons[name] = UnitHealthMax("party" .. i)
             end
-		end
-	end
+        end
+    end
 
-	local order = 1
-	for name, power in sPairs(myClassToons, function(t, a, b) return t[b] < t[a] end) do
-		if name == myName then
+    local order = 1
+    for name, power in sPairs(myClassToons, function(t, a, b) return t[b] < t[a] end) do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_myInvertedGroupClassOrder()
-	local myClassToons = {}
-	local name, realm =  UnitName("player")
+    local myClassToons = {}
+    local name, realm = UnitName("player")
 
-	if UnitPowerType("player") == 0 then 
-		myClassToons[name] = UnitManaMax("player")
-	else 
-		myClassToons[name] = UnitHealthMax("player") 
-	end
+    if UnitPowerType("player") == 0 then
+        myClassToons[name] = UnitManaMax("player")
+    else
+        myClassToons[name] = UnitHealthMax("player")
+    end
 
-	for i = 1, 4 do
-		class = UnitClass("party"..i)
-		local name, realm =  UnitName("party"..i)
-		if class == myClass and mb_isAlive("party"..i) then
-			if UnitPowerType("party"..i) == 0 then
-                myClassToons[name] = UnitManaMax("party"..i)
-			else
-                myClassToons[name] = UnitHealthMax("party"..i)
+    for i = 1, 4 do
+        class = UnitClass("party" .. i)
+        local name, realm = UnitName("party" .. i)
+        if class == myClass and mb_isAlive("party" .. i) then
+            if UnitPowerType("party" .. i) == 0 then
+                myClassToons[name] = UnitManaMax("party" .. i)
+            else
+                myClassToons[name] = UnitHealthMax("party" .. i)
             end
-		end
-	end
+        end
+    end
 
-	local order = 1
-	for name, power in sPairs(myClassToons, function(t, a, b) return t[b] > t[a] end) do
-		if name == myName then
+    local order = 1
+    for name, power in sPairs(myClassToons, function(t, a, b) return t[b] > t[a] end) do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_myClassAlphabeticalOrder()
-	local myClassToons = {}
+    local myClassToons = {}
 
-	for name, id in MBID do
-		class = UnitClass(id)
-		if class == myClass and mb_isAlive(id) then
-			table.insert(myClassToons, name)
-		end
-	end
+    for name, id in MBID do
+        class = UnitClass(id)
+        if class == myClass and mb_isAlive(id) then
+            table.insert(myClassToons, name)
+        end
+    end
 
-	local order = 1	
-	table.sort(myClassToons)
+    local order = 1
+    table.sort(myClassToons)
 
-	for _, name in myClassToons do
-		if name == myName then
+    for _, name in myClassToons do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_myClassAlphabeticalOrderGivenClass(classTable)
-	local myClassToons = {}
+    local myClassToons = {}
 
-	for name, id in classTable do
-		class = UnitClass(id)
-		if class == myClass and mb_isAlive(id) then
-			table.insert(myClassToons, name)
-		end
-	end
+    for name, id in classTable do
+        class = UnitClass(id)
+        if class == myClass and mb_isAlive(id) then
+            table.insert(myClassToons, name)
+        end
+    end
 
-	local order = 1	
-	table.sort(myClassToons)
+    local order = 1
+    table.sort(myClassToons)
 
-	for _, name in myClassToons do
-		if name == myName then
+    for _, name in myClassToons do
+        if name == myName then
             return order
         end
 
-		order = order + 1
-	end
-	return 0
+        order = order + 1
+    end
+    return 0
 end
 
 function mb_numberOfClassInParty(checkClass)
-	local i = 0
-	local MyGroup = MB_groupID[myName]
+    local i = 0
+    local MyGroup = MB_groupID[myName]
 
-	if not MyGroup then
+    if not MyGroup then
         return 0
     end
 
-	for _, name in MB_toonsInGroup[MyGroup] do
-		if MBID[name] and UnitClass(MBID[name]) == checkClass then
-			i = i + 1 
-		end
-	end
-	return i
+    for _, name in MB_toonsInGroup[MyGroup] do
+        if MBID[name] and UnitClass(MBID[name]) == checkClass then
+            i = i + 1
+        end
+    end
+    return i
 end
 
 function mb_numberOfClassInRaid(checkClass)
     local i = 0
-    
+
     for _, name in pairs(MBID) do
         if UnitClass(name) == checkClass then
             i = i + 1
         end
     end
-    
+
     return i
 end
 
 function mb_getNameFromPlayerClassInParty(checkClass)
-	local MyGroup = MB_groupID[myName]
+    local MyGroup = MB_groupID[myName]
 
-	if not MyGroup then
+    if not MyGroup then
         return 0
     end
 
-	for _, name in MB_toonsInGroup[MyGroup] do
-		if MBID[name] and UnitClass(MBID[name]) == checkClass then
-			return name
-		end
-	end
+    for _, name in MB_toonsInGroup[MyGroup] do
+        if MBID[name] and UnitClass(MBID[name]) == checkClass then
+            return name
+        end
+    end
 end
 
 function mb_isMageInGroup()
@@ -346,25 +346,25 @@ function mb_isMageInGroup()
     if UnitInRaid("player") then
         for i = 1, GetNumRaidMembers() do
             local name, _, _, _, iClass = GetRaidRosterInfo(i)
-            if iClass == "Mage" then 
-                table.insert(mages, name) 
+            if iClass == "Mage" then
+                table.insert(mages, name)
             end
         end
     else
-        if UnitClass("player") == "Mage" then 
-            table.insert(mages, UnitName("player")) 
+        if UnitClass("player") == "Mage" then
+            table.insert(mages, UnitName("player"))
         end
-           
+
         for i = 1, 4 do
-            local iClass = UnitClass("party"..i)
-            local name = UnitName("party"..i)
-           
+            local iClass = UnitClass("party" .. i)
+            local name = UnitName("party" .. i)
+
             if iClass == "Mage" and name then
                 table.insert(mages, name)
             end
         end
     end
-    
+
     if TableLength(mages) == 0 then
         return nil
     else
@@ -373,13 +373,14 @@ function mb_isMageInGroup()
 end
 
 function mb_meleeDPSInParty()
-	if mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
-		return true
-	end
+    if mb_numberOfClassInParty("Warrior") > 0 or mb_numberOfClassInParty("Rogue") > 0 then
+        return true
+    end
 end
 
 function mb_numOfCasterHealerInParty()
     local total = 0
-    total = mb_numberOfClassInParty("Mage") + mb_numberOfClassInParty("Priest") + mb_numberOfClassInParty("Druid") + mb_numberOfClassInParty("Shaman")
+    total = mb_numberOfClassInParty("Mage") + mb_numberOfClassInParty("Priest") + mb_numberOfClassInParty("Druid") +
+    mb_numberOfClassInParty("Shaman")
     return total
 end

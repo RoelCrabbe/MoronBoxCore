@@ -4,7 +4,7 @@
 
 --[[
     This file contains all data tables and lookup functions for the addon.
-    
+
     Structure:
     - Shared locals (API functions)
     - Data tables organized by category
@@ -214,13 +214,13 @@ local MB_mobsToShadowWardSet = {
 }
 
 local MB_shadowWardDebuffsSet = {
-    "Corruption", 
-    "Curse of Agony", 
-    "Siphon Life", 
+    "Corruption",
+    "Curse of Agony",
+    "Siphon Life",
     "Impending Doom",
-    "Inevitable Doom", 
-    "Aura of Agony", 
-    "Shadow Word: Pain", 
+    "Inevitable Doom",
+    "Aura of Agony",
+    "Shadow Word: Pain",
     "Corruption of the Earth"
 }
 
@@ -477,17 +477,17 @@ MB_spellsToInt = {
     -- Basic Damage Spells
     "Frostbolt",
     "Shadow Bolt",
-    "Mind Flay",        -- PW trash
-    "Mind Blast",       -- AQ40, Mindslayers
+    "Mind Flay",  -- PW trash
+    "Mind Blast", -- AQ40, Mindslayers
     "Holy Fire",
-    "Drain Life",       -- Spider ZG
+    "Drain Life", -- Spider ZG
 
     -- Healing Spells
     "Greater Heal",
-    "Great Heal",       -- Tiger heal
+    "Great Heal", -- Tiger heal
     "Heal",
     "Healing Wave",
-    "Dark Mending",     -- Flamewalker Priest
+    "Dark Mending", -- Flamewalker Priest
 
     -- Crowd Control
     "Banish",
@@ -505,10 +505,10 @@ MB_spellsToInt = {
     "Fireball",         -- Razorgore First Phase
 
     -- AoE Spells
-    "Fireball Volley",      -- Packs behind Vaelastrasz
+    "Fireball Volley", -- Packs behind Vaelastrasz
     "Shadow Bolt Volley",
     "Frostbolt Volley",
-    "Venom Spit",          -- Snake AOE
+    "Venom Spit", -- Snake AOE
 }
 
 -- Auto-Trade Items
@@ -554,21 +554,21 @@ MB_itemToAutoTrade = {
 
 function mb_bossIShouldUseBandageOn()
     local myClass = UnitClass("player")
-    
+
     if myClass == "Warlock" then
         return mb_tankTargetInSet(MB_bandageBossesForWarlock)
     elseif myClass == "Mage" then
         return mb_tankTargetInSet(MB_bandageBossesForMage)
     end
-    
+
     return false
 end
 
 function mb_bossIShouldUseRecklessnessOn()
-    if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader].."target") then
-        local tankTargetName = UnitName(MBID[MB_raidLeader].."target")
+    if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader] .. "target") then
+        local tankTargetName = UnitName(MBID[MB_raidLeader] .. "target")
         local healthThreshold = MB_recklessnessTargetsSet[tankTargetName]
-        
+
         if healthThreshold then
             return mb_targetHealthFromRaidleader(tankTargetName, healthThreshold)
         end
@@ -619,7 +619,7 @@ function mb_debuffsToShadowWard()
             return true
         end
     end
-    
+
     return mb_hasBuffNamed("Shadow and Frost Reflect", "target")
 end
 
@@ -738,7 +738,7 @@ function mb_stunnableMob()
 
     -- Health-dependent stunning
     local targetHealth = mb_healthPct("target")
-    
+
     if targetHealth < 0.6 then
         local hp60 = { "Plagued Champion", "Plagued Guardian" }
         for _, name in ipairs(hp60) do

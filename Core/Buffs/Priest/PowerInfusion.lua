@@ -71,7 +71,7 @@ local myRace = UnitRace("player")
 
 -- POWER INFUSION BUFF SYSTEM - COMPLETE FLOW
 -- ===========================================
--- 
+--
 -- 0. DISCOVERY PHASE (Only if MB_PIList empty)
 --    ┌─────────────────────────────────────────────────┐
 --    │ No known PI priests available:                  │
@@ -231,14 +231,15 @@ local SpellReady = mb_spellReady
 local PI = CreateFrame("Button", "PI", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do PI:RegisterEvent(event)
-	end
+    } do
+        PI:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -276,27 +277,27 @@ local function GetMyPowerInfusionPriority()
     local focId = MBID[MB_raidLeader]
 
     if focId then
-        targetName = UnitName(focId.."target")
+        targetName = UnitName(focId .. "target")
     end
-    
+
     if targetName and MB_PIRegistry[targetName] then
         return MB_PIRegistry[targetName]()
     end
-    
+
     return GlobalPowerInfusionPriority()
 end
 
 local function GetNextPowerInfusionTarget()
     local bestUnitId = nil
     local bestPriority = nil
-    
+
     for unitId, priority in pairs(MB_PIQueue) do
         if bestPriority == nil or priority < bestPriority then
             bestPriority = priority
             bestUnitId = unitId
         end
     end
-    
+
     return bestUnitId, bestPriority
 end
 
@@ -306,7 +307,7 @@ local function GetPriestInGroup()
     end
 
     local message = "ANY_PRIEST_POWERINFUSION"
-    CdAddonMessage(MB_RAID.."NO_PRIEST_POWERINFUSION", message, 15)
+    CdAddonMessage(MB_RAID .. "NO_PRIEST_POWERINFUSION", message, 15)
     return nil
 end
 
@@ -316,7 +317,7 @@ end
 
 local function HandlePowerInfusionRequest(message, sender)
     local _, _, priority, assignedPriest = string.find(message, "BUFF_INFO:(%d+):(.+)")
-    
+
     local requestPlayer = sender
     local requestPlayerId = MBID[requestPlayer]
 
@@ -329,7 +330,7 @@ local function HandlePowerInfusionRequest(message, sender)
     end
 
     if HasBuffOrDebuff("Power Infusion", requestPlayerId, "buff") then
-        CdAddonMessage(MB_RAID.."BUFFED_POWERINFUSION", "BUFFED:"..requestPlayer)
+        CdAddonMessage(MB_RAID .. "BUFFED_POWERINFUSION", "BUFFED:" .. requestPlayer)
         return
     end
 
@@ -342,7 +343,7 @@ local function HandlePowerInfusionRequest(message, sender)
     end
 
     MB_PIQueue[requestPlayerId] = tonumber(priority)
-    CdAddonMessage(MB_RAID.."CLAIM_POWERINFUSION", "CLAIMING:"..requestPlayer)
+    CdAddonMessage(MB_RAID .. "CLAIM_POWERINFUSION", "CLAIMING:" .. requestPlayer)
 end
 
 local function HandlePowerInfusionClaim(message, claimer)
@@ -368,8 +369,8 @@ local function HandlePowerInfusionPostPriest(message, claimer)
         return false
     end
 
-    local message = "PRIEST_INFO:"..myName
-    CdAddonMessage(MB_RAID.."PRIEST_POWERINFUSION", message, 15)
+    local message = "PRIEST_INFO:" .. myName
+    CdAddonMessage(MB_RAID .. "PRIEST_POWERINFUSION", message, 15)
 end
 
 local function HandlePowerInfusionGetPriest(message, claimer)
@@ -384,26 +385,26 @@ end
 --[####################################################################################################]--
 
 function PI:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
+    if (event == "CHAT_MSG_ADDON") then
         local message, sender = arg2, arg4
 
-        if (arg1 == MB_RAID.."NEED_POWERINFUSION") then
+        if (arg1 == MB_RAID .. "NEED_POWERINFUSION") then
             HandlePowerInfusionRequest(message, sender)
-        elseif (arg1 == MB_RAID.."CLAIM_POWERINFUSION") then
+        elseif (arg1 == MB_RAID .. "CLAIM_POWERINFUSION") then
             HandlePowerInfusionClaim(message, sender)
-        elseif (arg1 == MB_RAID.."BUFFED_POWERINFUSION") then
+        elseif (arg1 == MB_RAID .. "BUFFED_POWERINFUSION") then
             HandlePowerInfusionBuffed(message, sender)
         end
 
-        if (arg1 == MB_RAID.."NO_PRIEST_POWERINFUSION") then
+        if (arg1 == MB_RAID .. "NO_PRIEST_POWERINFUSION") then
             HandlePowerInfusionPostPriest(message, sender)
-        elseif (arg1 == MB_RAID.."PRIEST_POWERINFUSION") then
+        elseif (arg1 == MB_RAID .. "PRIEST_POWERINFUSION") then
             HandlePowerInfusionGetPriest(message, sender)
         end
     end
 end
 
-PI:SetScript("OnEvent", PI.OnEvent) 
+PI:SetScript("OnEvent", PI.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -429,8 +430,8 @@ function PI_RequestPowerInfusion()
         return
     end
 
-    local message = "BUFF_INFO:"..myPriority..":"..myBuffingPriest
-    CdAddonMessage(MB_RAID.."NEED_POWERINFUSION", message, 15)
+    local message = "BUFF_INFO:" .. myPriority .. ":" .. myBuffingPriest
+    CdAddonMessage(MB_RAID .. "NEED_POWERINFUSION", message, 15)
 end
 
 function PI_ProcessPowerInfusionQueue()
@@ -461,14 +462,14 @@ function PI_ProcessPowerInfusionQueue()
         end
 
         CastSpellByName(spellName, false)
-        CdMessage(spellName.." on "..GetColors(targetName).."!")
+        CdMessage(spellName .. " on " .. GetColors(targetName) .. "!")
 
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true
     end
 
-    local message = "BUFFED:"..targetName
-    CdAddonMessage(MB_RAID.."BUFFED_POWERINFUSION", message)
+    local message = "BUFFED:" .. targetName
+    CdAddonMessage(MB_RAID .. "BUFFED_POWERINFUSION", message)
     return false
 end

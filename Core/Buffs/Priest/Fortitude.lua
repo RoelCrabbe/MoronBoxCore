@@ -172,14 +172,15 @@ local SelfBuff = mb_selfBuff
 local FORT = CreateFrame("Button", "FORT", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do FORT:RegisterEvent(event)
-	end
+    } do
+        FORT:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -212,7 +213,7 @@ local function GetNextTarget()
     local bestUnitId = nil
     local bestPriority = nil
     local bestGroupNum = nil
-   
+
     for groupNum, playersInGroup in pairs(MB_FORTQueue) do
         for unitId, priority in pairs(playersInGroup) do
             if bestPriority == nil or priority < bestPriority then
@@ -222,7 +223,7 @@ local function GetNextTarget()
             end
         end
     end
-   
+
     return bestUnitId, tonumber(bestPriority), tonumber(bestGroupNum)
 end
 
@@ -239,9 +240,9 @@ local function GetPriestInGroup()
 end
 
 local function GetGroupNumber()
-	if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
-		return
-	end
+    if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
+        return
+    end
 
     return MB_groupID[myName]
 end
@@ -270,7 +271,7 @@ local function HandleFortitudeRequest(message, sender)
     if HasBuffOrDebuff("Power Word: Fortitude", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Fortitude", requestPlayerId, "buff") then
         local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
-        CdAddonMessage(MB_RAID.."BUFFED_FORTITUDE", message)
+        CdAddonMessage(MB_RAID .. "BUFFED_FORTITUDE", message)
         return
     end
 
@@ -287,7 +288,7 @@ local function HandleFortitudeRequest(message, sender)
     end
 
     MB_FORTQueue[groupNum][requestPlayerId] = priority
-    CdAddonMessage(MB_RAID.."CLAIM_FORTITUDE", "CLAIMING_GROUP:"..groupNum)
+    CdAddonMessage(MB_RAID .. "CLAIM_FORTITUDE", "CLAIMING_GROUP:" .. groupNum)
 end
 
 local function HandleFortitudeClaim(message, claimer)
@@ -323,25 +324,25 @@ end
 function FORT:OnEvent()
     if event == "CHAT_MSG_ADDON" then
         local message, sender = arg2, arg4
-        
-        if arg1 == MB_RAID.."NEED_FORTITUDE" then
+
+        if arg1 == MB_RAID .. "NEED_FORTITUDE" then
             HandleFortitudeRequest(message, sender)
-        elseif arg1 == MB_RAID.."CLAIM_FORTITUDE" then
+        elseif arg1 == MB_RAID .. "CLAIM_FORTITUDE" then
             HandleFortitudeClaim(message, sender)
-        elseif arg1 == MB_RAID.."BUFFED_FORTITUDE" then
+        elseif arg1 == MB_RAID .. "BUFFED_FORTITUDE" then
             HandleFortitudeBuffed(message, sender)
         end
     end
 end
 
-FORT:SetScript("OnEvent", FORT.OnEvent) 
+FORT:SetScript("OnEvent", FORT.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function FORT_RequestFortitude()
-    if HasBuffOrDebuff("Power Word: Fortitude", "player", "buff") or 
+    if HasBuffOrDebuff("Power Word: Fortitude", "player", "buff") or
         HasBuffOrDebuff("Prayer of Fortitude", "player", "buff") then
         return
     end
@@ -355,7 +356,7 @@ function FORT_RequestFortitude()
     end
 
     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingPriest)
-    CdAddonMessage(MB_RAID.."NEED_FORTITUDE", message, 15)
+    CdAddonMessage(MB_RAID .. "NEED_FORTITUDE", message, 15)
 end
 
 function FORT_ProcessFortitudeQueue()
@@ -387,7 +388,7 @@ function FORT_ProcessFortitudeQueue()
     end
 
     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID.."BUFFED_FORTITUDE", message)
+    CdAddonMessage(MB_RAID .. "BUFFED_FORTITUDE", message)
     return false
 end
 

@@ -94,11 +94,11 @@ local TankTarget = mb_tankTarget
 local function SpecialFollowing()
     if Instance.AQ40() and HasBuffOrDebuff("Plague", "player", "debuff") and TankTarget("Anubisath Defender") then
         return true
-	elseif Instance.MC() and TankTarget("Baron Geddon") and MyNameInTable(MB_raidAssist.GTFO.Baron) then
-		return true
-	elseif Instance.ONY() and TankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
-		return true
-	end
+    elseif Instance.MC() and TankTarget("Baron Geddon") and MyNameInTable(MB_raidAssist.GTFO.Baron) then
+        return true
+    elseif Instance.ONY() and TankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+        return true
+    end
 
     return false
 end
@@ -108,10 +108,10 @@ end
 --[####################################################################################################]--
 
 local function FollowRaidLeader()
-	if MB_raidLeader then
-		FollowByName(MB_raidLeader, 1)
-		SetView(5)
-	end
+    if MB_raidLeader then
+        FollowByName(MB_raidLeader, 1)
+        SetView(5)
+    end
 end
 
 function mb_followFocus()
@@ -119,18 +119,18 @@ function mb_followFocus()
         return
     end
 
-	if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
-		CastSpellByName("Life Tap(Rank 1)")
-	end
+    if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
+        CastSpellByName("Life Tap(Rank 1)")
+    end
 
-	if ImFocus() then
-		return
-	end
+    if ImFocus() then
+        return
+    end
 
-	if Instance.NAXX() and THAD_IsFollowThaddius() then
-	else
-		FollowRaidLeader()
-	end
+    if Instance.NAXX() and THAD_IsFollowThaddius() then
+    else
+        FollowRaidLeader()
+    end
 end
 
 function mb_casterFollow()
@@ -138,19 +138,19 @@ function mb_casterFollow()
         return
     end
 
-	if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
-		CastSpellByName("Life Tap(Rank 1)")
-	end
+    if myClass == "Warlock" and HasBuffOrDebuff("Hellfire", "player", "buff") then
+        CastSpellByName("Life Tap(Rank 1)")
+    end
 
-	if ImFocus() then
-		return
-	end
+    if ImFocus() then
+        return
+    end
 
-	if not ImRangedDPS() then
-		return
-	end
+    if not ImRangedDPS() then
+        return
+    end
 
-	FollowRaidLeader()
+    FollowRaidLeader()
 end
 
 function mb_meleeFollow()
@@ -158,40 +158,40 @@ function mb_meleeFollow()
         return
     end
 
-	if ImFocus() then
-		return
-	end
+    if ImFocus() then
+        return
+    end
 
-	if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then	
-		if SKERAM_IsFollowSkeram() then
-			return
-		end
-	elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
-		if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) then
-			return
-		end
+    if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
+        if SKERAM_IsFollowSkeram() then
+            return
+        end
+    elseif Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+        if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) then
+            return
+        end
 
-		if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank) then
-			return
-		end
-			
-		if MyNameInTable(MB_myRazorgoreLeftDPSERS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank), 1)
-			return
-		end
+        if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank) then
+            return
+        end
 
-		if MyNameInTable(MB_myRazorgoreRightDPSERS) then
-			FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank), 1)
-			return
-		end
+        if MyNameInTable(MB_myRazorgoreLeftDPSERS) then
+            FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank), 1)
+            return
+        end
+
+        if MyNameInTable(MB_myRazorgoreRightDPSERS) then
+            FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank), 1)
+            return
+        end
     else
-        if ImMeleeDPS() then		
+        if ImMeleeDPS() then
             FollowRaidLeader()
         end
 
         if ImTank() and not MB_myOTTarget
-            and not (TankTarget("Instructor Razuvious") or TankTarget("Razorgore the Untamed") 
-            or TankTarget("Chromaggus") or IsAtTwinsEmps()) then
+            and not (TankTarget("Instructor Razuvious") or TankTarget("Razorgore the Untamed")
+                or TankTarget("Chromaggus") or IsAtTwinsEmps()) then
             FollowRaidLeader()
         end
     end
@@ -202,13 +202,13 @@ function mb_tankFollow()
         return
     end
 
-	if ImFocus() then
-		return
-	end
+    if ImFocus() then
+        return
+    end
 
-	if ImTank() then		
-		FollowRaidLeader()
-	end
+    if ImTank() then
+        FollowRaidLeader()
+    end
 end
 
 function mb_healerFollow()
@@ -216,17 +216,17 @@ function mb_healerFollow()
         return
     end
 
-	if ImFocus() then
-		return
-	end
+    if ImFocus() then
+        return
+    end
 
-	if not ImHealer() then
-		return
-	end
+    if not ImHealer() then
+        return
+    end
 
-	if Instance.NAXX() and THAD_IsAtThaddiusP1() then 
-		THAD_IsFollowThaddiusHealers()
-	else
-		FollowRaidLeader()
-	end
+    if Instance.NAXX() and THAD_IsAtThaddiusP1() then
+        THAD_IsFollowThaddiusHealers()
+    else
+        FollowRaidLeader()
+    end
 end

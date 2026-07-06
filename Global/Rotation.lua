@@ -91,17 +91,17 @@ MB_myPreCastList = {}
 MB_myLoathebList = {}
 
 Instance = {
-    NAXX = function() return GetRealZoneText() == "Naxxramas" end,
-    AQ40 = function() return GetRealZoneText() == "Ahn\'Qiraj" end,
-    AQ20 = function() return GetRealZoneText() == "Ruins of Ahn\'Qiraj" end,
-    MC   = function() return GetRealZoneText() == "Molten Core" end,
-    BWL  = function() return GetRealZoneText() == "Blackwing Lair" end,  
-    ONY  = function() return GetRealZoneText() == "Onyxia\'s Lair" end,
-    ZG   = function() return GetRealZoneText() == "Zul\'Gurub" end,
+    NAXX        = function() return GetRealZoneText() == "Naxxramas" end,
+    AQ40        = function() return GetRealZoneText() == "Ahn\'Qiraj" end,
+    AQ20        = function() return GetRealZoneText() == "Ruins of Ahn\'Qiraj" end,
+    MC          = function() return GetRealZoneText() == "Molten Core" end,
+    BWL         = function() return GetRealZoneText() == "Blackwing Lair" end,
+    ONY         = function() return GetRealZoneText() == "Onyxia\'s Lair" end,
+    ZG          = function() return GetRealZoneText() == "Zul\'Gurub" end,
     IsWorldBoss = function()
         return UnitClassification("target") == "worldboss"
-    end,    
-    IsInRaid = function(self)
+    end,
+    IsInRaid    = function(self)
         return self.NAXX() or self.AQ40() or self.AQ20() or self.MC() or self.BWL() or self.ONY() or self.ZG()
     end
 }
@@ -120,7 +120,7 @@ MB_offTanks = {}
 MB_raidTanks = {}
 MB_noneDruidTanks = {}
 MB_groupID = {}
-MB_classList = { 
+MB_classList = {
     Warrior = {},
     Mage = {},
     Shaman = {},
@@ -136,95 +136,95 @@ for i = 1, 8 do
     MB_toonsInGroup[i] = {}
 end
 
-MB_raidLeader = nil
-MB_mySpecc = nil
-MB_myHealSpell = nil
-MB_attackSlot = nil
-MB_attackRangedSlot = nil
-MB_attackWandSlot = nil
+MB_raidLeader                                          = nil
+MB_mySpecc                                             = nil
+MB_myHealSpell                                         = nil
+MB_attackSlot                                          = nil
+MB_attackRangedSlot                                    = nil
+MB_attackWandSlot                                      = nil
 
-MB_warriorBinds = "Fury"
-MB_evoGear = nil
+MB_warriorBinds                                        = "Fury"
+MB_evoGear                                             = nil
 
-MB_cooldowns = {}
+MB_cooldowns                                           = {}
 
-MB_druidTankInParty = nil
-MB_warriorTankInParty = nil
+MB_druidTankInParty                                    = nil
+MB_warriorTankInParty                                  = nil
 
-MB_myCCTarget = nil
-MB_myInterruptTarget = nil
-MB_doInterrupt = { Active = false, Time = 0 }
-MB_myOTTarget = nil
+MB_myCCTarget                                          = nil
+MB_myInterruptTarget                                   = nil
+MB_doInterrupt                                         = { Active = false, Time = 0 }
+MB_myOTTarget                                          = nil
 
-MB_myAssignedHealTarget = nil
+MB_myAssignedHealTarget                                = nil
 
-MB_currentCC = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
-MB_currentInterrupt  = { Rogue = 1, Mage = 1, Shaman = 1 }
-MB_currentFear = { Warlock = 1 }
-MB_currentRaidTarget = 1
-MB_Ot_Index = 1
+MB_currentCC                                           = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
+MB_currentInterrupt                                    = { Rogue = 1, Mage = 1, Shaman = 1 }
+MB_currentFear                                         = { Warlock = 1 }
+MB_currentRaidTarget                                   = 1
+MB_Ot_Index                                            = 1
 
-MB_myCCSpell = {
-    Priest = "Shackle Undead", 
-    Mage = "Polymorph", 
-    Warlock = "Banish", 
+MB_myCCSpell                                           = {
+    Priest = "Shackle Undead",
+    Mage = "Polymorph",
+    Warlock = "Banish",
     Druid = "Hibernate"
 }
 
-MB_myInterruptSpell = {
-    Rogue = "Kick", 
-    Shaman = "Earth Shock", 
-    Mage = "Counterspell", 
-    Warrior = "Pummel", 
+MB_myInterruptSpell                                    = {
+    Rogue = "Kick",
+    Shaman = "Earth Shock",
+    Mage = "Counterspell",
+    Warrior = "Pummel",
     Priest = "Silence",
     Paladin = "Hammer of Justice"
 }
 
-MB_myFearSpell = {
+MB_myFearSpell                                         = {
     Warlock = "Fear"
 }
 
-MB_raidTargetNames = {
-    [8] = "Skull", 
-    [7] = "Cross", 
-    [6] = "Square", 
-    [5] = "Moon", 
-    [4] = "Triangle", 
-    [3] = "Diamond", 
-    [2] = "Circle", 
+MB_raidTargetNames                                     = {
+    [8] = "Skull",
+    [7] = "Cross",
+    [6] = "Square",
+    [5] = "Moon",
+    [4] = "Triangle",
+    [3] = "Diamond",
+    [2] = "Circle",
     [1] = "Star"
 }
 
-MB_isCasting = nil
-MB_isChanneling = nil
-MB_isCastingMyCCSpell = nil
+MB_isCasting                                           = nil
+MB_isChanneling                                        = nil
+MB_isCastingMyCCSpell                                  = nil
 
-MB_ignite = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
+MB_ignite                                              = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
 
-MB_isMoving = { Active = false, Time = 0 }
+MB_isMoving                                            = { Active = false, Time = 0 }
 
-MB_buffingCounterWarlock = 1
-MB_buffingCounterDruid = 1
-MB_buffingCounterMage = 1
-MB_buffingCounterPriest = 1
-MB_buffingCounterPaladin = 1
+MB_buffingCounterWarlock                               = 1
+MB_buffingCounterDruid                                 = 1
+MB_buffingCounterMage                                  = 1
+MB_buffingCounterPriest                                = 1
+MB_buffingCounterPaladin                               = 1
 
-MB_DMFWeek = { Active = false, Time = 0 }
-MB_MCEnter = { Active = false, Time = 0 }
-MB_teleportMan = { Active = false, Time = 0 }
-MB_worldBuffMan = { Active = false, Time = 0 }
-MB_summonRag = { Active = false, Time = 0 }
+MB_DMFWeek                                             = { Active = false, Time = 0 }
+MB_MCEnter                                             = { Active = false, Time = 0 }
+MB_teleportMan                                         = { Active = false, Time = 0 }
+MB_worldBuffMan                                        = { Active = false, Time = 0 }
+MB_summonRag                                           = { Active = false, Time = 0 }
 
-MB_tradeOpen = nil
-MB_tradeOpenOnUpdate = { Active = false, Time = 0 }
+MB_tradeOpen                                           = nil
+MB_tradeOpenOnUpdate                                   = { Active = false, Time = 0 }
 
 MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange = { Active = false, Time = 0 }
-MB_razorgoreNewTargetBecauseTargetIsBehind = { Active = false, Time = 0 }
-MB_lieutenantAndorovIsNotHealable = { Active = false, Time = 0 }
-MB_targetWrongWayOrTooFar = { Active = false, Time = 0 }
-MB_autoToggleSheeps = { Active = false, Time = 0 }
-MB_autoBuff = { Active = false, Time = 0 }
-MB_useCooldowns = { Active = false, Time = 0 }
-MB_useBigCooldowns = { Active = false, Time = 0 }
-MB_hunterFeign = { Active = false, Time = 0 }
-MB_autoBuyReagents = { Active = false, Time = 0 }
+MB_razorgoreNewTargetBecauseTargetIsBehind             = { Active = false, Time = 0 }
+MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time = 0 }
+MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
+MB_autoToggleSheeps                                    = { Active = false, Time = 0 }
+MB_autoBuff                                            = { Active = false, Time = 0 }
+MB_useCooldowns                                        = { Active = false, Time = 0 }
+MB_useBigCooldowns                                     = { Active = false, Time = 0 }
+MB_hunterFeign                                         = { Active = false, Time = 0 }
+MB_autoBuyReagents                                     = { Active = false, Time = 0 }

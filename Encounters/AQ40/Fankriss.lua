@@ -71,7 +71,7 @@ local myRace = UnitRace("player")
 
 local AssistFocus = mb_assistFocus
 local AssistSpecificTargetFromPlayer = mb_assistSpecificTargetFromPlayer
-local AssistSpecificTargetFromPlayerInMeleeRange =  mb_assistSpecificTargetFromPlayerInMeleeRange
+local AssistSpecificTargetFromPlayerInMeleeRange = mb_assistSpecificTargetFromPlayerInMeleeRange
 local CdAddonMessage = mb_cdAddonMessage
 local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
@@ -130,18 +130,18 @@ local MB_myFankrissStoneShieldPotStrategy = true
 
 -- Tank Assignments (REQUIRED)
 local MB_myFankrissOFFTANKS = {
-    "Suecia",               -- Horde (Targets boss, manual taunt)
-    "Droodood"              -- Alliance
+    "Suecia",  -- Horde (Targets boss, manual taunt)
+    "Droodood" -- Alliance
 }
 
 local MB_myFankrissSpawnTANKone = {
-    "Ajlano",               -- Horde (Targets snakes, caster assist)
-    "Laty"                  -- Alliance
+    "Ajlano", -- Horde (Targets snakes, caster assist)
+    "Laty"    -- Alliance
 }
 
 local MB_myFankrissSpawnTANKtwo = {
-    "Almisael",             -- Horde (Targets snakes, caster assist)  
-    "Myosin"                -- Alliance
+    "Almisael", -- Horde (Targets snakes, caster assist)
+    "Myosin"    -- Alliance
 }
 
 -- Strategy Configuration -- No changes below this line
@@ -188,10 +188,10 @@ local function AnnounceMortalWound()
     if not focId then
         return
     end
-    
-    local targetName = UnitName(focId.."target")
+
+    local targetName = UnitName(focId .. "target")
     if targetName == "Fankriss the Unyielding" and TankHasMortalWound(focId) then
-        CdAddonMessage(MB_RAID.."FANKRISS", "TAUNT_BOSS", 30)
+        CdAddonMessage(MB_RAID .. "FANKRISS", "TAUNT_BOSS", 30)
     end
 end
 
@@ -233,12 +233,12 @@ local function FANKRISS_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."FANKRISS", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "FANKRISS", "ENGAGE", 30)
         FankrissEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -246,7 +246,7 @@ end
 --[####################################################################################################]--
 
 function FANKRISS:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."FANKRISS" then
+    if arg1 == MB_RAID .. "FANKRISS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Fankriss! <<")
             self:OnEnable()
@@ -261,7 +261,7 @@ end
 
 function FANKRISS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Fankriss the Unyielding dies") and FankrissEncounter.Active then
-        CdAddonMessage(MB_RAID.."FANKRISS", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "FANKRISS", "DISENGAGE", 30)
     end
 end
 
@@ -317,7 +317,7 @@ end
 function FANKRISS_TargetingPreFocus()
     local tName = UnitName("target")
 
-	if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
+    if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
         local myFankrissOFFTANK = ReturnPlayerInRaidFromTable(MB_myFankrissOFFTANKS)
 
         if (myName == myFankrissOFFTANK) and MB_raidLeader ~= myName then
@@ -329,7 +329,7 @@ function FANKRISS_TargetingPreFocus()
         end
 
         if myName == myFankrissOFFTANK then
-            if not MB_targetNearestDistanceChanged then                
+            if not MB_targetNearestDistanceChanged then
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
@@ -350,25 +350,25 @@ function FANKRISS_TargetingPreFocus()
 end
 
 local function TankSurviveSnake()
-    if HealthPct("player") <= 0.4 then				
-        SelfBuff("Last Stand") 
+    if HealthPct("player") <= 0.4 then
+        SelfBuff("Last Stand")
     end
 
-    if HealthPct("player") <= 0.3 then				
-        SelfBuff("Shield Wall") 
+    if HealthPct("player") <= 0.3 then
+        SelfBuff("Shield Wall")
     end
 end
 
 function FANKRISS_TargetingPostFocus()
     local tName = UnitName("target")
 
-	if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
+    if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
         local myFankrissOFFTANK = ReturnPlayerInRaidFromTable(MB_myFankrissOFFTANKS)
         local mySnakeTANKone = ReturnPlayerInRaidFromTable(MB_myFankrissSpawnTANKone)
         local mySnakeTANKtwo = ReturnPlayerInRaidFromTable(MB_myFankrissSpawnTANKtwo)
 
         if (myName == myFankrissOFFTANK) then
-            if not MB_targetNearestDistanceChanged then             
+            if not MB_targetNearestDistanceChanged then
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
@@ -381,30 +381,27 @@ function FANKRISS_TargetingPostFocus()
                 TargetNearestEnemy()
             end
             return true
-
-        elseif (myName == mySnakeTANKone or myName == mySnakeTANKtwo) then				
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "25")
-				MB_targetNearestDistanceChanged = true
-			end
+        elseif (myName == mySnakeTANKone or myName == mySnakeTANKtwo) then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "25")
+                MB_targetNearestDistanceChanged = true
+            end
 
             if FixateOnTarget("Spawn of Fankriss") then
                 TankSurviveSnake()
                 return true
             end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImTank() then
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImMeleeDPS() and myClass == "Warrior" then
             if LockOnTarget("Fankriss the Unyielding") then
                 return true
@@ -412,7 +409,6 @@ function FANKRISS_TargetingPostFocus()
 
             AssistFocus()
             return true
-
         elseif (ImMeleeDPS() and myClass == "Rogue") or ImHealer() then
             if AssistSpecificTargetFromPlayerInMeleeRange("Spawn of Fankriss", mySnakeTANKone) then
                 return true
@@ -428,7 +424,6 @@ function FANKRISS_TargetingPostFocus()
 
             AssistFocus()
             return true
-
         elseif ImRangedDPS() then
             if AssistSpecificTargetFromPlayer("Spawn of Fankriss", mySnakeTANKone) then
                 return true

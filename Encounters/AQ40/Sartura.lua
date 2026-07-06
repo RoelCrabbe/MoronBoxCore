@@ -71,7 +71,7 @@ local myRace = UnitRace("player")
 
 local AssistFocus = mb_assistFocus
 local AssistSpecificTargetFromPlayer = mb_assistSpecificTargetFromPlayer
-local AssistSpecificTargetFromPlayerInMeleeRange =  mb_assistSpecificTargetFromPlayerInMeleeRange
+local AssistSpecificTargetFromPlayerInMeleeRange = mb_assistSpecificTargetFromPlayerInMeleeRange
 local CdAddonMessage = mb_cdAddonMessage
 local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
@@ -168,12 +168,12 @@ local function SARTURA_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."SARTURA", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SARTURA", "ENGAGE", 30)
         SarturaEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function SARTURA:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."SARTURA" then
+    if arg1 == MB_RAID .. "SARTURA" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Sartura! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function SARTURA:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Battleguard Sartura dies") and SarturaEncounter.Active then
-        CdAddonMessage(MB_RAID.."SARTURA", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SARTURA", "DISENGAGE", 30)
     end
 end
 
@@ -241,19 +241,18 @@ end
 function SARTURA_TargetingPostFocus()
     local tName = UnitName("target")
 
-	if SARTURA_CheckEncounter() and MB_mySarturaBoxStrategy then
+    if SARTURA_CheckEncounter() and MB_mySarturaBoxStrategy then
         if ImTank() then
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "15")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "15")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

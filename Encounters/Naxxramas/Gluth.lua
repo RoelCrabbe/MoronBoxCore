@@ -99,13 +99,14 @@ local UnitInRange = mb_unitInRange
 local GLUTH = CreateFrame("Button", "GLUTH", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD"
-		}
-		do GLUTH:RegisterEvent(event)
-	end
+    }
+    do
+        GLUTH:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -113,7 +114,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myGluthBoxStrategy = true 
+local MB_myGluthBoxStrategy = true
 local MB_myGluthNaturePotStrategy = true
 
 --[####################################################################################################]--
@@ -126,8 +127,8 @@ local function UseNaturePotsOnGluth()
     end
 
     if ImBusy() or not InCombat("player") then
-		return
-	end
+        return
+    end
 
     if ImMeleeDPS() or ImTank() then
         return
@@ -141,20 +142,20 @@ end
 --[####################################################################################################]--
 
 function GLUTH_IsAtGluth()
-	if (TankTarget("Gluth") or TankTarget("Zombie Chow")) then
-		return true
-	end
+    if (TankTarget("Gluth") or TankTarget("Zombie Chow")) then
+        return true
+    end
 
-	local tName = UnitName("target")
-	if not tName then
-		return false
-	end
+    local tName = UnitName("target")
+    if not tName then
+        return false
+    end
 
-	if (tName == "Gluth" or tName == "Zombie Chow") then
-		return true
-	end
+    if (tName == "Gluth" or tName == "Zombie Chow") then
+        return true
+    end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -162,25 +163,25 @@ end
 --[####################################################################################################]--
 
 function GLUTH:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
+    if (event == "CHAT_MSG_ADDON") then
 
     end
 end
 
-GLUTH:SetScript("OnEvent", GLUTH.OnEvent) 
+GLUTH:SetScript("OnEvent", GLUTH.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function GLUTH_GetOUT()
-	if GLUTH_IsAtGluth() and MB_myGluthBoxStrategy then
-		if TankTarget("Gluth") and TankTargetHealth() < 0.4 then        
+    if GLUTH_IsAtGluth() and MB_myGluthBoxStrategy then
+        if TankTarget("Gluth") and TankTargetHealth() < 0.4 then
             UseNaturePotsOnGluth()
         end
-		return true
-	end
-	return false
+        return true
+    end
+    return false
 end
 
 --[####################################################################################################]--

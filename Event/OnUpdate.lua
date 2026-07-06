@@ -77,9 +77,9 @@ local ImHealer = mb_imHealer
 --[####################################################################################################]--
 
 local function RemoveFeignDeath()
-	CancelBuff("Feign Death")
-	DoEmote("Stand")
-	MB_hunterFeign.Active = false
+    CancelBuff("Feign Death")
+    DoEmote("Stand")
+    MB_hunterFeign.Active = false
 end
 
 --[####################################################################################################]--
@@ -88,27 +88,27 @@ end
 
 function MMB:OnUpdate()
     local currentTime = GetTime()
-    
-	if MB_tradeOpenOnUpdate.Active and GetTime() > MB_tradeOpenOnUpdate.Time then
+
+    if MB_tradeOpenOnUpdate.Active and GetTime() > MB_tradeOpenOnUpdate.Time then
         for i = 0, 6 do
             for k, item in pairs(MB_itemToAutoTrade) do
                 if MB_tradeOpen and GetTradeTargetItemLink(i) and string.find(GetTradeTargetItemLink(i), item) then
-                    AcceptTrade() 
-                    return 
+                    AcceptTrade()
+                    return
                 end
-                
+
                 if MB_tradeOpen and GetTradePlayerItemLink(i) and string.find(GetTradePlayerItemLink(i), item) then
-                    AcceptTrade() 
-                    return 
+                    AcceptTrade()
+                    return
                 end
             end
         end
-	end
-    
+    end
+
     if MB_DMFWeek.Active and currentTime > MB_DMFWeek.Time then
         MB_DMFWeek.Active = false
         local option1, _, option2 = GetGossipOptions()
-       
+
         if ImHealer() then
             if option1 == "Yes" then
                 SelectGossipOption(1)
@@ -119,11 +119,11 @@ function MMB:OnUpdate()
             SelectGossipOption(1)
         end
     end
-    
+
     if MB_MCEnter.Active and currentTime > MB_MCEnter.Time then
         MB_MCEnter.Active = false
 
-        if GetGossipOptions() == "Teleport me to the Molten Core" then              
+        if GetGossipOptions() == "Teleport me to the Molten Core" then
             SelectGossipOption(1)
         end
     end
@@ -161,7 +161,7 @@ function MMB:OnUpdate()
             SelectGossipOption(1)
         end
     end
-    
+
     local TimersToCheck = {
         MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange,
         MB_lieutenantAndorovIsNotHealable,
@@ -174,17 +174,17 @@ function MMB:OnUpdate()
         MB_doInterrupt,
         MB_isMoving
     }
-    
+
     for _, action in ipairs(TimersToCheck) do
         if action.Active and currentTime > action.Time then
             action.Active = false
         end
     end
-    
+
     if MB_autoBuyReagents.Active and currentTime > MB_autoBuyReagents.Time then
         BuyReagentsAndConsumables()
     end
-    
+
     if MB_hunterFeign.Active and currentTime > MB_hunterFeign.Time then
         RemoveFeignDeath()
     end

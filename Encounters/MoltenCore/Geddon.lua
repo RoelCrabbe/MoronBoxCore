@@ -113,11 +113,11 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myGeddonBoxStrategy = true 
+local MB_myGeddonBoxStrategy = true
 local MB_myGeddonHealers = {}
 
 local MB_myGeddonHealerAssignment = { -- [Player Number] = [Number of Players Assigned]
-    [1] = 3  -- Main Tank
+    [1] = 3                           -- Main Tank
 }
 
 -- Strategy Configuration -- No changes below this line
@@ -161,8 +161,8 @@ local function GetHealersOnGeddon()
     if MyNameInTable(MB_myGeddonHealers) then
         return true
     end
-    
-    CdAddonMessage(MB_RAID.."GEDDON", "HEALERS", 30)
+
+    CdAddonMessage(MB_RAID .. "GEDDON", "HEALERS", 30)
     return true
 end
 
@@ -178,7 +178,7 @@ local function HandleHealersOnGeddon()
     if MyNameInTable(MB_myGeddonHealers) then
         return true
     end
-    
+
     table.insert(MB_myGeddonHealers, myName)
     CdPrint(">> You are now registered as a Geddon Healer! <<")
     return true
@@ -202,11 +202,11 @@ local function AssignHealersToTanks()
             break
         end
     end
-    
+
     if not myPosition then
         return false
     end
-    
+
     local tankHealers = MB_myGeddonHealerAssignment[1] or 0
     if myPosition > tankHealers then
         return false
@@ -214,7 +214,7 @@ local function AssignHealersToTanks()
 
     local tankName = TankName()
     local tankUnit = MBID[tankName]
-    local tankToHeal = tankUnit and UnitName(tankUnit.."targettarget")
+    local tankToHeal = tankUnit and UnitName(tankUnit .. "targettarget")
 
     if not tankToHeal then
         return false
@@ -229,11 +229,11 @@ end
 --[####################################################################################################]--
 
 local function GEDDON_CheckEncounter()
-	if GeddonEncounter.Active then
+    if GeddonEncounter.Active then
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if TankTarget("Baron Geddon") then
@@ -245,12 +245,12 @@ local function GEDDON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."GEDDON", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GEDDON", "ENGAGE", 30)
         GeddonEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -258,11 +258,11 @@ end
 --[####################################################################################################]--
 
 function GEDDON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."GEDDON" then
+    if arg1 == MB_RAID .. "GEDDON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Geddon! <<")
             self:OnEnable()
-    
+
             GetHealersOnGeddon()
             self:ScheduleEvent("GetGeddonHealers", GetHealersOnGeddon, 3)
             self:ScheduleEvent("GeddonHealerAssignments", AssignHealersToTanks, 5)
@@ -277,7 +277,7 @@ end
 
 function GEDDON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Baron Geddon dies") and GeddonEncounter.Active then
-        CdAddonMessage(MB_RAID.."GEDDON", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GEDDON", "DISENGAGE", 30)
     end
 end
 
@@ -298,19 +298,18 @@ end
 --[####################################################################################################]--
 
 function GEDDON_TargetingPostFocus()
-	if GEDDON_CheckEncounter() and MB_myGeddonBoxStrategy then
+    if GEDDON_CheckEncounter() and MB_myGeddonBoxStrategy then
         if ImTank() then
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

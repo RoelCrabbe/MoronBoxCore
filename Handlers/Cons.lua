@@ -70,73 +70,74 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 local MageWater = {
-	[60] = "Conjured Crystal Water",
-	[50] = "Conjured Sparkling Water"
+    [60] = "Conjured Crystal Water",
+    [50] = "Conjured Sparkling Water"
 }
 
 function mb_mageWater()
-	local waterRanks = TableInvert(MageWater)
-	local bestRank = 1
-	local bestWater = nil
-	local count = 0
-	local bag, slot, link
+    local waterRanks = TableInvert(MageWater)
+    local bestRank = 1
+    local bestWater = nil
+    local count = 0
+    local bag, slot, link
 
-	for bag = 0, 4 do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local texture, itemCount, _, _, _, _, link = GetContainerItemInfo(bag, slot)
-			
-			if texture then
-				link = GetContainerItemLink(bag, slot)
-				_, stack = GetContainerItemInfo(bag, slot)
-				local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
-				local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon = GetItemInfo(bsNum)
-				
-				if FindInTable(MageWater, itemName) then
-					if waterRanks[itemName] > bestRank then
-						bestWater = itemName
-						bestRank = waterRanks[itemName]
-						count = stack
-					elseif waterRanks[itemName] == bestRank then
-						count = count + stack
-					end
-				end
-			end
-		end 
-	end
-	return count, bestWater
+    for bag = 0, 4 do
+        for slot = 1, GetContainerNumSlots(bag) do
+            local texture, itemCount, _, _, _, _, link = GetContainerItemInfo(bag, slot)
+
+            if texture then
+                link = GetContainerItemLink(bag, slot)
+                _, stack = GetContainerItemInfo(bag, slot)
+                local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+                local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon =
+                GetItemInfo(bsNum)
+
+                if FindInTable(MageWater, itemName) then
+                    if waterRanks[itemName] > bestRank then
+                        bestWater = itemName
+                        bestRank = waterRanks[itemName]
+                        count = stack
+                    elseif waterRanks[itemName] == bestRank then
+                        count = count + stack
+                    end
+                end
+            end
+        end
+    end
+    return count, bestWater
 end
 
 function mb_pickUpWater()
-	local waterRanks = TableInvert(MageWater)
-	local amount = 0
-	local bestRank = 1
-	local bag, slot, link
+    local waterRanks = TableInvert(MageWater)
+    local amount = 0
+    local bestRank = 1
+    local bag, slot, link
 
-	for bag = 0, 4 do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local texture, _, _, _, _, _, link = GetContainerItemInfo(bag, slot)
-			
-			if texture then
-				link = GetContainerItemLink(bag, slot)
-				local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
-				local itemName, _, _, _, _, _, _, _, _ = GetItemInfo(bsNum)
-				
+    for bag = 0, 4 do
+        for slot = 1, GetContainerNumSlots(bag) do
+            local texture, _, _, _, _, _, link = GetContainerItemInfo(bag, slot)
+
+            if texture then
+                link = GetContainerItemLink(bag, slot)
+                local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
+                local itemName, _, _, _, _, _, _, _, _ = GetItemInfo(bsNum)
+
                 if FindInTable(MageWater, itemName) then
-					if waterRanks[itemName] > bestRank then						
-						bestRank = waterRanks[itemName]
-						bestWater = itemName.." "..bag.." "..slot
-					end
-				end
-			end 
-		end 
-	end
+                    if waterRanks[itemName] > bestRank then
+                        bestRank = waterRanks[itemName]
+                        bestWater = itemName .. " " .. bag .. " " .. slot
+                    end
+                end
+            end
+        end
+    end
 
-	if bestRank > 0 then
-		local _ , _, water, bag, slot = string.find(bestWater, "(Conjured.*Water) (%d+) (%d+)")		
-		mb_cdPrint("Found "..water.." in bag "..bag.." in slot "..slot)
-		PickupContainerItem(bag, slot)
-		return water
-	end
+    if bestRank > 0 then
+        local _, _, water, bag, slot = string.find(bestWater, "(Conjured.*Water) (%d+) (%d+)")
+        mb_cdPrint("Found " .. water .. " in bag " .. bag .. " in slot " .. slot)
+        PickupContainerItem(bag, slot)
+        return water
+    end
 end
 
 --[####################################################################################################]--
@@ -145,7 +146,7 @@ end
 
 local UniversalReagents = {
     "Cache of Mau'ari",
-    "Drakefire Amulet", 
+    "Drakefire Amulet",
     "Eternal Quintessence",
     "Onyxia Scale Cloak"
 }
@@ -302,32 +303,32 @@ local ReagentsLimit = {
     -- ========================================
     -- CLASS-SPECIFIC REAGENTS
     -- ========================================
-    
+
     -- Druid Reagents
     ["Ironwood Seed"] = { 20, 1 },
     ["Wild Thornroot"] = { 160, 1 },
-    
+
     -- Mage Reagents
     ["Arcane Powder"] = { 160, 1 },
     ["Rune of Portals"] = { 20, 1 },
-    
+
     -- Paladin Reagents
     ["Symbol of Divinity"] = { 10, 1 },
     ["Symbol of Kings"] = { 400, 1 },
-    
+
     -- Priest Reagents
     ["Sacred Candle"] = { 160, 1 },
-    
+
     -- Rogue Reagents
     ["Flash Powder"] = { 100, 1 },
-    
+
     -- Shaman Reagents
     ["Ankh"] = { 20, 1 },
 
     -- ========================================
     -- CONSUMABLES BY TYPE
     -- ========================================
-    
+
     -- Protection Potions
     ["Greater Nature Protection Potion"] = { 20, 1 },
     ["Greater Shadow Protection Potion"] = { 40, 1 },
@@ -338,39 +339,39 @@ local ReagentsLimit = {
     -- Mana Restoration
     ["Tea with Sugar"] = { 40, 1 },
     ["Major Mana Potion"] = { 60, 1 },
-    
+
     -- Flasks (High-End Consumables)
     ["Flask of Distilled Wisdom"] = { 10, 1 },
     ["Flask of Supreme Power"] = { 10, 1 },
     ["Flask of the Titans"] = { 10, 1 },
-    
+
     -- Damage/Power Elixirs
     ["Elixir of Frost Power"] = { 20, 1 },
     ["Elixir of Greater Firepower"] = { 20, 1 },
     ["Elixir of Shadow Power"] = { 20, 1 },
     ["Greater Arcane Elixir"] = { 40, 1 },
-    
+
     -- Utility Potions
     ["Mageblood Potion"] = { 40, 1 },
-    
+
     -- ========================================
     -- PHYSICAL DPS CONSUMABLES
     -- ========================================
-    
+
     -- Melee Enhancement
     ["Elixir of the Mongoose"] = { 40, 1 },
     ["Juju Might"] = { 40, 1 },
     ["Juju Power"] = { 40, 1 },
     ["Juju Escape"] = { 20, 1 },
-    
+
     -- Food & Drink Buffs
     ["Dirge's Kickin' Chimaerok Chops"] = { 8, 1 },
     ["Rumsey Rum Black Label"] = { 20, 1 },
-    
+
     -- Tank/Survivability
     ["Gift of Arthas"] = { 10, 1 },
     ["Greater Stoneshield Potion"] = { 40, 1 },
-    
+
     -- Ammunition/Projectiles (Special Stack Size)
     ["Doomshot"] = { 1, 2 },
     ["Miniature Cannon Balls"] = { 1, 2 },
@@ -411,7 +412,7 @@ local function GetCompleteReagentList(className)
             table.insert(completeList, item)
         end
     end
-    
+
     return completeList
 end
 
@@ -423,18 +424,18 @@ function mb_buyReagentsAndConsumables()
     end
 
     local classItems = GetCompleteReagentList(myClass)
-    
+
     if classItems then
         for _, item in ipairs(classItems) do
             local myCurrentItems = mb_hasItem(item) / ReagentsLimit[item][2]
             local myNeededItems
-            
+
             if (item == "Doomshot" or item == "Miniature Cannon Balls") and myClass == "Hunter" then
                 myNeededItems = (32 - myCurrentItems) / ReagentsLimit[item][2]
             else
                 myNeededItems = (ReagentsLimit[item][1] - myCurrentItems) / ReagentsLimit[item][2]
             end
-            
+
             if myNeededItems > 0 then
                 if item == "Symbol of Kings" then
                     myNeededItems = math.floor(myNeededItems / 20)
@@ -446,7 +447,7 @@ function mb_buyReagentsAndConsumables()
                     local merchantItemLink = GetMerchantItemLink(itemID)
                     if merchantItemLink then
                         if string.find(merchantItemLink, item) then
-                            mb_cdPrint("Buying "..myNeededItems.." "..merchantItemLink)
+                            mb_cdPrint("Buying " .. myNeededItems .. " " .. merchantItemLink)
                             BuyMerchantItem(itemID, myNeededItems)
                         end
                     end
@@ -454,7 +455,7 @@ function mb_buyReagentsAndConsumables()
             end
         end
     end
-    
+
     MB_autoBuyReagents.Active = false
 end
 
@@ -464,9 +465,9 @@ end
 
 local ManaPotsThreshold = {
     { name = "Major Mana Potion", threshold = 2250 },
-    { name = "Tea with Sugar", threshold = 1750 },
-    { name = "Demonic Rune", threshold = 1500 },
-    { name = "Dark Rune", threshold = 1500 },
+    { name = "Tea with Sugar",    threshold = 1750 },
+    { name = "Demonic Rune",      threshold = 1500 },
+    { name = "Dark Rune",         threshold = 1500 },
 }
 
 local function UseManaPotsThresholdPots()
@@ -495,8 +496,8 @@ end
 
 function mb_takeManaPotionAndRunes()
     if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if Instance.NAXX() and LOA_IsAtLoatheb() then
         UseManaRunesThresholdRunes()
@@ -511,15 +512,15 @@ end
 --[####################################################################################################]--
 
 function mb_useSandsOnChromaggus()
-	if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
-
-	if Instance.BWL() and not mb_tankTarget("Chromaggus") then
+    if mb_imBusy() or not mb_inCombat("player") then
         return
     end
 
-	if not mb_imTank() then
+    if Instance.BWL() and not mb_tankTarget("Chromaggus") then
+        return
+    end
+
+    if not mb_imTank() then
         return
     end
 
@@ -527,11 +528,11 @@ function mb_useSandsOnChromaggus()
         return
     end
 
-	if not mb_hasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
+    if not mb_hasBuffOrDebuff("Brood Affliction: Bronze", "player", "debuff") then
         return
     end
 
-	if mb_hasBuffNamed("Time Stop", "player") then
+    if mb_hasBuffNamed("Time Stop", "player") then
         return
     end
 
@@ -574,8 +575,8 @@ function mb_useFirePotsOnFaerlina()
     end
 
     if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if Instance.NAXX() and not (mb_tankTarget("Grand Widow Faerlina") or UnitName("target") == "Grand Widow Faerlina") then
         return
@@ -590,8 +591,8 @@ function mb_useFirePotsOnVaelastrasz()
     end
 
     if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if Instance.BWL() and not (mb_tankTarget("Vaelastrasz the Corrupt") or UnitName("target") == "Vaelastrasz the Corrupt") then
         return
@@ -606,8 +607,8 @@ function mb_useNaturePotsOnHuhuran()
     end
 
     if mb_imBusy() or not mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if Instance.AQ40() and not (mb_tankTarget("Princess Huhuran") or UnitName("target") == "Princess Huhuran") then
         return
@@ -686,7 +687,7 @@ local function CasterSpeedRunPots()
 
     if myClass == "Mage" then
         if MB_mySpecc == "Frost" then
-            mb_takePotionsWhenPossible("Elixir of Frost Power")            
+            mb_takePotionsWhenPossible("Elixir of Frost Power")
         else
             mb_takePotionsWhenPossible("Elixir of Greater Firepower")
         end
@@ -713,8 +714,8 @@ function mb_useSpeedRunPots()
     end
 
     if mb_imBusy() or mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if mb_imHealer() then
         HealerSpeedRunPots()
@@ -739,17 +740,17 @@ function mb_takeLIP()
     end
 
     if mb_imBusy() or mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if mb_imTank() then
         return
     end
 
     local aggrox = AceLibrary("Banzai-1.0")
-	if aggrox:GetUnitAggroByUnitId("player") and mb_healthPct("player") <= 0.25 then
+    if aggrox:GetUnitAggroByUnitId("player") and mb_healthPct("player") <= 0.25 then
         mb_takePotionsWhenPossible("Limited Invulnerability Potion")
-	end
+    end
 end
 
 function mb_takeFAP()
@@ -762,8 +763,8 @@ function mb_takeFAP()
     end
 
     if mb_imBusy() or mb_inCombat("player") then
-		return
-	end
+        return
+    end
 
     if not mb_imMeleeDPS() then
         return

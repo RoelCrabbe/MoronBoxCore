@@ -70,100 +70,98 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 function mb_makeWater()
+    if myClass ~= "Mage" then
+        return
+    end
 
-	if myClass ~= "Mage" then
-		return
-	end
+    if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+        return
+    end
 
-	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
-		return
-	end
+    if mb_imBusy() then
+        return
+    end
 
-	if mb_imBusy() then
-		return
-	end
+    if mb_manaPct("player") > 0.8 and mb_hasBuffNamed("Drink", "player") then
+        DoEmote("Stand")
+        return
+    end
 
-	if mb_manaPct("player") > 0.8 and mb_hasBuffNamed("Drink", "player") then		
-		DoEmote("Stand")
-		return
-	end
+    if UnitMana("player") < 780 then
+        if mb_spellReady("Evocation") then
+            mb_evoGear()
+            CastSpellByName("Evocation")
+            return
+        end
 
-	if UnitMana("player") < 780 then
-		if mb_spellReady("Evocation") then
-			mb_evoGear()
-			CastSpellByName("Evocation")
-			return
-		end
+        mb_mageGear()
+        mb_smartDrink()
+    end
 
-		mb_mageGear()
-		mb_smartDrink()
-	end
-
-	if mb_getAllContainerFreeSlots() > 0 then		
-		CastSpellByName("Conjure Water")
-	else 
-		mb_cdMessage("My bags are full, can\'t conjure more stuff", 60)
-	end
+    if mb_getAllContainerFreeSlots() > 0 then
+        CastSpellByName("Conjure Water")
+    else
+        mb_cdMessage("My bags are full, can\'t conjure more stuff", 60)
+    end
 end
 
-function mb_smartDrink() 
+function mb_smartDrink()
+    if mb_manaPct("player") > 0.99 and mb_hasBuffNamed("Drink", "player") then
+        DoEmote("Stand")
+        return
+    end
 
-	if mb_manaPct("player") > 0.99 and mb_hasBuffNamed("Drink", "player") then		
-		DoEmote("Stand")
-		return
-	end
+    if not mb_manaUser() then
+        return
+    end
 
-	if not mb_manaUser() then
-		return
-	end
+    if myClass == "Mage" and MB_tradeOpen then
+        if mb_mageWater() > 20 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
+            return
+        end
 
-	if myClass == "Mage" and MB_tradeOpen then
-		if mb_mageWater() > 20 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
-			return 
-		end
-		
-		if mb_mageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then 
-			mb_cdPrint("Not enough water to trade!")
-			CancelTrade()
-			return
-		end
-	end
+        if mb_mageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
+            mb_cdPrint("Not enough water to trade!")
+            CancelTrade()
+            return
+        end
+    end
 
-	if myClass ~= "Mage" and not MB_tradeOpen then
-		local waterMage = mb_isMageInGroup()
-		if waterMage then
-			if mb_mageWater() < 1 and mb_manaUser() then				
-				if mb_isAlive(MBID[waterMage]) and mb_inTradeRange(MBID[waterMage]) then					
-					TargetByName(waterMage, 1)
-					
-					if not MB_tradeOpen then
-						InitiateTrade("target")
-					end
-				end
-			end
-		end
-	end
+    if myClass ~= "Mage" and not MB_tradeOpen then
+        local waterMage = mb_isMageInGroup()
+        if waterMage then
+            if mb_mageWater() < 1 and mb_manaUser() then
+                if mb_isAlive(MBID[waterMage]) and mb_inTradeRange(MBID[waterMage]) then
+                    TargetByName(waterMage, 1)
 
-	if myClass == "Mage" and MB_tradeOpen then
-		if mb_mageWater() > 21 and mb_pickUpWater() then			
-			mb_cdPrint("Trading Water")
-			ClickTradeButton(1)
-			return
-		end
-	end
+                    if not MB_tradeOpen then
+                        InitiateTrade("target")
+                    end
+                end
+            end
+        end
+    end
 
-	if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
-		return
-	end
+    if myClass == "Mage" and MB_tradeOpen then
+        if mb_mageWater() > 21 and mb_pickUpWater() then
+            mb_cdPrint("Trading Water")
+            ClickTradeButton(1)
+            return
+        end
+    end
 
-	if myClass == "Mage" then			
-		mb_mageGear() 
-	end
+    if mb_hasBuffOrDebuff("Evocation", "player", "buff") then
+        return
+    end
 
-	local _, myBest = mb_mageWater()
-	if not mb_hasBuffNamed("Drink", "player") and myBest then
-		if mb_manaUser() and mb_manaDown() > 0 then			
-			mb_useFromBags(myBest)
-		end
-	end
+    if myClass == "Mage" then
+        mb_mageGear()
+    end
+
+    local _, myBest = mb_mageWater()
+    if not mb_hasBuffNamed("Drink", "player") and myBest then
+        if mb_manaUser() and mb_manaDown() > 0 then
+            mb_useFromBags(myBest)
+        end
+    end
 end

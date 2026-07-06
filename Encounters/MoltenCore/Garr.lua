@@ -112,14 +112,14 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myGarrBoxStrategy = true 
+local MB_myGarrBoxStrategy = true
 local MB_myGarrHealers = {}
 
 local MB_myGarrTankAssignment = { -- [Tank Number] = [Number of Players Assigned]
-    [1] = 2,  -- Main Tank
-    [2] = 2,  -- Off Tank
-    [3] = 1,  -- Extra Tank
-    [4] = 1   -- Extra Tank
+    [1] = 2,                      -- Main Tank
+    [2] = 2,                      -- Off Tank
+    [3] = 1,                      -- Extra Tank
+    [4] = 1                       -- Extra Tank
 }
 
 -- Strategy Configuration -- No changes below this line
@@ -158,8 +158,8 @@ local function GetHealersOnGarr()
     if MyNameInTable(MB_myGarrHealers) then
         return true
     end
-    
-    CdAddonMessage(MB_RAID.."GARR", "HEALERS", 30)
+
+    CdAddonMessage(MB_RAID .. "GARR", "HEALERS", 30)
     return true
 end
 
@@ -171,7 +171,7 @@ local function HandleHealersOnGarr()
     if MyNameInTable(MB_myGarrHealers) then
         return true
     end
-    
+
     table.insert(MB_myGarrHealers, myName)
     CdPrint(">> You are now registered as a Garr Healer! <<")
     return true
@@ -195,21 +195,21 @@ local function AssignHealersToTanks()
             break
         end
     end
-    
+
     if not myPosition then
         return false
     end
-    
+
     local healerIndex = 0
     for tankNum = 1, TableLength(MB_raidTanks) do
         local tankName = MB_raidTanks[tankNum]
         local healersNeeded = MB_myGarrTankAssignment[tankNum] or 0
-        
+
         for h = 1, healersNeeded do
             healerIndex = healerIndex + 1
             if healerIndex == myPosition then
                 MB_myAssignedHealTarget = tankName
-                CdPrint(">> Assigned to heal: "..tankName.." <<")
+                CdPrint(">> Assigned to heal: " .. tankName .. " <<")
                 return true
             end
         end
@@ -223,11 +223,11 @@ end
 --[####################################################################################################]--
 
 local function GARR_CheckEncounter()
-	if GarrEncounter.Active then
+    if GarrEncounter.Active then
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if (TankTarget("Garr") or TankTarget("Firesworn")) then
@@ -239,12 +239,12 @@ local function GARR_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."GARR", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GARR", "ENGAGE", 30)
         GarrEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -252,7 +252,7 @@ end
 --[####################################################################################################]--
 
 function GARR:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."GARR" then
+    if arg1 == MB_RAID .. "GARR" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Garr! <<")
             self:OnEnable()
@@ -271,7 +271,7 @@ end
 
 function GARR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Garr dies") and GarrEncounter.Active then
-        CdAddonMessage(MB_RAID.."GARR", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GARR", "DISENGAGE", 30)
     end
 end
 
@@ -292,19 +292,18 @@ end
 --[####################################################################################################]--
 
 function GARR_TargetingPostFocus()
-	if GARR_CheckEncounter() and MB_myGarrBoxStrategy then
+    if GARR_CheckEncounter() and MB_myGarrBoxStrategy then
         if ImTank() then
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

@@ -127,41 +127,41 @@ local MB_mySkeramArcanePotStrategy = true
 
 -- Platform Assignments
 local MB_mySkeramLeftTanks = {
-    "Suecia",           -- Horde
-    "Laty"              -- Alliance
+    "Suecia", -- Horde
+    "Laty"    -- Alliance
 }
 
 local MB_mySkeramLeftOFFTANKS = {
-    "Rows",             -- Horde
+    "Rows",    -- Horde
     "Subsmash" -- Alliance
 }
 
 local MB_mySkeramMiddleTanks = {
-    "Moron",            -- Horde
-    "Sceto"             -- Alliance
+    "Moron", -- Horde
+    "Sceto"  -- Alliance
 }
 
 local MB_mySkeramMiddleOFFTANKS = {
-    "Almisael",         -- Horde
-    "Droodood"          -- Alliance
+    "Almisael", -- Horde
+    "Droodood"  -- Alliance
 }
 
 local MB_mySkeramMiddleDPSERS = {
     -- Horde DPS
-    "Moonspawn", "Likez", "Angerissues", "Tazmahdingo", 
+    "Moonspawn", "Likez", "Angerissues", "Tazmahdingo",
     "Gogopwranger", "Chabalala", "Weedzy", "Miagi",
     -- Alliance DPS
-    "Kazic", "Kankan", "Nharz", "Hotani", 
+    "Kazic", "Kankan", "Nharz", "Hotani",
     "Shieceofpit", "Arent", "Kurayami", "Purplemane"
 }
 
-local MB_mySkeramRightTanks = { 
-    "Ajlano",           -- Horde
-    "Myosin"            -- Alliance
+local MB_mySkeramRightTanks = {
+    "Ajlano", -- Horde
+    "Myosin"  -- Alliance
 }
 
 local MB_mySkeramRightOFFTANKS = {
-    "Sabo",             -- Horde
+    "Sabo",     -- Horde
     "Algoritam" -- Alliance
 }
 
@@ -234,12 +234,12 @@ local function SKERAM_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."SKERAM", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SKERAM", "ENGAGE", 30)
         SkeramEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 function SKERAM_BoxStrategyEnabled()
@@ -256,12 +256,12 @@ end
 
 local function CheckIfRealDeath()
     if SkeramEncounter.Active and not InCombat() then
-        CdAddonMessage(MB_RAID.."SKERAM", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SKERAM", "DISENGAGE", 30)
     end
 end
 
 function SKERAM:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."SKERAM" then
+    if arg1 == MB_RAID .. "SKERAM" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Skeram! <<")
             self:OnEnable()
@@ -294,7 +294,7 @@ end
 function SKERAM_TargetingPreFocus()
     local tName = UnitName("target")
 
-	if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
+    if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
         if not tName then
             return false
         end
@@ -307,7 +307,7 @@ function SKERAM_TargetingPreFocus()
             TargetByName("The Prophet Skeram")
             return false
         end
-        
+
         if tName == "The Prophet Skeram" and not GetRaidTargetIndex("target") then
             local icon
 
@@ -331,44 +331,42 @@ end
 function SKERAM_TargetingPostFocus()
     local tName = UnitName("target")
 
-	if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
-        if MyNameInTable(MB_mySkeramLeftTanks) or MyNameInTable(MB_mySkeramMiddleTanks) or MyNameInTable(MB_mySkeramRightTanks) then     
-            if not MB_targetNearestDistanceChanged then            
+    if SKERAM_CheckEncounter() and MB_mySkeramBoxStrategy then
+        if MyNameInTable(MB_mySkeramLeftTanks) or MyNameInTable(MB_mySkeramMiddleTanks) or MyNameInTable(MB_mySkeramRightTanks) then
+            if not MB_targetNearestDistanceChanged then
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
 
             if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-				ClearTarget()
-			end
+                ClearTarget()
+            end
 
             if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
             end
             return true
-
         elseif ImTank() then
-            if not MB_targetNearestDistanceChanged then				
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
             if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-				ClearTarget()
-			end
+                ClearTarget()
+            end
 
             if tName == nil or Dead("target") or not InMeleeRange() then
                 TargetNearestEnemy()
             end
-			return true
-
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
-			if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-				ClearTarget()
-			end
+            if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+                ClearTarget()
+            end
 
             AssistFocus()
-			return true
+            return true
         end
     end
 
@@ -400,7 +398,7 @@ function SKERAM_WarlockDebuff()
 
     if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
         local tankId = MBID[tankName]
-        local targetID = tankId.."target"
+        local targetID = tankId .. "target"
 
         if tankId and not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
             AssistUnit(tankId)
@@ -425,14 +423,14 @@ end
 local PriestCounter = {
     Cycle = function()
         MB_buffingCounterPriest = (MB_buffingCounterPriest >= TableLength(MB_classList["Priest"]))
-                        and 1 or (MB_buffingCounterPriest + 1)
+            and 1 or (MB_buffingCounterPriest + 1)
     end
 }
 
 local MageCounter = {
     Cycle = function()
         MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
-                        and 1 or (MB_buffingCounterMage + 1)
+            and 1 or (MB_buffingCounterMage + 1)
     end
 }
 
@@ -442,11 +440,10 @@ local function CrowdControlMCedRaidMemberSkeram()
     end
 
     for i = 1, GetNumRaidMembers() do
-        local unit = "raid"..i
+        local unit = "raid" .. i
         if unit and IsAlive(unit) and In28yardRange(unit) then
-            if HasBuffOrDebuff("True Fulfillment", unit, "debuff") 
-               and not HasBuffOrDebuff("Polymorph", unit, "debuff") then
-
+            if HasBuffOrDebuff("True Fulfillment", unit, "debuff")
+                and not HasBuffOrDebuff("Polymorph", unit, "debuff") then
                 TargetUnit(unit)
 
                 if not MB_isCastingMyCCSpell then
@@ -468,12 +465,11 @@ local function CrowdControlMCedRaidMemberSkeramAOE()
     end
 
     for i = 1, GetNumRaidMembers() do
-        local unit = "raid"..i
+        local unit = "raid" .. i
         if unit and IsAlive(unit) and CheckInteractDistance(unit, 3) then
             if HasBuffOrDebuff("True Fulfillment", unit, "debuff")
                 and not HasBuffOrDebuff("Polymorph", unit, "debuff")
                 and not HasBuffOrDebuff("Psychic Scream", unit, "debuff") then
-
                 if ImBusy() then
                     SpellStopCasting()
                 end
@@ -500,10 +496,9 @@ function SKERAM_CrowdControl()
             MageCounter.Cycle()
         end
 
-        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then					
+        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
             CrowdControlMCedRaidMemberSkeram()
         end
-        
     elseif myClass == "Priest" then
         if not MB_autoToggleSheeps.Active then
             MB_autoToggleSheeps.Active = true
@@ -522,8 +517,8 @@ end
 --[####################################################################################################]--
 
 function SKERAM_IsFollowSkeram()
-    if MyNameInTable(MB_mySkeramLeftTanks) or 
-        MyNameInTable(MB_mySkeramMiddleTanks) or 
+    if MyNameInTable(MB_mySkeramLeftTanks) or
+        MyNameInTable(MB_mySkeramMiddleTanks) or
         MyNameInTable(MB_mySkeramRightTanks) then
         return true
     end
@@ -537,8 +532,8 @@ function SKERAM_IsFollowSkeram()
         return true
     end
 
-    if MyNameInTable(MB_mySkeramMiddleOFFTANKS) or 
-       MyNameInTable(MB_mySkeramMiddleDPSERS) then
+    if MyNameInTable(MB_mySkeramMiddleOFFTANKS) or
+        MyNameInTable(MB_mySkeramMiddleDPSERS) then
         FollowByName(middleTank, 1)
         return true
     end

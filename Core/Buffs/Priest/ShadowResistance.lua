@@ -172,14 +172,15 @@ local SelfBuff = mb_selfBuff
 local SPROT = CreateFrame("Button", "SPROT", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do SPROT:RegisterEvent(event)
-	end
+    } do
+        SPROT:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -212,7 +213,7 @@ local function GetNextTarget()
     local bestUnitId = nil
     local bestPriority = nil
     local bestGroupNum = nil
-   
+
     for groupNum, playersInGroup in pairs(MB_SPROTQueue) do
         for unitId, priority in pairs(playersInGroup) do
             if bestPriority == nil or priority < bestPriority then
@@ -222,7 +223,7 @@ local function GetNextTarget()
             end
         end
     end
-   
+
     return bestUnitId, tonumber(bestPriority), tonumber(bestGroupNum)
 end
 
@@ -239,9 +240,9 @@ local function GetPriestInGroup()
 end
 
 local function GetGroupNumber()
-	if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
-		return
-	end
+    if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
+        return
+    end
 
     return MB_groupID[myName]
 end
@@ -270,7 +271,7 @@ local function HandleShadowProtectionRequest(message, sender)
     if HasBuffOrDebuff("Shadow Protection", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Shadow Protection", requestPlayerId, "buff") then
         local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
-        CdAddonMessage(MB_RAID.."BUFFED_SHADOW_RESISTANCE", message)
+        CdAddonMessage(MB_RAID .. "BUFFED_SHADOW_RESISTANCE", message)
         return
     end
 
@@ -287,7 +288,7 @@ local function HandleShadowProtectionRequest(message, sender)
     end
 
     MB_SPROTQueue[groupNum][requestPlayerId] = priority
-    CdAddonMessage(MB_RAID.."CLAIM_SHADOW_RESISTANCE", "CLAIMING_GROUP:"..groupNum)
+    CdAddonMessage(MB_RAID .. "CLAIM_SHADOW_RESISTANCE", "CLAIMING_GROUP:" .. groupNum)
 end
 
 local function HandleShadowProtectionClaim(message, claimer)
@@ -312,7 +313,7 @@ local function HandleShadowProtectionBuffed(message, sender)
     if myName == sender then
         MB_SPROTQueue[groupNum][requestPlayerId] = nil
     end
-    
+
     MB_SPROTClaimedQueue[groupNum] = nil
 end
 
@@ -323,18 +324,18 @@ end
 function SPROT:OnEvent()
     if event == "CHAT_MSG_ADDON" then
         local message, sender = arg2, arg4
-        
-        if arg1 == MB_RAID.."NEED_SHADOW_RESISTANCE" then
+
+        if arg1 == MB_RAID .. "NEED_SHADOW_RESISTANCE" then
             HandleShadowProtectionRequest(message, sender)
-        elseif arg1 == MB_RAID.."CLAIM_SHADOW_RESISTANCE" then
+        elseif arg1 == MB_RAID .. "CLAIM_SHADOW_RESISTANCE" then
             HandleShadowProtectionClaim(message, sender)
-        elseif arg1 == MB_RAID.."BUFFED_SHADOW_RESISTANCE" then
+        elseif arg1 == MB_RAID .. "BUFFED_SHADOW_RESISTANCE" then
             HandleShadowProtectionBuffed(message, sender)
         end
     end
 end
 
-SPROT:SetScript("OnEvent", SPROT.OnEvent) 
+SPROT:SetScript("OnEvent", SPROT.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -345,7 +346,7 @@ function SPROT_RequestShadowProtection()
         return
     end
 
-    if HasBuffOrDebuff("Shadow Protection", "player", "buff") or 
+    if HasBuffOrDebuff("Shadow Protection", "player", "buff") or
         HasBuffOrDebuff("Prayer of Shadow Protection", "player", "buff") then
         return
     end
@@ -359,7 +360,7 @@ function SPROT_RequestShadowProtection()
     end
 
     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingPriest)
-    CdAddonMessage(MB_RAID.."NEED_SHADOW_RESISTANCE", message, 15)
+    CdAddonMessage(MB_RAID .. "NEED_SHADOW_RESISTANCE", message, 15)
 end
 
 function SPROT_ProcessShadowProtectionQueue()
@@ -389,7 +390,7 @@ function SPROT_ProcessShadowProtectionQueue()
     end
 
     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID.."BUFFED_SHADOW_RESISTANCE", message)
+    CdAddonMessage(MB_RAID .. "BUFFED_SHADOW_RESISTANCE", message)
     return false
 end
 

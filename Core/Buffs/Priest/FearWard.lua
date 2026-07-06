@@ -71,7 +71,7 @@ local myRace = UnitRace("player")
 
 -- FEARWARD BUFF SYSTEM - COMPLETE FLOW
 -- ====================================
--- 
+--
 -- 1. REQUEST PHASE
 --    ┌─────────────────────────────────────────────────┐
 --    │ Player needs Fear Ward:                         │
@@ -123,12 +123,12 @@ local myRace = UnitRace("player")
 -- COLLISION PREVENTION
 -- ===================
 -- Random priest assignment → Distributes load across priests
--- Claim system → Prevents duplicate processing  
+-- Claim system → Prevents duplicate processing
 -- Self-exclusion → Priests don't buff themselves
 -- Priority queue → Ensures important targets first (Rogue > Tank > Priest > Others)
 -- Auto-cleanup → Removes invalid/buffed targets via events
 --
--- PERFORMANCE OPTIMIZATIONS  
+-- PERFORMANCE OPTIMIZATIONS
 -- ========================
 -- Hash table queue → O(1) lookup/insert/delete operations
 -- Single regex parse → Fast message parsing with string.find
@@ -156,14 +156,15 @@ local SpellReady = mb_spellReady
 local FW = CreateFrame("Button", "FW", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do FW:RegisterEvent(event)
-	end
+    } do
+        FW:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -198,27 +199,27 @@ local function GetMyFearWardPriority()
     local focId = MBID[MB_raidLeader]
 
     if focId then
-        targetName = UnitName(focId.."target")
+        targetName = UnitName(focId .. "target")
     end
-    
+
     if targetName and MB_FWRegistry[targetName] then
         return MB_FWRegistry[targetName]()
     end
-    
+
     return GlobalFearWardPriority()
 end
 
 local function GetNextFearWardTarget()
     local bestUnitId = nil
     local bestPriority = nil
-    
+
     for unitId, priority in pairs(MB_FWQueue) do
         if bestPriority == nil or priority < bestPriority then
             bestPriority = priority
             bestUnitId = unitId
         end
     end
-    
+
     return bestUnitId, bestPriority
 end
 
@@ -229,7 +230,7 @@ local function GetDwarfPriestInGroup()
         for i = 1, GetNumRaidMembers() do
             local rName, _, _, _, rClass = GetRaidRosterInfo(i)
             if rClass == "Priest" then
-                local unitId = "raid"..i
+                local unitId = "raid" .. i
                 if UnitRace(unitId) == "Dwarf" then
                     table.insert(dwarfPriests, rName)
                 end
@@ -239,18 +240,18 @@ local function GetDwarfPriestInGroup()
         if myClass == "Priest" and myRace == "Dwarf" then
             table.insert(dwarfPriests, myName)
         end
-           
+
         for i = 1, 4 do
-            local pName = UnitName("party"..i)
-            local pClass = UnitClass("party"..i)
-            local pRace = UnitRace("party"..i)
+            local pName = UnitName("party" .. i)
+            local pClass = UnitClass("party" .. i)
+            local pRace = UnitRace("party" .. i)
 
             if pName and pClass == "Priest" and pRace == "Dwarf" then
                 table.insert(dwarfPriests, pName)
             end
         end
     end
-   
+
     if TableLength(dwarfPriests) == 0 then
         return nil
     else
@@ -264,7 +265,7 @@ end
 
 local function HandleFearWardRequest(message, sender)
     local _, _, priority, assignedPriest = string.find(message, "BUFF_INFO:(%d+):(.+)")
-    
+
     local requestPlayer = sender
     local requestPlayerId = MBID[requestPlayer]
 
@@ -277,7 +278,7 @@ local function HandleFearWardRequest(message, sender)
     end
 
     if HasBuffOrDebuff("Fear Ward", requestPlayerId, "buff") then
-        CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", "BUFFED:"..requestPlayer)
+        CdAddonMessage(MB_RAID .. "BUFFED_FEARWARD", "BUFFED:" .. requestPlayer)
         return
     end
 
@@ -290,7 +291,7 @@ local function HandleFearWardRequest(message, sender)
     end
 
     MB_FWQueue[requestPlayerId] = tonumber(priority)
-    CdAddonMessage(MB_RAID.."CLAIM_FEARWARD", "CLAIMING:"..requestPlayer)
+    CdAddonMessage(MB_RAID .. "CLAIM_FEARWARD", "CLAIMING:" .. requestPlayer)
 end
 
 local function HandleFearWardClaim(message, claimer)
@@ -316,20 +317,20 @@ end
 --[####################################################################################################]--
 
 function FW:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
+    if (event == "CHAT_MSG_ADDON") then
         local message, sender = arg2, arg4
 
-        if (arg1 == MB_RAID.."NEED_FEARWARD") then
+        if (arg1 == MB_RAID .. "NEED_FEARWARD") then
             HandleFearWardRequest(message, sender)
-        elseif (arg1 == MB_RAID.."CLAIM_FEARWARD") then
+        elseif (arg1 == MB_RAID .. "CLAIM_FEARWARD") then
             HandleFearWardClaim(message, sender)
-        elseif (arg1 == MB_RAID.."BUFFED_FEARWARD") then
+        elseif (arg1 == MB_RAID .. "BUFFED_FEARWARD") then
             HandleFearWardBuffed(message, sender)
         end
     end
 end
 
-FW:SetScript("OnEvent", FW.OnEvent) 
+FW:SetScript("OnEvent", FW.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -355,8 +356,8 @@ function FW_RequestFearWard()
         return
     end
 
-    local message = "BUFF_INFO:"..myPriority..":"..myBuffingPriest
-    CdAddonMessage(MB_RAID.."NEED_FEARWARD", message, 15)
+    local message = "BUFF_INFO:" .. myPriority .. ":" .. myBuffingPriest
+    CdAddonMessage(MB_RAID .. "NEED_FEARWARD", message, 15)
 end
 
 function FW_ProcessFearWardQueue()
@@ -381,16 +382,16 @@ function FW_ProcessFearWardQueue()
         if UnitIsFriend("player", targetUnitId) then
             ClearTarget()
         end
-        
+
         CastSpellByName(spellName, false)
-        CdMessage(spellName.." on "..GetColors(targetName).."!")
+        CdMessage(spellName .. " on " .. GetColors(targetName) .. "!")
 
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true
     end
 
-    local message = "BUFFED:"..targetName
-    CdAddonMessage(MB_RAID.."BUFFED_FEARWARD", message)
+    local message = "BUFFED:" .. targetName
+    CdAddonMessage(MB_RAID .. "BUFFED_FEARWARD", message)
     return false
 end

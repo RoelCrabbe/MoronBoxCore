@@ -172,14 +172,15 @@ local SelfBuff = mb_selfBuff
 local SPIRIT = CreateFrame("Button", "SPIRIT", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do SPIRIT:RegisterEvent(event)
-	end
+    } do
+        SPIRIT:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -212,7 +213,7 @@ local function GetNextTarget()
     local bestUnitId = nil
     local bestPriority = nil
     local bestGroupNum = nil
-   
+
     for groupNum, playersInGroup in pairs(MB_SPIRITQueue) do
         for unitId, priority in pairs(playersInGroup) do
             if bestPriority == nil or priority < bestPriority then
@@ -222,7 +223,7 @@ local function GetNextTarget()
             end
         end
     end
-   
+
     return bestUnitId, tonumber(bestPriority), tonumber(bestGroupNum)
 end
 
@@ -239,9 +240,9 @@ local function GetPriestInGroup()
 end
 
 local function GetGroupNumber()
-	if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
-		return
-	end
+    if not UnitInRaid("player") and GetNumPartyMembers() == 0 then
+        return
+    end
 
     return MB_groupID[myName]
 end
@@ -270,7 +271,7 @@ local function HandleSpiritRequest(message, sender)
     if HasBuffOrDebuff("Divine Spirit", requestPlayerId, "buff") or
         HasBuffOrDebuff("Prayer of Spirit", requestPlayerId, "buff") then
         local message = string.format("BUFFED:%s:%d", requestPlayerId, groupNum)
-        CdAddonMessage(MB_RAID.."BUFFED_SPIRIT", message)
+        CdAddonMessage(MB_RAID .. "BUFFED_SPIRIT", message)
         return
     end
 
@@ -287,7 +288,7 @@ local function HandleSpiritRequest(message, sender)
     end
 
     MB_SPIRITQueue[groupNum][requestPlayerId] = priority
-    CdAddonMessage(MB_RAID.."CLAIM_SPIRIT", "CLAIMING_GROUP:"..groupNum)
+    CdAddonMessage(MB_RAID .. "CLAIM_SPIRIT", "CLAIMING_GROUP:" .. groupNum)
 end
 
 local function HandleSpiritClaim(message, claimer)
@@ -312,7 +313,7 @@ local function HandleSpiritBuffed(message, sender)
     if myName == sender then
         MB_SPIRITQueue[groupNum][requestPlayerId] = nil
     end
-    
+
     MB_SPIRITClaimedQueue[groupNum] = nil
 end
 
@@ -323,25 +324,25 @@ end
 function SPIRIT:OnEvent()
     if event == "CHAT_MSG_ADDON" then
         local message, sender = arg2, arg4
-        
-        if arg1 == MB_RAID.."NEED_SPIRIT" then
+
+        if arg1 == MB_RAID .. "NEED_SPIRIT" then
             HandleSpiritRequest(message, sender)
-        elseif arg1 == MB_RAID.."CLAIM_SPIRIT" then
+        elseif arg1 == MB_RAID .. "CLAIM_SPIRIT" then
             HandleSpiritClaim(message, sender)
-        elseif arg1 == MB_RAID.."BUFFED_SPIRIT" then
+        elseif arg1 == MB_RAID .. "BUFFED_SPIRIT" then
             HandleSpiritBuffed(message, sender)
         end
     end
 end
 
-SPIRIT:SetScript("OnEvent", SPIRIT.OnEvent) 
+SPIRIT:SetScript("OnEvent", SPIRIT.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function SPIRIT_RequestSpirit()
-    if HasBuffOrDebuff("Divine Spirit", "player", "buff") or 
+    if HasBuffOrDebuff("Divine Spirit", "player", "buff") or
         HasBuffOrDebuff("Prayer of Spirit", "player", "buff") then
         return
     end
@@ -355,7 +356,7 @@ function SPIRIT_RequestSpirit()
     end
 
     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingPriest)
-    CdAddonMessage(MB_RAID.."NEED_SPIRIT", message, 15)
+    CdAddonMessage(MB_RAID .. "NEED_SPIRIT", message, 15)
 end
 
 function SPIRIT_ProcessSpiritQueue()
@@ -385,7 +386,7 @@ function SPIRIT_ProcessSpiritQueue()
     end
 
     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID.."BUFFED_SPIRIT", message)
+    CdAddonMessage(MB_RAID .. "BUFFED_SPIRIT", message)
     return false
 end
 
