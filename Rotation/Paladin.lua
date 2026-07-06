@@ -118,6 +118,7 @@ local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class Paladin: Frame
 local Paladin = CreateFrame("Frame", "Paladin")
 
 local PaladinCounter = {
