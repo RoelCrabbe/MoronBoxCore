@@ -169,7 +169,8 @@ local SelfBuff = mb_selfBuff
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local FORT = CreateFrame("Button", "FORT", UIParent)
+---@class FORT: Frame
+local FORT = CreateFrame("Frame", "FORT")
 
 do
     for _, event in {

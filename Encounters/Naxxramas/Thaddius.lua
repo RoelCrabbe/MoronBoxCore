@@ -104,7 +104,8 @@ local UseFromBags = mb_useFromBags
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local THAD = CreateFrame("Button", "THAD", UIParent)
+---@class THAD: Frame
+local THAD = CreateFrame("Frame", "THAD")
 
 do
     for _, event in {

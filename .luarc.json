@@ -1,0 +1,39 @@
+{
+    "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+    "runtime.version": "Lua 5.1",
+    "workspace.library": [
+        "../../wow-api-type-definitions/Client",
+        "../../wow-api-type-definitions/UI_Vanilla"
+    ],
+    "diagnostics.globals": [
+        "this",
+        "event",
+        "arg",
+        "arg1",
+        "arg2",
+        "arg3",
+        "arg4",
+        "arg5",
+        "arg6",
+        "arg7",
+        "arg8",
+        "arg9",
+        "AceLibrary",
+        "RunLine",
+
+        "CancelBuff",
+        "UseItemByName",
+        "AcceptResurrect",
+        "GetGossipOptions",
+        "SelectGossipOption",
+        "AcceptTrade",
+        "GetTradeTargetItemLink",
+        "NumTaxiNodes",
+        "TaxiNodeName",
+        "CanMerchantRepair",
+        "GetRepairAllCost",
+        "RepairAllItems"
+    ],
+    "diagnostics.disable": ["lowercase-global", "discard-returns"],
+    "format.enable": true
+}

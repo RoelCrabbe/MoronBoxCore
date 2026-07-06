@@ -118,6 +118,7 @@ local TargetMyAssignedTankToHeal = mb_targetMyAssignedTankToHeal
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class Paladin: Frame
 local Paladin = CreateFrame("Frame", "Paladin")
 
 local PaladinCounter = {
@@ -250,7 +251,7 @@ function Paladin:MTHeals(assignedTarget)
         SelfBuff("Divine Favor")
     end
 
-    local FlashOfLightSpell = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. "\)"
+    local FlashOfLightSpell = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. ")"
     if TankTarget("Vaelastrasz the Corrupt") then
         FlashOfLightSpell = "Holy Light"
     elseif TankTarget("Ossirian the Unscarred") then
@@ -359,10 +360,10 @@ function Paladin:BOPLowRandom()
 
             CastSpellByName("Blessing of Protection", false)
             CdMessage("I BOP'd " ..
-            GetColors(UnitName(BOPTarget)) ..
-            " at " ..
-            string.sub(HealthPct(BOPTarget), 3, 4) ..
-            "% - " .. UnitHealth(BOPTarget) .. "/" .. UnitHealthMax(BOPTarget) .. " HP.")
+                GetColors(UnitName(BOPTarget)) ..
+                " at " ..
+                string.sub(HealthPct(BOPTarget), 3, 4) ..
+                "% - " .. UnitHealth(BOPTarget) .. "/" .. UnitHealthMax(BOPTarget) .. " HP.")
             SpellTargetUnit(BOPTarget)
             SpellStopTargeting()
             return true

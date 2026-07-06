@@ -124,7 +124,7 @@ function mb_cooldowns()
                 mb_cdPrint("Sending out request to use Cooldowns.")
             else
                 mb_cdPrint("Stop Cooldown Requesting, still " ..
-                math.round(MB_useCooldowns.Time - GetTime()) .. "s remaining")
+                    math.round(MB_useCooldowns.Time - GetTime()) .. "s remaining")
             end
         end
 
@@ -163,7 +163,7 @@ function mb_useManualRecklessness()
                 mb_cdPrint("Sending out request to use Recklessness.")
             else
                 mb_cdPrint("Stop Recklessness Requesting, still " ..
-                math.round(MB_useBigCooldowns.Time - GetTime()) .. "s remaining")
+                    math.round(MB_useBigCooldowns.Time - GetTime()) .. "s remaining")
             end
         end
 

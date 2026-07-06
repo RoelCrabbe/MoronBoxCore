@@ -205,28 +205,28 @@ end
 local AnnihilatorWeaverWeapons = {
     -- Horde
     ["Jokamok"] = {
-        ["BMH"] = "Annihilator",     -- HM
-        ["BOH"] = "The Hungering Cold", -- OH
+        ["BMH"] = "Annihilator",           -- HM
+        ["BOH"] = "The Hungering Cold",    -- OH
 
         ["NMH"] = "Gressil, Dawn of Ruin", -- HM
-        ["NOH"] = "The Hungering Cold" -- OH
+        ["NOH"] = "The Hungering Cold"     -- OH
     },
 
     ["Crymeariver"] = {
-        ["BMH"] = "Annihilator",     -- HM
-        ["BOH"] = "The Hungering Cold", -- OH
+        ["BMH"] = "Annihilator",           -- HM
+        ["BOH"] = "The Hungering Cold",    -- OH
 
         ["NMH"] = "Gressil, Dawn of Ruin", -- HM
-        ["NOH"] = "The Hungering Cold" -- OH
+        ["NOH"] = "The Hungering Cold"     -- OH
     },
 
     -- Alliance
     ["Miksmaks"] = {
-        ["BMH"] = "Annihilator",   -- HM
-        ["BOH"] = "Harbinger of Doom", -- OH
+        ["BMH"] = "Annihilator",         -- HM
+        ["BOH"] = "Harbinger of Doom",   -- OH
 
         ["NMH"] = "Misplaced Servo Arm", -- HM
-        ["NOH"] = "Harbinger of Doom" -- OH
+        ["NOH"] = "Harbinger of Doom"    -- OH
     },
 }
 

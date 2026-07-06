@@ -474,7 +474,7 @@ function mb_returnEquippedItemType(id)
 
     local bsNum = string.gsub(itemLink, ".-\124H([^\124]*)\124h.*", "%1")
     local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon =
-    GetItemInfo(bsNum)
+        GetItemInfo(bsNum)
     _, _, itemSubType = string.find(itemSubType, "(.*)s")
     return itemSubType
 end

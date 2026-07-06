@@ -305,12 +305,12 @@ function MMB:OnEvent()
                 if not MB_myCCTarget and myName then
                     if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " will be CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " will be CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     MB_myCCTarget = GetRaidTargetIndex("target")
@@ -328,12 +328,12 @@ function MMB:OnEvent()
                 if not MB_myInterruptTarget and myName then
                     if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " will be Interrupting " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Interrupting " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " will be Interrupting " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Interrupting " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     MB_myInterruptTarget = GetRaidTargetIndex("target")
@@ -351,12 +351,12 @@ function MMB:OnEvent()
                 if not MB_myFearTarget and myName then
                     if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " will be Fearing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Fearing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " will be Fearing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Fearing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     MB_myFearTarget = GetRaidTargetIndex("target")
@@ -374,12 +374,12 @@ function MMB:OnEvent()
                 if not MB_myOTTarget and myName then
                     if MB_raidTargetNames[GetRaidTargetIndex("target")] and UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " will be Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     elseif MB_raidTargetNames[GetRaidTargetIndex("target")] then
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " will be Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " will be Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     if mb_myNameInTable(MB_furysThatCanTank) then
@@ -396,12 +396,12 @@ function MMB:OnEvent()
                 if MB_raidTargetNames[GetRaidTargetIndex("target")] then
                     if UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " stopped Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     else
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " stopped Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped Tanking " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     if mb_myNameInTable(MB_furysThatCanTank) then
@@ -416,12 +416,12 @@ function MMB:OnEvent()
                 if MB_raidTargetNames[GetRaidTargetIndex("target")] then
                     if UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " stopped CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     else
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " stopped CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped CCing " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     MB_myCCTarget = nil
@@ -432,12 +432,12 @@ function MMB:OnEvent()
                 if MB_raidTargetNames[GetRaidTargetIndex("target")] then
                     if UnitInRaid("player") then
                         RunLine("/raid I, " ..
-                        GetColors(myName) ..
-                        " stopped Interrupt " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped Interrupt " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     else
                         RunLine("/party I, " ..
-                        GetColors(myName) ..
-                        " stopped Interrupt " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
+                            GetColors(myName) ..
+                            " stopped Interrupt " .. GetColors(MB_raidTargetNames[GetRaidTargetIndex("target")]))
                     end
 
                     MB_myInterruptTarget = nil

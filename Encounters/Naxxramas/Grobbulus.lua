@@ -97,7 +97,8 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GROB = CreateFrame("Button", "GROB", UIParent)
+---@class GROB: Frame
+local GROB = CreateFrame("Frame", "GROB")
 
 do
     for _, event in {

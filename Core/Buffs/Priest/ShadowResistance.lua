@@ -169,7 +169,8 @@ local SelfBuff = mb_selfBuff
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SPROT = CreateFrame("Button", "SPROT", UIParent)
+---@class SPROT: Frame
+local SPROT = CreateFrame("Frame", "SPROT")
 
 do
     for _, event in {

@@ -169,7 +169,8 @@ local SelfBuff = mb_selfBuff
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local MOTW = CreateFrame("Button", "MOTW", UIParent)
+---@class MOTW: Frame
+local MOTW = CreateFrame("Frame", "MOTW")
 
 do
     for _, event in {

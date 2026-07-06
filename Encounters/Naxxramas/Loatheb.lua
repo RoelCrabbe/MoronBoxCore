@@ -100,7 +100,8 @@ local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local LOA = CreateFrame("Button", "LOA", UIParent)
+---@class LOA: Frame
+local LOA = CreateFrame("Frame", "LOA")
 
 do
     for _, event in {

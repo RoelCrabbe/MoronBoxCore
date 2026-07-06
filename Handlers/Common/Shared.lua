@@ -841,7 +841,7 @@ function mb_reEquipAtieshIfNoAtieshBuff()
         return
     end
 
-    local atiesh = "Atiesh\, Greatstaff of the Guardian"
+    local atiesh = "Atiesh, Greatstaff of the Guardian"
     if mb_itemNameOfEquippedSlot(16) == atiesh then
         MB_hasAnAtieshEquipped = true
     end
