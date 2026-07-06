@@ -456,6 +456,10 @@ function PI_ProcessPowerInfusionQueue()
     end
 
     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+        if UnitIsFriend("player", targetUnitId) then
+            ClearTarget()
+        end
+
         CastSpellByName(spellName, false)
         CdMessage(spellName.." on "..GetColors(targetName).."!")
 
