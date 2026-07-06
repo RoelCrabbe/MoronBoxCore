@@ -912,30 +912,31 @@ BuffData["Sayge\'s Dark Fortune of Spirit"]       = "Interface\\Icons\\INV_Misc_
 BuffData["Sayge\'s Dark Fortune of Armor"]        = "Interface\\Icons\\INV_Misc_Orb_02"
 BuffData["Recently Bandaged"]                     = "Interface\\Icons\\INV_Misc_Bandage_08"
 BuffData["First Aid"]                             = "Interface\\Icons\\Spell_Holy_Heal"
-BuffData["Shadow Storm"]                          = "Interface\\Icons\\Spell_Shadow_ShadowBolt" --aq40 anubisaths BUFF
-BuffData["Mana Burn"]                             = "Interface\\Icons\\Spell_Shadow_ManaBurn" --aq40 anubisaths BUFF
-BuffData["Fire and Arcane Reflect"]               = "Interface\\Icons\\Spell_Arcane_Blink" --same icon,
-BuffData["Shadow and Frost Reflect"]              = "Interface\\Icons\\Spell_Arcane_Blink" --same icon,
-BuffData["Mending"]                               = "Interface\\Icons\\Spell_Nature_ResistNature" --aq40 anubisaths BUFF
-BuffData["Periodic Knock Away"]                   = "Interface\\Icons\\Ability_UpgradeMoonglaive" --aq40 anubisaths BUFF
+BuffData["Shadow Storm"]                          = "Interface\\Icons\\Spell_Shadow_ShadowBolt"        --aq40 anubisaths BUFF
+BuffData["Mana Burn"]                             = "Interface\\Icons\\Spell_Shadow_ManaBurn"          --aq40 anubisaths BUFF
+BuffData["Fire and Arcane Reflect"]               = "Interface\\Icons\\Spell_Arcane_Blink"             --same icon,
+BuffData["Shadow and Frost Reflect"]              = "Interface\\Icons\\Spell_Arcane_Blink"             --same icon,
+BuffData["Mending"]                               = "Interface\\Icons\\Spell_Nature_ResistNature"      --aq40 anubisaths BUFF
+BuffData["Periodic Knock Away"]                   = "Interface\\Icons\\Ability_UpgradeMoonglaive"      --aq40 anubisaths BUFF
 BuffData["Living Bomb"]                           = "Interface\\Icons\\INV_Enchant_EssenceAstralSmall" --Baron Bomb
-BuffData["Burning Adrenaline"]                    = "Interface\\Icons\\INV_Gauntlets_03"  --Vaelastrasz Bomb
-BuffData["Brood Affliction: Bronze"]              = "Interface\\Icons\\INV_Misc_Head_Dragon_Bronze" --Chromaggus bronze debuff
-BuffData["Plague"]                                = "Interface\\Icons\\Spell_Shadow_CurseOfTounges" --aq20/40 anubisath plague debuff
-BuffData["Drink"]                                 = "Interface\\Icons\\INV_Drink_18"      --LVL 55 water ONLY, not lvl 45 or below.
-BuffData["Shadow Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_05" --Ossirian Weakness
-BuffData["Fire Weakness"]                         = "Interface\\Icons\\INV_Misc_QirajiCrystal_02" --Ossirian Weakness
-BuffData["Nature Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_03" --Ossirian Weakness
-BuffData["Arcane Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_01" --Ossirian Weakness
-BuffData["Frost Weakness"]                        = "Interface\\Icons\\INV_Misc_QirajiCrystal_04" --Ossirian Weakness
-BuffData["Magic Reflection"]                      = "Interface\\Icons\\Spell_Frost_FrostShock" --Magic Reflection on Major Domo adds
+BuffData["Burning Adrenaline"]                    = "Interface\\Icons\\INV_Gauntlets_03"               --Vaelastrasz Bomb
+BuffData["Brood Affliction: Bronze"]              = "Interface\\Icons\\INV_Misc_Head_Dragon_Bronze"    --Chromaggus bronze debuff
+BuffData["Plague"]                                = "Interface\\Icons\\Spell_Shadow_CurseOfTounges"    --aq20/40 anubisath plague debuff
+BuffData["Drink"]                                 = "Interface\\Icons\\INV_Drink_18"                   --LVL 55 water ONLY, not lvl 45 or below.
+BuffData["Shadow Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_05"      --Ossirian Weakness
+BuffData["Fire Weakness"]                         = "Interface\\Icons\\INV_Misc_QirajiCrystal_02"      --Ossirian Weakness
+BuffData["Nature Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_03"      --Ossirian Weakness
+BuffData["Arcane Weakness"]                       = "Interface\\Icons\\INV_Misc_QirajiCrystal_01"      --Ossirian Weakness
+BuffData["Frost Weakness"]                        = "Interface\\Icons\\INV_Misc_QirajiCrystal_04"      --Ossirian Weakness
+BuffData["Magic Reflection"]                      = "Interface\\Icons\\Spell_Frost_FrostShock"         --Magic Reflection on Major Domo adds
 BuffData["Deaden Magic"]                          =
-"Interface\\Icons\\Spell_Holy_SealOfSalvation"                                            --Shazzrah Deaden Magicc BUFF, can be dispelled.
+"Interface\\Icons\\Spell_Holy_SealOfSalvation"                                                         --Shazzrah Deaden Magicc BUFF, can be dispelled.
 BuffData["Corrupted Healing"]                     =
-"Interface\\Icons\\Spell_Shadow_Charm"                                                    --Nefarian Priestcall debuff, stop heal if have this debuff as priest.
-BuffData["Delusions of Jin\'do"]                  = "Interface\\Icons\\Spell_Shadow_UnholyFrenzy" --Jindo shade debuff, do not decurse.
-BuffData["Threatening Gaze"]                      = "Interface\\Icons\\Spell_Shadow_Charm" --Broodlord's Threatening gaze.
-BuffData["True Fulfillment"]                      = "Interface\\Icons\\Spell_Shadow_Charm" --Skerams mindcontrol.
+"Interface\\Icons\\Spell_Shadow_Charm"                                                                 --Nefarian Priestcall debuff, stop heal if have this debuff as priest.
+BuffData["Delusions of Jin\'do"]                  =
+"Interface\\Icons\\Spell_Shadow_UnholyFrenzy"                                                          --Jindo shade debuff, do not decurse.
+BuffData["Threatening Gaze"]                      = "Interface\\Icons\\Spell_Shadow_Charm"             --Broodlord's Threatening gaze.
+BuffData["True Fulfillment"]                      = "Interface\\Icons\\Spell_Shadow_Charm"             --Skerams mindcontrol.
 BuffData["Aura of Agony"]                         = "Interface\\Icons\\Spell_Shadow_CurseOfSargeras"
 BuffData["Corruption of the Earth"]               = "Interface\\Icons\\Ability_Creature_Cursed_03"
 BuffData["Atiesh"]                                = "Interface\\Icons\\Spell_Nature_MoonGlow"

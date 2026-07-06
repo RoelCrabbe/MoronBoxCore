@@ -133,8 +133,12 @@ function mb_assignCrowdControl()
     if IsAltKeyDown() and UnitCreatureType("target") == "Beast" then
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
             SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then MB_currentRaidTarget = 1 else MB_currentRaidTarget = MB_currentRaidTarget +
-                1 end
+            if MB_currentRaidTarget == 8 then
+                MB_currentRaidTarget = 1
+            else
+                MB_currentRaidTarget = MB_currentRaidTarget +
+                    1
+            end
         end
 
         local num_druids = TableLength(MB_noneDruidTanks)
@@ -158,8 +162,12 @@ function mb_assignCrowdControl()
     if UnitCreatureType("target") == "Demon" or UnitCreatureType("target") == "Elemental" then
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
             SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then MB_currentRaidTarget = 1 else MB_currentRaidTarget = MB_currentRaidTarget +
-                1 end
+            if MB_currentRaidTarget == 8 then
+                MB_currentRaidTarget = 1
+            else
+                MB_currentRaidTarget = MB_currentRaidTarget +
+                    1
+            end
         end
 
         local num_locks = TableLength(MB_classList["Warlock"])
@@ -180,8 +188,12 @@ function mb_assignCrowdControl()
     elseif UnitCreatureType("target") == "Undead" then
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
             SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then MB_currentRaidTarget = 1 else MB_currentRaidTarget = MB_currentRaidTarget +
-                1 end
+            if MB_currentRaidTarget == 8 then
+                MB_currentRaidTarget = 1
+            else
+                MB_currentRaidTarget = MB_currentRaidTarget +
+                    1
+            end
         end
 
         local num_priests = TableLength(MB_classList["Priest"])
@@ -202,8 +214,12 @@ function mb_assignCrowdControl()
     elseif UnitCreatureType("target") == "Dragonkin" then
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
             SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then MB_currentRaidTarget = 1 else MB_currentRaidTarget = MB_currentRaidTarget +
-                1 end
+            if MB_currentRaidTarget == 8 then
+                MB_currentRaidTarget = 1
+            else
+                MB_currentRaidTarget = MB_currentRaidTarget +
+                    1
+            end
         end
 
         local num_druids = TableLength(MB_noneDruidTanks)
@@ -224,8 +240,12 @@ function mb_assignCrowdControl()
     elseif nil or UnitCreatureType("target") == "Beast" or UnitCreatureType("target") == "Humanoid" or UnitCreatureType("target") == "Critter" then
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
             SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then MB_currentRaidTarget = 1 else MB_currentRaidTarget = MB_currentRaidTarget +
-                1 end
+            if MB_currentRaidTarget == 8 then
+                MB_currentRaidTarget = 1
+            else
+                MB_currentRaidTarget = MB_currentRaidTarget +
+                    1
+            end
         end
 
         local num_mages = TableLength(MB_classList["Mage"])

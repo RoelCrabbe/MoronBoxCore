@@ -6,68 +6,68 @@ MB_raidInviter = nil -- Handling Raidinvites
 MB_hordeRaidInviter = "Moron"
 MB_allianceRaidInviter = "Moron"
 
-MB_RAID = "The Solution To Pollution"                     -- Change this to something UNIQUE for you!
+MB_RAID = "The Solution To Pollution"  -- Change this to something UNIQUE for you!
 MB_inviteMessage =
-"Invite please, spot for raid please?"                    -- Invite message that raidinviter above listens and autoinvites to.
+"Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
 
 MB_tankList = {}
-MB_raidAssist = {                         -- Raid tools
-    AutoTurnToTarget = false,             -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
-    Frameflash = true,                    -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
+MB_raidAssist = {                            -- Raid tools
+    AutoTurnToTarget = false,                -- Auto-turning to raid leader, copied from 5MMB (Never used, but thought it was cool)
+    Frameflash = true,                       -- Change this to nil if you do not want the frames to flash when you are out of range, etc.
     Use40yardHealingRangeOnInstants = false, -- Can cause massive lag and freezing if activated and raid is low on health. If nil = 28 yards, if true = 40 yards.
-    FollowTheLeaderTaxi = true,           -- Change this to nil if you do not want followers to automatically fly where the raid leader flies.
+    FollowTheLeaderTaxi = true,              -- Change this to nil if you do not want followers to automatically fly where the raid leader flies.
 
-    AutoEquipSet = {                      -- Automatically equips your gear set on login
-        Active = true,                    -- Set to true to enable, false to disable
-        Set = "NRML"                      -- Name of your default gear set
+    AutoEquipSet = {                         -- Automatically equips your gear set on login
+        Active = true,                       -- Set to true to enable, false to disable
+        Set = "NRML"                         -- Name of your default gear set
     },
 
-    GTFO = {     -- If you get Baron bomb or Vaelastrasz bomb, follow this person.
+    GTFO = {           -- If you get Baron bomb or Vaelastrasz bomb, follow this person.
         Active = true, -- Set to true to enable, false to disable
 
         -- Encounter, follower
-        Baron = {    -- Baron bomb
-            "Suecia", -- Horde
-            "Laty"   -- Alliance
+        Baron = {             -- Baron bomb
+            "Suecia",         -- Horde
+            "Laty"            -- Alliance
         },
-        Vaelastrasz = { -- Vaelastrasz
-            "Suecia", -- Horde
+        Vaelastrasz = {       -- Vaelastrasz
+            "Suecia",         -- Horde
             "Alliance Soak 1" -- Alliance
         },
-        Onyxia = {   -- Onyxia Phase 2 (Character that gets fireballed moves out to reduce damage)
-            "Moron", -- Horde
+        Onyxia = {            -- Onyxia Phase 2 (Character that gets fireballed moves out to reduce damage)
+            "Moron",          -- Horde
             "Alliance Soak 1" -- Alliance
         }
     },
 
-    Shaman = {                      -- Shaman options
-        DefaultToHealingWave = true, -- If you don't have a specific set, will default to Healing Wave
+    Shaman = {                            -- Shaman options
+        DefaultToHealingWave = true,      -- If you don't have a specific set, will default to Healing Wave
         NSLowHealthAggroedPlayers = true, -- Change to nil if you experience lag
     },
 
-    Warlock = {           -- Warlock options
+    Warlock = {                 -- Warlock options
         ShouldBeWhores = false, -- Set to true to use Shadowburn on targets with 5x Shadoweaving and Improved Shadowbolt
-        FarmSoulStones = false -- On HealAndTank, warlocks will Drain Soul
+        FarmSoulStones = false  -- On HealAndTank, warlocks will Drain Soul
     },
 
-    Paladin = {                           -- Paladin options
+    Paladin = {                                 -- Paladin options
         HolyShockLowHealthAggroedPlayers = true -- Change to nil if you experience lag
     },
 
-    Druid = {                        -- Druid options
-        BuffTanksWithThorns = false, -- No longer buffs tanks with Thorns
+    Druid = {                              -- Druid options
+        BuffTanksWithThorns = false,       -- No longer buffs tanks with Thorns
         PrioritizePriestsAtieshBuff = true -- If enabled, prevents druid from re-equipping Atiesh so priest can keep the buff
     },
 
-    Warrior = {          -- Warrior options, only for Annihilator
-        Active = true,   -- Set to true to enable, false to disable
+    Warrior = {                -- Warrior options, only for Annihilator
+        Active = true,         -- Set to true to enable, false to disable
         AnnihilatorWeavers = { -- All warriors who use Annihilator (also update weapons database in WarriorData.lua)
             -- Horde
             "Jokamok",
             "Crymeariver",
 
-            "Suecia", -- Tank
-            "Ajlano", -- Tank
+            "Suecia",   -- Tank
+            "Ajlano",   -- Tank
             "Almisael", -- Tank
 
             -- Alliance
@@ -76,10 +76,10 @@ MB_raidAssist = {                         -- Raid tools
     },
 
     Mage = {
-        StarterIgniteTick = 425,       -- Represents the threshold tick value for the Ignite debuff
+        StarterIgniteTick = 425,             -- Represents the threshold tick value for the Ignite debuff
         AllowIgniteToDropWhenBadTick = true, -- Indicates whether Ignite should be allowed to drop when its tick value is below the specified threshold
-        SpellToKeepIgniteUp = "Scorch", -- Specifies the spell that should be cast to keep the Ignite debuff up
-        AllowFireBlastDuringIgnite = true, -- Indicates whether instant cast spells should be allowed like fireblast when igniting
+        SpellToKeepIgniteUp = "Scorch",      -- Specifies the spell that should be cast to keep the Ignite debuff up
+        AllowFireBlastDuringIgnite = true,   -- Indicates whether instant cast spells should be allowed like fireblast when igniting
         -- Forst
         SpellToKeepWintersChillUp = "Frostbolt(Rank 1)",
 
@@ -99,7 +99,7 @@ MB_raidAssist = {                         -- Raid tools
         },
     },
 
-    Debugger = { -- Tells me some stuff on X and Y encounters
+    Debugger = {       -- Tells me some stuff on X and Y encounters
         Active = true, -- True or false, work or not
 
         -- Class, Name
@@ -113,8 +113,8 @@ MB_raidAssist = {                         -- Raid tools
         Razorgore = "Akaaka"
     },
 
-    PotionTraders = {     -- When buffing and holding Ctrl, these characters will collect potions
-        Active = true,    -- Set to true to enable, false to disable
+    PotionTraders = {           -- When buffing and holding Ctrl, these characters will collect potions
+        Active = true,          -- Set to true to enable, false to disable
         MajorMana = "Smalheal", -- The character that will distribute mana potions to all healers who need them
     }
 }

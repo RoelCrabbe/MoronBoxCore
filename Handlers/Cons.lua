@@ -90,7 +90,7 @@ function mb_mageWater()
                 _, stack = GetContainerItemInfo(bag, slot)
                 local bsNum = string.gsub(link, ".-\124H([^\124]*)\124h.*", "%1")
                 local itemName, itemNo, itemRarity, itemReqLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemIcon =
-                GetItemInfo(bsNum)
+                    GetItemInfo(bsNum)
 
                 if FindInTable(MageWater, itemName) then
                     if waterRanks[itemName] > bestRank then

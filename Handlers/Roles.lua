@@ -381,6 +381,6 @@ end
 function mb_numOfCasterHealerInParty()
     local total = 0
     total = mb_numberOfClassInParty("Mage") + mb_numberOfClassInParty("Priest") + mb_numberOfClassInParty("Druid") +
-    mb_numberOfClassInParty("Shaman")
+        mb_numberOfClassInParty("Shaman")
     return total
 end
