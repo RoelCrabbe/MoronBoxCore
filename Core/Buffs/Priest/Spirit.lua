@@ -169,7 +169,8 @@ local SelfBuff = mb_selfBuff
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local SPIRIT = CreateFrame("Button", "SPIRIT", UIParent)
+---@class SPIRIT: Frame
+local SPIRIT = CreateFrame("Frame", "SPIRIT")
 
 do
     for _, event in {

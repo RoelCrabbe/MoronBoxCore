@@ -18,7 +18,21 @@
         "arg7",
         "arg8",
         "arg9",
-        "AceLibrary"
+        "AceLibrary",
+        "RunLine",
+
+        "CancelBuff",
+        "UseItemByName",
+        "AcceptResurrect",
+        "GetGossipOptions",
+        "SelectGossipOption",
+        "AcceptTrade",
+        "GetTradeTargetItemLink",
+        "NumTaxiNodes",
+        "TaxiNodeName",
+        "CanMerchantRepair",
+        "GetRepairAllCost",
+        "RepairAllItems"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],
     "format.enable": true

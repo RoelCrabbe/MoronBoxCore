@@ -96,7 +96,8 @@ local UnitInRange = mb_unitInRange
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local GLUTH = CreateFrame("Button", "GLUTH", UIParent)
+---@class GLUTH: Frame
+local GLUTH = CreateFrame("Frame", "GLUTH")
 
 do
     for _, event in {
