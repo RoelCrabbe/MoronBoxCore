@@ -107,13 +107,13 @@ local function RogueSpecc()
     _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
     if TalentsIn > 0 then
         MB_mySpecc = "Hemo"
-        return 
+        return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(2, 19)
     if TalentsIn > 0 then
         MB_mySpecc = "AR"
-        return 
+        return
     end
 
     MB_mySpecc = nil
@@ -131,14 +131,14 @@ MB_mySpeccList["Rogue"] = RogueSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Arcane Intellect"]            = "Arcane Intellect",
-    ["Arcane Brilliance"]           = "Arcane Brilliance",
-    ["Divine Spirit"]               = "Divine Spirit",
-    ["Prayer of Spirit"]            = "Prayer of Spirit",
-    ["Slip'kik's Savvy"]            = "Slip'kik's Savvy",
-    ["Fury of Ragnaros"]            = "Fury of Ragnaros",
-    ["Very Berry Cream"]            = "Very Berry Cream",
-    ["Sweet Surprise"]              = "Sweet Surprise",
+    ["Arcane Intellect"]  = "Arcane Intellect",
+    ["Arcane Brilliance"] = "Arcane Brilliance",
+    ["Divine Spirit"]     = "Divine Spirit",
+    ["Prayer of Spirit"]  = "Prayer of Spirit",
+    ["Slip'kik's Savvy"]  = "Slip'kik's Savvy",
+    ["Fury of Ragnaros"]  = "Fury of Ragnaros",
+    ["Very Berry Cream"]  = "Very Berry Cream",
+    ["Sweet Surprise"]    = "Sweet Surprise",
 }
 
 local function RogueCancelAuras()
@@ -154,28 +154,26 @@ end
 --[####################################################################################################]--
 
 local function RogueSingle()
-
-	GetTarget()
+    GetTarget()
     RogueCancelAuras()
 
-	if not InCombat("target") then
+    if not InCombat("target") then
         return
     end
 
-	if MB_useCooldowns.Active then		
-		Rogue:Cooldowns()
-	end
+    if MB_useCooldowns.Active then
+        Rogue:Cooldowns()
+    end
 
-	AutoAttack()
+    AutoAttack()
 
-	if InCombat("player") and UnitMana("player") <= 40 then		
-		if ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(13) then 
-			use(13)
-
-		elseif ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(14) then 
-			use(14)
-		end
-	end
+    if InCombat("player") and UnitMana("player") <= 40 then
+        if ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(13) then
+            use(13)
+        elseif ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(14) then
+            use(14)
+        end
+    end
 
     if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
         if UnitMana("player") >= 25 then
@@ -183,47 +181,43 @@ local function RogueSingle()
                 GetMyInterruptTarget()
             end
 
-            if ImBusy() then			
-                SpellStopCasting() 
+            if ImBusy() then
+                SpellStopCasting()
             end
 
             CastSpellByName(MB_myInterruptSpell[myClass])
             CdPrint("Interrupting!")
             MB_doInterrupt.Active = false
             return
-        end     
+        end
     end
 
     local aggrox = AceLibrary("Banzai-1.0")
-	if aggrox:GetUnitAggroByUnitId("player") then
-        if HealthPct("player") < 0.8 and SpellReady("Evasion") then 		
-            
-            CastSpellByName("Evasion") 
+    if aggrox:GetUnitAggroByUnitId("player") then
+        if HealthPct("player") < 0.8 and SpellReady("Evasion") then
+            CastSpellByName("Evasion")
             return
-        
-        elseif HealthPct("player") < 0.45 and SpellReady("Vanish") then 
-		
-            CastSpellByName("Vanish") 
+        elseif HealthPct("player") < 0.45 and SpellReady("Vanish") then
+            CastSpellByName("Vanish")
             return
         end
-	end
+    end
 
-	if not InMeleeRange() then
-		return
+    if not InMeleeRange() then
+        return
     end
 
     local cp = GetComboPoints("target")
-    if SpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then			
+    if SpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then
         CastSpellByName("Kidney Shot")
     end
 
-    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then			
-        CastSpellByName("Blade Flurry") 
+    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+        CastSpellByName("Blade Flurry")
     end
 
-    if (DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff")) 
+    if (DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff"))
         and (InMeleeRange() or TankTarget("Ragnaros")) then
-
         if Instance.IsWorldBoss() then
             Rogue:Cooldowns()
         end
@@ -234,11 +228,11 @@ local function RogueSingle()
     local hasImprovedEA = ImprovedExposeCheck()
     if not HasBuffOrDebuff("Slice and Dice", "player", "buff") then
         if hasImprovedEA then
-            if cp == 2 and HasBuffOrDebuff("Expose Armor", "target", "debuff") then                
+            if cp == 2 and HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                 CastSpellByName("Slice and Dice")
             end
         else
-            if cp >= 1 then                
+            if cp >= 1 then
                 CastSpellByName("Slice and Dice")
             end
         end
@@ -252,12 +246,12 @@ local function RogueSingle()
         end
     end
 
-	if MB_mySpecc == "Hemo" then		
-		CastSpellByName("Hemorrhage")
+    if MB_mySpecc == "Hemo" then
+        CastSpellByName("Hemorrhage")
         return
     end
 
-	CastSpellByName("Sinister Strike")
+    CastSpellByName("Sinister Strike")
 end
 
 MB_mySingleList["Rogue"] = RogueSingle
@@ -279,11 +273,11 @@ MB_myAOEList["Rogue"] = RogueSingle
 --[####################################################################################################]--
 
 local function RogueSetup()
-	if UnitFactionGroup("player") == "Alliance" then
-		Rogue:PoisonMainHand()
-	end
+    if UnitFactionGroup("player") == "Alliance" then
+        Rogue:PoisonMainHand()
+    end
 
-	Rogue:PoisonOffhand()
+    Rogue:PoisonOffhand()
 end
 
 MB_mySetupList["Rogue"] = RogueSetup
@@ -293,42 +287,42 @@ MB_mySetupList["Rogue"] = RogueSetup
 --[####################################################################################################]--
 
 function Rogue:Cooldowns()
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if ImBusy() or not InCombat("player") then
+        return
+    end
 
-    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then 
-        CastSpellByName("Blade Flurry") 
+    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+        CastSpellByName("Blade Flurry")
     end
 
     SelfBuff("Berserking")
-    SelfBuff("Blood Fury") 
+    SelfBuff("Blood Fury")
 
-    if SpellReady("Adrenaline Rush") then			
+    if SpellReady("Adrenaline Rush") then
         CastSpellByName("Adrenaline Rush")
     end
 end
 
 function Rogue:PoisonOffhand()
-	if HaveInBags("Instant Poison VI") then
-		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
-	
-		if not has_enchant_off then			
-			UseItemByName("Instant Poison VI")
-			PickupInventoryItem(17)	
-			ClearCursor()
-		end
-	end
+    if HaveInBags("Instant Poison VI") then
+        local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
+
+        if not has_enchant_off then
+            UseItemByName("Instant Poison VI")
+            PickupInventoryItem(17)
+            ClearCursor()
+        end
+    end
 end
 
 function Rogue:PoisonMainHand()
-	if HaveInBags("Instant Poison VI") then
-		local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
-		
-		if not has_enchant_main then			
-			UseItemByName("Instant Poison VI")
-			PickupInventoryItem(16)	
-			ClearCursor()
-		end
-	end
+    if HaveInBags("Instant Poison VI") then
+        local has_enchant_main, mx, mc, has_enchant_off = GetWeaponEnchantInfo()
+
+        if not has_enchant_main then
+            UseItemByName("Instant Poison VI")
+            PickupInventoryItem(16)
+            ClearCursor()
+        end
+    end
 end

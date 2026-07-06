@@ -103,14 +103,15 @@ local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
 local LOA = CreateFrame("Button", "LOA", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do LOA:RegisterEvent(event)
-	end
+    } do
+        LOA:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -136,7 +137,7 @@ local MB_myLoathebHealers = {
     -- Priests
     "Liket", "Blaidzy", "Cyal", "Bonita",
     -- Shaman
-    "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna", 
+    "Shamuk", "Hurtek", "Rockon", "Slaver", "Mvenna",
     "Chimando", "Shaitan", "Lillifee",
     -- Druids
     "Pyqmi"
@@ -145,7 +146,7 @@ local MB_myLoathebHealers = {
 -- Healing Spell Configuration
 local MB_myLoathebHealSpell = {
     Druid = "Healing Touch",
-    Shaman = "Healing Wave", 
+    Shaman = "Healing Wave",
     Priest = "Greater Heal",
     Paladin = "Holy Light"
 }
@@ -195,7 +196,7 @@ end
 
 local function CheckClassOrder(healerList, fallbackList)
     for i = 1, TableLength(healerList) - 1 do
-        if UnitClass(MBID[healerList[i]]) == "Priest" 
+        if UnitClass(MBID[healerList[i]]) == "Priest"
             and UnitClass(MBID[healerList[i + 1]]) == "Priest" then
             return fallbackList, false
         end
@@ -232,8 +233,8 @@ local function InitializeHealerRotation()
         end
     end
 
-	local result = {}
-	local priestIndex, nonPriestIndex, nextPriestPosition = 1, 1, 1
+    local result = {}
+    local priestIndex, nonPriestIndex, nextPriestPosition = 1, 1, 1
     local totalHealers = TableLength(priests) + TableLength(nonPriests)
     local priestCount = TableLength(priests)
 
@@ -247,12 +248,12 @@ local function InitializeHealerRotation()
             if i == nextPriestPosition and priestIndex <= priestCount then
                 table.insert(result, priests[priestIndex])
                 priestIndex = priestIndex + 1
-                
+
                 if priestIndex <= priestCount then
                     local additionalSpacing = 0
                     if priestIndex <= remainder then
                         additionalSpacing = 1
-					end
+                    end
 
                     nextPriestPosition = nextPriestPosition + spacing + additionalSpacing
                 end
@@ -265,18 +266,18 @@ local function InitializeHealerRotation()
         end
     end
 
-	local final, isSuccessful = CheckClassOrder(result, sorted)
-	local finalCount = TableLength(final)
+    local final, isSuccessful = CheckClassOrder(result, sorted)
+    local finalCount = TableLength(final)
 
     if finalCount < 12 then
-        CdRaidWarning(">> Loatheb Healer Info: Only "..finalCount.." Healers Found <<")
+        CdRaidWarning(">> Loatheb Healer Info: Only " .. finalCount .. " Healers Found <<")
     elseif not isSuccessful then
         CdRaidWarning(">> Loatheb Healer Info: Using Alphabetic Fallback <<")
     else
         CdRaidWarning(">> Loatheb Healer Info: Priest Spacing Successful <<")
     end
 
-	MB_myLoathebHealers = final
+    MB_myLoathebHealers = final
     MB_myLoathebHealerIndex = 1
 end
 
@@ -284,11 +285,11 @@ local function CurrentActiveHealer()
     if not MB_myLoathebHealers then
         return nil
     end
-    
+
     if not MB_myLoathebHealerIndex or MB_myLoathebHealerIndex < 1 then
         return nil
     end
-    
+
     local totalHealers = TableLength(MB_myLoathebHealers)
     if totalHealers == 0 then
         return nil
@@ -319,7 +320,7 @@ local function ShouldBroadcast()
     if not myRaidId then
         return false
     end
-    
+
     return HasBuffOrDebuff("Corrupted Mind", myRaidId, "debuff")
 end
 
@@ -328,10 +329,10 @@ local function BroadcastHealer()
     local nextIndex, nextHealerName = FindNextCleanHealer(currentIndex)
 
     if nextIndex and nextHealerName then
-        local message = "NEXT:"..nextIndex..":"..nextHealerName
-        CdAddonMessage(MB_RAID.."LOATHEB_HEAL", message)
+        local message = "NEXT:" .. nextIndex .. ":" .. nextHealerName
+        CdAddonMessage(MB_RAID .. "LOATHEB_HEAL", message)
     else
-        CdAddonMessage(MB_RAID.."LOATHEB_HEAL", "ALL_DEBUFFED")
+        CdAddonMessage(MB_RAID .. "LOATHEB_HEAL", "ALL_DEBUFFED")
     end
 end
 
@@ -345,8 +346,8 @@ local function UseShadowPotsOnLoatheb()
     end
 
     if ImBusy() or not InCombat("player") then
-		return
-	end
+        return
+    end
 
     TakePotionsWhenPossible("Greater Shadow Protection Potion")
 end
@@ -377,12 +378,12 @@ function LOA_IsAtLoatheb()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."LOATHEB", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "LOATHEB", "ENGAGE", 30)
         LOA_ACTIVE = true
         return true
     end
 
-	return LOA_ACTIVE
+    return LOA_ACTIVE
 end
 
 --[####################################################################################################]--
@@ -390,47 +391,41 @@ end
 --[####################################################################################################]--
 
 function LOA:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID.."LOATHEB_HEAL") then
+    if (event == "CHAT_MSG_ADDON") then
+        if (arg1 == MB_RAID .. "LOATHEB_HEAL") then
             local _, _, newIndex, healerName = string.find(arg2, "NEXT:(%d+):(.+)")
             MB_myLoathebHealerIndex = tonumber(newIndex)
-            CdRaidWarning(">> "..healerName.." <<")
-
-        elseif (arg1 == MB_RAID.."LOATHEB_EMERGENCY") then
+            CdRaidWarning(">> " .. healerName .. " <<")
+        elseif (arg1 == MB_RAID .. "LOATHEB_EMERGENCY") then
             if (arg2 == "ALL_DEBUFFED") then
                 CdRaidWarning(">> All Healers Debuffed! Use Cooldowns on TANK! <<")
             end
-
-        elseif (arg1 == MB_RAID.."LOATHEB_IGNITE") then
+        elseif (arg1 == MB_RAID .. "LOATHEB_IGNITE") then
             if (arg2 == "REFRESH") then
                 CdRaidWarning(">> Refresh Fungal Bloom on MAGES! <<")
             end
-
-        elseif (arg1 == MB_RAID.."LOATHEB") then
+        elseif (arg1 == MB_RAID .. "LOATHEB") then
             if (arg2 == "ENGAGE") then
                 InitializeHealerRotation()
                 LOA_ACTIVE = true
             end
         end
-
     elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Loatheb dies") then
             CdRaidWarning(">> Loatheb Died! <<")
         end
-    
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         LOA_ACTIVE = false
     end
 end
 
-LOA:SetScript("OnEvent", LOA.OnEvent) 
+LOA:SetScript("OnEvent", LOA.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
 function LOA_Healing()
-
     if ShouldBroadcast() then
         BroadcastHealer()
         return false
@@ -454,7 +449,7 @@ function LOA_Healing()
 
     local spellCost = GetSpellManaCost(myHealSpell, myHealRank)
     if not spellCost or (spellCost * 1.25) > UnitMana("player") then
-        CdMessage("No Mana For << "..myHealSpell.." >> Finding Healer!", 30)
+        CdMessage("No Mana For << " .. myHealSpell .. " >> Finding Healer!", 30)
         BroadcastHealer()
         return false
     end
@@ -504,17 +499,14 @@ function LOA_Rotation()
         if ImHealer() then
             local SingleLoathebRotation = MB_myLoathebList[myClass]
             ExecuteRotation(SingleLoathebRotation, "Loatheb Healing SINGLE")
-
         elseif HasBuffOrDebuff("Fungal Bloom", "player", "debuff") then
             ExecuteRotation(SingleRotation, "Fungal Bloom SINGLE")
-
         elseif ImTank() then
             ExecuteRotation(SingleRotation, "Loatheb Tank SINGLE")
-
-        elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then            
+        elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then
             if myClass == "Mage" and MyClassAlphabeticalOrder() == 1 then
                 if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") and NumberOfClassInRaid("Mage") < 4 then
-                    CdAddonMessage(MB_RAID.."LOATHEB_IGNITE", "REFRESH")
+                    CdAddonMessage(MB_RAID .. "LOATHEB_IGNITE", "REFRESH")
                 end
             end
 
@@ -530,8 +522,8 @@ end
 --[####################################################################################################]--
 
 function LOA_Targeting()
-	if LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
-		if myName == MB_myLoathebMainTank then
+    if LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
+        if myName == MB_myLoathebMainTank then
             if LockOnTarget("Loatheb") then
                 return true
             end
@@ -540,21 +532,19 @@ function LOA_Targeting()
                 AssistFocus()
             end
             return true
-        
         elseif ImTank() then
-			GetTargetNotOnTank()
-			return true
+            GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() or ImRangedDPS() or ImHealer() then
+            if LockOnTarget("Loatheb") then
+                return true
+            end
 
-		elseif ImMeleeDPS() or ImRangedDPS() or ImHealer() then
-			if LockOnTarget("Loatheb") then
-				return true
-			end
-
-			if not tName or Dead("target") then
-				AssistFocus()
-			end
-			return true
-		end
+            if not tName or Dead("target") then
+                AssistFocus()
+            end
+            return true
+        end
     end
 
     return false

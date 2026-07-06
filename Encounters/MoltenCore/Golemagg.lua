@@ -112,7 +112,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myGolemaggBoxStrategy = true 
+local MB_myGolemaggBoxStrategy = true
 local MB_myGolemaggFirePotStrategy = false
 
 -- Strategy Configuration -- No changes below this line
@@ -151,12 +151,12 @@ end
 --[####################################################################################################]--
 
 local function GOLEMAGG_CheckEncounter()
-	if GolemaggEncounter.Active then
+    if GolemaggEncounter.Active then
         UseFirePotsOnGolemagg()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if TankTarget("Golemagg the Incinerator") then
@@ -168,12 +168,12 @@ local function GOLEMAGG_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."GOLEMAGG", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GOLEMAGG", "ENGAGE", 30)
         GolemaggEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function GOLEMAGG:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."GOLEMAGG" then
+    if arg1 == MB_RAID .. "GOLEMAGG" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Golemagg! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function GOLEMAGG:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Golemagg the Incinerator dies") and GolemaggEncounter.Active then
-        CdAddonMessage(MB_RAID.."GOLEMAGG", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GOLEMAGG", "DISENGAGE", 30)
     end
 end
 
@@ -215,19 +215,18 @@ end
 --[####################################################################################################]--
 
 function GOLEMAGG_TargetingPostFocus()
-	if GOLEMAGG_CheckEncounter() and MB_myGolemaggBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if GOLEMAGG_CheckEncounter() and MB_myGolemaggBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

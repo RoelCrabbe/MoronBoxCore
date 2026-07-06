@@ -112,7 +112,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myLucifronBoxStrategy = true 
+local MB_myLucifronBoxStrategy = true
 local MB_myLucifronShadowPotStrategy = false
 
 -- Strategy Configuration -- No changes below this line
@@ -192,7 +192,7 @@ local function LUCIFRON_CheckEncounter()
 
     local inF = false
     local tName = UnitName("target")
-    
+
     if (TankTarget("Lucifron") or TankTarget("Flamewaker Protector")) then
         inF = true
     else
@@ -202,7 +202,7 @@ local function LUCIFRON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "LUCIFRON", "ENGAGE", 30)
         LucifronEncounter.Active = true
         return true
     end
@@ -215,7 +215,7 @@ end
 --[####################################################################################################]--
 
 function LUCIFRON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."LUCIFRON" then
+    if arg1 == MB_RAID .. "LUCIFRON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Lucifron! <<")
             self:OnEnable()
@@ -228,7 +228,7 @@ end
 
 function LUCIFRON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Lucifron dies") and LucifronEncounter.Active then
-        CdAddonMessage(MB_RAID.."LUCIFRON", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "LUCIFRON", "DISENGAGE", 30)
     end
 end
 
@@ -249,19 +249,18 @@ end
 --[####################################################################################################]--
 
 function LUCIFRON_TargetingPostFocus()
-	if LUCIFRON_CheckEncounter() and MB_myLucifronBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if LUCIFRON_CheckEncounter() and MB_myLucifronBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

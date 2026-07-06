@@ -100,14 +100,15 @@ local UnitInRange = mb_unitInRange
 local GROB = CreateFrame("Button", "GROB", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do GROB:RegisterEvent(event)
-	end
+    } do
+        GROB:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -115,27 +116,27 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myGrobbulusBoxStrategy = true 
+local MB_myGrobbulusBoxStrategy = true
 local MB_myGrobbulusNaturePotStrategy = true
 
 -- Healing Assignments (REQUIRED)
 local MB_myGrobbulusCleanser = "Midavellir"
 local MB_myGrobbulusCleanseHealers = {
-	["Healdazor"] = MB_myGrobbulusCleanser,
-	["Niroxs"] = nil
+    ["Healdazor"] = MB_myGrobbulusCleanser,
+    ["Niroxs"] = nil
 }
 
 -- Tank Assignments (REQUIRED)
 local MB_myGrobbulusMainTank = "Moron"
 local MB_myGrobbulusSlimeTanks = {
-	"Kungen",
-	"Tyamies"
+    "Kungen",
+    "Tyamies"
 }
 
 -- Follow Targets (REQUIRED)
 local MB_myGrobbulusRaidFollowers = {
-	"Kungen",
-	"Tyamies"
+    "Kungen",
+    "Tyamies"
 }
 
 --[####################################################################################################]--
@@ -148,8 +149,8 @@ local function UseNaturePotsOnGrobbulus()
     end
 
     if ImBusy() or not InCombat("player") then
-		return
-	end
+        return
+    end
 
     TakePotionsWhenPossible("Greater Nature Protection Potion")
 end
@@ -161,38 +162,38 @@ end
 local GROB_ACTIVE = false
 
 function GROB_IsAtGrobbulus()
-	if GROB_ACTIVE then
+    if GROB_ACTIVE then
         UseNaturePotsOnGrobbulus()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
-	if TargetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
-		inF = true
-	elseif (TankTarget("Grobbulus") or TankTarget("Fallout Slime")) then
-		inF = true
-	else
-		for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
-			if TargetFromSpecificPlayer("Fallout Slime", tankName) then
-				inF = true
-				break
-			end
-		end
+    if TargetFromSpecificPlayer("Grobbulus", MB_myGrobbulusMainTank) then
+        inF = true
+    elseif (TankTarget("Grobbulus") or TankTarget("Fallout Slime")) then
+        inF = true
+    else
+        for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
+            if TargetFromSpecificPlayer("Fallout Slime", tankName) then
+                inF = true
+                break
+            end
+        end
 
-		if tName and (tName == "Grobbulus" or tName == "Fallout Slime") then
+        if tName and (tName == "Grobbulus" or tName == "Fallout Slime") then
             inF = true
         end
-	end
+    end
 
     if inF then
-        CdAddonMessage(MB_RAID.."GROBBULUS", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "GROBBULUS", "ENGAGE", 30)
         GROB_ACTIVE = true
         return true
     end
 
-	return GROB_ACTIVE
+    return GROB_ACTIVE
 end
 
 --[####################################################################################################]--
@@ -200,29 +201,26 @@ end
 --[####################################################################################################]--
 
 function GROB:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID.."GROBBULUS_EMERGENCY") then
+    if (event == "CHAT_MSG_ADDON") then
+        if (arg1 == MB_RAID .. "GROBBULUS_EMERGENCY") then
             if (arg2 == "PRIEST_OOR") then
                 CdRaidWarning(">> Priest Out of Range! <<")
             end
-
-		elseif (arg1 == MB_RAID.."GROBBULUS") then
+        elseif (arg1 == MB_RAID .. "GROBBULUS") then
             if (arg2 == "ENGAGE") then
                 GROB_ACTIVE = true
             end
         end
-
-	elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
+    elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Grobbulus dies") then
             CdRaidWarning(">> Grobbulus Died! <<")
         end
-    
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         GROB_ACTIVE = false
     end
 end
 
-GROB:SetScript("OnEvent", GROB.OnEvent) 
+GROB:SetScript("OnEvent", GROB.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -234,7 +232,7 @@ local function GetTargetWithInjection()
     end
 
     for i = 1, GetNumRaidMembers() do
-        local memberId = "raid"..i
+        local memberId = "raid" .. i
         if HasBuffOrDebuff("Mutating Injection", memberId, "debuff") then
             return memberId
         end
@@ -244,23 +242,23 @@ local function GetTargetWithInjection()
 end
 
 function GROB_Decurse()
-	local targetId = GetTargetWithInjection()
-	if not targetId then
-		return false
-	end
+    local targetId = GetTargetWithInjection()
+    if not targetId then
+        return false
+    end
 
-	if not UnitInRange(targetId) then
-		CdAddonMessage(MB_RAID.."GROBBULUS_EMERGENCY", "PRIEST_OOR")
-		return false
-	end
+    if not UnitInRange(targetId) then
+        CdAddonMessage(MB_RAID .. "GROBBULUS_EMERGENCY", "PRIEST_OOR")
+        return false
+    end
 
-	if CheckInteractDistance(targetId, 3) then
-		TargetUnit(targetId)
-		CastSpellByName("Cure Disease")
-		return true
-	end
+    if CheckInteractDistance(targetId, 3) then
+        TargetUnit(targetId)
+        CastSpellByName("Cure Disease")
+        return true
+    end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -272,7 +270,7 @@ local CurrentMainFollowIndex = 1
 local function GetRaidFollow(firstId, secondId, decurseId)
     local firstHasDebuff = HasBuffOrDebuff("Mutating Injection", firstId, "debuff")
     local secondHasDebuff = HasBuffOrDebuff("Mutating Injection", secondId, "debuff")
-    
+
     if firstHasDebuff and secondHasDebuff then
         return decurseId
     elseif CurrentMainFollowIndex == 1 and firstHasDebuff then
@@ -287,74 +285,74 @@ local function GetRaidFollow(firstId, secondId, decurseId)
 end
 
 function GROB_GetOUT()
-	if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
-		UseNaturePotsOnGrobbulus()
+    if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+        UseNaturePotsOnGrobbulus()
 
-		local firstFollow, secondFollow = MB_myGrobbulusRaidFollowers[1], MB_myGrobbulusRaidFollowers[2]
-		local firstFollowId, secondFollowId = MBID[firstFollow], MBID[secondFollow]
+        local firstFollow, secondFollow = MB_myGrobbulusRaidFollowers[1], MB_myGrobbulusRaidFollowers[2]
+        local firstFollowId, secondFollowId = MBID[firstFollow], MBID[secondFollow]
 
-		if not firstFollowId or not secondFollowId then
-			CdRaidWarning(">> You Don't Have Enough Follow Targets! <<")
-			return false
-		end
+        if not firstFollowId or not secondFollowId then
+            CdRaidWarning(">> You Don't Have Enough Follow Targets! <<")
+            return false
+        end
 
-		local decurseId = MBID[MB_myGrobbulusCleanser]
-		if not decurseId then
-			CdRaidWarning(">> You Don't Have Decurse Follow! <<")
-			return false
-		end
+        local decurseId = MBID[MB_myGrobbulusCleanser]
+        if not decurseId then
+            CdRaidWarning(">> You Don't Have Decurse Follow! <<")
+            return false
+        end
 
-		if MyNameInTable(MB_myGrobbulusCleanseHealers) then
-			local assigned = MB_myGrobbulusCleanseHealers[myName]
+        if MyNameInTable(MB_myGrobbulusCleanseHealers) then
+            local assigned = MB_myGrobbulusCleanseHealers[myName]
 
-			if assigned ~= nil then
-				MB_myAssignedHealTarget = assigned
-			else
-				local targetId = GetTargetWithInjection()
-				if targetId then
-					local name = UnitName(targetId)
-					MB_myAssignedHealTarget = name
-					CdMessage(">> Healing "..name.."! <<", 60)
-				else
-					MB_myAssignedHealTarget = nil
-				end
-			end
-		end
+            if assigned ~= nil then
+                MB_myAssignedHealTarget = assigned
+            else
+                local targetId = GetTargetWithInjection()
+                if targetId then
+                    local name = UnitName(targetId)
+                    MB_myAssignedHealTarget = name
+                    CdMessage(">> Healing " .. name .. "! <<", 60)
+                else
+                    MB_myAssignedHealTarget = nil
+                end
+            end
+        end
 
-		if myName == MB_myGrobbulusCleanser then
-			GROB_Decurse()
-			return false
-		end
+        if myName == MB_myGrobbulusCleanser then
+            GROB_Decurse()
+            return false
+        end
 
-		if myName == MB_myGrobbulusMainTank then
-			return false
-		end
+        if myName == MB_myGrobbulusMainTank then
+            return false
+        end
 
         local mainFollowId = GetRaidFollow(firstFollowId, secondFollowId, decurseId)
-		local mainFollow = UnitName(mainFollowId)
+        local mainFollow = UnitName(mainFollowId)
 
-		if myName == mainFollow then
-			return false
-		end
+        if myName == mainFollow then
+            return false
+        end
 
-		if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then
-			if IsAlive(decurseId) then
-				FollowUnit(decurseId, 1)
-			end
-		else
-			if UnitInRange(mainFollowId) then
-				if not CheckInteractDistance(mainFollowId, 3) then
-					FollowUnit(mainFollowId, 1)
-				end
-			else
-				if IsAlive(decurseId) then
-					FollowUnit(decurseId, 1)
-				end
-			end			
-		end
-		return true
-	end
-	return false
+        if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then
+            if IsAlive(decurseId) then
+                FollowUnit(decurseId, 1)
+            end
+        else
+            if UnitInRange(mainFollowId) then
+                if not CheckInteractDistance(mainFollowId, 3) then
+                    FollowUnit(mainFollowId, 1)
+                end
+            else
+                if IsAlive(decurseId) then
+                    FollowUnit(decurseId, 1)
+                end
+            end
+        end
+        return true
+    end
+    return false
 end
 
 --[####################################################################################################]--
@@ -362,8 +360,8 @@ end
 --[####################################################################################################]--
 
 function GROB_Targeting()
-	if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
-		if myName == MB_myGrobbulusMainTank then
+    if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
+        if myName == MB_myGrobbulusMainTank then
             if LockOnTarget("Grobbulus") then
                 return true
             end
@@ -372,34 +370,32 @@ function GROB_Targeting()
                 AssistFocus()
             end
             return true
-        
-        elseif ImTank() then				
-			GetTargetNotOnTank()
-			return true
+        elseif ImTank() then
+            GetTargetNotOnTank()
+            return true
+        elseif ImRangedDPS() then
+            if TankTargetHealth() < 0.12 then
+                AssistFocus()
+                return true
+            end
 
-		elseif ImRangedDPS() then
-			if TankTargetHealth() < 0.12 then
-				AssistFocus()
-				return true
-			end
+            if MB_mySpecc ~= "Fire" then
+                for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
+                    if AssistSpecificTargetFromPlayer("Fallout Slime", tankName) then
+                        return true
+                    end
+                end
+            end
 
-			if MB_mySpecc ~= "Fire" then
-				for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
-					if AssistSpecificTargetFromPlayer("Fallout Slime", tankName) then
-						return true
-					end
-				end
-			end
+            if LockOnTarget("Grobbulus") then
+                return true
+            end
 
-			if LockOnTarget("Grobbulus") then
-				return true
-			end
-
-			if not tName or Dead("target") then
-				AssistFocus()
-			end
-			return true
-		end
+            if not tName or Dead("target") then
+                AssistFocus()
+            end
+            return true
+        end
     end
 
     return false

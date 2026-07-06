@@ -112,7 +112,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_mySulfuronBoxStrategy = true 
+local MB_mySulfuronBoxStrategy = true
 local MB_mySulfuronShadowPotStrategy = true
 
 -- Strategy Configuration -- No changes below this line
@@ -151,12 +151,12 @@ end
 --[####################################################################################################]--
 
 local function SULFURON_CheckEncounter()
-	if SulfuronEncounter.Active then
+    if SulfuronEncounter.Active then
         UseShadowPotsOnSulfuron()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if (TankTarget("Sulfuron Harbinger") or TankTarget("Flamewaker Priest")) then
@@ -168,12 +168,12 @@ local function SULFURON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."SULFURON", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SULFURON", "ENGAGE", 30)
         SulfuronEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function SULFURON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."SULFURON" then
+    if arg1 == MB_RAID .. "SULFURON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Sulfuron! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function SULFURON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Sulfuron Harbinger dies") and SulfuronEncounter.Active then
-        CdAddonMessage(MB_RAID.."SULFURON", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SULFURON", "DISENGAGE", 30)
     end
 end
 
@@ -215,19 +215,18 @@ end
 --[####################################################################################################]--
 
 function SULFURON_TargetingPostFocus()
-	if SULFURON_CheckEncounter() and MB_mySulfuronBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if SULFURON_CheckEncounter() and MB_mySulfuronBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

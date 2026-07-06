@@ -151,12 +151,12 @@ end
 --[####################################################################################################]--
 
 local function RAGNAROS_CheckEncounter()
-	if RagnarosEncounter.Active then
+    if RagnarosEncounter.Active then
         UseFirePotsOnRagnaros()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if TankTarget("Ragnaros") then
@@ -168,12 +168,12 @@ local function RAGNAROS_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."RAGNAROS", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "RAGNAROS", "ENGAGE", 30)
         RagnarosEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function RAGNAROS:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."RAGNAROS" then
+    if arg1 == MB_RAID .. "RAGNAROS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Ragnaros! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function RAGNAROS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Ragnaros dies") and RagnarosEncounter.Active then
-        CdAddonMessage(MB_RAID.."RAGNAROS", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "RAGNAROS", "DISENGAGE", 30)
     end
 end
 
@@ -215,19 +215,18 @@ end
 --[####################################################################################################]--
 
 function RAGNAROS_TargetingPostFocus()
-	if RAGNAROS_CheckEncounter() and MB_myRagnarosBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if RAGNAROS_CheckEncounter() and MB_myRagnarosBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

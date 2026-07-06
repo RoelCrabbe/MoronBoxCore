@@ -107,14 +107,15 @@ local UseFromBags = mb_useFromBags
 local THAD = CreateFrame("Button", "THAD", UIParent)
 
 do
-	for _, event in {
-		"CHAT_MSG_ADDON",
+    for _, event in {
+        "CHAT_MSG_ADDON",
         "CHAT_MSG_COMBAT_HOSTILE_DEATH",
         "ZONE_CHANGED_NEW_AREA",
         "PLAYER_ENTERING_WORLD",
         "PLAYER_REGEN_ENABLED"
-		} do THAD:RegisterEvent(event)
-	end
+    } do
+        THAD:RegisterEvent(event)
+    end
 end
 
 --[####################################################################################################]--
@@ -122,7 +123,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_myThaddiusBoxStrategy = true 
+MB_myThaddiusBoxStrategy = true
 
 -- Potion Configuration
 local MB_myThaddiusNaturePotStrategy = true
@@ -243,11 +244,11 @@ local function GetClosestMainTankForSide()
 
     local offTankId = MBID[data.off]
     if offTankId and UnitInRange(offTankId) then
-        CdAddonMessage(MB_RAID.."THADDIUS_TRANSITION", data.off)
+        CdAddonMessage(MB_RAID .. "THADDIUS_TRANSITION", data.off)
         return offTankId
     end
 
-    CdAddonMessage(MB_RAID.."THADDIUS_EMERGENCY", data.side)
+    CdAddonMessage(MB_RAID .. "THADDIUS_EMERGENCY", data.side)
     return false
 end
 
@@ -270,7 +271,7 @@ local function CheckThaddiusHealersSlowFall()
             end
         end
 
-        CdAddonMessage(MB_RAID.."THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
+        CdAddonMessage(MB_RAID .. "THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
         return true
     end
 end
@@ -285,8 +286,8 @@ local function UseNaturePotsOnThaddius()
     end
 
     if ImBusy() or not InCombat("player") then
-		return
-	end
+        return
+    end
 
     if ImTank() then
         return
@@ -301,10 +302,10 @@ local function UseSlowFallPotsOnThaddiusP1()
     end
 
     if ImBusy() or not InCombat("player") then
-		return
-	end
+        return
+    end
 
-    if (myName == MB_myStalaggMainTank or myName == MB_myFeugenMainTank) 
+    if (myName == MB_myStalaggMainTank or myName == MB_myFeugenMainTank)
         and HealthPct("target") > 0.1 then
         return
     end
@@ -394,12 +395,12 @@ function THAD_IsAtThaddiusP1()
     end
 
     if inP1 then
-        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "ENGAGE", 30)
         THAD_PHASE_1_ACTIVE = true
         return true
     end
 
-	return THAD_PHASE_1_ACTIVE
+    return THAD_PHASE_1_ACTIVE
 end
 
 function THAD_IsAtThaddiusP2()
@@ -428,12 +429,12 @@ function THAD_IsAtThaddiusP2()
     end
 
     if inP2 then
-        CdAddonMessage(MB_RAID.."THADDIUS_PHASE2", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "ENGAGE", 30)
         THAD_PHASE_2_ACTIVE = true
         return true
     end
 
-	return THAD_PHASE_2_ACTIVE
+    return THAD_PHASE_2_ACTIVE
 end
 
 --[####################################################################################################]--
@@ -441,49 +442,40 @@ end
 --[####################################################################################################]--
 
 function THAD:OnEvent()
-	if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID.."THADDIUS_EMERGENCY") then     
-            CdRaidWarning(">> "..arg2.." Side Tank Emergency! <<")
-
-        elseif (arg1 == MB_RAID.."THADDIUS_TRANSITION") then    
-            CdRaidWarning(">> "..arg2.." Is Follow Tank! <<")
-
-        elseif (arg1 == MB_RAID.."THADDIUS_HEALERS_SLOWFALL") then
+    if (event == "CHAT_MSG_ADDON") then
+        if (arg1 == MB_RAID .. "THADDIUS_EMERGENCY") then
+            CdRaidWarning(">> " .. arg2 .. " Side Tank Emergency! <<")
+        elseif (arg1 == MB_RAID .. "THADDIUS_TRANSITION") then
+            CdRaidWarning(">> " .. arg2 .. " Is Follow Tank! <<")
+        elseif (arg1 == MB_RAID .. "THADDIUS_HEALERS_SLOWFALL") then
             if (arg2 == "ALL_READY") then
                 CdRaidWarning(">> All Thaddius Healers Have Slow Fall! <<")
             end
-
-        elseif (arg1 == MB_RAID.."THADDIUS_PHASE1") then
+        elseif (arg1 == MB_RAID .. "THADDIUS_PHASE1") then
             if (arg2 == "ENGAGE") then
                 CdRaidWarning(">> Thaddius Phase 1! <<")
                 THAD_PHASE_1_ACTIVE = true
                 THAD_PHASE_2_ACTIVE = false
-
             elseif (arg2 == "AWAIT_NUKE") then
                 CdRaidWarning(">> WRONG TANK ON PLATFORM <<")
-
             elseif (arg2 == "NUKE_PLATFORM") then
                 CdRaidWarning(">> NUKE PLATFORM <<")
                 THAD_EnablePolaritySystem()
             end
-
-        elseif (arg1 == MB_RAID.."THADDIUS_PHASE2") then
+        elseif (arg1 == MB_RAID .. "THADDIUS_PHASE2") then
             if (arg2 == "ENGAGE") then
                 CdRaidWarning(">> Thaddius Phase 2 - Position Casters! <<")
                 THAD_PHASE_1_ACTIVE = false
                 THAD_PHASE_2_ACTIVE = true
                 THAD_EnablePolaritySystem()
-
             elseif (arg2 == "POLARITY_MOVE") then
                 CdRaidWarning(">> MOVE NOW <<")
             end
         end
-
     elseif (event == "CHAT_MSG_COMBAT_HOSTILE_DEATH") then
         if string.find(arg1, "Thaddius dies") then
             CdRaidWarning(">> Thaddius Died! <<")
         end
-
     elseif (event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_REGEN_ENABLED") then
         THAD_PHASE_1_ACTIVE = false
         THAD_PHASE_2_ACTIVE = false
@@ -491,7 +483,7 @@ function THAD:OnEvent()
     end
 end
 
-THAD:SetScript("OnEvent", THAD.OnEvent) 
+THAD:SetScript("OnEvent", THAD.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -513,7 +505,7 @@ local function GetPlatformBossHealthPct(mobName)
     for _, playerName in ipairs(members) do
         local playerId = MBID[playerName]
         if playerId and TargetFromSpecificPlayer(mobName, playerName) then
-            local hp = HealthPct(playerId.."target")
+            local hp = HealthPct(playerId .. "target")
             if not lowestHp or hp < lowestHp then
                 lowestHp = hp
             end
@@ -541,9 +533,9 @@ local function CheckPlatformPhase(tName)
     end
 
     if tName == assignment.self and HealthPct("target") <= 0.1 then
-        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
+        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
     elseif tName == assignment.other and HealthPct("target") <= 0.1 then
-        CdAddonMessage(MB_RAID.."THADDIUS_PHASE1", "AWAIT_NUKE", 30)
+        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "AWAIT_NUKE", 30)
     end
 end
 
@@ -559,8 +551,7 @@ function THAD_TargetingPreFocus()
             AssistFocus()
         end
         return true
-
-	elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+    elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
         if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) and MB_raidLeader ~= myName then
             MB_raidLeader = myName
         end
@@ -570,7 +561,7 @@ function THAD_TargetingPreFocus()
         end
 
         if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) then
-            if not MB_targetNearestDistanceChanged then                
+            if not MB_targetNearestDistanceChanged then
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
@@ -599,10 +590,9 @@ function THAD_TargetingPostFocus()
             AssistFocus()
         end
         return true
-
-	elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) then           
-            if not MB_targetNearestDistanceChanged then                
+    elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
+        if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) then
+            if not MB_targetNearestDistanceChanged then
                 SetCVar("targetNearestDistance", "15")
                 MB_targetNearestDistanceChanged = true
             end
@@ -613,16 +603,14 @@ function THAD_TargetingPostFocus()
 
             CheckPlatformPhase(tName)
             return true
-
         elseif ImTank() then
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             if MyNameInTable(MB_myStalaggDPSERS) then
                 if LockOnTarget("Stalagg") then
@@ -678,9 +666,9 @@ local function ApplyFaerieFireIfNeeded(tankKey, healerList)
         return false
     end
 
-    local targetUnit = tankId.."target"
+    local targetUnit = tankId .. "target"
     local needsFF = not HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff")
-            or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")
+        or not HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")
 
     if UnitCanAttack("player", targetUnit) and needsFF then
         AssistUnit(tankId)
@@ -744,7 +732,7 @@ local function GetCurrentPlatform()
     local rightMembers = {}
     table.insert(rightMembers, MB_myFeugenMainTank)
 
-    for _, n in ipairs(MB_myFeugenDPSERS) do 
+    for _, n in ipairs(MB_myFeugenDPSERS) do
         table.insert(rightMembers, n)
     end
 
@@ -790,20 +778,19 @@ local function ApplySecondaryBind()
             -- Change keybinds, to move away.
             PolarityState.Position = "AWAY"
             SetBinding("SHIFT-W", NEGATIVE_KEYBINDS[platform])
-            CdAddonMessage(MB_RAID.."THADDIUS_PHASE2", "POLARITY_MOVE", 10)
+            CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not returning, reset keybinds
             -- ALso includes if we are already away, reset keybinds
             SetBinding("SHIFT-W", nil)
         end
-
     elseif data.current == "POSITIVE" then
         if data.position == "AWAY" then
             -- If we're already AWAY, set position RETURNING
             -- Change keybinds, to return.
             PolarityState.Position = "RETURNING"
             SetBinding("SHIFT-W", POSITIVE_KEYBINDS[platform])
-            CdAddonMessage(MB_RAID.."THADDIUS_PHASE2", "POLARITY_MOVE", 10)
+            CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not away, reset keybinds
             -- ALso includes if we are already returning, reset keybinds
@@ -816,22 +803,22 @@ local function CheckPolarityAuras()
     if not PolarityState.Window then
         return
     end
-    
+
     local chargeType = GetPolarityFromAuras()
     if not chargeType then
         return
     end
-    
+
     THAD_POLARITY:UnregisterEvent("PLAYER_AURAS_CHANGED")
     PolarityState.Window = false
-    
+
     local newState = "NONE"
     if chargeType == NEGATIVE_TEXTURE then
         newState = "NEGATIVE"
     elseif chargeType == POSITIVE_TEXTURE then
         newState = "POSITIVE"
     end
-    
+
     if newState ~= PolarityState.Current then
         PolarityState.Current = newState
     end

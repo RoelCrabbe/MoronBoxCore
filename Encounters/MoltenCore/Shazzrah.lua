@@ -152,14 +152,14 @@ end
 --[####################################################################################################]--
 
 local function SHAZZRAH_CheckEncounter()
-	if ShazzrahEncounter.Active then
+    if ShazzrahEncounter.Active then
         UseArcanePotsOnShazzrah()
         SHAZZRAH_DetectDebuff()
         SHAZZRAH_DispellDebuff()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if TankTarget("Shazzrah") then
@@ -171,12 +171,12 @@ local function SHAZZRAH_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."SHAZZRAH", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SHAZZRAH", "ENGAGE", 30)
         ShazzrahEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -196,10 +196,10 @@ function SHAZZRAH_DetectDebuff()
         return false
     end
 
-    if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then		
+    if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then
         CastSpellByName("Detect Magic")
         return true
-	end
+    end
 
     return false
 end
@@ -217,8 +217,8 @@ function SHAZZRAH_DispellDebuff()
     if not focId then
         return false
     end
-    
-    local targetId = focId.."target"
+
+    local targetId = focId .. "target"
     if not targetId then
         return false
     end
@@ -242,7 +242,7 @@ end
 --[####################################################################################################]--
 
 function SHAZZRAH:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."SHAZZRAH" then
+    if arg1 == MB_RAID .. "SHAZZRAH" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Shazzrah! <<")
             self:OnEnable()
@@ -255,7 +255,7 @@ end
 
 function SHAZZRAH:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Shazzrah dies") and ShazzrahEncounter.Active then
-        CdAddonMessage(MB_RAID.."SHAZZRAH", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "SHAZZRAH", "DISENGAGE", 30)
     end
 end
 
@@ -276,19 +276,18 @@ end
 --[####################################################################################################]--
 
 function SHAZZRAH_TargetingPostFocus()
-	if SHAZZRAH_CheckEncounter() and MB_myShazzrahBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if SHAZZRAH_CheckEncounter() and MB_myShazzrahBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

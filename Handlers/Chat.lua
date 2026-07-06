@@ -75,74 +75,74 @@ local MB_rwHistory = {}
 local MB_maxHistory = 50
 
 function mb_cdMessage(msg, timer)
-	local coolDown = timer or 15
-	local time = GetTime()
+    local coolDown = timer or 15
+    local time = GetTime()
 
-	for i = 1, TableLength(MB_msgHistory) do
-		local entry = MB_msgHistory[i]
-		if entry.msg == msg and entry.time + coolDown > time then
-			return
-		end
-	end
+    for i = 1, TableLength(MB_msgHistory) do
+        local entry = MB_msgHistory[i]
+        if entry.msg == msg and entry.time + coolDown > time then
+            return
+        end
+    end
 
-	if TableLength(MB_msgHistory) >= MB_maxHistory then
-		table.remove(MB_msgHistory, 1)
-	end
+    if TableLength(MB_msgHistory) >= MB_maxHistory then
+        table.remove(MB_msgHistory, 1)
+    end
 
-	table.insert(MB_msgHistory, { msg = msg, time = time })
+    table.insert(MB_msgHistory, { msg = msg, time = time })
 
-	if UnitInRaid("player") then
-		SendChatMessage(msg, "RAID")
-	else
-		SendChatMessage(msg, "PARTY")
-	end
+    if UnitInRaid("player") then
+        SendChatMessage(msg, "RAID")
+    else
+        SendChatMessage(msg, "PARTY")
+    end
 end
 
 function mb_cdPrint(msg, timer)
-	local coolDown = timer or 15
-	local time = GetTime()
+    local coolDown = timer or 15
+    local time = GetTime()
 
-	for i = 1, TableLength(MB_printHistory) do
-		local entry = MB_printHistory[i]
-		if entry.msg == msg and entry.time + coolDown > time then
-			return
-		end
-	end
+    for i = 1, TableLength(MB_printHistory) do
+        local entry = MB_printHistory[i]
+        if entry.msg == msg and entry.time + coolDown > time then
+            return
+        end
+    end
 
-	if TableLength(MB_printHistory) >= MB_maxHistory then
-		table.remove(MB_printHistory, 1)
-	end
+    if TableLength(MB_printHistory) >= MB_maxHistory then
+        table.remove(MB_printHistory, 1)
+    end
 
-	table.insert(MB_printHistory, { msg = msg, time = time })
-	Print(msg)
+    table.insert(MB_printHistory, { msg = msg, time = time })
+    Print(msg)
 end
 
 function mb_cdRaidWarning(msg, timer)
-	if myName ~= MB_raidInviter then
-		return
-	end
+    if myName ~= MB_raidInviter then
+        return
+    end
 
-	if not IsRaidLeader() then
-		mb_cdMessage(msg, timer)
-		return
-	end
-	
-	local coolDown = timer or 15
-	local time = GetTime()
+    if not IsRaidLeader() then
+        mb_cdMessage(msg, timer)
+        return
+    end
 
-	for i = 1, TableLength(MB_rwHistory) do
-		local entry = MB_rwHistory[i]
-		if entry.msg == msg and entry.time + coolDown > time then
-			return
-		end
-	end
+    local coolDown = timer or 15
+    local time = GetTime()
 
-	if TableLength(MB_rwHistory) >= MB_maxHistory then
-		table.remove(MB_rwHistory, 1)
-	end
+    for i = 1, TableLength(MB_rwHistory) do
+        local entry = MB_rwHistory[i]
+        if entry.msg == msg and entry.time + coolDown > time then
+            return
+        end
+    end
 
-	table.insert(MB_rwHistory, { msg = msg, time = time })
-	SendChatMessage(msg, "RAID_WARNING")
+    if TableLength(MB_rwHistory) >= MB_maxHistory then
+        table.remove(MB_rwHistory, 1)
+    end
+
+    table.insert(MB_rwHistory, { msg = msg, time = time })
+    SendChatMessage(msg, "RAID_WARNING")
 end
 
 local MB_addonHistory = {}
@@ -151,7 +151,7 @@ local MB_maxAddonHistory = 10
 function mb_cdAddonMessage(prefix, message, timer)
     local coolDown = timer or 5
     local time = GetTime()
-    local messageKey = prefix..":"..(message or "")
+    local messageKey = prefix .. ":" .. (message or "")
 
     for i = 1, TableLength(MB_addonHistory) do
         local entry = MB_addonHistory[i]
@@ -159,7 +159,7 @@ function mb_cdAddonMessage(prefix, message, timer)
             return
         end
     end
-    
+
     if TableLength(MB_addonHistory) >= MB_maxAddonHistory then
         table.remove(MB_addonHistory, 1)
     end
@@ -174,9 +174,9 @@ function mb_cdAddonMessage(prefix, message, timer)
 end
 
 function Print(msg)
-	if msg then return DEFAULT_CHAT_FRAME:AddMessage(msg) end
+    if msg then return DEFAULT_CHAT_FRAME:AddMessage(msg) end
 end
 
 function print(msg)
-	if msg then return DEFAULT_CHAT_FRAME:AddMessage(msg) end
+    if msg then return DEFAULT_CHAT_FRAME:AddMessage(msg) end
 end

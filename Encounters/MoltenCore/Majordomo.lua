@@ -161,12 +161,12 @@ end
 --[####################################################################################################]--
 
 local function MAJORDOMO_CheckEncounter()
-	if MajordomoEncounter.Active then
+    if MajordomoEncounter.Active then
         UseFirePotsOnMajordomo()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if (TankTarget("Majordomo Executus") or TankTarget("Flamewaker Healer") or TankTarget("Flamewaker Elite")) then
@@ -178,12 +178,12 @@ local function MAJORDOMO_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."MAJORDOMO", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "MAJORDOMO", "ENGAGE", 30)
         MajordomoEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -191,7 +191,7 @@ end
 --[####################################################################################################]--
 
 function MAJORDOMO:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."MAJORDOMO" then
+    if arg1 == MB_RAID .. "MAJORDOMO" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Majordomo! <<")
             self:OnEnable()
@@ -204,7 +204,7 @@ end
 
 function MAJORDOMO:CHAT_MSG_MONSTER_YELL()
     if string.find(arg1, "I go now to summon the lord whose house this is") and MajordomoEncounter.Active then
-        CdAddonMessage(MB_RAID.."MAJORDOMO", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "MAJORDOMO", "DISENGAGE", 30)
     end
 end
 
@@ -225,19 +225,18 @@ end
 --[####################################################################################################]--
 
 function MAJORDOMO_TargetingPostFocus()
-	if MAJORDOMO_CheckEncounter() and MB_myMajordomoBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if MAJORDOMO_CheckEncounter() and MB_myMajordomoBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

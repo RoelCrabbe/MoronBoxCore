@@ -131,21 +131,21 @@ local function ShamanSpecc()
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 13)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 15)
-    if TalentsIn > 0 and TalentsInA > 0 then        
+    if TalentsIn > 0 and TalentsInA > 0 then
         MB_mySpecc = "Deep Resto"
-        return 
+        return
     end
     _, _, _, _, TalentsIn = GetTalentInfo(3, 13)
     _, _, _, _, TalentsInA = GetTalentInfo(2, 12)
-    if TalentsIn > 0 and TalentsInA > 1 then        
+    if TalentsIn > 0 and TalentsInA > 1 then
         MB_mySpecc = "Totem Resto"
-        return 
+        return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 14)
-    if TalentsIn > 0 then        
+    if TalentsIn > 0 then
         MB_mySpecc = "Elemental"
-        return 
+        return
     end
 
     MB_mySpecc = nil
@@ -158,9 +158,9 @@ MB_mySpeccList["Shaman"] = ShamanSpecc
 --[####################################################################################################]--
 
 local removeBuffs = {
-    ["Battle Shout"]          	= "Battle Shout",
-    ["Fengus' Ferocity"]      	= "Fengus' Ferocity",
-    ["R.O.I.D.S."]            	= "Rage of Ages"
+    ["Battle Shout"]     = "Battle Shout",
+    ["Fengus' Ferocity"] = "Fengus' Ferocity",
+    ["R.O.I.D.S."]       = "Rage of Ages"
 }
 
 local function ShamanCancelAuras()
@@ -176,15 +176,13 @@ end
 --[####################################################################################################]--
 
 local function ShamanHeal()
-	
-	if NatureSwiftnessLowAggroedPlayer() then
+    if NatureSwiftnessLowAggroedPlayer() then
         return
     end
 
     if InCombat("player") then
-        if SpellReady("Mana Tide Totem") 
+        if SpellReady("Mana Tide Totem")
             and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
-            
             local _, partyManaDown = PartyMana()
             local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
             local myManaDown = ManaDown()
@@ -196,55 +194,52 @@ local function ShamanHeal()
             end
         end
 
-		TakeManaPotionAndRunes()
+        TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Shaman:Cooldowns()
         end
-	end
+    end
 
-	if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
+    if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
         return
     end
 
-	if HealLieutenantAQ20() then
+    if HealLieutenantAQ20() then
         return
     end
 
-	if InstructorRazAddsHeal() then
+    if InstructorRazAddsHeal() then
         return
     end
 
-	if MB_myAssignedHealTarget then
-		if IsAlive(MBID[MB_myAssignedHealTarget]) then			
-			Shaman:MTHeals(MB_myAssignedHealTarget)
-			return
-		else
-			MB_myAssignedHealTarget = nil
-			RunLine("/raid My healtarget died, time to ALT-F4.")
-		end
-	end
+    if MB_myAssignedHealTarget then
+        if IsAlive(MBID[MB_myAssignedHealTarget]) then
+            Shaman:MTHeals(MB_myAssignedHealTarget)
+            return
+        else
+            MB_myAssignedHealTarget = nil
+            RunLine("/raid My healtarget died, time to ALT-F4.")
+        end
+    end
 
-	for k, BossName in pairs(MB_myShamanMainTankHealingBossList) do		
-		if TankTarget(BossName) then			
-			Shaman:MTHeals()
-			return
-		end
-	end
+    for k, BossName in pairs(MB_myShamanMainTankHealingBossList) do
+        if TankTarget(BossName) then
+            Shaman:MTHeals()
+            return
+        end
+    end
 
     if Instance.AQ40() and TankTarget("Princess Huhuran") then
-
         if TankTargetHealth() <= 0.32 then
             MBH_CastHeal("Chain Heal", 2, 3)
             return
         end
 
-        MBH_CastHeal("Healing Wave", 3, 5) 
+        MBH_CastHeal("Healing Wave", 3, 5)
         return
-
     elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-
-        if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then	
+        if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
             MBH_CastHeal("Chain Heal", 3, 3)
             return
         end
@@ -267,69 +262,66 @@ local function ShamanHeal()
 
         MBH_CastHeal("Chain Heal", 3, 3)
         return
-
     elseif Instance.MC() and TankTarget("Baron Geddon") then
-
-		MBH_CastHeal("Chain Heal", 3, 3)
-		return
-	end
-
-	if MB_myHealSpell == "Chain Heal" then		
-		MBH_CastHeal("Chain Heal", 1, 1)
+        MBH_CastHeal("Chain Heal", 3, 3)
         return
-	end
+    end
+
+    if MB_myHealSpell == "Chain Heal" then
+        MBH_CastHeal("Chain Heal", 1, 1)
+        return
+    end
 
     MBH_CastHeal("Healing Wave", 3)
 end
 
 local HealWave = { Time = 0, Interrupt = false }
 function Shaman:MTHeals(assignedTarget)
-	
-	if assignedTarget then		
-		TargetByName(assignedTarget, 1)
-	else
-		if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then			
-			TargetMyAssignedTankToHeal()
-		else
-			if not UnitName(MBID[TankName()].."targettarget") then 				
-				MBH_CastHeal("Healing Wave", 3)
-			else
-				TargetByName(UnitName(MBID[TankName()].."targettarget"), 1) 
-			end
-		end
-	end
+    if assignedTarget then
+        TargetByName(assignedTarget, 1)
+    else
+        if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            TargetMyAssignedTankToHeal()
+        else
+            if not UnitName(MBID[TankName()] .. "targettarget") then
+                MBH_CastHeal("Healing Wave", 3)
+            else
+                TargetByName(UnitName(MBID[TankName()] .. "targettarget"), 1)
+            end
+        end
+    end
 
-	if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
-		if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then			
-			SpellStopCasting()
-		end
+    if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
+        if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+            SpellStopCasting()
+        end
 
-		SelfBuff("Nature\'s Swiftness")
-	end
+        SelfBuff("Nature\'s Swiftness")
+    end
 
-	if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then			
-		CastSpellByName("Healing Wave")
-		return
-	end
-	
-	local HealWaveSpell = "Healing Wave("..MB_myShamanMainTankHealingRank.."\)"
-	if TankTarget("Vaelastrasz the Corrupt") then
-		HealWaveSpell = "Healing Wave"
-	end
+    if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        CastSpellByName("Healing Wave")
+        return
+    end
+
+    local HealWaveSpell = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. "\)"
+    if TankTarget("Vaelastrasz the Corrupt") then
+        HealWaveSpell = "Healing Wave"
+    end
 
     if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
-		if GetTime() > HealWave.Time and GetTime() < HealWave.Time + 0.5 and HealWave.Interrupt then
-			SpellStopCasting()			
-			HealWave.Interrupt = false
-			SpellStopCasting()
-		end
-	end
+        if GetTime() > HealWave.Time and GetTime() < HealWave.Time + 0.5 and HealWave.Interrupt then
+            SpellStopCasting()
+            HealWave.Interrupt = false
+            SpellStopCasting()
+        end
+    end
 
-	if not MB_isCasting then
-		CastSpellByName(HealWaveSpell)
-		HealWave.Time = GetTime() + 1
-		HealWave.Interrupt = true
-	end
+    if not MB_isCasting then
+        CastSpellByName(HealWaveSpell)
+        HealWave.Time = GetTime() + 1
+        HealWave.Interrupt = true
+    end
 end
 
 --[####################################################################################################]--
@@ -337,65 +329,64 @@ end
 --[####################################################################################################]--
 
 local function ShamanSingle()
+    GetTarget()
+    ShamanCancelAuras()
 
-	GetTarget()
-	ShamanCancelAuras()
+    if not MB_mySpecc then
+        CdMessage("My specc is fucked. Defaulting to Elemental.")
+        MB_mySpecc = "Elemental"
+    end
 
-    if not MB_mySpecc then		
-		CdMessage("My specc is fucked. Defaulting to Elemental.")
-		MB_mySpecc = "Elemental"
-	end
+    if PartyIsPoisoned() then
+        if ImBusy() then
+            SpellStopCasting()
+            return
+        end
 
-	if PartyIsPoisoned() then		
-		if ImBusy() then			
-			SpellStopCasting()
-			return
-		end
-		
-		CastSpellByName("Poison Cleansing Totem")
-		CoolDownCast("Poison Cleansing Totem", 6)
-		return
-	end	
+        CastSpellByName("Poison Cleansing Totem")
+        CoolDownCast("Poison Cleansing Totem", 6)
+        return
+    end
 
-	if Instance.NAXX() and TankTarget("Heigan the Unclean") then		 
-		if MeleeDPSInParty() and PartyIsDiseased() then			
-			if ImBusy() then			
-				SpellStopCasting()
-				return
-			end
+    if Instance.NAXX() and TankTarget("Heigan the Unclean") then
+        if MeleeDPSInParty() and PartyIsDiseased() then
+            if ImBusy() then
+                SpellStopCasting()
+                return
+            end
 
-			CastSpellByName("Disease Cleansing Totem")
-			CoolDownCast("Disease Cleansing Totem", 6)
-			return
-		end
-	end
+            CastSpellByName("Disease Cleansing Totem")
+            CoolDownCast("Disease Cleansing Totem", 6)
+            return
+        end
+    end
 
-	Decurse()
+    Decurse()
 
     if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
         if MB_myInterruptTarget then
             GetMyInterruptTarget()
         end
 
-        if ImBusy() then			
-            SpellStopCasting() 
+        if ImBusy() then
+            SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass].."(Rank 1)")
+        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
         CdPrint("Interrupting!")
         MB_doInterrupt.Active = false
-        return        
+        return
     end
 
-	DropTotems()
+    DropTotems()
 
     if MB_mySpecc == "Elemental" then
         Shaman:Elemental()
         return
     end
 
-	HealerJindoRotation("Lightning Bolt")
-	ShamanHeal()
+    HealerJindoRotation("Lightning Bolt")
+    ShamanHeal()
 end
 
 MB_mySingleList["Shaman"] = ShamanSingle
@@ -405,18 +396,17 @@ MB_mySingleList["Shaman"] = ShamanSingle
 --[####################################################################################################]--
 
 function Shaman:Elemental()
-
-	if not InCombat("target") then
+    if not InCombat("target") then
         return
     end
 
     if InCombat("player") then
-		TakeManaPotionAndRunes()
+        TakeManaPotionAndRunes()
 
         if ManaDown("player") > 600 then
             Shaman:Cooldowns()
         end
-	end
+    end
 
     if Shaman:BossSpecificDPS() then
         return
@@ -426,35 +416,31 @@ function Shaman:Elemental()
         return
     end
 
-	if SpellReady("Chain Lightning") then 
-		CastSpellOrWand("Chain Lightning") 
-	end
+    if SpellReady("Chain Lightning") then
+        CastSpellOrWand("Chain Lightning")
+    end
 
-	CastSpellOrWand("Lightning Bolt") 
+    CastSpellOrWand("Lightning Bolt")
 end
 
 function Shaman:BossSpecificDPS()
-
-	if UnitName("target") == "Emperor Vek\'nilash" then
+    if UnitName("target") == "Emperor Vek\'nilash" then
         return true
     end
 
-	if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+    if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+        if ImBusy() then
+            SpellStopCasting()
+        end
+        return true
+    elseif TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
+        if ImBusy() then
+            SpellStopCasting()
+        end
+        return true
+    end
 
-		if ImBusy() then
-			SpellStopCasting()
-		end
-		return true
-
-	elseif TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
-		
-		if ImBusy() then
-			SpellStopCasting()
-		end
-		return true
-	end
-
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -468,13 +454,12 @@ MB_myMultiList["Shaman"] = ShamanSingle
 --[####################################################################################################]--
 
 local function ShamanAOE()
+    if MobsToAoeTotem() and SpellReady("Fire Nova Totem") then
+        CastSpellByName("Fire Nova Totem")
+        return
+    end
 
-	if MobsToAoeTotem() and SpellReady("Fire Nova Totem") then
-		CastSpellByName("Fire Nova Totem")
-		return
-	end
-
-	ShamanSingle()
+    ShamanSingle()
 end
 
 MB_myAOEList["Shaman"] = ShamanAOE
@@ -484,22 +469,21 @@ MB_myAOEList["Shaman"] = ShamanAOE
 --[####################################################################################################]--
 
 local function ShamanSetup()
-
     if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
-		return
-	end
+        return
+    end
 
-	if EquippedSetCount("The Earthshatter") >= 8 then
-		SelfBuff("Lightning Shield")
-	end
-	
-	if ImHealer() then
-		MBH_CastHeal("Chain Heal", 1, 1)
-	end
+    if EquippedSetCount("The Earthshatter") >= 8 then
+        SelfBuff("Lightning Shield")
+    end
+
+    if ImHealer() then
+        MBH_CastHeal("Chain Heal", 1, 1)
+    end
 
     if not InCombat("player") and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
-		SmartDrink()
-	end
+        SmartDrink()
+    end
 end
 
 MB_mySetupList["Shaman"] = ShamanSetup
@@ -528,9 +512,9 @@ function Shaman:GetActiveVaelastraszShaman()
 end
 
 function Shaman:Cooldowns()
-	if ImBusy() or not InCombat("player") then
-		return
-	end
+    if ImBusy() or not InCombat("player") then
+        return
+    end
 
     SelfBuff("Berserking")
     SelfBuff("Elemental Mastery")
@@ -548,46 +532,44 @@ end
 --[####################################################################################################]--
 
 local function LOA_Attack()
-	if ImBusy() or not InCombat("player") then
-		return
-	end
-
-    GetTarget()
-
-	if ManaPct("player") < 0.17 then
+    if ImBusy() or not InCombat("player") then
         return
     end
 
-	if SpellReady("Lightning Bolt") then
-		CoolDownCast("Lightning Bolt", 6)
-		return
-	end
+    GetTarget()
+
+    if ManaPct("player") < 0.17 then
+        return
+    end
+
+    if SpellReady("Lightning Bolt") then
+        CoolDownCast("Lightning Bolt", 6)
+        return
+    end
 
     AutoAttack()
 end
 
 local function LOA_Heal()
+    GetTarget()
+    ShamanCancelAuras()
 
-	GetTarget()
-	ShamanCancelAuras()
+    if PartyIsPoisoned() then
+        if ImBusy() then
+            SpellStopCasting()
+            return
+        end
 
-	if PartyIsPoisoned() then
-		if ImBusy() then		
-			SpellStopCasting()
-			return
-		end
+        CastSpellByName("Poison Cleansing Totem")
+        CoolDownCast("Poison Cleansing Totem", 6)
+        return
+    end
 
-		CastSpellByName("Poison Cleansing Totem")
-		CoolDownCast("Poison Cleansing Totem", 6)
-		return
-	end
+    if InCombat("player") then
+        TakeManaPotionAndRunes()
 
-	if InCombat("player") then
-		TakeManaPotionAndRunes()
-
-        if SpellReady("Mana Tide Totem") 
+        if SpellReady("Mana Tide Totem")
             and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
-            
             local _, partyManaDown = PartyMana()
             local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
             local myManaDown = ManaDown()
@@ -602,15 +584,15 @@ local function LOA_Heal()
         if ManaDown("player") > 600 then
             Shaman:Cooldowns()
         end
-	end
+    end
 
-	DropTotems()
+    DropTotems()
 
-	if LOA_Healing() then
-		return
-	end
+    if LOA_Healing() then
+        return
+    end
 
-	LOA_Attack()
+    LOA_Attack()
 end
 
 MB_myLoathebList["Shaman"] = LOA_Heal

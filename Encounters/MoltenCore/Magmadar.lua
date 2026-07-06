@@ -112,7 +112,7 @@ end
 --[####################################################################################################]--
 
 -- Strategy Configuration
-local MB_myMagmadarBoxStrategy = true 
+local MB_myMagmadarBoxStrategy = true
 local MB_myMagmadarFirePotStrategy = true
 
 -- Strategy Configuration -- No changes below this line
@@ -183,13 +183,13 @@ FW_RegisterFearWardPriority("Magmadar", PriorityOnMagmadar)
 --[####################################################################################################]--
 
 local function MAGMADAR_CheckEncounter()
-	if MagmadarEncounter.Active then
+    if MagmadarEncounter.Active then
         UseFirePotsOnMagmadar()
         PrepareOnMagmadar()
         return true
     end
 
-	local inF = false
+    local inF = false
     local tName = UnitName("target")
 
     if TankTarget("Magmadar") then
@@ -201,12 +201,12 @@ local function MAGMADAR_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID.."MAGMADAR", "ENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "MAGMADAR", "ENGAGE", 30)
         MagmadarEncounter.Active = true
         return true
     end
 
-	return false
+    return false
 end
 
 --[####################################################################################################]--
@@ -214,7 +214,7 @@ end
 --[####################################################################################################]--
 
 function MAGMADAR:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID.."MAGMADAR" then
+    if arg1 == MB_RAID .. "MAGMADAR" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Magmadar! <<")
             self:OnEnable()
@@ -227,7 +227,7 @@ end
 
 function MAGMADAR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Magmadar dies") and MagmadarEncounter.Active then
-        CdAddonMessage(MB_RAID.."MAGMADAR", "DISENGAGE", 30)
+        CdAddonMessage(MB_RAID .. "MAGMADAR", "DISENGAGE", 30)
     end
 end
 
@@ -248,19 +248,18 @@ end
 --[####################################################################################################]--
 
 function MAGMADAR_TargetingPostFocus()
-	if MAGMADAR_CheckEncounter() and MB_myMagmadarBoxStrategy then
-        if ImTank() then				
-            if not MB_targetNearestDistanceChanged then						
-				SetCVar("targetNearestDistance", "10")
-				MB_targetNearestDistanceChanged = true
-			end
+    if MAGMADAR_CheckEncounter() and MB_myMagmadarBoxStrategy then
+        if ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
 
-			GetTargetNotOnTank()
-			return true
-
+            GetTargetNotOnTank()
+            return true
         elseif ImRangedDPS() or ImMeleeDPS() or ImHealer() then
             AssistFocus()
-			return true
+            return true
         end
     end
 

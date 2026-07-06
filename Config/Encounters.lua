@@ -7,13 +7,13 @@ MB_myGigaWorldBuffsStrategy = false
 
 --[[
     This file contains all boss encounter strategies and player assignments.
-    
+
     Configuration Structure:
     - Each boss has strategy toggles (true/false)
     - Player assignments are organized by role
     - Comments explain tactics and requirements
     - Horde/Alliance assignments are clearly separated
-    
+
     Note: All variables are global and accessible throughout the addon's
 --]]
 
@@ -32,29 +32,29 @@ MB_myThirdPWSoaker = "Almisael"
 
 -- Healer Assignments per Tank
 MB_myThreatPWSoakerHealerList = {
-    "Bogeycrap",    -- 8T1 Shaman
-    "Midavellir",   -- Priest
-    "Pyqmi"         -- Druid
+    "Bogeycrap",  -- 8T1 Shaman
+    "Midavellir", -- Priest
+    "Pyqmi"       -- Druid
 }
 
 MB_myFirstPWSoakerHealerList = {
-    "Shamuk",       -- 6T3+ Shaman for BUFF
-    "Draub",        -- 8T2 Priest
-    "Mvenna",       -- 8T1 Shaman
-    "Superkoe"      -- 8T1 Shaman	
+    "Shamuk",  -- 6T3+ Shaman for BUFF
+    "Draub",   -- 8T2 Priest
+    "Mvenna",  -- 8T1 Shaman
+    "Superkoe" -- 8T1 Shaman
 }
 
 MB_mySecondPWSoakerHealerList = {
-    "Laitelaismo",  -- 6T3+ Shaman for BUFF
-    "Ayag",         -- 8T2 Priest
-    "Chimando",     -- 8T1 Shaman
-    "Smalheal"      -- Druid
+    "Laitelaismo", -- 6T3+ Shaman for BUFF
+    "Ayag",        -- 8T2 Priest
+    "Chimando",    -- 8T1 Shaman
+    "Smalheal"     -- Druid
 }
-    
+
 MB_myThirdPWSoakerHealerList = {
-    "Ootskar",      -- 6T3+ Shaman for BUFF
-    "Healdealz",    -- Priest
-    "Purges",       -- 8T1 Shaman
+    "Ootskar",   -- 6T3+ Shaman for BUFF
+    "Healdealz", -- Priest
+    "Purges",    -- 8T1 Shaman
     "Zwartje"
 }
 
@@ -70,18 +70,18 @@ MB_myMaexxnaBoxStrategy = true
 
 -- Tank Assignment (REQUIRED)
 MB_myMaexxnaMainTank = {
-    "Moron",            -- Horde Team 1
-    "Alliance Tank 1"   -- Alliance
+    "Moron",          -- Horde Team 1
+    "Alliance Tank 1" -- Alliance
 }
 
 -- Healer Assignments (REQUIRED)
-MB_myMaexxnaDruidHealer = {        
-    "Smalheal",         -- Horde Team 1
-    "Pyqmi",            -- Horde Team 1
-    "Alliance Druid 1"  -- Alliance
+MB_myMaexxnaDruidHealer = {
+    "Smalheal",        -- Horde Team 1
+    "Pyqmi",           -- Horde Team 1
+    "Alliance Druid 1" -- Alliance
 }
 
-MB_myMaexxnaPriestHealer = {        
+MB_myMaexxnaPriestHealer = {
     "Midavellir",       -- Horde Team 1
     "Alliance Priest 1" -- Alliance
 }
@@ -95,7 +95,7 @@ MB_myMaexxnaPriestHealer = {
 --]]
 
 -- Strategy Configuration
-MB_myRazuviousBoxStrategy = true 
+MB_myRazuviousBoxStrategy = true
 
 -- Priest Assignments (REQUIRED - Mind Control)
 MB_myRazuviousPriest = {
@@ -110,12 +110,12 @@ MB_myRazuviousPriest = {
 --]]
 
 -- Strategy Configuration
-MB_myFaerlinaBoxStrategy = true 
+MB_myFaerlinaBoxStrategy = true
 MB_myFaerlinaFirePotStrategy = true
 
 -- Priest Assignments (REQUIRED - Mind Control)
-MB_myFaerlinaPriest = {		
-    "Moronpriest",       -- Horde Team 1
+MB_myFaerlinaPriest = {
+    "Moronpriest",      -- Horde Team 1
     "Alliance Priest 1" -- Alliance
 }
 
@@ -143,11 +143,11 @@ MB_myHuhuranTankDefensivePercentage = 0.25 -- SW/LS usage threshold
 --]]
 
 -- Strategy Configuration
-MB_myTwinsBoxStrategy = true 
+MB_myTwinsBoxStrategy = true
 
 -- Warlock Tank Assignment
 MB_myTwinsWarlockTank = {
-    "Akaaka",           -- Horde 1
+    "Akaaka",            -- Horde 1
     "Alliance Warlock 1" -- Alliance
 }
 
@@ -162,7 +162,7 @@ MB_myTwinsWarlockTank = {
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_myOssirianBoxStrategy = true -- Special totem dropping 
+MB_myOssirianBoxStrategy = true -- Special totem dropping
 
 -- Tank Assignment (REQUIRED)
 MB_myOssirianMainTank = "Moron"
@@ -190,27 +190,27 @@ MB_myRazorgoreORBtank = {
 
 -- Left Side Assignments
 MB_myRazorgoreLeftTank = {
-    "Moron",            -- Horde
-    "Alliance Tank 1"   -- Alliance
+    "Moron",          -- Horde
+    "Alliance Tank 1" -- Alliance
 }
 
 MB_myRazorgoreLeftDPSERS = {
-    "Rows",         -- Horde Offtank (TF Tank)
-    "Miagi",       -- Rogue
+    "Rows",  -- Horde Offtank (TF Tank)
+    "Miagi", -- Rogue
     -- Warriors
-    "Gogopwranger", "Angerissues", "Moonspawn", 
+    "Gogopwranger", "Angerissues", "Moonspawn",
     "Opticalfiber", "Maximumzug", "Hornagaur"
 }
 
--- Right Side Assignments  
+-- Right Side Assignments
 MB_myRazorgoreRightTank = {
-    "Suecia",           -- Horde
-    "Alliance Tank 2"   -- Alliance
+    "Suecia",         -- Horde
+    "Alliance Tank 2" -- Alliance
 }
 
-MB_myRazorgoreRightDPSERS = {        
-    "Sabo",           -- Horde Offtank (TF)
-    "Weedzy",            -- Rogue
+MB_myRazorgoreRightDPSERS = {
+    "Sabo",   -- Horde Offtank (TF)
+    "Weedzy", -- Rogue
     -- Warriors
     "Chabalala", "Tazmahdingo", "Likez", "Anatomic",
     "Vandalus", "Xoncharr", "Insanette"
@@ -225,13 +225,13 @@ MB_myRazorgoreRightDPSERS = {
 --]]
 
 -- Strategy Configuration
-MB_myVaelastraszBoxStrategy = true 
+MB_myVaelastraszBoxStrategy = true
 MB_myVaelastraszFirePotStrategy = true
 
 -- Healer Class Toggles
-MB_myVaelastraszShamanHealing = true   -- T1 requirement
-MB_myVaelastraszPaladinHealing = true  -- T1 requirement  
-MB_myVaelastraszPriestHealing = true   -- Renew/Shield MT
+MB_myVaelastraszShamanHealing = true  -- T1 requirement
+MB_myVaelastraszPaladinHealing = true -- T1 requirement
+MB_myVaelastraszPriestHealing = true  -- Renew/Shield MT
 MB_myVaelastraszDruidHealing = true
 
 -- Healer Assignments (dedicated MT healers/HoTs)
@@ -264,7 +264,7 @@ MB_myVaelastraszDruids = {
 --[####################################################################################################]--
 
 -- Strategy Configuration
-MB_myOnyxiaBoxStrategy = true 
+MB_myOnyxiaBoxStrategy = true
 
 -- Tank and Follow Assignments (REQUIRED)
 MB_myOnyxiaMainTank = "Moron"
