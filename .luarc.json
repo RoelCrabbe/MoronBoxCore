@@ -22,7 +22,10 @@
         "AceLibrary",
         "MBD",
         "MBD_Clean",
+        "MBH",
+        "MBH_CastHeal",
         "RunLine",
+        "ClearCursor",
         "CancelBuff",
         "UseItemByName",
         "AcceptResurrect",
@@ -42,6 +45,7 @@
         "SpellTargetUnit",
         "SpellStopTargeting",
         "GetTalentInfo",
+        "GetComboPoints",
         "use"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],

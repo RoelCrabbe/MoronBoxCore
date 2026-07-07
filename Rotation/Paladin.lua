@@ -103,7 +103,6 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyClassOrder = mb_myClassOrder
 local MyGroupClassOrder = mb_myGroupClassOrder
 local NumberOfClassInParty = mb_numberOfClassInParty
-local PaladinHeal = mb_paladinHeal
 local RaidIsPoisoned = mb_raidIsPoisoned
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
@@ -239,10 +238,11 @@ function Paladin:MTHeals(assignedTarget)
         if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
             TargetMyAssignedTankToHeal()
         else
-            if not UnitName(MBID[TankName()] .. "targettarget") then
+            local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+            if not tankTarget then
                 MBH_CastHeal("Flash of Light", 5, 6)
             else
-                TargetByName(UnitName(MBID[TankName()] .. "targettarget"), 1)
+                TargetByName(tankTarget, 1)
             end
         end
     end

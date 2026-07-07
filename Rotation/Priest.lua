@@ -90,7 +90,6 @@ local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
 local HealerJindoRotation = mb_healerJindoRotation
 local HealerTrinkets = mb_healerTrinkets
-local HealerWand = mb_healerWand
 local HealLieutenantAQ20 = mb_healLieutenantAQ20
 local HealthDown = mb_healthDown
 local HealthPct = mb_healthPct
@@ -108,7 +107,6 @@ local KnowSpell = mb_knowSpell
 local LOA_Healing = LOA_Healing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
-local MobsToFearWard = mb_mobsToFearWard
 local MultiBuff = mb_multiBuff
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyClassOrder = mb_myClassOrder
@@ -362,10 +360,11 @@ function Priest:MTHeals(assignedTarget)
         if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
             TargetMyAssignedTankToHeal()
         else
-            if not UnitName(MBID[TankName()] .. "targettarget") then
+            local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+            if not tankTarget then
                 MBH_CastHeal("Greater Heal", 1, 1)
             else
-                TargetByName(UnitName(MBID[TankName()] .. "targettarget"), 1)
+                TargetByName(tankTarget, 1)
             end
         end
     end
