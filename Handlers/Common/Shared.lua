@@ -1368,7 +1368,7 @@ function mb_executeRotation(rotation, context)
     if rotation and type(rotation) == "function" then
         rotation()
     else
-        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+        mb_cdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
     end
 end
 
