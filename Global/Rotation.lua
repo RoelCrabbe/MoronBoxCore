@@ -70,7 +70,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 MMB = CreateFrame("Button", "MMB", UIParent)
-MMBTooltip = CreateFrame("GAMETOOLTIP", "MMBTooltip", UIParent, "GameTooltipTemplate")
+MMBTooltip = CreateFrame("GameTooltip", "MMBTooltip", UIParent, "GameTooltipTemplate")
 
 MBx = CreateFrame("Frame")
 MBx.ACE = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")

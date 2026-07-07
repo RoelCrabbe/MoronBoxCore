@@ -1118,16 +1118,16 @@ end
 
 function Warrior:HasShield()
     local offhandLink = GetInventoryItemLink("player", GetInventorySlotInfo("SecondaryHandSlot"))
-    if offhandLink then
-        local itemId, permEnchant, tempEnchant, suffix, itemName = string.gfind(offhandLink,
-            "|Hitem:(.-):(.-):(.-):(.-)|h%[(.-)%]|h")()
-        local _, _, _, _, _, itemType = GetItemInfo(itemId)
-        return itemType == "Shields"
-    else
+    if not offhandLink then
         return false
     end
+
+    local _, _, itemId = string.find(offhandLink, "|Hitem:(.-):(.-):(.-):(.-)|h%[(.-)%]|h")
+    local _, _, _, _, _, itemType = GetItemInfo(itemId)
+    return itemType == "Shields"
 end
 
+-- /run print(tostring(Warrior:HasShield()))
 --[####################################################################################################]--
 --[########################################## Helper Code! ############################################]--
 --[####################################################################################################]--

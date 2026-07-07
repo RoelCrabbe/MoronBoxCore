@@ -6,6 +6,7 @@
         "../../wow-api-type-definitions/UI_Vanilla"
     ],
     "diagnostics.globals": [
+        "UIParent",
         "this",
         "event",
         "arg",
