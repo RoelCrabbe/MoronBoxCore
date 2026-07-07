@@ -242,8 +242,8 @@ local function InitializeHealerRotation()
     if priestCount >= totalHealers or priestCount == 0 then
         result = sorted
     else
-        local spacing = math.floor(totalHealers / priestCount)
-        local remainder = math.mod(totalHealers, priestCount)
+        local spacing = floor(totalHealers / priestCount)
+        local remainder = mod(totalHealers, priestCount)
 
         for i = 1, totalHealers do
             if i == nextPriestPosition and priestIndex <= priestCount then
@@ -462,7 +462,7 @@ function LOA_Healing()
 
     local effectiveFraction = MB_myLoathebHealerOverheal or 1.0
     local effectiveOverheal = math.min(math.max(effectiveFraction, 0.0), 1.0)
-    local requiredMissing = math.floor(healValue * effectiveOverheal + 0.5)
+    local requiredMissing = floor(healValue * effectiveOverheal + 0.5)
     local allowedOverhealPct = (1 - effectiveOverheal) * 100
 
     local printMessage = string.format([[
@@ -523,6 +523,8 @@ end
 --[####################################################################################################]--
 
 function LOA_Targeting()
+    local tName = UnitName("target")
+
     if LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
         if myName == MB_myLoathebMainTank then
             if LockOnTarget("Loatheb") then

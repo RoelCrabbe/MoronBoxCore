@@ -81,7 +81,7 @@ local CorruptedTotems = mb_corruptedTotems
 local CrowdControl = mb_crowdControl
 local CrowdControlledMob = mb_crowdControlledMob
 local Dead = mb_dead
-local DebuffShadowBoltAmount = mb_debuffShadowBoltAmount
+local DebuffImpShadowBoltAmount = mb_debuffImpShadowBoltAmount
 local DebuffShadowWeavingAmount = mb_debuffShadowWeavingAmount
 local DebuffsToShadowWard = mb_debuffsToShadowWard
 local GetAllContainerFreeSlots = mb_getAllContainerFreeSlots
@@ -286,7 +286,7 @@ function Warlock:ShadowBoltWhoring()
         return
     end
 
-    SBstacks = DebuffShadowBoltAmount()
+    SBstacks = DebuffImpShadowBoltAmount()
     SWstacks = DebuffShadowWeavingAmount()
 
     if SWstacks == 5 and SBstacks >= 4 then

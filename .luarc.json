@@ -3,8 +3,7 @@
     "runtime.version": "Lua 5.1",
     "workspace.library": [
         "../../wow-api-type-definitions/Client",
-        "../../wow-api-type-definitions/UI_Vanilla",
-        "../../wow-api-type-definitions/UI_Turtle"
+        "../../wow-api-type-definitions/UI_Vanilla"
     ],
     "diagnostics.globals": [
         "this",
@@ -20,6 +19,8 @@
         "arg8",
         "arg9",
         "AceLibrary",
+        "MBD",
+        "MBD_Clean",
         "RunLine",
         "CancelBuff",
         "UseItemByName",
@@ -38,7 +39,9 @@
         "IsRaidLeader",
         "SpellStopCasting",
         "SpellTargetUnit",
-        "SpellStopTargeting"
+        "SpellStopTargeting",
+        "GetTalentInfo",
+        "use"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],
     "format.enable": true

@@ -69,64 +69,19 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@type table<string, string> -- key: exact spell/buff name; value: full icon texture path
 local BuffData = {}
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function mb_hasWeaponBuff(oBuff, unit)
-    local my, me, mc, oy, oe, oc = GetWeaponEnchantInfo()
-    local buff = strlower(oBuff)
-    local tooltip = MMBTooltip
-    local text
-
-    if not unit then
-        unit = "player"
-    end
-
-    if my then
-        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetInventoryItem(unit, 16)
-
-        for i = 1, 32 do
-            text = getglobal("MMBTooltipTextLeft" .. i):GetText()
-
-            if not text then
-                break
-            elseif strfind(strlower(text), buff) then
-                tooltip:Hide()
-                local meTime = (me / 1000)
-                return text, meTime, mc
-            end
-        end
-
-        tooltip:Hide()
-    end
-
-    if oy then
-        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetInventoryItem(unit, 17)
-
-        for i = 1, 32 do
-            text = getglobal("MMBTooltipTextLeft" .. i):GetText()
-
-            if not text then
-                break
-            elseif strfind(strlower(text), buff) then
-                tooltip:Hide()
-                local oeTime = (oe / 1000)
-                return text, oeTime, oc
-            end
-        end
-
-        tooltip:Hide()
-    end
-
-    tooltip:Hide()
-    return nil
-end
-
+--- Zoekt op naam naar een buff of debuff op de opgegeven unit via tooltip-scanning.
+---@param oBuff string De naam van de buff of debuff om naar te zoeken
+---@param unit? UnitId De unit ID, standaard "player"
+---@return "buff"|"debuff"|nil type Het type effect, of nil indien niet gevonden
+---@return integer|nil index De index van het effect, of nil indien niet gevonden
+---@return string|nil name De naam van het effect, of nil indien niet gevonden
 function mb_hasBuffNamed(oBuff, unit)
     local buff = strlower(oBuff)
     local tooltip = MMBTooltip
@@ -171,133 +126,152 @@ function mb_hasBuffNamed(oBuff, unit)
     return nil
 end
 
-function mb_hasBuffOrDebuff(spell, target, buffOrDebuff)
-    local TotemSpells = {
-        ["Windfury"] = true,
-        ["Windfury Totem 3"] = true,
-        ["Windfury Weapon"] = true,
-        ["Windfury Totem"] = true
-    }
+--- Controleert of een unit een specifieke buff of debuff heeft, via de BuffData-lookup.
+---@param spell string De sleutel in BuffData
+---@param unit UnitId De unit ID
+---@param buffOrDebuff "buff"|"debuff" Type check
+---@return boolean found
+function mb_hasBuffOrDebuff(spell, unit, buffOrDebuff)
+    local texture = BuffData[spell]
 
-    if TotemSpells[spell] then
-        return mb_hasWeaponBuff(spell, target)
-    end
-
-    local buffData = BuffData[spell]
-    if not buffData then
-        return nil
+    if not texture then
+        return false
     end
 
     if buffOrDebuff == "buff" then
-        return mb_buffCheck(buffData, target)
+        return mb_buffCheck(texture, unit)
     elseif buffOrDebuff == "debuff" then
-        return mb_debuffCheck(buffData, target)
-    end
-
-    return nil
-end
-
-function mb_buffCheck(text, target)
-    local i = 1
-    local buff = UnitBuff(target, i)
-
-    while buff and i <= 32 do
-        if buff == text then
-            return true
-        end
-
-        i = i + 1
-        buff = UnitBuff(target, i)
+        return mb_debuffCheck(texture, unit)
     end
 
     return false
 end
 
-function mb_debuffCheck(text, target)
-    local i = 1
-    local debuff = UnitDebuff(target, i)
+--- Controleert of een unit een buff heeft met de opgegeven texture.
+---@param texture string Het texture pad van de te zoeken buff
+---@param unit UnitId De unit ID (bijv. "target")
+---@return boolean found
+function mb_buffCheck(texture, unit)
+    for i = 1, 32 do
+        local buffTexture = UnitBuff(unit, i)
+        if not buffTexture then break end
 
-    while debuff and i <= 16 do
-        if debuff == text then
+        if buffTexture == texture then
             return true
         end
+    end
 
-        i = i + 1
-        debuff = UnitDebuff(target, i)
+    return false
+end
+
+--- Controleert of een unit een debuff heeft met de opgegeven texture.
+---@param texture string Het texture pad van de te zoeken debuff
+---@param unit UnitId De unit ID (bijv. "target")
+---@return boolean found
+function mb_debuffCheck(texture, unit)
+    for i = 1, 16 do
+        local debuffTexture = UnitDebuff(unit, i)
+        if not debuffTexture then break end
+
+        if debuffTexture == texture then
+            return true
+        end
     end
 
     return false
 end
 
 function mb_debuffShadowWeavingAmount()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if debuffTexture == "Interface\\Icons\\Spell_Shadow_BlackPlague" and debuffDispelType == "Magic" then
-            return debuffApplications
+    for i = 1, 16 do
+        local texture, applications, dispelType = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Shadow Weaving"] and dispelType == "Magic" then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
 function mb_debuffSunderAmount()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if debuffTexture == "Interface\\Icons\\Ability_Warrior_Sunder" then
-            return debuffApplications
+    for i = 1, 16 do
+        local texture, applications = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Sunder Armor"] then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
-function mb_debuffAmountShatter()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if debuffTexture == "Interface\\Icons\\INV_Axe_12" then
-            return debuffApplications
+function mb_debuffArmorShatterAmount()
+    for i = 1, 16 do
+        local texture, applications = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Armor Shatter"] then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
 function mb_debuffWintersChillAmount()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if debuffTexture == "Interface\\Icons\\Spell_Frost_ChillingBlast" and debuffDispelType == "Magic" then
-            return debuffApplications
+    for i = 1, 16 do
+        local texture, applications, dispelType = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Winter\'s Chill"] and dispelType == "Magic" then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
-function mb_debuffShadowBoltAmount()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if (debuffTexture == "Interface\\Icons\\Spell_Shadow_ShadowBolt") and debuffDispelType == "Magic" then
-            return debuffApplications
+function mb_debuffImpShadowBoltAmount()
+    for i = 1, 16 do
+        local texture, applications, dispelType = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Improved Shadow Bolt"] and dispelType == "Magic" then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
 function mb_debuffScorchAmount()
-    for debuffIndex = 1, 16 do
-        local debuffTexture, debuffApplications, debuffDispelType = UnitDebuff("target", debuffIndex)
-        if debuffTexture == "Interface\\Icons\\Spell_Fire_SoulBurn" and debuffDispelType == "Magic" then
-            return debuffApplications
+    for i = 1, 16 do
+        local texture, applications, dispelType = UnitDebuff("target", i)
+        if not texture then break end
+
+        if texture == BuffData["Scorch"] and dispelType == "Magic" then
+            return (applications or 1)
         end
     end
+
     return 0
 end
 
 function mb_debuffIgniteAmount()
-    local DebuffID = 1
-    while (UnitDebuff("target", DebuffID)) do
-        if (string.find(UnitDebuff("target", DebuffID), "Spell_Fire_Incinerate")) then
-            _, IgniteStacks = UnitDebuff("target", DebuffID)
-            return IgniteStacks
+    local iIterator = 1
+    local texture, applications = UnitDebuff("target", iIterator)
+
+    while (texture) do
+        if texture == BuffData["Ignite"] then
+            return (applications or 0)
         end
-        DebuffID = DebuffID + 1
+
+        iIterator = iIterator + 1
+        texture, applications = UnitDebuff("target", iIterator)
     end
+
     return 0
 end
 
@@ -316,17 +290,11 @@ function mb_mandokirGaze()
 end
 
 function mb_razorgoreOrb()
-    if mb_hasBuffOrDebuff("Mind Exhaustion", "player", "debuff") then
-        return true
-    end
-    return false
+    return mb_hasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end
 
 function mb_isAtRazorgore()
-    if GetSubZoneText() == "Dragonmaw Garrison" then
-        return true
-    end
-    return false
+    return GetSubZoneText() == "Dragonmaw Garrison"
 end
 
 function mb_selfBuff(spell)
@@ -1019,6 +987,7 @@ BuffData["Positive Charge"]                       = "Interface\\Icons\\Spell_Cha
 BuffData["Negative Charge"]                       = "Interface\\Icons\\Spell_ChargeNegative"
 
 BuffData["Slow Fall"]                             = "Interface\\Icons\\Spell_Magic_FeatherFall"
+BuffData["Armor Shatter"]                         = "Interface\\Icons\\INV_Axe_12"
 
 function AmountOfBuffs()
     local buffCount = 0
