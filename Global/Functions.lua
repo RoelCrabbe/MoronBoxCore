@@ -105,3 +105,14 @@ function TableAddUnique(list, value)
     table.sort(list)
     return true
 end
+
+---
+---Rounds `number` to the nearest integer, rounding half away from zero.
+---
+---@generic Number: number
+---@param x Number
+---@return Number
+---@nodiscard
+function math.round(x)
+    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
+end

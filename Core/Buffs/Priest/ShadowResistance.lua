@@ -384,7 +384,7 @@ function SPROT_ProcessShadowProtectionQueue()
             ClearTarget()
         end
 
-        CastSpellByName(spellName, false)
+        CastSpellByName(spellName, nil)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true

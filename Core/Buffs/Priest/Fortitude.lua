@@ -382,7 +382,7 @@ function FORT_ProcessFortitudeQueue()
 
         SelfBuff("Inner Focus")
 
-        CastSpellByName(spellName, false)
+        CastSpellByName(spellName, nil)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true

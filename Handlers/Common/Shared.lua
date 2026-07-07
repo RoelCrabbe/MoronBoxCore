@@ -439,7 +439,7 @@ function mb_isValidMeleeTarget(unit)
     if UnitExists(unit) and
         mb_isAlive(unit) and
         mb_inCombat(unit) and
-        mb_inMeleeRange(unit) then
+        mb_inMeleeRange() then
         return true
     end
     return false
@@ -468,7 +468,7 @@ function mb_canHelpfulSpellBeCastOn(spell, unit)
         end
 
         local can = false
-        CastSpellByName(spell, false)
+        CastSpellByName(spell, nil)
         if SpellCanTargetUnit(unit) then
             can = true
         end
@@ -575,7 +575,6 @@ function RaidIdx(qName)
 end
 
 function mb_isItemInBagCoolDown(itemName)
-    local bag, slot = nil
     for bag = 0, 4 do
         for slot = 1, mb_bagSize(bag) do
             local link = GetContainerItemLink(bag, slot)
@@ -601,7 +600,6 @@ function mb_bagSize(i)
 end
 
 function mb_bagSlotOf(itemName)
-    local bag, slot = nil
     for bag = 0, 4 do
         for slot = 1, mb_bagSize(bag) do
             local link = GetContainerItemLink(bag, slot)

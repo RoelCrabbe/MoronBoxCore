@@ -358,7 +358,7 @@ function Paladin:BOPLowRandom()
                 ClearTarget()
             end
 
-            CastSpellByName("Blessing of Protection", false)
+            CastSpellByName("Blessing of Protection", nil)
             CdMessage("I BOP'd " ..
                 GetColors(UnitName(BOPTarget)) ..
                 " at " ..

@@ -442,7 +442,7 @@ function Priest:MaxShieldAggroedPlayer()
         ClearTarget()
     end
 
-    CastSpellByName("Power Word: Shield", false)
+    CastSpellByName("Power Word: Shield", nil)
     SpellTargetUnit(shieldTarget)
     SpellStopTargeting()
 end
@@ -534,7 +534,7 @@ function Priest:ShieldAggroedPlayer()
                 ClearTarget()
             end
 
-            CastSpellByName("Power Word: Shield", false)
+            CastSpellByName("Power Word: Shield", nil)
             SpellTargetUnit(shieldTarget)
             SpellStopTargeting()
         end
