@@ -257,7 +257,7 @@ function Hunter:BossSpecificDPS()
         CastSpellByName("Tranquilizing Shot")
     end
 
-    if not HasBuffNamed("Hunter\'s Mark", "target", "debuff") then
+    if not HasBuffOrDebuff("Hunter\'s Mark", "target", "debuff") then
         CastSpellByName("Hunter\'s Mark")
     end
 

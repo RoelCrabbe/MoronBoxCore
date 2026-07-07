@@ -266,14 +266,14 @@ function ExtractRank(str)
 end
 
 function GetHealValueFromRank(spell, rank)
-    return math.floor(MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus()))
+    return floor(MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus()))
 end
 
 function GetAverageChainHealValueFromRank(spell, rank, amountOfBounce, multiplier)
     local multiplier = multiplier and (1 + multiplier / 100) or 1
     local baseHeal = MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus())
     local lowestHeal = baseHeal / (2 ^ amountOfBounce)
-    return math.floor(lowestHeal * multiplier)
+    return floor(lowestHeal * multiplier)
 end
 
 --[####################################################################################################]--

@@ -70,7 +70,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 
 MMB = CreateFrame("Button", "MMB", UIParent)
-MMBTooltip = CreateFrame("GAMETOOLTIP", "MMBTooltip", UIParent, "GameTooltipTemplate")
+MMBTooltip = CreateFrame("GameTooltip", "MMBTooltip", UIParent, "GameTooltipTemplate")
 
 MBx = CreateFrame("Frame")
 MBx.ACE = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
@@ -137,12 +137,15 @@ for i = 1, 8 do
 end
 
 MB_raidLeader                                          = nil
+
+---@type string|nil
 MB_mySpecc                                             = nil
 MB_myHealSpell                                         = nil
 MB_attackSlot                                          = nil
 MB_attackRangedSlot                                    = nil
 MB_attackWandSlot                                      = nil
 
+---@type string|nil
 MB_warriorBinds                                        = "Fury"
 MB_evoGear                                             = nil
 
@@ -156,6 +159,7 @@ MB_myInterruptTarget                                   = nil
 MB_doInterrupt                                         = { Active = false, Time = 0 }
 MB_myOTTarget                                          = nil
 
+---@type string|nil
 MB_myAssignedHealTarget                                = nil
 
 MB_currentCC                                           = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
@@ -195,10 +199,14 @@ MB_raidTargetNames                                     = {
     [1] = "Star"
 }
 
+---@type boolean|nil
 MB_isCasting                                           = nil
-MB_isChanneling                                        = nil
-MB_isCastingMyCCSpell                                  = nil
 
+---@type boolean|nil
+MB_isChanneling                                        = nil
+
+---@type boolean|nil
+MB_isCastingMyCCSpell                                  = nil
 MB_ignite                                              = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
 
 MB_isMoving                                            = { Active = false, Time = 0 }
@@ -215,6 +223,7 @@ MB_teleportMan                                         = { Active = false, Time 
 MB_worldBuffMan                                        = { Active = false, Time = 0 }
 MB_summonRag                                           = { Active = false, Time = 0 }
 
+---@type boolean|nil
 MB_tradeOpen                                           = nil
 MB_tradeOpenOnUpdate                                   = { Active = false, Time = 0 }
 

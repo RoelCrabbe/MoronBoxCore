@@ -361,6 +361,8 @@ end
 --[####################################################################################################]--
 
 function GROB_Targeting()
+    local tName = UnitName("target")
+
     if GROB_IsAtGrobbulus() and MB_myGrobbulusBoxStrategy then
         if myName == MB_myGrobbulusMainTank then
             if LockOnTarget("Grobbulus") then

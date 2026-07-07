@@ -351,10 +351,11 @@ function Druid:MTHeals(assignedTarget)
         if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
             TargetMyAssignedTankToHeal()
         else
-            if not UnitName(MBID[TankName()] .. "targettarget") then
+            local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+            if not tankTarget then
                 MBH_CastHeal("Healing Touch")
             else
-                TargetByName(UnitName(MBID[TankName()] .. "targettarget"), 1)
+                TargetByName(tankTarget, 1)
             end
         end
     end
