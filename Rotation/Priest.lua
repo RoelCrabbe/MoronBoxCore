@@ -64,6 +64,7 @@ local IsAltKeyDown = IsAltKeyDown
 local myClass = UnitClass("player") --[[@as string]]
 local myName = UnitName("player") --[[@as string]]
 local myRace = UnitRace("player") --[[@as string]]
+
 -- Disable File Loading Completely
 if myClass ~= "Priest" then return end
 
