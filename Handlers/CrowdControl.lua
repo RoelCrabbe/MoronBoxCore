@@ -146,7 +146,7 @@ function mb_assignCrowdControl()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid])
+                SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid], "PARTY")
             end
 
             if MB_currentCC.Druid == num_druids then
@@ -175,7 +175,7 @@ function mb_assignCrowdControl()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_CC", MB_classList["Warlock"][MB_currentCC.Warlock], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Warlock"][MB_currentCC.Warlock])
+                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Warlock"][MB_currentCC.Warlock], "PARTY")
             end
 
             if MB_currentCC.Warlock == num_locks then
@@ -201,7 +201,7 @@ function mb_assignCrowdControl()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_CC", MB_classList["Priest"][MB_currentCC.Priest], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Priest"][MB_currentCC.Priest])
+                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Priest"][MB_currentCC.Priest], "PARTY")
             end
 
             if MB_currentCC.Priest == num_priests then
@@ -227,7 +227,7 @@ function mb_assignCrowdControl()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid])
+                SendAddonMessage(MB_RAID .. "_CC", MB_noneDruidTanks[MB_currentCC.Druid], "PARTY")
             end
 
             if MB_currentCC.Druid == num_druids then
@@ -253,7 +253,7 @@ function mb_assignCrowdControl()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_CC", MB_classList["Mage"][MB_currentCC.Mage], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Mage"][MB_currentCC.Mage])
+                SendAddonMessage(MB_RAID .. "_CC", MB_classList["Mage"][MB_currentCC.Mage], "PARTY")
             end
 
             if MB_currentCC.Mage == num_mages then
@@ -307,7 +307,7 @@ function mb_assignFear()
         if UnitInRaid("player") then
             SendAddonMessage(MB_RAID .. "_FEAR", MB_classList["Warlock"][MB_currentFear.Warlock], "RAID")
         else
-            SendAddonMessage(MB_RAID .. "_FEAR", MB_classList["Warlock"][MB_currentFear.Warlock])
+            SendAddonMessage(MB_RAID .. "_FEAR", MB_classList["Warlock"][MB_currentFear.Warlock], "PARTY")
         end
 
         if MB_currentFear.Warlock == num_locks then
@@ -345,7 +345,7 @@ function mb_assignOffTank()
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "_OT", thisOffTank, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "_OT", thisOffTank)
+        SendAddonMessage(MB_RAID .. "_OT", thisOffTank, "PARTY")
     end
 
     if not IsShiftKeyDown() then
@@ -367,11 +367,8 @@ function mb_assignInterrupt()
     local num_rogues = TableLength(MB_classList["Rogue"])
     local num_mages = TableLength(MB_classList["Mage"])
 
-    local num_interrupters = num_rogues
-    local num_interrupters = num_interrupters + num_shaman
-    local num_interrupters = num_interrupters + num_mages
-
-    if num_interrupters == 0 then
+    if (num_rogues + num_shaman + num_mages) == 0 then
+        mb_cdPrint("No interrupters available")
         return
     end
 
@@ -379,7 +376,7 @@ function mb_assignInterrupt()
         if UnitInRaid("player") then
             SendAddonMessage(MB_RAID .. "_INT", MB_classList["Rogue"][MB_currentInterrupt.Rogue], "RAID")
         else
-            SendAddonMessage(MB_RAID .. "_INT", MB_classList["Rogue"][MB_currentInterrupt.Rogue])
+            SendAddonMessage(MB_RAID .. "_INT", MB_classList["Rogue"][MB_currentInterrupt.Rogue], "PARTY")
         end
 
         if MB_currentInterrupt.Rogue == num_rogues then
@@ -393,7 +390,7 @@ function mb_assignInterrupt()
         if UnitInRaid("player") then
             SendAddonMessage(MB_RAID .. "_INT", MB_classList["Shaman"][MB_currentInterrupt.Shaman], "RAID")
         else
-            SendAddonMessage(MB_RAID .. "_INT", MB_classList["Shaman"][MB_currentInterrupt.Shaman])
+            SendAddonMessage(MB_RAID .. "_INT", MB_classList["Shaman"][MB_currentInterrupt.Shaman], "PARTY")
         end
 
         if MB_currentInterrupt.Shaman == num_shaman then
@@ -408,7 +405,7 @@ function mb_assignInterrupt()
             if UnitInRaid("player") then
                 SendAddonMessage(MB_RAID .. "_INT", MB_classList["Mage"][MB_currentInterrupt.Mage], "RAID")
             else
-                SendAddonMessage(MB_RAID .. "_INT", MB_classList["Mage"][MB_currentInterrupt.Mage])
+                SendAddonMessage(MB_RAID .. "_INT", MB_classList["Mage"][MB_currentInterrupt.Mage], "PARTY")
             end
 
             if MB_currentInterrupt.Mage == num_mages then

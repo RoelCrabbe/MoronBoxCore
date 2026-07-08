@@ -70,7 +70,7 @@ SlashCmdList["CHANGESPECC"] = function(specc)
     mb_changeSpecc(specc)
 end
 
-SlashCmdList["LOGOUT"] = function()
+SlashCmdList["MBLOGOUT"] = function()
     Logout()
 end
 
@@ -78,7 +78,7 @@ SlashCmdList["TANKLIST"] = function(list)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_TANKLIST", list, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_TANKLIST", list)
+        SendAddonMessage(MB_RAID .. "MB_TANKLIST", list, "PARTY")
     end
 end
 
@@ -86,7 +86,7 @@ SlashCmdList["REPORTMANAPOTS"] = function()
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID, "MB_REPORTMANAPOTS", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_REPORTMANAPOTS")
+        SendAddonMessage(MB_RAID, "MB_REPORTMANAPOTS", "PARTY")
     end
 end
 
@@ -94,7 +94,7 @@ SlashCmdList["REPORTSHARDS"] = function()
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID, "MB_REPORTSHARDS", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_REPORTSHARDS")
+        SendAddonMessage(MB_RAID, "MB_REPORTSHARDS", "PARTY")
     end
 end
 
@@ -102,7 +102,7 @@ SlashCmdList["REPORTRUNES"] = function()
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID, "MB_REPORTRUNES", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_REPORTRUNES")
+        SendAddonMessage(MB_RAID, "MB_REPORTRUNES", "PARTY")
     end
 end
 
@@ -110,7 +110,7 @@ SlashCmdList["NEFCLOAK"] = function(item)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID, "MB_NEFCLOAK", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_NEFCLOAK")
+        SendAddonMessage(MB_RAID, "MB_NEFCLOAK", "PARTY")
     end
 end
 
@@ -118,7 +118,7 @@ SlashCmdList["REMOVEBUFFS"] = function(buff)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_REMOVEBUFFS", buff, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_REMOVEBUFFS", buff)
+        SendAddonMessage(MB_RAID .. "MB_REMOVEBUFFS", buff, "PARTY")
     end
 end
 
@@ -126,7 +126,7 @@ SlashCmdList["REMOVEBLESS"] = function(buff)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_REMOVEBLESS", buff, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_REMOVEBLESS", buff)
+        SendAddonMessage(MB_RAID .. "MB_REMOVEBLESS", buff, "PARTY")
     end
 end
 
@@ -134,7 +134,7 @@ SlashCmdList["AQBOOKS"] = function()
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID, "MB_AQBOOKS", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_AQBOOKS")
+        SendAddonMessage(MB_RAID, "MB_AQBOOKS", "PARTY")
     end
 end
 
@@ -150,7 +150,7 @@ SlashCmdList["USEBAGITEM"] = function(item)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_USEBAGITEM", item, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_USEBAGITEM", item)
+        SendAddonMessage(MB_RAID .. "MB_USEBAGITEM", item, "PARTY")
     end
 end
 
@@ -158,7 +158,7 @@ SlashCmdList["GEAR"] = function(itemSet)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_GEAR", itemSet, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_GEAR", itemSet)
+        SendAddonMessage(MB_RAID .. "MB_GEAR", itemSet, "PARTY")
     end
 end
 
@@ -166,6 +166,6 @@ SlashCmdList["ASSIGNHEALER"] = function(names)
     if UnitInRaid("player") then
         SendAddonMessage(MB_RAID .. "MB_ASSIGNHEALER", names, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "MB_ASSIGNHEALER", names)
+        SendAddonMessage(MB_RAID .. "MB_ASSIGNHEALER", names, "PARTY")
     end
 end

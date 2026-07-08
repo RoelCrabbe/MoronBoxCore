@@ -378,3 +378,7 @@ function Hunter:FreezingTrap()
         CastSpellByName("Frost Trap")
     end
 end
+
+function mb_freezingTrap()
+    Hunter:FreezingTrap()
+end

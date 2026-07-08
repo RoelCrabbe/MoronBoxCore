@@ -146,7 +146,6 @@ function MMB:OnEvent()
         mb_mySpecc()
         mb_initializeClasslists()
 
-        MB_raidInviter = MB_hordeRaidInviter
         if not Faction.IsHorde() then
             MB_raidInviter = MB_allianceRaidInviter
         end

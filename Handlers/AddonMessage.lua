@@ -61,9 +61,9 @@ local IsControlKeyDown = IsControlKeyDown
 local IsAltKeyDown = IsAltKeyDown
 
 -- Common Names
-local myClass = UnitClass("player")
-local myName = UnitName("player")
-local myRace = UnitRace("player")
+local myClass = UnitClass("player") --[[@as string]]
+local myName = UnitName("player") --[[@as string]]
+local myRace = UnitRace("player") --[[@as string]]
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -79,7 +79,7 @@ function mb_setFocus()
         if UnitInRaid("player") then
             SendAddonMessage(MB_RAID, "MB_FOCUSME", "RAID")
         else
-            SendAddonMessage(MB_RAID, "MB_FOCUSME")
+            SendAddonMessage(MB_RAID, "MB_FOCUSME", "PARTY")
         end
     end
 end
@@ -89,11 +89,10 @@ function mb_clearRaidTarget()
         return
     end
 
-    local id = GetRaidTargetIndex("target")
     if UnitInRaid("player") then
-        SendAddonMessage(MB_RAID .. "CLR_TARG", UnitName("player"), "RAID")
+        SendAddonMessage(MB_RAID .. "CLR_TARG", myName, "RAID")
     else
-        SendAddonMessage(MB_RAID .. "CLR_TARG", UnitName("player"))
+        SendAddonMessage(MB_RAID .. "CLR_TARG", myName, "PARTY")
     end
 
     SetRaidTarget("target", 0)
@@ -130,7 +129,7 @@ function mb_cooldowns()
 
         SendAddonMessage(MB_RAID, "MB_USECOOLDOWNS", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_USECOOLDOWNS")
+        SendAddonMessage(MB_RAID, "MB_USECOOLDOWNS", "PARTY")
     end
 end
 
@@ -169,7 +168,7 @@ function mb_useManualRecklessness()
 
         SendAddonMessage(MB_RAID, "MB_USERECKLESSNESS", "RAID")
     else
-        SendAddonMessage(MB_RAID, "MB_USERECKLESSNESS")
+        SendAddonMessage(MB_RAID, "MB_USERECKLESSNESS", "PARTY")
     end
 end
 
@@ -196,6 +195,6 @@ function mb_reportCooldowns()
         SendAddonMessage(MB_RAID, "MB_REPORTCOOLDOWNS", "RAID")
         Print("Sending out request to report Cooldowns.")
     else
-        SendAddonMessage(MB_RAID, "MB_REPORTCOOLDOWNS")
+        SendAddonMessage(MB_RAID, "MB_REPORTCOOLDOWNS", "PARTY")
     end
 end
