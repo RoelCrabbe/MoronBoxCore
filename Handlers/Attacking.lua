@@ -73,7 +73,9 @@ local function FindActionSlot(spellName)
     for i = 1, 132 do
         MMBTooltip:SetOwner(UIParent, "ANCHOR_NONE")
         MMBTooltip:SetAction(i)
-        if _G["MMBTooltipTextLeft1"]:GetText() == spellName then
+
+        local textObject = getglobal("MMBTooltipTextLeft1")
+        if textObject and textObject:GetText() == spellName then
             return i
         end
     end
