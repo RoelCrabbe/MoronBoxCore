@@ -69,7 +69,8 @@ local myRace = UnitRace("player") --[[@as string]]
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local IndicatorFrame = CreateFrame("Frame", nil, UIParent)
+---@class IndicatorFrame: Frame
+local IndicatorFrame = CreateFrame("Frame", "IndicatorFrame", UIParent)
 
 IndicatorFrame.FlashTime = GetTime()
 IndicatorFrame.FlashColor = { red = 0, green = 0, blue = 0, alpha = 0 }
@@ -88,12 +89,12 @@ end
 
 local screenW, screenH = GetScreenWidth(), GetScreenHeight()
 local scale = UIParent:GetEffectiveScale()
-local t1 = LoadTexture("TOP", screenW, screenH / 20 / scale)
-local t2 = LoadTexture("BOTTOM", screenW, screenH / 20 / scale)
-local t3 = LoadTexture("LEFT", screenH / 20 / scale, nil)
-local t4 = LoadTexture("RIGHT", screenH / 20 / scale, nil)
+local t1 = LoadTexture("Top", screenW, screenH / 20 / scale)
+local t2 = LoadTexture("Bottom", screenW, screenH / 20 / scale)
+local t3 = LoadTexture("Left", screenH / 20 / scale, nil)
+local t4 = LoadTexture("Right", screenH / 20 / scale, nil)
 
-IndicatorFrame:SetPoint("CENTER", 0, 0)
+IndicatorFrame:SetPoint("Center", 0, 0)
 
 local function FlashFrameFlashHandler()
     if IndicatorFrame.FlashTime > GetTime() then
