@@ -381,7 +381,7 @@ function mb_doFaerlinaActions()
 
     for i = 1, 4 do
         TargetByName("Grand Widow Faerlina")
-        PetAttack("Grand Widow Faerlina")
+        PetAttack()
     end
 end
 

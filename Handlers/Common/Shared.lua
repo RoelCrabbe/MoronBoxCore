@@ -649,13 +649,19 @@ end
 
 function mb_hasQuiver()
     for bag = 0, 4 do
-        if GetBagName(bag) and string.find(GetBagName(bag), "Quiver") then return true end
+        local bagName = GetBagName(bag)
+        if bagName and string.find(bagName, "Quiver") then
+            return true
+        end
     end
 end
 
 function mb_hasPouch()
     for bag = 0, 4 do
-        if GetBagName(bag) and string.find(GetBagName(bag), "Ammo Pouch") then return true end
+        local pouchName = GetBagName(bag)
+        if pouchName and string.find(pouchName, "Ammo Pouch") then
+            return true
+        end
     end
 end
 

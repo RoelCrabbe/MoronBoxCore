@@ -69,6 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class MMBPostInit: Button
 local MMB_Post_Init = CreateFrame("Button", "MMBPostInit", UIParent)
 MMB_Post_Init.Timer = GetTime()
 
@@ -782,11 +783,11 @@ function mb_initializeClasslists()
             local name = UnitName(id)
             local class = UnitClass(id)
 
-            MBID[name] = id
             if not name or not class then
                 break
             end
 
+            MBID[name] = id
             table.insert(MB_classList[class], name)
             table.insert(MB_toonsInGroup[1], name)
             MB_groupID[name] = 1

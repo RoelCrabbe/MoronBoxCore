@@ -69,9 +69,13 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class MMB: Button
 MMB = CreateFrame("Button", "MMB", UIParent)
+
+---@class MMBTooltip: GameTooltip
 MMBTooltip = CreateFrame("GameTooltip", "MMBTooltip", UIParent, "GameTooltipTemplate")
 
+---@class MBx: Frame
 MBx = CreateFrame("Frame")
 MBx.ACE = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
 MBx.ACE.ItemBonus = AceLibrary("ItemBonusLib-1.0")
@@ -140,6 +144,7 @@ MB_raidLeader                                          = nil
 
 ---@type string|nil
 MB_mySpecc                                             = nil
+---@type string|nil
 MB_myHealSpell                                         = nil
 MB_attackSlot                                          = nil
 MB_attackRangedSlot                                    = nil
@@ -147,12 +152,15 @@ MB_attackWandSlot                                      = nil
 
 ---@type string|nil
 MB_warriorBinds                                        = "Fury"
-MB_evoGear                                             = nil
 
+---@type boolean
+MB_evoGear                                             = false
 MB_cooldowns                                           = {}
 
-MB_druidTankInParty                                    = nil
-MB_warriorTankInParty                                  = nil
+---@type boolean
+MB_druidTankInParty                                    = false
+---@type boolean
+MB_warriorTankInParty                                  = false
 
 MB_myCCTarget                                          = nil
 MB_myInterruptTarget                                   = nil

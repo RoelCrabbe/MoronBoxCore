@@ -9,6 +9,8 @@
     ],
     "diagnostics.globals": [
         "UIParent",
+        "UIErrorsFrame",
+        "TrinketMenu_MainFrame",
         "this",
         "event",
         "arg",
@@ -22,7 +24,10 @@
         "arg8",
         "arg9",
         "AceLibrary",
+        "SetView",
         "EquipSet",
+        "GetSuperMacroInfo",
+        "DeleteSuperMacro",
         "MBD",
         "MBD_Clean",
         "MBH",
@@ -36,6 +41,9 @@
         "GetGossipOptions",
         "SelectGossipOption",
         "AcceptTrade",
+        "CancelTrade",
+        "InitiateTrade",
+        "ClickTradeButton",
         "GetTradeTargetItemLink",
         "NumTaxiNodes",
         "TaxiNodeName",
@@ -55,7 +63,10 @@
         "BuyMerchantItem",
         "GetDodgeChance",
         "GetParryChance",
-        "GetBlockChance"
+        "GetBlockChance",
+        "RollOnLoot",
+        "GetTradePlayerItemLink",
+        "PutItemInBackpack"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],
     "format.enable": true
