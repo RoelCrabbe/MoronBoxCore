@@ -439,7 +439,7 @@ function mb_isValidMeleeTarget(unit)
     if UnitExists(unit) and
         mb_isAlive(unit) and
         mb_inCombat(unit) and
-        mb_inMeleeRange(unit) then
+        mb_inMeleeRange() then
         return true
     end
     return false
@@ -468,7 +468,7 @@ function mb_canHelpfulSpellBeCastOn(spell, unit)
         end
 
         local can = false
-        CastSpellByName(spell, false)
+        CastSpellByName(spell, nil)
         if SpellCanTargetUnit(unit) then
             can = true
         end
@@ -556,6 +556,8 @@ function mb_myNameInTable(table)
     return false
 end
 
+---@param list string[]
+---@return string|nil
 function mb_returnPlayerInRaidFromTable(list)
     if not list then
         return nil
@@ -575,7 +577,6 @@ function RaidIdx(qName)
 end
 
 function mb_isItemInBagCoolDown(itemName)
-    local bag, slot = nil
     for bag = 0, 4 do
         for slot = 1, mb_bagSize(bag) do
             local link = GetContainerItemLink(bag, slot)
@@ -601,7 +602,6 @@ function mb_bagSize(i)
 end
 
 function mb_bagSlotOf(itemName)
-    local bag, slot = nil
     for bag = 0, 4 do
         for slot = 1, mb_bagSize(bag) do
             local link = GetContainerItemLink(bag, slot)
@@ -649,13 +649,19 @@ end
 
 function mb_hasQuiver()
     for bag = 0, 4 do
-        if GetBagName(bag) and string.find(GetBagName(bag), "Quiver") then return true end
+        local bagName = GetBagName(bag)
+        if bagName and string.find(bagName, "Quiver") then
+            return true
+        end
     end
 end
 
 function mb_hasPouch()
     for bag = 0, 4 do
-        if GetBagName(bag) and string.find(GetBagName(bag), "Ammo Pouch") then return true end
+        local pouchName = GetBagName(bag)
+        if pouchName and string.find(pouchName, "Ammo Pouch") then
+            return true
+        end
     end
 end
 
@@ -1100,17 +1106,17 @@ function mb_reportMyCooldowns()
             local deathWishReady = mb_spellReady("Death Wish")
 
             if not recklessnessReady and deathWishReady then
-                mb_cdMessage(GetColors("Recklessness on CD", 60))
+                mb_cdMessage(GetColors("Recklessness on CD"), 60)
                 return
             end
 
             if recklessnessReady and not deathWishReady then
-                mb_cdMessage(GetColors("Death Wish on CD", 60))
+                mb_cdMessage(GetColors("Death Wish on CD"), 60)
                 return
             end
 
             if not recklessnessReady and not deathWishReady then
-                mb_cdMessage(GetColors("Recklessness and Death Wish on CD", 60))
+                mb_cdMessage(GetColors("Recklessness and Death Wish on CD"), 60)
                 return
             end
         elseif MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank" then
@@ -1119,17 +1125,17 @@ function mb_reportMyCooldowns()
             local lastStandReady = mb_spellReady("Last Stand")
 
             if shieldWallReady and knowsLastStand and not lastStandReady then
-                mb_cdMessage(GetColors("Last Stand on CD", 60))
+                mb_cdMessage(GetColors("Last Stand on CD"), 60)
                 return
             end
 
             if not shieldWallReady and knowsLastStand and lastStandReady then
-                mb_cdMessage(GetColors("Shield Wall on CD", 60))
+                mb_cdMessage(GetColors("Shield Wall on CD"), 60)
                 return
             end
 
             if not shieldWallReady and knowsLastStand and not lastStandReady then
-                mb_cdMessage(GetColors("Shield Wall and Last Stand on CD", 60))
+                mb_cdMessage(GetColors("Shield Wall and Last Stand on CD"), 60)
                 return
             end
         end
@@ -1138,31 +1144,31 @@ function mb_reportMyCooldowns()
         local adrenalineRushReady = mb_spellReady("Adrenaline Rush")
 
         if knowsAdrenalineRush and not adrenalineRushReady then
-            mb_cdMessage(GetColors("Adrenaline Rush on CD", 60))
+            mb_cdMessage(GetColors("Adrenaline Rush on CD"), 60)
         end
     elseif myClass == "Mage" then
         local evocationReady = mb_spellReady("Evocation")
 
         if not evocationReady then
-            mb_cdMessage(GetColors("Evocation on CD", 60))
+            mb_cdMessage(GetColors("Evocation on CD"), 60)
         end
     elseif myClass == "Warlock" then
         local soulstoneOnCD = mb_isItemInBagCoolDown("Major Soulstone")
 
         if soulstoneOnCD then
-            mb_cdMessage(GetColors("Soulstone on CD", 60))
+            mb_cdMessage(GetColors("Soulstone on CD"), 60)
         end
     elseif myClass == "Shaman" then
         local incarnationReady = mb_spellReady("Incarnation")
 
         if not incarnationReady then
-            mb_cdMessage(GetColors("Incarnation on CD", 60))
+            mb_cdMessage(GetColors("Incarnation on CD"), 60)
         end
     elseif myClass == "Druid" then
         local innervateReady = mb_spellReady("Innervate")
 
         if not innervateReady then
-            mb_cdMessage(GetColors("Innervate on CD", 60))
+            mb_cdMessage(GetColors("Innervate on CD"), 60)
         end
     end
 end
@@ -1368,7 +1374,7 @@ function mb_executeRotation(rotation, context)
     if rotation and type(rotation) == "function" then
         rotation()
     else
-        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+        mb_cdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
     end
 end
 

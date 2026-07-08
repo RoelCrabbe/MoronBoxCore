@@ -255,7 +255,7 @@ end
 function mb_requestInviteSummon()
     if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
         if MB_raidInviter == myName then
-            SetLootMethod("freeforall", myName)
+            SetLootMethod("freeforall")
 
             if GetNumPartyMembers() > 0 and not UnitInRaid("player") then
                 ConvertToRaid()

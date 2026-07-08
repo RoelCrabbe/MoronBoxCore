@@ -338,16 +338,16 @@ function GROB_GetOUT()
 
         if HasBuffOrDebuff("Mutating Injection", "player", "debuff") then
             if IsAlive(decurseId) then
-                FollowUnit(decurseId, 1)
+                FollowUnit(decurseId)
             end
         else
             if UnitInRange(mainFollowId) then
                 if not CheckInteractDistance(mainFollowId, 3) then
-                    FollowUnit(mainFollowId, 1)
+                    FollowUnit(mainFollowId)
                 end
             else
                 if IsAlive(decurseId) then
-                    FollowUnit(decurseId, 1)
+                    FollowUnit(decurseId)
                 end
             end
         end

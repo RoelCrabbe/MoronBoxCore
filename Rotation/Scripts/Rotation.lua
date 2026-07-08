@@ -367,7 +367,7 @@ function mb_setup()
     end
 
     if IsControlKeyDown() then
-        MakeALine()
+        mb_makeALine()
         return
     end
 

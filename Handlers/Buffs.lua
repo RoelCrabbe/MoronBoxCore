@@ -307,7 +307,7 @@ local function AttemptBuff(unitList, spell)
     for _, unitName in pairs(unitList) do
         local unitID = MBID[unitName]
         if mb_isValidFriendlyTarget(unitID, spell) and not mb_hasBuffOrDebuff(spell, unitID, "buff") then
-            CastSpellByName(spell, false)
+            CastSpellByName(spell, nil)
             SpellTargetUnit(unitID)
             SpellStopTargeting()
             return true
@@ -355,7 +355,7 @@ local function MultiBuffMOTW(spell)
             and not (mb_hasBuffOrDebuff(spell, "raid" .. j, "buff")
                 or mb_hasBuffOrDebuff("Mark of the Wild", "raid" .. j, "buff")) then
             ClearTarget()
-            CastSpellByName(spell, false)
+            CastSpellByName(spell, nil)
             SpellTargetUnit("raid" .. j)
             SpellStopTargeting()
             return
@@ -379,7 +379,7 @@ local function MultiBuffAI(spell)
             and not (mb_hasBuffOrDebuff(spell, "raid" .. j, "buff")
                 or mb_hasBuffOrDebuff("Arcane Intellect", "raid" .. j, "buff")) then
             ClearTarget()
-            CastSpellByName(spell, false)
+            CastSpellByName(spell, nil)
             SpellTargetUnit("raid" .. j)
             SpellStopTargeting()
             return
@@ -405,7 +405,7 @@ local function MultiBuffPriest(spell)
                 mb_selfBuff("Inner Focus")
 
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return
@@ -424,7 +424,7 @@ local function MultiBuffPriest(spell)
                 mb_selfBuff("Inner Focus")
 
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return
@@ -444,7 +444,7 @@ local function MultiBuffPriest(spell)
                 mb_selfBuff("Inner Focus")
 
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return
@@ -460,7 +460,7 @@ local function MultiBuffPriest(spell)
             if mb_isValidFriendlyTarget("raid" .. j, spell)
                 and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff") then
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return
@@ -497,7 +497,7 @@ function mb_multiBuffBlessing(spell)
                     and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff")
                     and not FindInTable(MB_raidTanks, UnitName("raid" .. j)) then
                     ClearTarget()
-                    CastSpellByName(spell, false)
+                    CastSpellByName(spell, nil)
                     SpellTargetUnit("raid" .. j)
                     SpellStopTargeting()
                     return
@@ -508,7 +508,7 @@ function mb_multiBuffBlessing(spell)
             if mb_isValidFriendlyTarget("raid" .. j)
                 and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff") then
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return
@@ -577,7 +577,7 @@ function mb_multiBuff(spell)
             if mb_isValidFriendlyTarget("raid" .. j, spell)
                 and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff") then
                 ClearTarget()
-                CastSpellByName(spell, false)
+                CastSpellByName(spell, nil)
                 SpellTargetUnit("raid" .. j)
                 SpellStopTargeting()
                 return

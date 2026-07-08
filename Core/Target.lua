@@ -321,12 +321,17 @@ local function HandleBWLTargetingPostFocus()
             return true
         elseif mb_imMeleeDPS() then
             if mb_myNameInTable(MB_myRazorgoreLeftDPSERS) then
-                AssistByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank))
+                local leftTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+                if leftTank then
+                    AssistByName(leftTank)
+                end
                 return true
             end
-
             if mb_myNameInTable(MB_myRazorgoreRightDPSERS) then
-                AssistByName(mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank))
+                local rightTank = mb_returnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+                if rightTank then
+                    AssistByName(rightTank)
+                end
                 return true
             end
 

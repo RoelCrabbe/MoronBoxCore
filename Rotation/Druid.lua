@@ -468,7 +468,7 @@ function Druid:Innervate()
                 ClearTarget()
             end
 
-            CastSpellByName("Innervate", false)
+            CastSpellByName("Innervate", nil)
             SpellTargetUnit(unitID)
             SpellStopTargeting()
         end
@@ -505,7 +505,7 @@ function Druid:MaxRejuvAggroedPlayer()
         ClearTarget()
     end
 
-    CastSpellByName("Rejuvenation", false)
+    CastSpellByName("Rejuvenation", nil)
     SpellTargetUnit(rejuvTarget)
     SpellStopTargeting()
 end
@@ -540,7 +540,7 @@ function Druid:MaxRegrowthAggroedPlayer()
         ClearTarget()
     end
 
-    CastSpellByName("Regrowth", false)
+    CastSpellByName("Regrowth", nil)
     SpellTargetUnit(regroTarget)
     SpellStopTargeting()
 end
@@ -577,7 +577,7 @@ function Druid:SwiftmendOnRandomRaidMember(spell, percentage)
                 ClearTarget()
             end
 
-            CastSpellByName(spell, false)
+            CastSpellByName(spell, nil)
             SpellTargetUnit(raidUnit)
             SpellStopTargeting()
             break
@@ -719,7 +719,7 @@ function Druid:MaxAbolishAggroedPlayer()
         ClearTarget()
     end
 
-    CastSpellByName("Abolish Poison", false)
+    CastSpellByName("Abolish Poison", nil)
     SpellTargetUnit(rejuvTarget)
     SpellStopTargeting()
 end

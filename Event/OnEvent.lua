@@ -69,6 +69,7 @@ local myRace = UnitRace("player")
 --[####################################################################################################]--
 --[####################################################################################################]--
 
+---@class MMBPostInit: Button
 local MMB_Post_Init = CreateFrame("Button", "MMBPostInit", UIParent)
 MMB_Post_Init.Timer = GetTime()
 
@@ -145,7 +146,6 @@ function MMB:OnEvent()
         mb_mySpecc()
         mb_initializeClasslists()
 
-        MB_raidInviter = MB_hordeRaidInviter
         if not Faction.IsHorde() then
             MB_raidInviter = MB_allianceRaidInviter
         end
@@ -192,9 +192,7 @@ function MMB:OnEvent()
     elseif (event == "TAXIMAP_OPENED") then
         mb_taxi()
     elseif (event == "CHAT_MSG_ADDON") then
-        if arg1 == MB_RAID .. "MB_FIND" then
-            mb_findItem(arg2)
-        elseif arg1 == MB_RAID .. "MB_TANKLIST" then
+        if arg1 == MB_RAID .. "MB_TANKLIST" then
             local inputEncounter = string.upper(arg2)
             mb_tankList(inputEncounter)
         elseif arg1 == MB_RAID and arg2 == "MB_REPORTMANAPOTS" then
@@ -632,10 +630,10 @@ function MMB:OnEvent()
             event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF") then
         local _, _, caster, spell = string.find(arg1, "(.*) begins to cast (.*).")
 
-        if caster and UnitName("target") == caster then
-            for k, badSpell in MB_spellsToInt do
+        if caster == UnitName("target") then
+            for _, badSpell in pairs(MB_spellsToInt) do
                 if spell == badSpell then
-                    if UnitName("target") and badSpell and mb_spellReady(MB_myInterruptSpell[myClass]) then
+                    if mb_spellReady(MB_myInterruptSpell[myClass]) then
                         if myClass == "Priest" and not mb_knowSpell("Silence") then
                             return
                         end
@@ -647,17 +645,13 @@ function MMB:OnEvent()
             end
         end
     elseif (event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE" and myClass == "Mage") then
-        for mob, tick, igniter in string.gfind(arg1, "(.+) suffers (.+) Fire damage from (.+) Ignite.") do
-            if (mob == UnitName("target")) then
-                if (igniter == "your") then
-                    igniter = UnitName("player")
-                end
+        local _, _, target, tickAmount, igniter = string.find(arg1, "(.+) suffers (.+) Fire damage from (.+) Ignite.")
 
-                MB_ignite.Active = true
-                MB_ignite.Starter = igniter
-                MB_ignite.Amount = tick
-                MB_ignite.Stacks = mb_debuffIgniteAmount()
-            end
+        if target == UnitName("target") then
+            MB_ignite.Active = true
+            MB_ignite.Starter = (igniter == "your") and myName or igniter
+            MB_ignite.Amount = tickAmount
+            MB_ignite.Stacks = mb_debuffIgniteAmount()
         end
     elseif (event == "PLAYER_TARGET_CHANGED") then
         if myClass == "Warlock" then
@@ -677,8 +671,8 @@ function MMB:OnEvent()
             MB_ignite.Amount = 0
             MB_ignite.Stacks = 0
         elseif (mb_debuffIgniteAmount() > MB_ignite.Stacks) then
-            MB_ignite.Active = true;
-            MB_ignite.Stacks = mb_debuffIgniteAmount();
+            MB_ignite.Active = true
+            MB_ignite.Stacks = mb_debuffIgniteAmount()
         end
     elseif (event == "UNIT_HEALTH" and arg1 == "target" and UnitHealth("target") == 0) then
         MB_doInterrupt.Active = false
@@ -782,11 +776,11 @@ function mb_initializeClasslists()
             local name = UnitName(id)
             local class = UnitClass(id)
 
-            MBID[name] = id
             if not name or not class then
                 break
             end
 
+            MBID[name] = id
             table.insert(MB_classList[class], name)
             table.insert(MB_toonsInGroup[1], name)
             MB_groupID[name] = 1

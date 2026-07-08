@@ -176,12 +176,18 @@ function mb_meleeFollow()
         end
 
         if MyNameInTable(MB_myRazorgoreLeftDPSERS) then
-            FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank), 1)
+            local leftTank = ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+            if leftTank then
+                FollowByName(leftTank, 1)
+            end
             return
         end
 
         if MyNameInTable(MB_myRazorgoreRightDPSERS) then
-            FollowByName(ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank), 1)
+            local rightTank = ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+            if rightTank then
+                FollowByName(rightTank, 1)
+            end
             return
         end
     else

@@ -397,7 +397,7 @@ function mb_natureSwiftnessLowAggroedPlayer()
                     mb_selfBuff("Nature\'s Swiftness")
 
                     if mb_hasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
-                        CastSpellByName(instantSpell, false)
+                        CastSpellByName(instantSpell, nil)
                         SpellTargetUnit(NSTarget)
                         SpellStopTargeting()
                     end
@@ -444,9 +444,9 @@ function mb_castSpellOnRandomRaidMember(spell, rank, percentage)
             end
 
             if spell == "Weakened Soul" then
-                CastSpellByName("Power Word: Shield", false)
+                CastSpellByName("Power Word: Shield", nil)
             else
-                CastSpellByName(spell .. "(" .. rank .. ")", false)
+                CastSpellByName(spell .. "(" .. rank .. ")", nil)
             end
 
             SpellTargetUnit("raid" .. j)
@@ -486,7 +486,7 @@ function mb_castShieldOnRandomRaidMember(spell, rank)
                 ClearTarget()
             end
 
-            CastSpellByName("Power Word: Shield", false)
+            CastSpellByName("Power Word: Shield", nil)
 
             SpellTargetUnit("raid" .. j)
             SpellStopTargeting()

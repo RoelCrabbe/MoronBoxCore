@@ -384,7 +384,7 @@ function FW_ProcessFearWardQueue()
             ClearTarget()
         end
 
-        CastSpellByName(spellName, false)
+        CastSpellByName(spellName, nil)
         CdMessage(spellName .. " on " .. GetColors(targetName) .. "!")
 
         SpellTargetUnit(targetUnitId)

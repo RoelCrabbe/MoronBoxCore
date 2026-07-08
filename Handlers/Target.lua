@@ -77,7 +77,7 @@ end
 
 function mb_assistFocus()
     if not MB_raidLeader and myName ~= MB_raidInviter then
-        AssistByName(MB_raidInviter, 1)
+        AssistByName(MB_raidInviter)
         RunLine("/w " .. MB_raidInviter .. " Press setFOCUS!")
         return
     end

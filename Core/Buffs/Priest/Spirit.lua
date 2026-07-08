@@ -380,7 +380,7 @@ function SPIRIT_ProcessSpiritQueue()
             ClearTarget()
         end
 
-        CastSpellByName(spellName, false)
+        CastSpellByName(spellName, nil)
         SpellTargetUnit(targetUnitId)
         SpellStopTargeting()
         return true

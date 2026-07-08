@@ -98,6 +98,7 @@ local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
+local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
 local TakePotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
