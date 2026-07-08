@@ -528,18 +528,24 @@ function SKERAM_IsFollowSkeram()
     local rightTank = ReturnPlayerInRaidFromTable(MB_mySkeramRightTanks)
 
     if MyNameInTable(MB_mySkeramLeftOFFTANKS) then
-        FollowByName(leftTank, 1)
+        if leftTank then
+            FollowByName(leftTank, 1)
+        end
         return true
     end
 
     if MyNameInTable(MB_mySkeramMiddleOFFTANKS) or
         MyNameInTable(MB_mySkeramMiddleDPSERS) then
-        FollowByName(middleTank, 1)
+        if middleTank then
+            FollowByName(middleTank, 1)
+        end
         return true
     end
 
     if MyNameInTable(MB_mySkeramRightOFFTANKS) then
-        FollowByName(rightTank, 1)
+        if rightTank then
+            FollowByName(rightTank, 1)
+        end
         return true
     end
 

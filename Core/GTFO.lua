@@ -88,8 +88,9 @@ function mb_GTFO()
                     return
                 end
 
-                if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)]) then
-                    FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia), 1)
+                local ozTank = mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)
+                if ozTank and MBID[ozTank] and mb_isAlive(MBID[ozTank]) then
+                    FollowByName(ozTank, 1)
                 end
             else
                 if MBID[MB_myOnyxiaFollowTarget] and mb_unitInRange(MBID[MB_myOnyxiaFollowTarget]) then
@@ -112,8 +113,9 @@ function mb_GTFO()
                 return
             end
 
-            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)]) then
-                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz), 1)
+            local vaelTank = mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
+            if vaelTank and MBID[vaelTank] and mb_isAlive(MBID[vaelTank]) then
+                FollowByName(vaelTank, 1)
             end
         elseif Instance.MC() and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then
             if myClass == "Paladin" and mb_spellReady("Divine Shield") then
@@ -121,8 +123,9 @@ function mb_GTFO()
                 return
             end
 
-            if MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)] and mb_isAlive(MBID[mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)]) then
-                FollowByName(mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron), 1)
+            local baronTank = mb_returnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)
+            if baronTank and MBID[baronTank] and mb_isAlive(MBID[baronTank]) then
+                FollowByName(baronTank, 1)
             end
         end
     end

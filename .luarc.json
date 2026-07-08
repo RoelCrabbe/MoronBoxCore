@@ -22,10 +22,12 @@
         "arg8",
         "arg9",
         "AceLibrary",
+        "EquipSet",
         "MBD",
         "MBD_Clean",
         "MBH",
         "MBH_CastHeal",
+        "MBH_Resurrection",
         "RunLine",
         "ClearCursor",
         "CancelBuff",
@@ -48,7 +50,12 @@
         "SpellStopTargeting",
         "GetTalentInfo",
         "GetComboPoints",
-        "use"
+        "use",
+        "GetMerchantNumItems",
+        "BuyMerchantItem",
+        "GetDodgeChance",
+        "GetParryChance",
+        "GetBlockChance"
     ],
     "diagnostics.disable": ["lowercase-global", "discard-returns"],
     "format.enable": true

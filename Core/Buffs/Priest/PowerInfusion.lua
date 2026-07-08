@@ -462,7 +462,7 @@ function PI_ProcessPowerInfusionQueue()
             ClearTarget()
         end
 
-        CastSpellByName(spellName, false)
+        CastSpellByName(spellName, nil)
         CdMessage(spellName .. " on " .. GetColors(targetName) .. "!")
 
         SpellTargetUnit(targetUnitId)
