@@ -71,10 +71,9 @@ local IsControlKeyDown = IsControlKeyDown
 local IsAltKeyDown = IsAltKeyDown
 
 -- Common Names
-local myClass = UnitClass("player")
-local myName = UnitName("player")
-local myRace = UnitRace("player")
-
+local myClass = UnitClass("player") --[[@as string]]
+local myName = UnitName("player") --[[@as string]]
+local myRace = UnitRace("player") --[[@as string]]
 --[####################################################################################################]--
 --[############################################ BOSS MECHANICS ########################################]--
 --[####################################################################################################]--
