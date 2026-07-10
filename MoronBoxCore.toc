@@ -11,6 +11,9 @@
 ..\Ace2\Banzai-1.0\Banzai-1.0.lua
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
+MoronBox.lua
+Shared.lua
+
 Global\Rotation.lua
 Global\Functions.lua
 

@@ -54,18 +54,6 @@ function sPairs(t, order)
     end
 end
 
-function TableLength(tab)
-    if not tab then
-        return 0
-    end
-
-    local len = 0
-    for _ in pairs(tab) do
-        len = len + 1
-    end
-    return len
-end
-
 function IncrementIndex(tab, len)
     if tab == len then
         return 1
@@ -104,15 +92,4 @@ function TableAddUnique(list, value)
     table.insert(list, value)
     table.sort(list)
     return true
-end
-
----
----Rounds `number` to the nearest integer, rounding half away from zero.
----
----@generic Number: number
----@param x Number
----@return Number
----@nodiscard
-function math.round(x)
-    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
 end
