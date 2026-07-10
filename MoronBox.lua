@@ -1,4 +1,4 @@
--- [[ Environment ]] --
+    -- [[ Environment ]] --
 
 ---@class MoronBox: Frame
 MoronBox = CreateFrame("Frame", nil, UIParent)

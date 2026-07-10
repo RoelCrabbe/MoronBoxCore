@@ -322,21 +322,21 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function FORT:OnEvent()
-    if event == "CHAT_MSG_ADDON" then
-        local message, sender = arg2, arg4
+-- function FORT:OnEvent()
+--     if event == "CHAT_MSG_ADDON" then
+--         local message, sender = arg2, arg4
 
-        if arg1 == MB_RAID .. "NEED_FORTITUDE" then
-            HandleFortitudeRequest(message, sender)
-        elseif arg1 == MB_RAID .. "CLAIM_FORTITUDE" then
-            HandleFortitudeClaim(message, sender)
-        elseif arg1 == MB_RAID .. "BUFFED_FORTITUDE" then
-            HandleFortitudeBuffed(message, sender)
-        end
-    end
-end
+--         if arg1 == MB_RAID .. "NEED_FORTITUDE" then
+--             HandleFortitudeRequest(message, sender)
+--         elseif arg1 == MB_RAID .. "CLAIM_FORTITUDE" then
+--             HandleFortitudeClaim(message, sender)
+--         elseif arg1 == MB_RAID .. "BUFFED_FORTITUDE" then
+--             HandleFortitudeBuffed(message, sender)
+--         end
+--     end
+-- end
 
-FORT:SetScript("OnEvent", FORT.OnEvent)
+-- FORT:SetScript("OnEvent", FORT.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--

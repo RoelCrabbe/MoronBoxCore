@@ -91,3 +91,6 @@ Rotation\Rogue.lua
 Rotation\Shaman.lua
 Rotation\Warlock.lua
 Rotation\Warrior.lua
+
+Api\Buffs.lua
+Modules\Buffs\Fortitude.lua
