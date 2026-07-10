@@ -188,7 +188,10 @@ function MoronBox:UpdateModules()
         local status, shouldBeLoaded = pcall(mod.onLoad or AlwaysLoad)
 
         -- Fallback: if pcall fails, treat as false for safety
-        if not status then shouldBeLoaded = false end
+        if not status then
+            shouldBeLoaded = false
+            self.Debugger:Error("Module condition check failed for: " .. name)
+        end
 
         -- State Machine: Synchronize module state
         if shouldBeLoaded and not mod.isLoaded then
