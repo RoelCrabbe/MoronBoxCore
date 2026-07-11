@@ -1,15 +1,19 @@
-local Buff = "Fortitude"
+local BUFFING_MODULE = "Fortitude"
+local CLASS_MODULE = "Priest"
+
+local FORTITUDE_MANA_COST = 3200 * 0.95
+
 local Fortitude
 
-MoronBox:RegisterModule(Buff, function()
+MoronBox:RegisterModule(BUFFING_MODULE, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    Fortitude = MoronBox.Api.Buffs.Register(Buff)
+    Fortitude = MoronBox.Api.Buffs.Register(BUFFING_MODULE)
 
     local Handlers = MoronBox.Api.Buffs.CreateHandlers({
         BuffName = "Prayer of Fortitude",
-        AddonPrefix = Buff,
+        AddonPrefix = BUFFING_MODULE,
         Queue = Queue,
         ClaimedQueue = ClaimedQueue
     })
@@ -22,18 +26,18 @@ MoronBox:RegisterModule(Buff, function()
 
     MoronBox:RegisterExpose({
         Request = function()
-            if MoronBox.Api.Buffs.HasActiveBuff(Buff) then
+            if MoronBox.Api.Buffs.HasActiveBuff(BUFFING_MODULE) then
                 return
             end
 
-            local priest = MoronBox.Api.Buffs.GetRandomClassMember("Priest")
+            local group = MoronBox.Api.Buffs.GetGroupNumber()
+            local priest = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, FORTITUDE_MANA_COST)
 
             if not priest then
                 MoronBox.Debugger:Warn("No priest found")
                 return
             end
 
-            local group = MoronBox.Api.Buffs.GetGroupNumber()
             local prio = MoronBox.Api.Buffs.GetPriority(
                 { ["Shaman"] = "HIGH", }
             )
@@ -41,13 +45,13 @@ MoronBox:RegisterModule(Buff, function()
             Handlers.SendMessage("NEED_FORTITUDE", string.format("BUFF_INFO:%d:%d:%s", prio, group, priest), 9)
         end,
         Process = function()
-            if not MoronBox.Api.Buffs.HasBuffPremissions(Buff, "Priest") then
+            if not MoronBox.Api.Buffs.HasBuffPremissions(BUFFING_MODULE, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = MoronBox.Api.Buffs.GetBuffSpell(Buff)
+            local spellName = MoronBox.Api.Buffs.GetBuffSpell(BUFFING_MODULE)
 
-            local soloResult = MoronBox.Api.Buffs.SoloBuff(Buff, spellName)
+            local soloResult = MoronBox.Api.Buffs.SoloBuff(BUFFING_MODULE, spellName)
             if soloResult ~= nil then
                 return soloResult
             end
@@ -75,19 +79,19 @@ MoronBox:RegisterModule(Buff, function()
         end,
     })
 end, function()
-    return MoronBox.Api.Buffs.UnLoad("Priest")
+    return MoronBox.Api.Buffs.UnLoad(CLASS_MODULE)
 end, function()
-    MoronBox.Api.Buffs.Unregister(Buff)
+    MoronBox.Api.Buffs.Unregister(BUFFING_MODULE)
 end)
 
 function FORT_RequestFortitude()
-    if MoronBox.Registry[Buff] and MoronBox.Registry[Buff].Request then
-        MoronBox.Registry[Buff].Request()
+    if MoronBox.Registry[BUFFING_MODULE] and MoronBox.Registry[BUFFING_MODULE].Request then
+        MoronBox.Registry[BUFFING_MODULE].Request()
     end
 end
 
 function FORT_ProcessFortitudeQueue()
-    if MoronBox.Registry[Buff] and MoronBox.Registry[Buff].Process then
-        MoronBox.Registry[Buff].Process()
+    if MoronBox.Registry[BUFFING_MODULE] and MoronBox.Registry[BUFFING_MODULE].Process then
+        MoronBox.Registry[BUFFING_MODULE].Process()
     end
 end

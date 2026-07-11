@@ -175,20 +175,34 @@ function MoronBox.Api.Buffs.GetNextTarget(queue)
     return bestUnitId, bestGroup
 end
 
---- Retrieves a random member of a specific class from the cached class list, with a fallback to the player if the class matches.
---- @param className string: The class name to search for.
---- @return string|nil: The name of a random class member, the player's name if they match the requested class, or nil if no member is found.
-function MoronBox.Api.Buffs.GetRandomClassMember(className)
+--- Determines the assigned class member for a group, filtered by aliveness and mana, then evenly distributed via round-robin.
+--- @param className string: The class to search within (e.g., "Priest").
+--- @param groupNum number: The group number, used as a deterministic seed for even distribution.
+--- @param requiredMana number: The minimum mana required for a member to be considered valid.
+--- @return string|nil
+function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, requiredMana)
     local members = MB_classList[className]
     if not members or table.getn(members) == 0 then
-        if myClass == className then
-            return myName
-        end
-
+        if myClass == className then return myName end
         return nil
     end
 
-    return members[math.random(table.getn(members))]
+    local eligible = {}
+    for _, name in pairs(members) do
+        local unitId = MBID[name]
+        if mb_isAlive(unitId) and mb_manaOfUnit(name) >= requiredMana then
+            table.insert(eligible, name)
+        end
+    end
+
+    local pool = eligible
+    if table.getn(pool) == 0 then
+        pool = members
+    end
+
+    local count = table.getn(pool)
+    local index = mod(groupNum - 1, count) + 1
+    return pool[index]
 end
 
 --- Retrieves the current group number for the player from the cached group list.
