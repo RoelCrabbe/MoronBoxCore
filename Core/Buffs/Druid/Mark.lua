@@ -349,8 +349,8 @@ function MOTW_RequestMarkOfTheWild()
     end
 
     local myBuffingDruid = GetDruidInGroup()
-    local myPriority = tonumber(GetPriority())
-    local myGroup = tonumber(GetGroupNumber())
+    local myPriority = GetPriority()
+    local myGroup = GetGroupNumber()
 
     if not myBuffingDruid or not myPriority or not myGroup then
         return

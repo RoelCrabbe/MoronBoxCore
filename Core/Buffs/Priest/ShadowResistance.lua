@@ -353,8 +353,8 @@ function SPROT_RequestShadowProtection()
     end
 
     local myBuffingPriest = GetPriestInGroup()
-    local myPriority = tonumber(GetPriority())
-    local myGroup = tonumber(GetGroupNumber())
+    local myPriority = GetPriority()
+    local myGroup = GetGroupNumber()
 
     if not myBuffingPriest or not myPriority or not myGroup then
         return
