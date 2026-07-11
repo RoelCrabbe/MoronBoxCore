@@ -386,6 +386,7 @@ function mb_setup()
     MOTW_RequestMarkOfTheWild()
 
     FORT_RequestFortitude()
+    -- FW_RequestFearWard()
     -- SPIRIT_RequestSpirit()
     SPROT_RequestShadowProtection()
 

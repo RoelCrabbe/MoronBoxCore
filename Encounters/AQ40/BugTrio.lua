@@ -182,13 +182,13 @@ local function PriorityOnBugTrio()
 end
 
 local function PrepareOnBugTrio()
+    FW_RegisterFearWardPriority("Lord Kri", PriorityOnBugTrio)
+    FW_RegisterFearWardPriority("Princess Yauj", PriorityOnBugTrio)
+    FW_RegisterFearWardPriority("Vem", PriorityOnBugTrio)
+
     FW_RequestFearWard()
     FW_ProcessFearWardQueue()
 end
-
-FW_RegisterFearWardPriority("Lord Kri", PriorityOnBugTrio)
-FW_RegisterFearWardPriority("Princess Yauj", PriorityOnBugTrio)
-FW_RegisterFearWardPriority("Vem", PriorityOnBugTrio)
 
 --[####################################################################################################]--
 --[####################################################################################################]--

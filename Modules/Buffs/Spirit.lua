@@ -5,6 +5,7 @@ local BUFF_KEY = "Spirit"
 
 -- The class permitted to cast this buff.
 local CLASS_MODULE = "Priest"
+local RACE_MODULE = nil
 
 -- Unique module/addon-message prefix, derived from BUFF_KEY to avoid drift.
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
@@ -42,7 +43,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, SPIRIT_MANA_COST)
+            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE, SPIRIT_MANA_COST)
 
             if not member then
                 MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")

@@ -31,6 +31,9 @@ local BUFF_AURA_NAMES = {
         "Shadow Protection",
         "Prayer of Shadow Protection"
     },
+    ["FearWard"] = {
+        "Fear Ward",
+    },
 }
 
 local BUFF_CAST_SPELLS = {
@@ -49,6 +52,10 @@ local BUFF_CAST_SPELLS = {
     ["ShadowProtection"] = {
         PriorityBuff = "Prayer of Shadow Protection",
         SecondaryBuff = "Shadow Protection",
+    },
+    ["FearWard"] = {
+        PriorityBuff = "Fear Ward",
+        SecondaryBuff = "Fear Ward",
     },
 }
 
@@ -72,6 +79,7 @@ local ADDON_MESSAGE_SCHEMA = {
 --- | "MarkOfTheWild"
 --- | "Spirit"
 --- | "ShadowProtection"
+--- | "FearWard"
 
 -- [[ Lifecycle ]] --
 
@@ -190,6 +198,20 @@ function MoronBox.Api.Buffs.GetPriority(map)
     return MoronBox.Api.Buffs.BuffPriority[pName]
 end
 
+--- Determines the priority value for the player's class based on a provided priority map.
+--- @param map table: A table mapping class names to priority keys (e.g., { ["Shaman"] = "HIGH" }).
+--- @return number: The numerical priority value associated with the player's class or the default priority.
+function MoronBox.Api.Buffs.GetCustomPriority(overwrites, map)
+    local focId = MBID[MB_raidLeader]
+    local targetName = focId and UnitName(focId .. "target")
+
+    if targetName and overwrites[targetName] then
+        return overwrites[targetName]()
+    end
+
+    return MoronBox.Api.Buffs.GetPriority(map)
+end
+
 --- Determines the next target in the queue based on the lowest priority value.
 --- @param queue table: A nested table containing group numbers, unit IDs, and their priorities.
 --- @return string|nil: The unit ID of the best target, or nil if the queue is empty.
@@ -213,9 +235,10 @@ end
 --- Determines the assigned class member for a group, filtered by aliveness and mana, then evenly distributed via round-robin.
 --- @param className string: The class to search within (e.g., "Priest").
 --- @param groupNum number: The group number, used as a deterministic seed for even distribution.
+--- @param raceName nil|string: The race to filter by (e.g., "Dwarf").
 --- @param requiredMana number: The minimum mana required for a member to be considered valid.
 --- @return string|nil
-function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, requiredMana)
+function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
     local members = MB_classList[className]
     if not members or table.getn(members) == 0 then
         if myClass == className then return myName end
@@ -225,19 +248,22 @@ function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, required
     local eligible = {}
     for _, name in pairs(members) do
         local unitId = MBID[name]
-        if mb_isAlive(unitId) and mb_manaOfUnit(name) >= requiredMana then
+        local isAlive = mb_isAlive(unitId)
+        local hasMana = mb_manaOfUnit(name) >= requiredMana
+        local matchesRace = (raceName == nil) or (UnitRace(unitId) == raceName)
+
+        if isAlive and hasMana and matchesRace then
             table.insert(eligible, name)
         end
     end
 
-    local pool = eligible
-    if table.getn(pool) == 0 then
-        pool = members
+    if table.getn(eligible) == 0 then
+        return nil
     end
 
-    local count = table.getn(pool)
+    local count = table.getn(eligible)
     local index = mod(groupNum - 1, count) + 1
-    return pool[index]
+    return eligible[index]
 end
 
 --- Retrieves the current group number for the player from the cached group list.

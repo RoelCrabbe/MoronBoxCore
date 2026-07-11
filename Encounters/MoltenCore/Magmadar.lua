@@ -172,11 +172,11 @@ local function PriorityOnMagmadar()
 end
 
 local function PrepareOnMagmadar()
+    FW_RegisterFearWardPriority("Magmadar", PriorityOnMagmadar)
+
     FW_RequestFearWard()
     FW_ProcessFearWardQueue()
 end
-
-FW_RegisterFearWardPriority("Magmadar", PriorityOnMagmadar)
 
 --[####################################################################################################]--
 --[####################################################################################################]--

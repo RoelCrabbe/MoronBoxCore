@@ -95,6 +95,7 @@ Rotation\Warrior.lua
 Api\Api.lua
 Api\Buffs.lua
 
+Modules\Buffs\FearWard.lua
 Modules\Buffs\Fortitude.lua
 Modules\Buffs\Mark.lua
 Modules\Buffs\Shadow.lua

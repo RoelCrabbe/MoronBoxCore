@@ -799,6 +799,7 @@ local function PriestSetup()
     end
 
     FORT_ProcessFortitudeQueue()
+    -- FW_ProcessFearWardQueue()
     SPIRIT_ProcessSpiritQueue()
     SPROT_ProcessShadowProtectionQueue()
 
