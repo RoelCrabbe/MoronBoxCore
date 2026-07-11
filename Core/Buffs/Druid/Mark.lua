@@ -322,74 +322,74 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MOTW:OnEvent()
-    if event == "CHAT_MSG_ADDON" then
-        local message, sender = arg2, arg4
+-- function MOTW:OnEvent()
+--     if event == "CHAT_MSG_ADDON" then
+--         local message, sender = arg2, arg4
 
-        if arg1 == MB_RAID .. "NEED_MOTW" then
-            HandleMarkOfTheWildRequest(message, sender)
-        elseif arg1 == MB_RAID .. "CLAIM_MOTW" then
-            HandleMarkOfTheWildClaim(message, sender)
-        elseif arg1 == MB_RAID .. "BUFFED_MOTW" then
-            HandleMarkOfTheWildBuffed(message, sender)
-        end
-    end
-end
+--         if arg1 == MB_RAID .. "NEED_MOTW" then
+--             HandleMarkOfTheWildRequest(message, sender)
+--         elseif arg1 == MB_RAID .. "CLAIM_MOTW" then
+--             HandleMarkOfTheWildClaim(message, sender)
+--         elseif arg1 == MB_RAID .. "BUFFED_MOTW" then
+--             HandleMarkOfTheWildBuffed(message, sender)
+--         end
+--     end
+-- end
 
-MOTW:SetScript("OnEvent", MOTW.OnEvent)
+-- MOTW:SetScript("OnEvent", MOTW.OnEvent)
 
 --[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-function MOTW_RequestMarkOfTheWild()
-    if HasBuffOrDebuff("Mark of the Wild", "player", "buff") or
-        HasBuffOrDebuff("Gift of the Wild", "player", "buff") then
-        return
-    end
+-- function MOTW_RequestMarkOfTheWild()
+--     if HasBuffOrDebuff("Mark of the Wild", "player", "buff") or
+--         HasBuffOrDebuff("Gift of the Wild", "player", "buff") then
+--         return
+--     end
 
-    local myBuffingDruid = GetDruidInGroup()
-    local myPriority = GetPriority()
-    local myGroup = GetGroupNumber()
+--     local myBuffingDruid = GetDruidInGroup()
+--     local myPriority = GetPriority()
+--     local myGroup = GetGroupNumber()
 
-    if not myBuffingDruid or not myPriority or not myGroup then
-        return
-    end
+--     if not myBuffingDruid or not myPriority or not myGroup then
+--         return
+--     end
 
-    local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingDruid)
-    CdAddonMessage(MB_RAID .. "NEED_MOTW", message, 15)
-end
+--     local message = string.format("BUFF_INFO:%d:%d:%s", myPriority, myGroup, myBuffingDruid)
+--     CdAddonMessage(MB_RAID .. "NEED_MOTW", message, 15)
+-- end
 
-function MOTW_ProcessMarkOfTheWildQueue()
-    if myClass ~= "Druid" then
-        return false
-    end
+-- function MOTW_ProcessMarkOfTheWildQueue()
+--     if myClass ~= "Druid" then
+--         return false
+--     end
 
-    local spellName = "Gift of the Wild"
-    if ImBusy() or not SpellReady(spellName) then
-        return false
-    end
+--     local spellName = "Gift of the Wild"
+--     if ImBusy() or not SpellReady(spellName) then
+--         return false
+--     end
 
-    local targetUnitId, _, groupNum = GetNextTarget()
-    if not targetUnitId or not groupNum then
-        return false
-    end
+--     local targetUnitId, _, groupNum = GetNextTarget()
+--     if not targetUnitId or not groupNum then
+--         return false
+--     end
 
-    if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
-        if UnitIsFriend("player", targetUnitId) then
-            ClearTarget()
-        end
+--     if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+--         if UnitIsFriend("player", targetUnitId) then
+--             ClearTarget()
+--         end
 
-        CastSpellByName(spellName, nil)
-        SpellTargetUnit(targetUnitId)
-        SpellStopTargeting()
-        return true
-    end
+--         CastSpellByName(spellName, nil)
+--         SpellTargetUnit(targetUnitId)
+--         SpellStopTargeting()
+--         return true
+--     end
 
-    local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
-    CdAddonMessage(MB_RAID .. "BUFFED_MOTW", message)
-    return false
-end
+--     local message = string.format("BUFFED:%s:%d", targetUnitId, groupNum)
+--     CdAddonMessage(MB_RAID .. "BUFFED_MOTW", message)
+--     return false
+-- end
 
 --[####################################################################################################]--
 --[####################################################################################################]--

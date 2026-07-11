@@ -19,12 +19,20 @@ local BUFF_AURA_NAMES = {
         "Power Word: Fortitude",
         "Prayer of Fortitude"
     },
+    ["MarkOfTheWild"] = {
+        "Mark of the Wild",
+        "Gift of the Wild"
+    },
 }
 
 local BUFF_CAST_SPELLS = {
     ["Fortitude"] = {
         PriorityBuff = "Prayer of Fortitude",
         SecondaryBuff = "Power Word: Fortitude",
+    },
+    ["MarkOfTheWild"] = {
+        PriorityBuff = "Gift of the Wild",
+        SecondaryBuff = "Mark of the Wild",
     },
 }
 
@@ -45,6 +53,7 @@ local ADDON_MESSAGE_SCHEMA = {
 
 --- @alias BuffKey
 --- | "Fortitude"
+--- | "MarkOfTheWild"
 
 -- [[ Lifecycle ]] --
 

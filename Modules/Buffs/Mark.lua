@@ -1,25 +1,25 @@
--- [[ Fortitude Buffing ]] --
+-- [[ Mark of the Wild Buffing ]] --
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
-local BUFF_KEY = "Fortitude"
+local BUFF_KEY = "MarkOfTheWild"
 
 -- The class permitted to cast this buff.
-local CLASS_MODULE = "Priest"
+local CLASS_MODULE = "Druid"
 
 -- Unique module/addon-message prefix, derived from BUFF_KEY to avoid drift.
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
 
 -- Frame reference, assigned on module registration.
-local Fortitude
+local MarkOfTheWild
 
 -- Minimum mana required to be considered a valid cast candidate.
-local FORTITUDE_MANA_COST = 3200 * 0.95
+local MARK_MANA_COST = 1200 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    Fortitude = MoronBox.Api.Buffs.Register(MODULE_NAME)
+    MarkOfTheWild = MoronBox.Api.Buffs.Register(MODULE_NAME)
 
     local Handlers = MoronBox.Api.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
@@ -28,7 +28,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ClaimedQueue = ClaimedQueue
     })
 
-    Fortitude:SetScript("OnEvent", function()
+    MarkOfTheWild:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
         MoronBox.Api.Buffs.DispatchMessage(arg2, arg4, Handlers)
@@ -42,10 +42,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local priest = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, FORTITUDE_MANA_COST)
+            local druid = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, MARK_MANA_COST)
 
-            if not priest then
-                MoronBox.Debugger:Warn("No priest found")
+            if not druid then
+                MoronBox.Debugger:Warn("No druid found")
                 return
             end
 
@@ -53,7 +53,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 { ["Shaman"] = "HIGH", }
             )
 
-            Handlers.SendMessage("NEED_FORTITUDE", string.format("BUFF_INFO:%d:%d:%s", prio, group, priest), 9)
+            Handlers.SendMessage("NEED_MOTW", string.format("BUFF_INFO:%d:%d:%s", prio, group, druid), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -81,14 +81,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     ClearTarget()
                 end
 
-                mb_selfBuff("Inner Focus")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()
                 return true
             end
 
-            Handlers.SendMessage("BUFFED_FORTITUDE", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
+            Handlers.SendMessage("BUFFED_MOTW", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
             return false
         end,
     })
@@ -210,14 +209,14 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function FORT_RequestFortitude()
+function MOTW_RequestMarkOfTheWild()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
     end
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function FORT_ProcessFortitudeQueue()
+function MOTW_ProcessMarkOfTheWildQueue()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end
