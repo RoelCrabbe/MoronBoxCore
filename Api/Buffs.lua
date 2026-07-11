@@ -97,6 +97,7 @@ end
 --- @return boolean: True if at least one buff is active on the player, otherwise false.
 function MoronBox.Api.Buffs.HasActiveBuff(buffKey, unitId)
     local list = BUFF_AURA_NAMES[buffKey]
+    if not list then return false end
 
     if not unitId then
         unitId = "player"
@@ -125,6 +126,7 @@ function MoronBox.Api.Buffs.HasBuffPremissions(buffKey, requiredClass)
     end
 
     local list = BUFF_AURA_NAMES[buffKey]
+    if not list then return false end
 
     for _, spellName in pairs(list) do
         if mb_spellReady(spellName) then
@@ -228,9 +230,7 @@ function MoronBox.Api.Buffs.SoloBuff(name, spell)
         return nil
     end
 
-    if UnitIsFriend("player", "player") then
-        ClearTarget()
-    end
+    ClearTarget()
 
     if MoronBox.Api.Buffs.HasActiveBuff(name) then
         return false
@@ -249,7 +249,7 @@ end
 --- Expected schema:
 ---   {
 ---     AddonPrefix: string, -- The unique identifier for addon messages.
----     BuffKey: string,     -- The name of the buff to check for.
+---     BuffKey: BuffKey,     -- The name of the buff to check for.
 ---     Queue: table,        -- Local storage for pending buff requests by group.
 ---     ClaimedQueue: table  -- Tracks which class has claimed which group.
 ---   }
