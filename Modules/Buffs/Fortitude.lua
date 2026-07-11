@@ -42,18 +42,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local priest = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, FORTITUDE_MANA_COST)
+            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, FORTITUDE_MANA_COST)
 
-            if not priest then
-                MoronBox.Debugger:Warn("No priest found")
+            if not member then
+                MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
                 return
             end
 
             local prio = MoronBox.Api.Buffs.GetPriority(
-                { ["Shaman"] = "HIGH", }
+                {
+                    ["Shaman"] = "HIGH",
+                    ["Mage"] = "MEDIUM",
+                }
             )
 
-            Handlers.SendMessage("NEED_FORTITUDE", string.format("BUFF_INFO:%d:%d:%s", prio, group, priest), 9)
+            Handlers.SendMessage("NEED_FORTITUDE", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target

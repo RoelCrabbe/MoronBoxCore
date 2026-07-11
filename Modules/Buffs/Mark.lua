@@ -42,18 +42,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local druid = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, MARK_MANA_COST)
+            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, MARK_MANA_COST)
 
-            if not druid then
-                MoronBox.Debugger:Warn("No druid found")
+            if not member then
+                MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
                 return
             end
 
             local prio = MoronBox.Api.Buffs.GetPriority(
-                { ["Shaman"] = "HIGH", }
+                {
+                    ["Shaman"] = "HIGH",
+                    ["Mage"] = "MEDIUM",
+                }
             )
 
-            Handlers.SendMessage("NEED_MOTW", string.format("BUFF_INFO:%d:%d:%s", prio, group, druid), 9)
+            Handlers.SendMessage("NEED_MOTW", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -114,23 +117,23 @@ end)
 --    │ Player needs Fortitude (in a group/raid):        │
 --    │ ├─ Check: Already have buff? → EXIT              │
 --    │ ├─ Get: Player group number (1-8)                │
---    │ ├─ Select: Assigned Priest for this group via    │
+--    │ ├─ Select: Assigned Druid for this group via    │
 --    │ │          deterministic round-robin             │
---    │ │          (groupNum mod eligible-priest-count)  │
+--    │ │          (groupNum mod eligible-druid-count)  │
 --    │ │          Eligible = alive, connected, and      │
 --    │ │          mana >= FORTITUDE_MANA_COST            │
 --    │ ├─ Calculate: Self-priority (10=Shaman,          │
 --    │ │             ... , 40=default)                  │
---    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Priest"    │
+--    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Druid"    │
 --    │          (prefixed with this module's AddonPrefix)│
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 2. CLAIM PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Assigned Priest receives request:                │
+--    │ Assigned Druid receives request:                │
 --    │ ├─ Filter: Message prefix belongs to this module?│
 --    │ │          (IsOwnMessage check) → else IGNORE    │
---    │ ├─ Validate: Am I the assigned priest?           │
+--    │ ├─ Validate: Am I the assigned druid?           │
 --    │ ├─ Check: Target already has buff? → NOTIFY only │
 --    │ ├─ Check: Group already claimed? → EXIT          │
 --    │ ├─ Create: Group queue if needed                 │
@@ -141,7 +144,7 @@ end)
 --                             ↓
 -- 3. PROCESSING PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Priest processes queue (on each Process() call): │
+--    │ Druid processes queue (on each Process() call): │
 --    │ ├─ Check: Has permissions to cast? (class,       │
 --    │ │         not busy, spell ready)                 │
 --    │ ├─ Scan: Find lowest priority number (highest    │
@@ -176,15 +179,15 @@ end)
 -- }
 --
 -- ClaimedQueue (local, per module instance) = {
---     [1] = "PriestA",          -- GroupNum → Claiming Priest (SHARED via addon)
+--     [1] = "PriestA",          -- GroupNum → Claiming Druid (SHARED via addon)
 --     [2] = "PriestB"
 -- }
 --
 -- COLLISION PREVENTION
 -- ===================
--- Group-based claim system → One priest per group, prevents duplicates
+-- Group-based claim system → One druid per group, prevents duplicates
 -- Claim validation → Only claim if group not already claimed
--- Deterministic assignment → GetClassMemberForGroup maps groupNum to a priest
+-- Deterministic assignment → GetClassMemberForGroup maps groupNum to a druid
 --                             via round-robin, so all clients independently
 --                             agree on who's responsible, without messaging
 -- Eligibility filtering → Only alive, connected priests with enough mana
