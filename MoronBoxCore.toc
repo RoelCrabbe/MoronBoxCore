@@ -97,3 +97,5 @@ Api\Buffs.lua
 
 Modules\Buffs\Fortitude.lua
 Modules\Buffs\Mark.lua
+Modules\Buffs\Shadow.lua
+Modules\Buffs\Spirit.lua

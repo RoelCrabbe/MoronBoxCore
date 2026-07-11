@@ -23,6 +23,14 @@ local BUFF_AURA_NAMES = {
         "Mark of the Wild",
         "Gift of the Wild"
     },
+    ["Spirit"] = {
+        "Divine Spirit",
+        "Prayer of Spirit",
+    },
+    ["ShadowProtection"] = {
+        "Shadow Protection",
+        "Prayer of Shadow Protection"
+    },
 }
 
 local BUFF_CAST_SPELLS = {
@@ -33,6 +41,14 @@ local BUFF_CAST_SPELLS = {
     ["MarkOfTheWild"] = {
         PriorityBuff = "Gift of the Wild",
         SecondaryBuff = "Mark of the Wild",
+    },
+    ["Spirit"] = {
+        PriorityBuff = "Prayer of Spirit",
+        SecondaryBuff = "Divine Spirit",
+    },
+    ["ShadowProtection"] = {
+        PriorityBuff = "Prayer of Shadow Protection",
+        SecondaryBuff = "Shadow Protection",
     },
 }
 
@@ -54,6 +70,8 @@ local ADDON_MESSAGE_SCHEMA = {
 --- @alias BuffKey
 --- | "Fortitude"
 --- | "MarkOfTheWild"
+--- | "Spirit"
+--- | "ShadowProtection"
 
 -- [[ Lifecycle ]] --
 
@@ -231,21 +249,21 @@ end
 -- [[ Casting ]] --
 
 --- Attempts to cast a buff on the player if not in a group and the buff is not already active.
---- @param name BuffKey: Buff key (e.g., "Fortitude"), used for HasActiveBuff check.
---- @param spell string: The exact spell name to cast.
+--- @param buffKey BuffKey: Buff key (e.g., "Fortitude"), used for HasActiveBuff check.
+--- @param spellName string: The exact spell name to cast.
 --- @return boolean|nil: true if cast successfully, false if already active or solo-condition met but no action, nil if in a group.
-function MoronBox.Api.Buffs.SoloBuff(name, spell)
+function MoronBox.Api.Buffs.SoloBuff(buffKey, spellName)
     if MoronBox.Api.GetGroupStatus() then
         return nil
     end
 
     ClearTarget()
 
-    if MoronBox.Api.Buffs.HasActiveBuff(name) then
+    if MoronBox.Api.Buffs.HasActiveBuff(buffKey) then
         return false
     end
 
-    CastSpellByName(spell, nil)
+    CastSpellByName(spellName, nil)
     SpellTargetUnit("player")
     SpellStopTargeting()
     return true

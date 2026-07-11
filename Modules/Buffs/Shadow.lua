@@ -1,25 +1,25 @@
--- [[ Mark of the Wild Buffing ]] --
+-- [[ Shadow Protection Buffing ]] --
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
-local BUFF_KEY = "MarkOfTheWild"
+local BUFF_KEY = "ShadowProtection"
 
 -- The class permitted to cast this buff.
-local CLASS_MODULE = "Druid"
+local CLASS_MODULE = "Priest"
 
 -- Unique module/addon-message prefix, derived from BUFF_KEY to avoid drift.
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
 
 -- Frame reference, assigned on module registration.
-local MarkOfTheWild
+local ShadowProtection
 
 -- Minimum mana required to be considered a valid cast candidate.
-local MARK_MANA_COST = 1200 * 0.95
+local SHADOW_MANA_COST = 1300 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    MarkOfTheWild = MoronBox.Api.Buffs.Register(MODULE_NAME)
+    ShadowProtection = MoronBox.Api.Buffs.Register(MODULE_NAME)
 
     local Handlers = MoronBox.Api.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
@@ -28,7 +28,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ClaimedQueue = ClaimedQueue
     })
 
-    MarkOfTheWild:SetScript("OnEvent", function()
+    ShadowProtection:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
         MoronBox.Api.Buffs.DispatchMessage(arg2, arg4, Handlers)
@@ -42,7 +42,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, MARK_MANA_COST)
+            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, SHADOW_MANA_COST)
 
             if not member then
                 MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
@@ -56,7 +56,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 }
             )
 
-            Handlers.SendMessage("NEED_MOTW", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
+            Handlers.SendMessage("NEED_SHADOW", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -90,7 +90,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            Handlers.SendMessage("BUFFED_MOTW", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
+            Handlers.SendMessage("BUFFED_SHADOW", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
             return false
         end,
     })
@@ -101,39 +101,39 @@ end, function()
     MoronBox.Api.Buffs.Unregister(MODULE_NAME)
 end)
 
--- MARK OF THE WILD BUFF SYSTEM - COMPLETE FLOW
--- ============================================
+-- SHADOW PROTECTION BUFF SYSTEM - COMPLETE FLOW
+-- =============================================
 -- 0. SOLO PHASE
 --    ┌─────────────────────────────────────────────────┐
 --    │ Player is not in a group or raid:               │
 --    │ ├─ Check: Already have buff? → EXIT             │
---    │ ├─ Cast: SecondaryBuff (Mark of the Wild)       │
+--    │ ├─ Cast: SecondaryBuff (Shadow Protection)      │
 --    │ │        directly on self, no messaging involved│
 --    │ └─ No Request/Queue/Claim logic applies         │
 --    └─────────────────────────────────────────────────┘
 --
 -- 1. REQUEST PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Player needs Mark of the Wild (in group/raid):  │
+--    │ Player needs Shadow Prot (in a group/raid):     │
 --    │ ├─ Check: Already have buff? → EXIT             │
 --    │ ├─ Get: Player group number (1-8)               │
---    │ ├─ Select: Assigned Druid for this group via    │
+--    │ ├─ Select: Assigned Priest for this group via   │
 --    │ │          deterministic round-robin            │
---    │ │          (groupNum mod eligible-druid-count)  │
+--    │ │          (groupNum mod eligible-priest-count) │
 --    │ │          Eligible = alive, connected, and     │
---    │ │          mana >= MARK_MANA_COST               │
+--    │ │          mana >= SHADOW_MANA_COST             │
 --    │ ├─ Calculate: Self-priority (10=Shaman,         │
 --    │ │             ... , 40=default)                 │
---    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Druid"    │
+--    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Priest"   │
 --    │          (prefixed with this module's AddonPrefix)│
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 2. CLAIM PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Assigned Druid receives request:                │
+--    │ Assigned Priest receives request:               │
 --    │ ├─ Filter: Message prefix belongs to this module?│
 --    │ │          (IsOwnMessage check) → else IGNORE   │
---    │ ├─ Validate: Am I the assigned druid?           │
+--    │ ├─ Validate: Am I the assigned priest?          │
 --    │ ├─ Check: Target already has buff? → NOTIFY only│
 --    │ ├─ Check: Group already claimed? → EXIT         │
 --    │ ├─ Create: Group queue if needed                │
@@ -144,7 +144,7 @@ end)
 --                             ↓
 -- 3. PROCESSING PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Druid processes queue (on each Process() call): │
+--    │ Priest processes queue (on each Process() call):│
 --    │ ├─ Check: Has permissions to cast? (class,      │
 --    │ │         not busy, spell ready)                │
 --    │ ├─ Scan: Find lowest priority number (highest   │
@@ -152,13 +152,13 @@ end)
 --    │ ├─ Get: GroupNum from queue entry               │
 --    │ ├─ Validate: Target is a valid friendly target  │
 --    │ │            and not already buffed             │
---    │ ├─ Cast: Mark of the Wild on target             │
+--    │ ├─ Cast: Shadow Protection on target            │
 --    │ └─ Broadcast: "BUFFED:UnitId:GroupNum"          │
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 4. RELEASE PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ All Druids receive buff completion:             │
+--    │ All Priests receive buff completion:            │
 --    │ ├─ Release: Remove unitId from group queue      │
 --    │ │           (only if we were the sender)        │
 --    │ └─ Clean: Remove group claim (ClaimedQueue[n]=nil)│
@@ -179,18 +179,18 @@ end)
 -- }
 --
 -- ClaimedQueue (local, per module instance) = {
---     [1] = "DruidA",           -- GroupNum → Claiming Druid (SHARED via addon)
---     [2] = "DruidB"
+--     [1] = "PriestA",          -- GroupNum → Claiming Priest (SHARED via addon)
+--     [2] = "PriestB"
 -- }
 --
 -- COLLISION PREVENTION
 -- ===================
--- Group-based claim system → One druid per group, prevents duplicates
+-- Group-based claim system → One priest per group, prevents duplicates
 -- Claim validation → Only claim if group not already claimed
--- Deterministic assignment → GetClassMemberForGroup maps groupNum to a druid
+-- Deterministic assignment → GetClassMemberForGroup maps groupNum to a priest
 --                             via round-robin, so all clients independently
 --                             agree on who's responsible, without messaging
--- Eligibility filtering → Only alive, connected druids with enough mana
+-- Eligibility filtering → Only alive, connected priests with enough mana
 --                          are considered when assigning a group
 -- Prefix-based message filtering → IsOwnMessage ensures a module only
 --                                   processes its own addon messages,
@@ -212,14 +212,18 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function MOTW_RequestMarkOfTheWild()
+function SPROT_RequestShadowProtection()
+    if Instance.MC() then return end
+
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
     end
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function MOTW_ProcessMarkOfTheWildQueue()
+function SPROT_ProcessShadowProtectionQueue()
+    if Instance.MC() then return end
+
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

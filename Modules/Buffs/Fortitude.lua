@@ -13,7 +13,7 @@ local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
 local Fortitude
 
 -- Minimum mana required to be considered a valid cast candidate.
-local FORTITUDE_MANA_COST = 3200 * 0.95
+local FORTITUDE_MANA_COST = 3400 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
