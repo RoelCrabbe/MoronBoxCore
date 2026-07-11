@@ -43,6 +43,9 @@ local ADDON_MESSAGE_SCHEMA = {
     }
 }
 
+--- @alias BuffKey
+--- | "Fortitude"
+
 -- [[ Lifecycle ]] --
 
 --- Registers a new buff frame and enables addon message listening.
@@ -89,14 +92,18 @@ end
 -- [[ State Queries ]] --
 
 --- Checks if the player currently has any of the buffs associated with the given key.
---- @param buffKey string: The key used to look up the buff definitions.
+--- @param buffKey BuffKey: The key used to look up the buff definitions.
+--- @param unitId nil|string: The unit ID to check for the buff.
 --- @return boolean: True if at least one buff is active on the player, otherwise false.
-function MoronBox.Api.Buffs.HasActiveBuff(buffKey)
+function MoronBox.Api.Buffs.HasActiveBuff(buffKey, unitId)
     local list = BUFF_AURA_NAMES[buffKey]
-    if not list then return false end
+
+    if not unitId then
+        unitId = "player"
+    end
 
     for _, buffName in pairs(list) do
-        if mb_hasBuffOrDebuff(buffName, "player", "buff") then
+        if mb_hasBuffOrDebuff(buffName, unitId, "buff") then
             return true
         end
     end
@@ -105,7 +112,7 @@ function MoronBox.Api.Buffs.HasActiveBuff(buffKey)
 end
 
 --- Checks if the player meets the permissions and requirements to cast a specific buff.
---- @param buffKey string: The key used to look up the buff definitions.
+--- @param buffKey BuffKey: The key used to look up the buff definitions.
 --- @param requiredClass string: The class required to be able to cast the buff.
 --- @return boolean: True if the class matches, the player is not busy, and the spell is ready; otherwise false.
 function MoronBox.Api.Buffs.HasBuffPremissions(buffKey, requiredClass)
@@ -118,7 +125,6 @@ function MoronBox.Api.Buffs.HasBuffPremissions(buffKey, requiredClass)
     end
 
     local list = BUFF_AURA_NAMES[buffKey]
-    if not list then return false end
 
     for _, spellName in pairs(list) do
         if mb_spellReady(spellName) then
@@ -130,7 +136,7 @@ function MoronBox.Api.Buffs.HasBuffPremissions(buffKey, requiredClass)
 end
 
 --- Determines the appropriate spell to cast based on group status and buff configuration.
---- @param name string: The buff key (e.g., "Fortitude").
+--- @param name BuffKey: The buff key (e.g., "Fortitude").
 --- @return string: The selected spell name.
 function MoronBox.Api.Buffs.GetBuffSpell(name)
     local config = BUFF_CAST_SPELLS[name]
@@ -214,7 +220,7 @@ end
 -- [[ Casting ]] --
 
 --- Attempts to cast a buff on the player if not in a group and the buff is not already active.
---- @param name string: Buff key (e.g., "Fortitude"), used for HasActiveBuff check.
+--- @param name BuffKey: Buff key (e.g., "Fortitude"), used for HasActiveBuff check.
 --- @param spell string: The exact spell name to cast.
 --- @return boolean|nil: true if cast successfully, false if already active or solo-condition met but no action, nil if in a group.
 function MoronBox.Api.Buffs.SoloBuff(name, spell)
@@ -243,7 +249,7 @@ end
 --- Expected schema:
 ---   {
 ---     AddonPrefix: string, -- The unique identifier for addon messages.
----     BuffName: string,    -- The name of the buff to check for.
+---     BuffKey: string,     -- The name of the buff to check for.
 ---     Queue: table,        -- Local storage for pending buff requests by group.
 ---     ClaimedQueue: table  -- Tracks which class has claimed which group.
 ---   }
@@ -284,7 +290,7 @@ function MoronBox.Api.Buffs.CreateHandlers(buffConfig)
         end
 
         -- Verify if the player already has the buff; if so, notify the requester.
-        if mb_hasBuffOrDebuff(buffConfig.BuffName, requestPlayerId, "buff") then
+        if MoronBox.Api.Buffs.HasActiveBuff(buffConfig.BuffKey, requestPlayerId) then
             handlers.SendMessage("BUFFED", string.format("BUFFED:%s:%d", requestPlayerId, groupNum))
             return
         end
