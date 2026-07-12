@@ -38,6 +38,10 @@ local BUFF_AURA_NAMES = {
         "Arcane Intellect",
         "Arcane Brilliance"
     },
+    ["PowerInfusion"] = {
+        "Arcane Power",
+        "Power Infusion",
+    },
 }
 
 local BUFF_CAST_SPELLS = {
@@ -65,6 +69,10 @@ local BUFF_CAST_SPELLS = {
         PriorityBuff = "Arcane Brilliance",
         SecondaryBuff = "Arcane Intellect",
     },
+    ["PowerInfusion"] = {
+        PriorityBuff = "Power Infusion",
+        SecondaryBuff = "Power Infusion",
+    },
 }
 
 local ADDON_MESSAGE_SCHEMA = {
@@ -79,7 +87,15 @@ local ADDON_MESSAGE_SCHEMA = {
     ["BUFFED"] = {
         fields = { "requestPlayerId", "groupNum" },
         handler = "Buffed"
-    }
+    },
+    ["ANYONE_CAPABLE_TO_CAST"] = {
+        fields = { "spellName" },
+        handler = "WhoCanCast"
+    },
+    ["CAPABLE_TO_CAST"] = {
+        fields = { "playerName" },
+        handler = "ICanCast"
+    },
 }
 
 --- @alias BuffKey
@@ -89,6 +105,7 @@ local ADDON_MESSAGE_SCHEMA = {
 --- | "ShadowProtection"
 --- | "FearWard"
 --- | "Intellect"
+--- | "PowerInfusion"
 
 -- [[ Lifecycle ]] --
 
@@ -244,16 +261,19 @@ function MoronBox.Core.Buffs.GetNextTarget(queue)
     return bestUnitId, bestGroup
 end
 
---- Determines the assigned class member for a group, filtered by aliveness and mana, then evenly distributed via round-robin.
---- @param className string: The class to search within (e.g., "Priest").
+--- Filters an arbitrary list of candidate players by aliveness, mana, and
+--- optionally race, then deterministically selects one via round-robin based
+--- on groupNum. This is the shared selection core used both by class-derived
+--- lookups (GetClassMemberForGroup) and by discovery-based candidate pools
+--- (e.g. Power Infusion, where the eligible set isn't derivable from class
+--- alone and must be built at runtime via addon-message discovery).
+--- @param members table: Array of candidate player names to select from.
 --- @param groupNum number: The group number, used as a deterministic seed for even distribution.
---- @param raceName nil|string: The race to filter by (e.g., "Dwarf").
+--- @param raceName nil|string: The race to filter by (e.g., "Dwarf"). Pass nil to skip race filtering.
 --- @param requiredMana number: The minimum mana required for a member to be considered valid.
---- @return string|nil
-function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
-    local members = MoronBox.Core.State.ClassList[className]
+--- @return string|nil: The selected player name, or nil if no eligible candidate was found.
+function MoronBox.Core.Buffs.GetMemberForGroup(members, groupNum, raceName, requiredMana)
     if not members or table.getn(members) == 0 then
-        if myClass == className then return myName end
         return nil
     end
 
@@ -269,13 +289,34 @@ function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceNam
         end
     end
 
-    if table.getn(eligible) == 0 then
+    local count = table.getn(eligible)
+    if count == 0 then
         return nil
     end
 
-    local count = table.getn(eligible)
     local index = mod(groupNum - 1, count) + 1
     return eligible[index]
+end
+
+--- Determines the assigned class member for a group, filtered by aliveness,
+--- mana, and optionally race, then evenly distributed via round-robin.
+--- Thin wrapper around GetMemberForGroup that resolves the candidate pool
+--- from a class name instead of an arbitrary list.
+--- @param className string: The class to search within (e.g., "Priest").
+--- @param groupNum number: The group number, used as a deterministic seed for even distribution.
+--- @param raceName nil|string: The race to filter by (e.g., "Dwarf").
+--- @param requiredMana number: The minimum mana required for a member to be considered valid.
+--- @return string|nil: The selected player name, or nil if no eligible candidate was found.
+function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
+    local members = MoronBox.Core.State.ClassList[className]
+    if not members or table.getn(members) == 0 then
+        if myClass == className then
+            return myName
+        end
+        return nil
+    end
+
+    return MoronBox.Core.Buffs.GetMemberForGroup(members, groupNum, raceName, requiredMana)
 end
 
 --- Retrieves the current group number for the player from the cached group list.
@@ -313,10 +354,11 @@ end
 --- @param buffConfig table: The configuration table for the specific buff.
 --- Expected schema:
 ---   {
----     AddonPrefix: string, -- The unique identifier for addon messages.
----     BuffKey: BuffKey,     -- The name of the buff to check for.
----     Queue: table,        -- Local storage for pending buff requests by group.
----     ClaimedQueue: table  -- Tracks which class has claimed which group.
+---     AddonPrefix: string,       -- The unique identifier for addon messages.
+---     BuffKey: BuffKey,          -- The buff key used to look up aura names / cast spells.
+---     Queue: table,              -- Local storage for pending buff requests by group.
+---     ClaimedQueue: table,       -- Tracks which class has claimed which group.
+---     CapableList: table|nil,    -- Optional: local list of players discovered to know a given spell.
 ---   }
 --- @return table: The handlers table containing logic for messages and queue management.
 function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
@@ -397,6 +439,28 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
         -- Free the group claim.
         buffConfig.ClaimedQueue[groupNum] = nil
+    end
+
+    -- [[ Discovery ]] --
+
+    -- Step 1: broadcast the question. Fire-and-forget, no response handling here.
+    handlers.RequestCapable = function(spellName)
+        handlers.SendMessage("ANYONE_CAPABLE", string.format("ANYONE_CAPABLE_TO_CAST:%s", spellName), 15)
+    end
+
+    -- Step 2: someone received the question. If I know the spell, announce myself.
+    handlers.WhoCanCast = function(data)
+        if mb_knowSpell(data.spellName) then
+            handlers.SendMessage("CAPABLE", string.format("CAPABLE_TO_CAST:%s", myName), 9)
+        end
+    end
+
+    -- Step 3: someone received an announcement. Record the player if not already known.
+    handlers.ICanCast = function(data)
+        if buffConfig.CapableList and not FindInTable(buffConfig.CapableList, data.playerName) then
+            table.insert(buffConfig.CapableList, data.playerName)
+            MoronBox.Api.SortAlphabetically(buffConfig.CapableList)
+        end
     end
 
     return handlers

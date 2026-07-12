@@ -1,7 +1,7 @@
--- [[ Spirit Buffing ]] --
+-- [[ Power Infusion Buffing ]] --
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
-local BUFF_KEY = "Spirit"
+local BUFF_KEY = "PowerInfusion"
 
 -- The class permitted to cast this buff.
 local CLASS_MODULE = "Priest"
@@ -11,53 +11,74 @@ local RACE_MODULE = nil
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
 
 -- Frame reference, assigned on module registration.
-local Spirit
+local PowerInfusion
 
 -- Minimum mana required to be considered a valid cast candidate.
-local SPIRIT_MANA_COST = 1940 * 0.95
+local POWER_INFUSION_MANA_COST = 250 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
+    local PowerInfusionPriests = {} -- De locale lijst met alle priest die via addon message worden verzameld die PI hebben
     local Queue = {}
     local ClaimedQueue = {}
+    local PriorityOverrides = {}
 
-    Spirit = MoronBox.Core.Buffs.Register(MODULE_NAME)
+    PowerInfusion = MoronBox.Core.Buffs.Register(MODULE_NAME)
 
     local Handlers = MoronBox.Core.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
-        ClaimedQueue = ClaimedQueue
+        ClaimedQueue = ClaimedQueue,
+        CapableList = PowerInfusionPriests,
     })
 
-    Spirit:SetScript("OnEvent", function()
+    PowerInfusion:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
         MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
     end)
 
     MoronBox:RegisterExpose({
+        -- Overrides the priority for a specific fight, preventing accidental duplicates.
+        OverridePriority = function(fightName, fn)
+            if PriorityOverrides[fightName] then
+                MoronBox.Debugger:Warn("Priority override already exists for: " .. fightName)
+                return
+            end
+
+            PriorityOverrides[fightName] = fn
+        end,
+
         -- Broadcasts a request for this buff if not already active.
         Request = function()
             if MoronBox.Core.Buffs.HasActiveBuff(BUFF_KEY) then
                 return
             end
 
+            local spellName = MoronBox.Core.Buffs.GetBuffSpell(BUFF_KEY)
+
+            if table.getn(PowerInfusionPriests) == 0 then
+                Handlers.RequestCapable(spellName)
+                return
+            end
+
             local group = MoronBox.Core.Buffs.GetGroupNumber()
-            local member = MoronBox.Core.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE, SPIRIT_MANA_COST)
+            local member = MoronBox.Core.Buffs.GetMemberForGroup(PowerInfusionPriests, group, RACE_MODULE,
+                POWER_INFUSION_MANA_COST)
 
             if not member then
                 MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = MoronBox.Core.Buffs.GetPriority(
+            local prio = MoronBox.Core.Buffs.GetCustomPriority(PriorityOverrides,
                 {
-                    ["Shaman"] = "HIGH",
-                    ["Mage"] = "MEDIUM",
+                    ["Mage"] = "HIGH",
+                    ["Warlock"] = "MEDIUM",
                 }
             )
 
-            Handlers.SendMessage("NEED_SPIRIT", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
+            Handlers.SendMessage("NEED_POWERINFUSION", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -91,7 +112,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            Handlers.SendMessage("BUFFED_SPIRIT", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
+            Handlers.SendMessage("BUFFED_POWERINFUSION", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
             return false
         end,
     })
@@ -102,39 +123,59 @@ end, function()
     MoronBox.Core.Buffs.Unregister(MODULE_NAME)
 end)
 
--- SPIRIT BUFF SYSTEM - COMPLETE FLOW
--- ======================================
--- 0. SOLO PHASE
+-- POWER INFUSION BUFF SYSTEM - COMPLETE FLOW
+-- ===========================================
+-- 0. DISCOVERY PHASE (only if CapableList is empty)
 --    ┌─────────────────────────────────────────────────┐
---    │ Player is not in a group or raid:                │
---    │ ├─ Check: Already have buff? → EXIT              │
---    │ ├─ Cast: SecondaryBuff (Divine Spirit)   │
---    │ │        directly on self, no messaging involved │
---    │ └─ No Request/Queue/Claim logic applies          │
+--    │ Player has no known Power Infusion casters yet:  │
+--    │ ├─ Check: CapableList empty? → trigger discovery │
+--    │ ├─ Resolve: PriorityBuff spell via BUFF_KEY       │
+--    │ ├─ Broadcast: "ANYONE_CAPABLE_TO_CAST:SpellName" │
+--    │ └─ EXIT — actual request happens on a future     │
+--    │           Request() call once someone responds   │
+--    └─────────────────────────────────────────────────┘
+--                             ↓
+--    ┌─────────────────────────────────────────────────┐
+--    │ Any client receives the discovery broadcast:     │
+--    │ ├─ Filter: Message prefix belongs to this module?│
+--    │ │          (IsOwnMessage check) → else IGNORE    │
+--    │ ├─ Check: Do I know this spell? (mb_knowSpell)   │
+--    │ └─ If yes: Broadcast "CAPABLE_TO_CAST:MyName"    │
+--    └─────────────────────────────────────────────────┘
+--                             ↓
+--    ┌─────────────────────────────────────────────────┐
+--    │ All clients receive a capability announcement:   │
+--    │ ├─ Check: Name already in CapableList? → SKIP    │
+--    │ ├─ Add: Insert name into CapableList              │
+--    │ └─ Sort: Keep CapableList alphabetically sorted   │
+--    │          (no separate build phase like ClassList, │
+--    │          so it's sorted incrementally on insert)  │
 --    └─────────────────────────────────────────────────┘
 --
--- 1. REQUEST PHASE
+-- 1. REQUEST PHASE (only once CapableList is populated)
 --    ┌─────────────────────────────────────────────────┐
---    │ Player needs Spirit (in a group/raid):        │
+--    │ Player needs Power Infusion:                     │
 --    │ ├─ Check: Already have buff? → EXIT              │
+--    │ ├─ Check: CapableList empty? → back to Discovery │
 --    │ ├─ Get: Player group number (1-8)                │
---    │ ├─ Select: Assigned Priest for this group via    │
---    │ │          deterministic round-robin             │
---    │ │          (groupNum mod eligible-priest-count)  │
---    │ │          Eligible = alive, connected, and      │
---    │ │          mana >= SPIRIT_MANA_COST            │
---    │ ├─ Calculate: Self-priority (10=Shaman,          │
---    │ │             ... , 40=default)                  │
---    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Priest"    │
+--    │ ├─ Select: Assigned caster via deterministic      │
+--    │ │          round-robin over CapableList           │
+--    │ │          (groupNum mod eligible-caster-count)   │
+--    │ │          Eligible = alive, mana >= required,    │
+--    │ │          and race match (if RACE_MODULE is set) │
+--    │ ├─ Calculate: Priority via overridable fight-      │
+--    │ │             specific function, else class-based │
+--    │ │             default (Mage=HIGH, Warlock=MEDIUM) │
+--    │ └─ Send: "BUFF_INFO:Priority:GroupNum:Caster"    │
 --    │          (prefixed with this module's AddonPrefix)│
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 2. CLAIM PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Assigned Priest receives request:                │
+--    │ Assigned caster receives request:                │
 --    │ ├─ Filter: Message prefix belongs to this module?│
 --    │ │          (IsOwnMessage check) → else IGNORE    │
---    │ ├─ Validate: Am I the assigned priest?           │
+--    │ ├─ Validate: Am I the assigned caster?           │
 --    │ ├─ Check: Target already has buff? → NOTIFY only │
 --    │ ├─ Check: Group already claimed? → EXIT          │
 --    │ ├─ Create: Group queue if needed                 │
@@ -145,7 +186,7 @@ end)
 --                             ↓
 -- 3. PROCESSING PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ Priest processes queue (on each Process() call): │
+--    │ Caster processes queue (on each Process() call): │
 --    │ ├─ Check: Has permissions to cast? (class,       │
 --    │ │         not busy, spell ready)                 │
 --    │ ├─ Scan: Find lowest priority number (highest    │
@@ -153,13 +194,13 @@ end)
 --    │ ├─ Get: GroupNum from queue entry                │
 --    │ ├─ Validate: Target is a valid friendly target    │
 --    │ │            and not already buffed              │
---    │ ├─ Cast: Prayer of Spirit on target            │
+--    │ ├─ Cast: Power Infusion on target                 │
 --    │ └─ Broadcast: "BUFFED:UnitId:GroupNum"           │
 --    └─────────────────────────────────────────────────┘
 --                             ↓
 -- 4. RELEASE PHASE
 --    ┌─────────────────────────────────────────────────┐
---    │ All Priests receive buff completion:              │
+--    │ All casters receive buff completion:              │
 --    │ ├─ Release: Remove unitId from group queue        │
 --    │ │           (only if we were the sender)          │
 --    │ └─ Clean: Remove group claim (ClaimedQueue[n]=nil)│
@@ -167,6 +208,14 @@ end)
 --
 -- KEY DATA STRUCTURES
 -- ==================
+-- CapableList (local, per module instance) = {
+--     "PriestNameA",             -- Discovered casters, alphabetically sorted
+--     "PriestNameB"              -- Persists per session; not rebuilt on roster
+--                                -- changes like ClassList is — a caster who
+--                                -- disconnects stays listed until eligibility
+--                                -- filtering excludes them at selection time
+-- }
+--
 -- Queue (local, per module instance) = {
 --     [1] = {                    -- GroupNum
 --         ["raid1"] = 10,        -- unitId → priority
@@ -180,23 +229,40 @@ end)
 -- }
 --
 -- ClaimedQueue (local, per module instance) = {
---     [1] = "PriestA",          -- GroupNum → Claiming Priest (SHARED via addon)
+--     [1] = "PriestA",          -- GroupNum → Claiming caster (SHARED via addon)
 --     [2] = "PriestB"
 -- }
 --
+-- PriorityOverrides (local, per module instance) = {
+--     ["Onyxia"] = function() return 10 end  -- Registered via OverridePriority()
+-- }
+--
+-- WHY DISCOVERY EXISTS (vs. Fortitude's direct ClassList lookup)
+-- ================================================================
+-- Fortitude's caster pool is any Priest — derivable directly from
+-- MoronBox.Core.State.ClassList["Priest"], no runtime discovery needed.
+-- Power Infusion's caster pool is a TALENT-gated subset of Priests, which
+-- isn't derivable from class/race alone — it's only known once a Priest
+-- confirms it via mb_knowSpell. Hence the Discovery phase, and hence
+-- GetMemberForGroup (an arbitrary-list variant of GetClassMemberForGroup)
+-- instead of a class-name lookup.
+--
 -- COLLISION PREVENTION
 -- ===================
--- Group-based claim system → One priest per group, prevents duplicates
+-- Group-based claim system → One caster per group, prevents duplicates
 -- Claim validation → Only claim if group not already claimed
--- Deterministic assignment → GetClassMemberForGroup maps groupNum to a priest
---                             via round-robin, so all clients independently
---                             agree on who's responsible, without messaging
--- Eligibility filtering → Only alive, connected priests with enough mana
---                          are considered when assigning a group
+-- Deterministic assignment → GetMemberForGroup maps groupNum to a caster
+--                             via round-robin over CapableList, so all
+--                             clients independently agree on who's
+--                             responsible, without additional messaging
+-- Eligibility filtering → Only alive casters with enough mana (and matching
+--                          race, if configured) are considered at selection
 -- Prefix-based message filtering → IsOwnMessage ensures a module only
 --                                   processes its own addon messages,
 --                                   isolating it from other buff modules
--- Priority queue → Ensures important class buffs first (Shaman > ... > default)
+-- Discovery cooldown → RequestCapable is rate-limited (15s) via
+--                       CdAddonMessage, so repeated Request() calls while
+--                       CapableList is still empty don't spam broadcasts
 -- Auto-cleanup → Removes buffed targets from queue via addon messages
 -- Group limit enforcement → Max 8 groups enforced by raid structure
 --
@@ -206,6 +272,8 @@ end)
 -- Single split parse → Fast message parsing via StringSplit + schema mapping
 -- Sender from arg4 → No message spoofing possible
 -- MBID system → Accurate unit targeting per client
+-- Incremental sort on discovery → CapableList stays sorted without a
+--                                  separate build phase (small n, negligible cost)
 -- Group-level processing → Batch handle groups, not individual players
 -- Event-driven cleanup → All state management in event handlers
 -- Direct group access → No need to search all groups for targets
@@ -213,7 +281,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function SPIRIT_RequestSpirit()
+function PI_RequestPowerInfusion()
     if not mb_manaUser() then
         return
     end
@@ -224,8 +292,15 @@ function SPIRIT_RequestSpirit()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function SPIRIT_ProcessSpiritQueue()
+function PI_ProcessPowerInfusionQueue()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
+    end
+end
+
+-- Called to register a custom priority function for a specific fight.
+function PI_RegisterPowerInfusionPriority(fightName, fn)
+    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
+        MoronBox.Registry[MODULE_NAME].OverridePriority(fightName, fn)
     end
 end

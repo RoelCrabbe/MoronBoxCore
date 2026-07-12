@@ -58,7 +58,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 }
             )
 
-            Handlers.SendMessage("NEED_FORTITUDE", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
+            Handlers.SendMessage("NEED_INTELLECT", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -93,7 +93,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            Handlers.SendMessage("BUFFED_FORTITUDE", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
+            Handlers.SendMessage("BUFFED_INTELLECT", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
             return false
         end,
     })
