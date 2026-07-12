@@ -347,6 +347,11 @@ function MoronBox.Debugger:DumpTable(t, indent, seen)
         return
     end
 
+    if next(t) == nil then
+        print(indent .. "Table is empty.")
+        return
+    end
+
     if seen[t] then
         print(indent .. "*circular reference*")
         return

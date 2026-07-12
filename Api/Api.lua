@@ -128,3 +128,13 @@ function MoronBox.Api.SortAlphabetically(list)
         return a < b
     end)
 end
+
+--- Empties a table in-place (removes all entries) without breaking existing
+--- references to it — unlike `t = {}`, which only rebinds the local variable
+--- and leaves anything holding the old reference (e.g. a closure) unaffected.
+--- @param t table
+function MoronBox.Api.ClearTable(t)
+    for i = table.getn(t), 1, -1 do
+        table.remove(t, i)
+    end
+end

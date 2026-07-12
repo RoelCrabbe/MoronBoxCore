@@ -17,12 +17,14 @@ local PowerInfusion
 local POWER_INFUSION_MANA_COST = 250 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
-    local PowerInfusionPriests = {} -- De locale lijst met alle priest die via addon message worden verzameld die PI hebben
+    local PowerInfusionPriests = {}
     local Queue = {}
     local ClaimedQueue = {}
     local PriorityOverrides = {}
 
     PowerInfusion = MoronBox.Core.Buffs.Register(MODULE_NAME)
+    PowerInfusion:RegisterEvent("RAID_ROSTER_UPDATE")
+    PowerInfusion:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
     local Handlers = MoronBox.Core.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
@@ -33,9 +35,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 
     PowerInfusion:SetScript("OnEvent", function()
-        if event ~= "CHAT_MSG_ADDON" then return end
-        if not Handlers.IsOwnMessage(arg1) then return end
-        MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
+        if event ~= "CHAT_MSG_ADDON" then
+            if not Handlers.IsOwnMessage(arg1) then return end
+            MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
+        elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
+            MoronBox.Api.ClearTable(PowerInfusionPriests)
+        end
     end)
 
     MoronBox:RegisterExpose({
