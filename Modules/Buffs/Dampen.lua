@@ -106,7 +106,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function DAMP_RequestDampenMagic()
+function MoronBox.Core.Buffs.RequestDampenMagic()
     if not mb_mobsToDampenMagic() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
@@ -115,7 +115,7 @@ function DAMP_RequestDampenMagic()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function DAMP_ProcessDampenMagicQueue()
+function MoronBox.Core.Buffs.ProcessDampenMagic()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

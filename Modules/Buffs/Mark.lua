@@ -213,14 +213,14 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function MOTW_RequestMarkOfTheWild()
+function MoronBox.Core.Buffs.RequestMarkOfTheWild()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
     end
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function MOTW_ProcessMarkOfTheWildQueue()
+function MoronBox.Core.Buffs.ProcessMarkOfTheWild()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

@@ -286,7 +286,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function PI_RequestPowerInfusion()
+function MoronBox.Core.Buffs.RequestPowerInfusion()
     if not mb_manaUser() then
         return
     end
@@ -297,14 +297,14 @@ function PI_RequestPowerInfusion()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function PI_ProcessPowerInfusionQueue()
+function MoronBox.Core.Buffs.ProcessPowerInfusion()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end
 end
 
 -- Called to register a custom priority function for a specific fight.
-function PI_RegisterPowerInfusionPriority(fightName, fn)
+function MoronBox.Core.Buffs.PriorityPowerInfusion(fightName, fn)
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].OverridePriority(fightName, fn)
     end

@@ -215,14 +215,14 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function FORT_RequestFortitude()
+function MoronBox.Core.Buffs.RequestFortitude()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
     end
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function FORT_ProcessFortitudeQueue()
+function MoronBox.Core.Buffs.ProcessFortitude()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

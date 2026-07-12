@@ -106,7 +106,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function AMPLIFY_RequestAmplifyMagic()
+function MoronBox.Core.Buffs.RequestAmplifyMagic()
     if FindMyNameInTable(MoronBox.Core.State.RaidTanks) then
         return
     end
@@ -121,7 +121,7 @@ function AMPLIFY_RequestAmplifyMagic()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function AMPLIFY_ProcessAmplifyMagicQueue()
+function MoronBox.Core.Buffs.ProcessAmplifyMagic()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

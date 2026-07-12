@@ -117,7 +117,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function FW_RequestFearWard()
+function MoronBox.Core.Buffs.RequestFearWard()
     if Faction.IsHorde() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
@@ -126,7 +126,7 @@ function FW_RequestFearWard()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function FW_ProcessFearWardQueue()
+function MoronBox.Core.Buffs.ProcessFearWard()
     if Faction.IsHorde() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then

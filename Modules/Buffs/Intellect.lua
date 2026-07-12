@@ -106,7 +106,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function INT_RequestIntellect()
+function MoronBox.Core.Buffs.RequestIntellect()
     if not mb_manaUser() then
         return
     end
@@ -117,7 +117,7 @@ function INT_RequestIntellect()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function INT_ProcessIntellectQueue()
+function MoronBox.Core.Buffs.ProcessIntellect()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

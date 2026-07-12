@@ -174,8 +174,8 @@ end
 local function PrepareOnMagmadar()
     FW_RegisterFearWardPriority("Magmadar", PriorityOnMagmadar)
 
-    FW_RequestFearWard()
-    FW_ProcessFearWardQueue()
+    MoronBox.Core.Buffs.RequestFearWard()
+    MoronBox.Core.Buffs.ProcessFearWard()
 end
 
 --[####################################################################################################]--

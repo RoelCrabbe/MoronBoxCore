@@ -657,9 +657,9 @@ local function MageSetup()
     end
 
     if MageWater() > 60 or MB_isMoving.Active then
-        INT_ProcessIntellectQueue()
-        AMPLIFY_ProcessAmplifyMagicQueue()
-        DAMP_RequestDampenMagic()
+        MoronBox.Core.Buffs.ProcessIntellect()
+        MoronBox.Core.Buffs.ProcessAmplifyMagic()
+        MoronBox.Core.Buffs.RequestDampenMagic()
     else
         MakeWater()
     end
@@ -721,7 +721,7 @@ function Mage:Cooldowns()
         SelfBuff("Arcane Power")
     end
 
-    PI_RequestPowerInfusion()
+    MoronBox.Core.Buffs.RequestPowerInfusion()
 
     HealerTrinkets()
     CasterTrinkets()

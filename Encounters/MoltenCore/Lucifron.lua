@@ -175,8 +175,8 @@ local function PrepareMagmadarOnLucifron()
     FW_RegisterFearWardPriority("Lucifron", PriorityOnLucifron)
     FW_RegisterFearWardPriority("Flamewaker Protector", PriorityOnLucifron)
 
-    FW_RequestFearWard()
-    FW_ProcessFearWardQueue()
+    MoronBox.Core.Buffs.RequestFearWard()
+    MoronBox.Core.Buffs.ProcessFearWard()
 end
 
 --[####################################################################################################]--

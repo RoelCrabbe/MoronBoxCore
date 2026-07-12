@@ -798,10 +798,10 @@ local function PriestSetup()
         return
     end
 
-    FORT_ProcessFortitudeQueue()
-    -- FW_ProcessFearWardQueue()
-    SPIRIT_ProcessSpiritQueue()
-    --SPROT_ProcessShadowProtectionQueue()
+    MoronBox.Core.Buffs.ProcessFortitude()
+    -- MoronBox.Core.Buffs.ProcessFearWard()
+    MoronBox.Core.Buffs.ProcessSpirit()
+    --MoronBox.Core.Buffs.ProcessShadowProtection()
 
     SelfBuff("Inner Fire")
     SelfBuff("Shadowform")
@@ -915,7 +915,7 @@ function Priest:PowerInfusion()
         return false
     end
 
-    PI_ProcessPowerInfusionQueue()
+    MoronBox.Core.Buffs.ProcessPowerInfusion()
     return false
 end
 

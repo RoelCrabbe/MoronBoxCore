@@ -186,8 +186,8 @@ local function PrepareOnBugTrio()
     FW_RegisterFearWardPriority("Princess Yauj", PriorityOnBugTrio)
     FW_RegisterFearWardPriority("Vem", PriorityOnBugTrio)
 
-    FW_RequestFearWard()
-    FW_ProcessFearWardQueue()
+    MoronBox.Core.Buffs.RequestFearWard()
+    MoronBox.Core.Buffs.ProcessFearWard()
 end
 
 --[####################################################################################################]--

@@ -213,7 +213,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function SPIRIT_RequestSpirit()
+function MoronBox.Core.Buffs.RequestSpirit()
     if not mb_manaUser() then
         return
     end
@@ -224,7 +224,7 @@ function SPIRIT_RequestSpirit()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function SPIRIT_ProcessSpiritQueue()
+function MoronBox.Core.Buffs.ProcessSpirit()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end
