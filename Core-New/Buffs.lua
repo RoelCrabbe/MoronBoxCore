@@ -34,6 +34,10 @@ local BUFF_AURA_NAMES = {
     ["FearWard"] = {
         "Fear Ward",
     },
+    ["Intellect"] = {
+        "Arcane Intellect",
+        "Arcane Brilliance"
+    },
 }
 
 local BUFF_CAST_SPELLS = {
@@ -56,6 +60,10 @@ local BUFF_CAST_SPELLS = {
     ["FearWard"] = {
         PriorityBuff = "Fear Ward",
         SecondaryBuff = "Fear Ward",
+    },
+    ["Intellect"] = {
+        PriorityBuff = "Arcane Brilliance",
+        SecondaryBuff = "Arcane Intellect",
     },
 }
 
@@ -80,6 +88,7 @@ local ADDON_MESSAGE_SCHEMA = {
 --- | "Spirit"
 --- | "ShadowProtection"
 --- | "FearWard"
+--- | "Intellect"
 
 -- [[ Lifecycle ]] --
 

@@ -663,9 +663,9 @@ local function MageSetup()
             MageCounter.Cycle()
         end
 
-        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
-            MultiBuff("Arcane Brilliance")
+        INT_ProcessIntellectQueue()
 
+        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
             if MobsToDampenMagic() then
                 MultiBuff("Dampen Magic")
             elseif MobsToAmplifyMagic() then

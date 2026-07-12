@@ -390,6 +390,8 @@ function mb_setup()
     -- SPIRIT_RequestSpirit()
     SPROT_RequestShadowProtection()
 
+    INT_RequestIntellect()
+
     if myClass == "Warrior" then
         return
     end
