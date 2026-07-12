@@ -45,3 +45,22 @@ function ArrayLength(tab)
     end
     return n
 end
+
+--- Searches a table for a given value and returns its key if found.
+--- @param list table: The table to search within.
+--- @param needle string: The value to search for.
+--- @return boolean: True if the needle is found, false otherwise (or list is nil).
+function FindInTable(list, needle)
+    if type(list) ~= "table" then
+        MoronBox.Debugger:Error("FindInTable: expected a table, got " .. type(list))
+        return false
+    end
+
+    for _, value in pairs(list) do
+        if value == needle then
+            return true
+        end
+    end
+
+    return false
+end

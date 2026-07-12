@@ -79,3 +79,52 @@ function MoronBox.Api.GetGroupStatus()
     local isAlone = (GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0)
     return inGroup and not isAlone
 end
+
+-- [[ Table Extentions ]] --
+
+--- Performs a deep copy of a table, recursively copying nested tables so the
+--- result shares no references with the original (unlike a plain `=` assignment,
+--- which only copies the reference and leaves both variables pointing at the
+--- same underlying table).
+--- Handles circular references safely via an internal lookup table, and
+--- preserves metatables on copied tables.
+--- @param src any: The value to copy. Non-table values are returned as-is.
+--- @return any: A deep copy of src, or src itself if it isn't a table.
+function MoronBox.Api.CopyTable(src)
+    -- Tracks already-copied tables (original -> copy) so that circular
+    -- references (a table that directly or indirectly contains itself)
+    -- don't cause infinite recursion — we reuse the existing copy instead.
+    local lookup_table = {}
+
+    local function _copy(value)
+        -- Non-table values (numbers, strings, booleans, nil) are copied by value already.
+        if type(value) ~= "table" then
+            return value
+        elseif lookup_table[value] then
+            -- Already copied this exact table elsewhere in the structure — reuse it.
+            return lookup_table[value]
+        end
+
+        local new_table = {}
+        lookup_table[value] = new_table
+
+        -- Recursively copy both keys and values, in case a key is itself a table.
+        for k, v in pairs(value) do
+            new_table[_copy(k)] = _copy(v)
+        end
+
+        -- Preserve the original table's metatable (e.g. custom __index behavior),
+        -- so the copy behaves the same way the original did.
+        return setmetatable(new_table, getmetatable(value))
+    end
+
+    return _copy(src)
+end
+
+--- Sorts an array of strings alphabetically in-place.
+--- @param list table: The array to sort.
+function MoronBox.Api.SortAlphabetically(list)
+    table.sort(list, function(a, b)
+        return a < b
+    end)
+end

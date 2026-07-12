@@ -2,19 +2,6 @@
 --[######################################### HELPER FUNCTIONS #########################################]--
 --[####################################################################################################]--
 
-function FindInTable(table, string)
-    if not table then
-        return
-    end
-
-    for i, v in table do
-        if v == string then
-            return i
-        end
-    end
-    return nil
-end
-
 function FindKeyInTable(table, string)
     if not table then
         return

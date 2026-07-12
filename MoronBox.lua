@@ -1,4 +1,4 @@
-    -- [[ Environment ]] --
+-- [[ Environment ]] --
 
 ---@class MoronBox: Frame
 MoronBox = CreateFrame("Frame", nil, UIParent)
@@ -15,7 +15,8 @@ MoronBox.CurrentModule = nil
 MoronBox.Modules = {}     -- Holds the init functions ("Recipes")
 MoronBox.Registry = {}    -- Holds the public API tables ("Exposed APIs")
 MoronBox.ModuleNames = {} -- Holds the list of strings ("Keys")
-MoronBox.Api = {}         -- Empty
+MoronBox.Api = {}         -- Extra functions
+MoronBox.Core = {}        -- All core state and configuration
 
 --- Creates a unique, isolated environment (sandbox) for a module.
 --- Each module receives a dedicated table instance, ensuring that global
@@ -208,6 +209,7 @@ MoronBox:SetScript("OnEvent", function()
         MoronBox:UpdateModules()
         MoronBox.BootUp = nil
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+        MoronBox.Core.InitializeClasslists()
         MoronBox:UpdateModules()
     end
 end)
@@ -331,3 +333,33 @@ local function ErrorHandler(msg)
 end
 
 seterrorhandler(ErrorHandler)
+
+--- Recursively prints the full contents of a table, including nested tables.
+--- @param t table: The table to print.
+--- @param indent? string|nil: Internal use — current indentation prefix (leave nil when calling).
+--- @param seen? table|nil: Internal use — tracks visited tables to avoid infinite loops on circular references.
+function MoronBox.Debugger:DumpTable(t, indent, seen)
+    indent = indent or ""
+    seen = seen or {}
+
+    if type(t) ~= "table" then
+        print(indent .. tostring(t))
+        return
+    end
+
+    if seen[t] then
+        print(indent .. "*circular reference*")
+        return
+    end
+
+    seen[t] = true
+
+    for key, value in pairs(t) do
+        if type(value) == "table" then
+            print(indent .. tostring(key) .. ":")
+            self:DumpTable(value, indent .. "  ", seen)
+        else
+            print(indent .. tostring(key) .. " = " .. tostring(value))
+        end
+    end
+end
