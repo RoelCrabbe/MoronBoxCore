@@ -391,6 +391,8 @@ function mb_setup()
     SPROT_RequestShadowProtection()
 
     INT_RequestIntellect()
+    AMPLIFY_RequestAmplifyMagic()
+    DAMP_RequestDampenMagic()
 
     if myClass == "Warrior" then
         return

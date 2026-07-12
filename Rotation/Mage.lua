@@ -657,21 +657,9 @@ local function MageSetup()
     end
 
     if MageWater() > 60 or MB_isMoving.Active then
-        if not MB_autoBuff.Active then
-            MB_autoBuff.Active = true
-            MB_autoBuff.Time = GetTime() + 0.25
-            MageCounter.Cycle()
-        end
-
         INT_ProcessIntellectQueue()
-
-        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
-            if MobsToDampenMagic() then
-                MultiBuff("Dampen Magic")
-            elseif MobsToAmplifyMagic() then
-                TankBuff("Amplify Magic")
-            end
-        end
+        AMPLIFY_ProcessAmplifyMagicQueue()
+        DAMP_RequestDampenMagic()
     else
         MakeWater()
     end

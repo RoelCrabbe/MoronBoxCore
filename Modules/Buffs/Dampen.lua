@@ -1,7 +1,7 @@
--- [[ Intellect Buffing ]] --
+-- [[ Dampen Magic Buffing ]] --
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
-local BUFF_KEY = "Intellect"
+local BUFF_KEY = "DampenMagic"
 
 -- The class permitted to cast this buff.
 local CLASS_MODULE = "Mage"
@@ -11,16 +11,16 @@ local RACE_MODULE = nil
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(BUFF_KEY, " ", "_"))
 
 -- Frame reference, assigned on module registration.
-local Intellect
+local DampenMagic
 
 -- Minimum mana required to be considered a valid cast candidate.
-local INTELLECT_MANA_COST = 3400 * 0.95
+local FORTITUDE_MANA_COST = 500 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    Intellect = MoronBox.Core.Buffs.Register(MODULE_NAME)
+    DampenMagic = MoronBox.Core.Buffs.Register(MODULE_NAME)
 
     local Handlers = MoronBox.Core.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
@@ -29,7 +29,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ClaimedQueue = ClaimedQueue
     })
 
-    Intellect:SetScript("OnEvent", function()
+    DampenMagic:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
         MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
@@ -44,7 +44,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             local group = MoronBox.Core.Buffs.GetGroupNumber()
             local member = MoronBox.Core.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
-                INTELLECT_MANA_COST)
+                FORTITUDE_MANA_COST)
 
             if not member then
                 MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
@@ -58,7 +58,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 }
             )
 
-            Handlers.SendMessage("NEED_INTELLECT", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
+            Handlers.SendMessage("NEED_DAMPEN", string.format("BUFF_INFO:%d:%d:%s", prio, group, member), 9)
         end,
 
         -- Handles the solo cast, then the queue: casts on the next valid target
@@ -92,7 +92,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            Handlers.SendMessage("BUFFED_INTELLECT", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
+            Handlers.SendMessage("BUFFED_DAMPEN", string.format("BUFFED:%s:%d", targetUnitId, groupNum), 3)
             return false
         end,
     })
@@ -106,10 +106,8 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function INT_RequestIntellect()
-    if not mb_manaUser() then
-        return
-    end
+function DAMP_RequestDampenMagic()
+    if not mb_mobsToDampenMagic() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
@@ -117,7 +115,7 @@ function INT_RequestIntellect()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function INT_ProcessIntellectQueue()
+function DAMP_ProcessDampenMagicQueue()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

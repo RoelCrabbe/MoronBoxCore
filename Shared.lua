@@ -46,10 +46,11 @@ function ArrayLength(tab)
     return n
 end
 
---- Searches a table for a given value and returns its key if found.
+--- Searches a table for a given value and returns true if found.
+--- Logs an error via the Debugger and returns false if list is not a valid table.
 --- @param list table: The table to search within.
 --- @param needle string: The value to search for.
---- @return boolean: True if the needle is found, false otherwise (or list is nil).
+--- @return boolean: True if needle is found anywhere in list, false otherwise (including invalid input).
 function FindInTable(list, needle)
     if type(list) ~= "table" then
         MoronBox.Debugger:Error("FindInTable: expected a table, got " .. type(list))
@@ -63,4 +64,13 @@ function FindInTable(list, needle)
     end
 
     return false
+end
+
+--- Convenience wrapper around FindInTable that checks for the current player's
+--- own name specifically, e.g. to check if the player is already in a role/list
+--- such as MoronBox.Core.State.RaidTanks.
+--- @param list table: The table to search within.
+--- @return boolean: True if the player's own name is found in list, false otherwise.
+function FindMyNameInTable(list)
+    return FindInTable(list, UnitName("player"))
 end

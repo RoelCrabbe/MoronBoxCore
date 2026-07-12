@@ -9,4 +9,6 @@
     <Include file="..\Modules\Buffs\Mark.lua" />
     <!-- Buff Modules Mage -->
     <Include file="..\Modules\Buffs\Intellect.lua" />
+    <Include file="..\Modules\Buffs\Amplify.lua" />
+    <Include file="..\Modules\Buffs\Dampen.lua" />
 </Ui>

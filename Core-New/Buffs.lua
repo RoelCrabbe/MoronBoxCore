@@ -43,6 +43,12 @@ local BUFF_AURA_NAMES = {
         "Arcane Power",
         "Power Infusion",
     },
+    ["DampenMagic"] = {
+        "Dampen Magic",
+    },
+    ["AmplifyMagic"] = {
+        "Amplify Magic",
+    },
 }
 
 local BUFF_CAST_SPELLS = {
@@ -73,6 +79,14 @@ local BUFF_CAST_SPELLS = {
     ["PowerInfusion"] = {
         PriorityBuff = "Power Infusion",
         SecondaryBuff = "Power Infusion",
+    },
+    ["DampenMagic"] = {
+        PriorityBuff = "Dampen Magic",
+        SecondaryBuff = "Dampen Magic",
+    },
+    ["AmplifyMagic"] = {
+        PriorityBuff = "Amplify Magic",
+        SecondaryBuff = "Amplify Magic",
     },
 }
 
@@ -107,6 +121,8 @@ local ADDON_MESSAGE_SCHEMA = {
 --- | "FearWard"
 --- | "Intellect"
 --- | "PowerInfusion"
+--- | "DampenMagic"
+--- | "AmplifyMagic"
 
 -- [[ Lifecycle ]] --
 
