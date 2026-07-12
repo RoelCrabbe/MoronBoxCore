@@ -245,6 +245,13 @@ function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, raceName
         return nil
     end
 
+    -- Defensively re-sort on every call: don't rely on mb_initializeClasslists
+    -- having sorted correctly upstream, since a mismatch here causes
+    -- divergent (not duplicate) assignments between clients.
+    table.sort(members, function(a, b)
+        return a < b
+    end)
+
     local eligible = {}
     for _, name in pairs(members) do
         local unitId = MBID[name]
@@ -416,4 +423,36 @@ function MoronBox.Api.Buffs.DispatchMessage(message, sender, handlers)
 
     -- Invoke the handler with the mapped data table and the original sender.
     handlers[schema.handler](data, sender)
+end
+
+-- [[ Debugging ]] --
+
+--- Prints the current Queue and ClaimedQueue state for a buff module, for debugging.
+--- @param moduleName string: Display name for the debug header (e.g., MODULE_NAME).
+--- @param queue table: The module's Queue table (groupNum -> { [unitId] = priority }).
+--- @param claimedQueue table: The module's ClaimedQueue table (groupNum -> claiming player name).
+function MoronBox.Api.Buffs.DebugTables(moduleName, queue, claimedQueue)
+    MoronBox.Debugger:Info("--- " .. moduleName .. " Debug State ---")
+
+    -- Queue Debug
+    local queueCount = 0
+    for groupNum, players in pairs(queue) do
+        for player, prio in pairs(players) do
+            queueCount = queueCount + 1
+            MoronBox.Debugger:Info(string.format("Queue: Group %d | Player %s | Prio %d", groupNum, player, prio))
+        end
+    end
+    if queueCount == 0 then
+        MoronBox.Debugger:Info("Queue is empty.")
+    end
+
+    -- ClaimedQueue Debug
+    local claimCount = 0
+    for groupNum, priest in pairs(claimedQueue) do
+        claimCount = claimCount + 1
+        MoronBox.Debugger:Info(string.format("Claim: Group %d | Claimed by %s", groupNum, priest))
+    end
+    if claimCount == 0 then
+        MoronBox.Debugger:Info("ClaimedQueue is empty.")
+    end
 end

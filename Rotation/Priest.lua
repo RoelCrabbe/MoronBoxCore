@@ -801,7 +801,7 @@ local function PriestSetup()
     FORT_ProcessFortitudeQueue()
     -- FW_ProcessFearWardQueue()
     SPIRIT_ProcessSpiritQueue()
-    SPROT_ProcessShadowProtectionQueue()
+    --SPROT_ProcessShadowProtectionQueue()
 
     SelfBuff("Inner Fire")
     SelfBuff("Shadowform")
