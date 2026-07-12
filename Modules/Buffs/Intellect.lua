@@ -99,7 +99,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return MoronBox.Core.Buffs.UnLoad(CLASS_MODULE)
+    return MoronBox.Core.Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
     MoronBox.Core.Buffs.Unregister(MODULE_NAME)
 end)

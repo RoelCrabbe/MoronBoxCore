@@ -13,6 +13,7 @@ MoronBox.Core.Buffs.BuffPriority = {
 
 local myClass = UnitClass("player") --[[@as string]]
 local myName = UnitName("player") --[[@as string]]
+local myRace = UnitRace("player") --[[@as string]]
 
 local BUFF_AURA_NAMES = {
     ["Fortitude"] = {
@@ -137,11 +138,15 @@ function MoronBox.Core.Buffs.Unregister(name)
     MoronBox.Core.Buffs.LoadedBuffs[name] = nil
 end
 
---- Determines if the buff module should be unloaded for a specific class.
+--- Determines if the buff module should stay loaded for a specific class,
+--- optionally restricted to a specific race.
 --- @param className string: The class name to evaluate.
---- @return boolean: Returns true if the player is the class or if there are members of that class in the raid.
-function MoronBox.Core.Buffs.UnLoad(className)
-    if myClass == className then
+--- @param raceName nil|string: Optional race to additionally filter by (e.g., "Dwarf"). Pass nil to skip race filtering.
+--- @return boolean: True if the player matches (class + race), or if any raid/party member matches; otherwise false.
+function MoronBox.Core.Buffs.UnLoad(className, raceName)
+    local matchesRace = (raceName == nil) or (myRace == raceName)
+
+    if myClass == className and matchesRace then
         return true
     end
 
