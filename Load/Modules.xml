@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!-- Buff Modules Priest -->
+    <Include file="..\Modules\Buffs\Fortitude.lua" />
+    <Include file="..\Modules\Buffs\Shadow.lua" />
+    <Include file="..\Modules\Buffs\Spirit.lua" />
+    <Include file="..\Modules\Buffs\FearWard.lua" />
+    <!-- Buff Modules Druid -->
+    <Include file="..\Modules\Buffs\Mark.lua" />
+</Ui>

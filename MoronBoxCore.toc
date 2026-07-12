@@ -92,14 +92,6 @@ Rotation\Shaman.lua
 Rotation\Warlock.lua
 Rotation\Warrior.lua
 
-
-Api\Api.lua
-Api\Buffs.lua
-
-Core-New\Core.lua
-
-Modules\Buffs\FearWard.lua
-Modules\Buffs\Fortitude.lua
-Modules\Buffs\Mark.lua
-Modules\Buffs\Shadow.lua
-Modules\Buffs\Spirit.lua
+Load\Api.xml
+Load\Core.xml
+Load\Modules.xml

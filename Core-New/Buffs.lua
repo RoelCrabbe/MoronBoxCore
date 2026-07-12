@@ -1,10 +1,10 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Api.Buffs = MoronBox.Api.Buffs or {}
-MoronBox.Api.Buffs.LoadedBuffs = {}
+MoronBox.Core.Buffs = MoronBox.Core.Buffs or {}
+MoronBox.Core.Buffs.LoadedBuffs = {}
 
 local DEFAULT_PRIORITY = "NONE"
-MoronBox.Api.Buffs.BuffPriority = {
+MoronBox.Core.Buffs.BuffPriority = {
     ["HIGH"] = 10,
     ["MEDIUM"] = 20,
     ["LOW"] = 30,
@@ -86,21 +86,21 @@ local ADDON_MESSAGE_SCHEMA = {
 --- Registers a new buff frame and enables addon message listening.
 --- @param name string: The unique name identifier for the buff.
 --- @return table: The frame object associated with the buff.
-function MoronBox.Api.Buffs.Register(name)
-    if MoronBox.Api.Buffs.LoadedBuffs[name] then
-        return MoronBox.Api.Buffs.LoadedBuffs[name]
+function MoronBox.Core.Buffs.Register(name)
+    if MoronBox.Core.Buffs.LoadedBuffs[name] then
+        return MoronBox.Core.Buffs.LoadedBuffs[name]
     end
 
     local buffFrame = CreateFrame("Frame", name)
     buffFrame:RegisterEvent("CHAT_MSG_ADDON")
-    MoronBox.Api.Buffs.LoadedBuffs[name] = buffFrame
+    MoronBox.Core.Buffs.LoadedBuffs[name] = buffFrame
     return buffFrame
 end
 
 --- Unregisters a buff frame, cleans up events, and removes it from the loaded list.
 --- @param name string: The unique name identifier of the buff to unregister.
-function MoronBox.Api.Buffs.Unregister(name)
-    local buffFrame = MoronBox.Api.Buffs.LoadedBuffs[name]
+function MoronBox.Core.Buffs.Unregister(name)
+    local buffFrame = MoronBox.Core.Buffs.LoadedBuffs[name]
     if not buffFrame then return end
 
     buffFrame:UnregisterAllEvents()
@@ -108,15 +108,18 @@ function MoronBox.Api.Buffs.Unregister(name)
     buffFrame:SetScript("OnUpdate", nil)
     buffFrame:Hide()
 
-    MoronBox.Api.Buffs.LoadedBuffs[name] = nil
+    MoronBox.Core.Buffs.LoadedBuffs[name] = nil
 end
 
 --- Determines if the buff module should be unloaded for a specific class.
 --- @param className string: The class name to evaluate.
 --- @return boolean: Returns true if the player is the class or if there are members of that class in the raid.
-function MoronBox.Api.Buffs.UnLoad(className)
-    if myClass == className then return true end
-    local members = MB_classList[className]
+function MoronBox.Core.Buffs.UnLoad(className)
+    if myClass == className then
+        return true
+    end
+
+    local members = MoronBox.Core.State.ClassList[className]
     if not members then
         return false
     end
@@ -130,7 +133,7 @@ end
 --- @param buffKey BuffKey: The key used to look up the buff definitions.
 --- @param unitId nil|string: The unit ID to check for the buff.
 --- @return boolean: True if at least one buff is active on the player, otherwise false.
-function MoronBox.Api.Buffs.HasActiveBuff(buffKey, unitId)
+function MoronBox.Core.Buffs.HasActiveBuff(buffKey, unitId)
     local list = BUFF_AURA_NAMES[buffKey]
     if not list then return false end
 
@@ -151,7 +154,7 @@ end
 --- @param buffKey BuffKey: The key used to look up the buff definitions.
 --- @param requiredClass string: The class required to be able to cast the buff.
 --- @return boolean: True if the class matches, the player is not busy, and the spell is ready; otherwise false.
-function MoronBox.Api.Buffs.HasBuffPremissions(buffKey, requiredClass)
+function MoronBox.Core.Buffs.HasBuffPremissions(buffKey, requiredClass)
     if myClass ~= requiredClass then
         return false
     end
@@ -175,7 +178,7 @@ end
 --- Determines the appropriate spell to cast based on group status and buff configuration.
 --- @param name BuffKey: The buff key (e.g., "Fortitude").
 --- @return string: The selected spell name.
-function MoronBox.Api.Buffs.GetBuffSpell(name)
+function MoronBox.Core.Buffs.GetBuffSpell(name)
     local config = BUFF_CAST_SPELLS[name]
     if not config then
         error("Unknown buff: " .. tostring(name))
@@ -193,30 +196,30 @@ end
 --- Determines the priority value for the player's class based on a provided priority map.
 --- @param map table: A table mapping class names to priority keys (e.g., { ["Shaman"] = "HIGH" }).
 --- @return number: The numerical priority value associated with the player's class or the default priority.
-function MoronBox.Api.Buffs.GetPriority(map)
+function MoronBox.Core.Buffs.GetPriority(map)
     local pName = map[myClass] or DEFAULT_PRIORITY
-    return MoronBox.Api.Buffs.BuffPriority[pName]
+    return MoronBox.Core.Buffs.BuffPriority[pName]
 end
 
 --- Determines the priority value for the player's class based on a provided priority map.
 --- @param map table: A table mapping class names to priority keys (e.g., { ["Shaman"] = "HIGH" }).
 --- @return number: The numerical priority value associated with the player's class or the default priority.
-function MoronBox.Api.Buffs.GetCustomPriority(overwrites, map)
-    local focId = MBID[MB_raidLeader]
+function MoronBox.Core.Buffs.GetCustomPriority(overwrites, map)
+    local focId = MoronBox.Core.State.MBID[MB_raidLeader]
     local targetName = focId and UnitName(focId .. "target")
 
     if targetName and overwrites[targetName] then
         return overwrites[targetName]()
     end
 
-    return MoronBox.Api.Buffs.GetPriority(map)
+    return MoronBox.Core.Buffs.GetPriority(map)
 end
 
 --- Determines the next target in the queue based on the lowest priority value.
 --- @param queue table: A nested table containing group numbers, unit IDs, and their priorities.
 --- @return string|nil: The unit ID of the best target, or nil if the queue is empty.
 --- @return number: The group number associated with the best target, default 1.
-function MoronBox.Api.Buffs.GetNextTarget(queue)
+function MoronBox.Core.Buffs.GetNextTarget(queue)
     local bestPriority = nil
     local bestUnitId, bestGroup = nil, 1
 
@@ -238,23 +241,16 @@ end
 --- @param raceName nil|string: The race to filter by (e.g., "Dwarf").
 --- @param requiredMana number: The minimum mana required for a member to be considered valid.
 --- @return string|nil
-function MoronBox.Api.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
-    local members = MB_classList[className]
+function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
+    local members = MoronBox.Core.State.ClassList[className]
     if not members or table.getn(members) == 0 then
         if myClass == className then return myName end
         return nil
     end
 
-    -- Defensively re-sort on every call: don't rely on mb_initializeClasslists
-    -- having sorted correctly upstream, since a mismatch here causes
-    -- divergent (not duplicate) assignments between clients.
-    table.sort(members, function(a, b)
-        return a < b
-    end)
-
     local eligible = {}
     for _, name in pairs(members) do
-        local unitId = MBID[name]
+        local unitId = MoronBox.Core.State.MBID[name]
         local isAlive = mb_isAlive(unitId)
         local hasMana = mb_manaOfUnit(name) >= requiredMana
         local matchesRace = (raceName == nil) or (UnitRace(unitId) == raceName)
@@ -275,8 +271,8 @@ end
 
 --- Retrieves the current group number for the player from the cached group list.
 --- @return number: The group number (defaults to 1 if not found).
-function MoronBox.Api.Buffs.GetGroupNumber()
-    return MB_groupID[myName] or 1
+function MoronBox.Core.Buffs.GetGroupNumber()
+    return MoronBox.Core.State.GroupID[myName] or 1
 end
 
 -- [[ Casting ]] --
@@ -285,14 +281,14 @@ end
 --- @param buffKey BuffKey: Buff key (e.g., "Fortitude"), used for HasActiveBuff check.
 --- @param spellName string: The exact spell name to cast.
 --- @return boolean|nil: true if cast successfully, false if already active or solo-condition met but no action, nil if in a group.
-function MoronBox.Api.Buffs.SoloBuff(buffKey, spellName)
+function MoronBox.Core.Buffs.SoloBuff(buffKey, spellName)
     if MoronBox.Api.GetGroupStatus() then
         return nil
     end
 
     ClearTarget()
 
-    if MoronBox.Api.Buffs.HasActiveBuff(buffKey) then
+    if MoronBox.Core.Buffs.HasActiveBuff(buffKey) then
         return false
     end
 
@@ -314,7 +310,7 @@ end
 ---     ClaimedQueue: table  -- Tracks which class has claimed which group.
 ---   }
 --- @return table: The handlers table containing logic for messages and queue management.
-function MoronBox.Api.Buffs.CreateHandlers(buffConfig)
+function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
     local handlers = {}
 
     -- Checks if the received prefix belongs to the current buff config.
@@ -338,7 +334,7 @@ function MoronBox.Api.Buffs.CreateHandlers(buffConfig)
         local priority = tonumber(data.priority)
         local groupNum = tonumber(data.groupNum)
         local assignedPlayer = data.assigned or myName
-        local requestPlayerId = MBID[sender] or "player"
+        local requestPlayerId = MoronBox.Core.State.MBID[sender] or "player"
 
         -- Validate required packet data and ensure this player is the assigned target.
         if not requestPlayerId or not groupNum or not priority then
@@ -350,7 +346,7 @@ function MoronBox.Api.Buffs.CreateHandlers(buffConfig)
         end
 
         -- Verify if the player already has the buff; if so, notify the requester.
-        if MoronBox.Api.Buffs.HasActiveBuff(buffConfig.BuffKey, requestPlayerId) then
+        if MoronBox.Core.Buffs.HasActiveBuff(buffConfig.BuffKey, requestPlayerId) then
             handlers.SendMessage("BUFFED", string.format("BUFFED:%s:%d", requestPlayerId, groupNum))
             return
         end
@@ -406,7 +402,7 @@ end
 ---     handler: string, -- The key in the handlers table to execute (e.g., "Request").
 ---     fields: table    -- An array of strings representing the data keys to map the message parts to.
 ---   }
-function MoronBox.Api.Buffs.DispatchMessage(message, sender, handlers)
+function MoronBox.Core.Buffs.DispatchMessage(message, sender, handlers)
     local parts = { MoronBox.Api.StringSplit(message) }
     local msgType = parts[1]
     local schema = ADDON_MESSAGE_SCHEMA[msgType]
@@ -431,7 +427,7 @@ end
 --- @param moduleName string: Display name for the debug header (e.g., MODULE_NAME).
 --- @param queue table: The module's Queue table (groupNum -> { [unitId] = priority }).
 --- @param claimedQueue table: The module's ClaimedQueue table (groupNum -> claiming player name).
-function MoronBox.Api.Buffs.DebugTables(moduleName, queue, claimedQueue)
+function MoronBox.Core.Buffs.DebugTables(moduleName, queue, claimedQueue)
     MoronBox.Debugger:Info("--- " .. moduleName .. " Debug State ---")
 
     -- Queue Debug

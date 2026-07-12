@@ -20,9 +20,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    Fortitude = MoronBox.Api.Buffs.Register(MODULE_NAME)
+    Fortitude = MoronBox.Core.Buffs.Register(MODULE_NAME)
 
-    local Handlers = MoronBox.Api.Buffs.CreateHandlers({
+    local Handlers = MoronBox.Core.Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -32,18 +32,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     Fortitude:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
-        MoronBox.Api.Buffs.DispatchMessage(arg2, arg4, Handlers)
+        MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
     end)
 
     MoronBox:RegisterExpose({
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if MoronBox.Api.Buffs.HasActiveBuff(BUFF_KEY) then
+            if MoronBox.Core.Buffs.HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local group = MoronBox.Api.Buffs.GetGroupNumber()
-            local member = MoronBox.Api.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
+            local group = MoronBox.Core.Buffs.GetGroupNumber()
+            local member = MoronBox.Core.Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
                 FORTITUDE_MANA_COST)
 
             if not member then
@@ -51,7 +51,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            local prio = MoronBox.Api.Buffs.GetPriority(
+            local prio = MoronBox.Core.Buffs.GetPriority(
                 {
                     ["Shaman"] = "HIGH",
                     ["Mage"] = "MEDIUM",
@@ -64,18 +64,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not MoronBox.Api.Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not MoronBox.Core.Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = MoronBox.Api.Buffs.GetBuffSpell(BUFF_KEY)
-            local soloResult = MoronBox.Api.Buffs.SoloBuff(BUFF_KEY, spellName)
+            local spellName = MoronBox.Core.Buffs.GetBuffSpell(BUFF_KEY)
+            local soloResult = MoronBox.Core.Buffs.SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = MoronBox.Api.Buffs.GetNextTarget(Queue)
+            local targetUnitId, groupNum = MoronBox.Core.Buffs.GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
@@ -99,9 +99,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return MoronBox.Api.Buffs.UnLoad(CLASS_MODULE)
+    return MoronBox.Core.Buffs.UnLoad(CLASS_MODULE)
 end, function()
-    MoronBox.Api.Buffs.Unregister(MODULE_NAME)
+    MoronBox.Core.Buffs.Unregister(MODULE_NAME)
 end)
 
 -- FORTITUDE BUFF SYSTEM - COMPLETE FLOW
