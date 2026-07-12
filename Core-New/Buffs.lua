@@ -387,6 +387,7 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
     -- Checks if the received prefix belongs to the current buff config.
     handlers.IsOwnMessage = function(prefix)
+        if not prefix then return false end
         return string.find(prefix, "_" .. buffConfig.AddonPrefix .. "$") ~= nil
     end
 
@@ -544,5 +545,43 @@ function MoronBox.Core.Buffs.DebugTables(moduleName, queue, claimedQueue)
     end
     if claimCount == 0 then
         MoronBox.Debugger:Info("ClaimedQueue is empty.")
+    end
+end
+
+--- Checks a live ClaimedQueue for uneven distribution — i.e. someone holding
+--- more claims than a fair round-robin split would ever produce, given the
+--- number of currently-claimed groups and distinct claimants. Reports
+--- instantly via mb_message if found; does not require a manually-tuned
+--- threshold.
+--- @param buffKey BuffKey: Used only for the message, to identify which buff this is.
+--- @param claimedQueue table: groupNum -> claiming player name.
+function MoronBox.Core.Buffs.CheckClaimBalance(buffKey, claimedQueue)
+    local counts = {}
+    local totalClaims = 0
+    local distinctClaimants = 0
+
+    for groupNum, name in pairs(claimedQueue) do
+        if not counts[name] then
+            distinctClaimants = distinctClaimants + 1
+        end
+        counts[name] = (counts[name] or 0) + 1
+        totalClaims = totalClaims + 1
+    end
+
+    if distinctClaimants == 0 then
+        return
+    end
+
+    -- Fair share: with N claims spread over M claimants, nobody should hold
+    -- more than ceil(N/M) — anything above that is measurably uneven.
+    local fairShare = math.ceil(totalClaims / distinctClaimants)
+
+    for name, n in pairs(counts) do
+        if n > fairShare then
+            mb_cdMessage(string.format(
+                "%s: %s holds %d/%d claims (fair share: %d) — uneven distribution.",
+                buffKey, name, n, totalClaims, fairShare
+            ))
+        end
     end
 end

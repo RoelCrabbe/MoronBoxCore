@@ -1162,7 +1162,7 @@ local function DruidSetup()
         return
     end
 
-    MOTW_ProcessMarkOfTheWildQueue()
+    MoronBox.Core.Buffs.ProcessMarkOfTheWild()
 
     if MB_raidAssist.Druid.BuffTanksWithThorns then
         TankBuff("Thorns")

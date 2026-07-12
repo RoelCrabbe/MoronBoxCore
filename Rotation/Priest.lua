@@ -800,8 +800,8 @@ local function PriestSetup()
 
     MoronBox.Core.Buffs.ProcessFortitude()
     -- MoronBox.Core.Buffs.ProcessFearWard()
-    MoronBox.Core.Buffs.ProcessSpirit()
-    --MoronBox.Core.Buffs.ProcessShadowProtection()
+    -- MoronBox.Core.Buffs.ProcessSpirit()
+    -- MoronBox.Core.Buffs.ProcessShadowProtection()
 
     SelfBuff("Inner Fire")
     SelfBuff("Shadowform")

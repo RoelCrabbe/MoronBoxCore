@@ -386,13 +386,13 @@ function mb_setup()
     MoronBox.Core.Buffs.RequestMarkOfTheWild()
 
     MoronBox.Core.Buffs.RequestFortitude()
-    -- MoronBox.Core.Buffs.RequestFearWard()
+    -- MoronBox.Core.Buffs.RequestShadowProtection()
     -- MoronBox.Core.Buffs.RequestSpirit()
-    MoronBox.Core.Buffs.RequestShadowProtection()
+    -- MoronBox.Core.Buffs.RequestFearWard()
 
     MoronBox.Core.Buffs.RequestIntellect()
-    MoronBox.Core.Buffs.RequestAmplifyMagic()
-    MoronBox.Core.Buffs.RequestDampenMagic()
+    -- MoronBox.Core.Buffs.RequestAmplifyMagic()
+    -- MoronBox.Core.Buffs.RequestDampenMagic()
 
     if myClass == "Warrior" then
         return

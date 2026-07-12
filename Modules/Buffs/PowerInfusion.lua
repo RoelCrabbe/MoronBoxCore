@@ -17,9 +17,9 @@ local PowerInfusion
 local POWER_INFUSION_MANA_COST = 250 * 0.95
 
 MoronBox:RegisterModule(MODULE_NAME, function()
-    local PowerInfusionPriests = {}
     local Queue = {}
     local ClaimedQueue = {}
+    local PowerInfusionPriests = {}
     local PriorityOverrides = {}
 
     PowerInfusion = MoronBox.Core.Buffs.Register(MODULE_NAME)
