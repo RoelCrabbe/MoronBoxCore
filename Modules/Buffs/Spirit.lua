@@ -18,25 +18,33 @@ local SPIRIT_MANA_COST = 1940 * 0.95
 
 -- References to frames.
 local Debugger = MoronBox.Debugger
+local Api = MoronBox.Api
 local Buffs = MoronBox.Core.Buffs
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
+    local SpiritPriests = {}
 
     Spirit = Buffs.Register(MODULE_NAME)
+    Spirit:RegisterEvent("RAID_ROSTER_UPDATE")
+    Spirit:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
     local Handlers = Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
-        ClaimedQueue = ClaimedQueue
+        ClaimedQueue = ClaimedQueue,
+        CapableList = SpiritPriests,
     })
 
     Spirit:SetScript("OnEvent", function()
-        if event ~= "CHAT_MSG_ADDON" then return end
-        if not Handlers.IsOwnMessage(arg1) then return end
-        Buffs.DispatchMessage(arg2, arg4, Handlers)
+        if event == "CHAT_MSG_ADDON" then
+            if not Handlers.IsOwnMessage(arg1) then return end
+            Buffs.DispatchMessage(arg2, arg4, Handlers)
+        elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
+            Api.ClearTable(SpiritPriests)
+        end
     end)
 
     MoronBox:RegisterExpose({
@@ -46,8 +54,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
+            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
+
+            if table.getn(SpiritPriests) == 0 then
+                Handlers.RequestCapable(spellName)
+                return
+            end
+
             local group = Buffs.GetGroupNumber()
-            local member = Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE, SPIRIT_MANA_COST)
+            local member = Buffs.GetMemberForGroup(SpiritPriests, group, RACE_MODULE, SPIRIT_MANA_COST)
 
             if not member then
                 Debugger:Warn("No " .. CLASS_MODULE .. " found")
