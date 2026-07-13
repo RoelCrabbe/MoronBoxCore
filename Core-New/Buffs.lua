@@ -570,7 +570,7 @@ function Buffs.CheckClaimBalance(buffKey, claimedQueue)
     local totalClaims = 0
     local distinctClaimants = 0
 
-    for groupNum, name in pairs(claimedQueue) do
+    for _, name in pairs(claimedQueue) do
         if not counts[name] then
             distinctClaimants = distinctClaimants + 1
         end
