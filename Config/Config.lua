@@ -4,9 +4,11 @@
 
 MB_hordeRaidInviter = "Moron"
 MB_allianceRaidInviter = "Moron"
-MB_raidInviter = MB_hordeRaidInviter   -- Handling Raidinvites
+MB_raidInviter = MB_hordeRaidInviter  -- Handling Raidinvites
 
-MB_RAID = "The Solution To Pollution"  -- Change this to something UNIQUE for you!
+MB_RAID = "The Solution To Pollution" -- Change this to something UNIQUE for you!
+MB_RAID = string.upper(string.gsub(MB_RAID, " ", "_"))
+
 MB_inviteMessage =
 "Invite please, spot for raid please?" -- Invite message that raidinviter above listens and autoinvites to.
 

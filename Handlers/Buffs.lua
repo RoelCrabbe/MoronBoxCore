@@ -916,7 +916,6 @@ BuffData["Mind Exhaustion"]                       = "Interface\\Icons\\Spell_Sha
 BuffData["Blessed Sunfruit Juice"]                = "Interface\\Icons\\Spell_Holy_Layonhands"
 BuffData["Blessed Sunfruit"]                      = "Interface\\Icons\\Spell_Holy_Devotion"
 BuffData["Spell Vulnerability"]                   = "Interface\\Icons\\Spell_Holy_Elunesgrace"
-BuffData["Shadow Protection"]                     = "Interface\\Icons\\Spell_Shadow_RagingScream"
 BuffData["Mutating Injection"]                    = "Interface\\Icons\\Spell_Shadow_CallofBone"
 BuffData["Shadow Command"]                        = "Interface\\Icons\\Spell_Shadow_UnholyFrenzy"
 BuffData["Elemental Sharpening Stone"]            = "Interface\\Icons\\INV_Stone_02"

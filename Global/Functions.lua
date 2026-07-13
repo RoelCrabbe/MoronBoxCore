@@ -2,19 +2,6 @@
 --[######################################### HELPER FUNCTIONS #########################################]--
 --[####################################################################################################]--
 
-function FindInTable(table, string)
-    if not table then
-        return
-    end
-
-    for i, v in table do
-        if v == string then
-            return i
-        end
-    end
-    return nil
-end
-
 function FindKeyInTable(table, string)
     if not table then
         return
@@ -52,18 +39,6 @@ function sPairs(t, order)
             return keys[i], t[keys[i]]
         end
     end
-end
-
-function TableLength(tab)
-    if not tab then
-        return 0
-    end
-
-    local len = 0
-    for _ in pairs(tab) do
-        len = len + 1
-    end
-    return len
 end
 
 function IncrementIndex(tab, len)
@@ -104,15 +79,4 @@ function TableAddUnique(list, value)
     table.insert(list, value)
     table.sort(list)
     return true
-end
-
----
----Rounds `number` to the nearest integer, rounding half away from zero.
----
----@generic Number: number
----@param x Number
----@return Number
----@nodiscard
-function math.round(x)
-    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
 end

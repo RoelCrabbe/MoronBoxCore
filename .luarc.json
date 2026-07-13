@@ -69,6 +69,10 @@
         "PutItemInBackpack",
         "UseContainerItem"
     ],
-    "diagnostics.disable": ["lowercase-global", "discard-returns"],
+    "diagnostics.disable": [
+        "lowercase-global",
+        "discard-returns",
+        "deprecated"
+    ],
     "format.enable": true
 }

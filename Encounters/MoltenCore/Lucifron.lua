@@ -150,7 +150,7 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local function PriorityOnMagmadar()
+local function PriorityOnLucifron()
     local PRIORITY = {
         HIGH   = 10,
         MEDIUM = 20,
@@ -172,12 +172,12 @@ local function PriorityOnMagmadar()
 end
 
 local function PrepareMagmadarOnLucifron()
-    FW_RequestFearWard()
-    FW_ProcessFearWardQueue()
-end
+    FW_RegisterFearWardPriority("Lucifron", PriorityOnLucifron)
+    FW_RegisterFearWardPriority("Flamewaker Protector", PriorityOnLucifron)
 
-FW_RegisterFearWardPriority("Lucifron", PriorityOnMagmadar)
-FW_RegisterFearWardPriority("Flamewaker Protector", PriorityOnMagmadar)
+    MoronBox.Core.Buffs.RequestFearWard()
+    MoronBox.Core.Buffs.ProcessFearWard()
+end
 
 --[####################################################################################################]--
 --[####################################################################################################]--

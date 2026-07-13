@@ -1,0 +1,21 @@
+--- @alias ClassName
+--- | "Warrior"
+--- | "Mage"
+--- | "Shaman"
+--- | "Paladin"
+--- | "Priest"
+--- | "Rogue"
+--- | "Druid"
+--- | "Hunter"
+--- | "Warlock"
+
+--- @class MoronBoxState
+--- @field MBID table<string, string> Player name -> unitId (e.g. "raid3", "party2", "player").
+--- @field ToonsInGroup table<number, table<number, string>> Group number (1-8) -> array of player names.
+--- @field AssignableTanks table<number, string> Off-tanks (excluding self), insertion order preserved for assignment.
+--- @field RaidTanks table<number, string> All tanks currently in the raid, alphabetically sorted.
+--- @field DruidCasters table<number, string> Druids not currently in RaidTanks (i.e. not tanking).
+--- @field GroupID table<string, number> Player name -> group number (1-8).
+--- @field ClassList table<ClassName, table<number, string>> Class name -> alphabetically sorted array of player names.
+--- @field WarriorTankInParty boolean Whether a Warrior tank from MB_tankList is present.
+--- @field DruidTankInParty boolean Whether a Druid tank from MB_tankList is present.

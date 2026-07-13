@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!-- Core -->
+    <Include file="..\Core-New\Core.lua" />
+    <Include file="..\Core-New\Buffs.lua" />
+</Ui>

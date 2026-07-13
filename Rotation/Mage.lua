@@ -643,8 +643,6 @@ MB_myAOEList["Mage"] = MageAOE
 --[####################################################################################################]--
 
 local function MageSetup()
-    FORT_RequestFortitude()
-
     if HasBuffOrDebuff("Evocation", "player", "buff") then
         return
     end
@@ -659,21 +657,9 @@ local function MageSetup()
     end
 
     if MageWater() > 60 or MB_isMoving.Active then
-        if not MB_autoBuff.Active then
-            MB_autoBuff.Active = true
-            MB_autoBuff.Time = GetTime() + 0.25
-            MageCounter.Cycle()
-        end
-
-        if MyClassAlphabeticalOrder() == MB_buffingCounterMage then
-            MultiBuff("Arcane Brilliance")
-
-            if MobsToDampenMagic() then
-                MultiBuff("Dampen Magic")
-            elseif MobsToAmplifyMagic() then
-                TankBuff("Amplify Magic")
-            end
-        end
+        MoronBox.Core.Buffs.ProcessIntellect()
+        MoronBox.Core.Buffs.ProcessAmplifyMagic()
+        MoronBox.Core.Buffs.RequestDampenMagic()
     else
         MakeWater()
     end
@@ -735,7 +721,7 @@ function Mage:Cooldowns()
         SelfBuff("Arcane Power")
     end
 
-    PI_RequestPowerInfusion()
+    MoronBox.Core.Buffs.RequestPowerInfusion()
 
     HealerTrinkets()
     CasterTrinkets()
