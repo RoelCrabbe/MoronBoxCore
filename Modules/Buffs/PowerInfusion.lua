@@ -16,17 +16,22 @@ local PowerInfusion
 -- Minimum mana required to be considered a valid cast candidate.
 local POWER_INFUSION_MANA_COST = 250 * 0.95
 
+-- References to frames.
+local Debugger = MoronBox.Debugger
+local Api = MoronBox.Api
+local Buffs = MoronBox.Core.Buffs
+
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
     local PowerInfusionPriests = {}
     local PriorityOverrides = {}
 
-    PowerInfusion = MoronBox.Core.Buffs.Register(MODULE_NAME)
+    PowerInfusion = Buffs.Register(MODULE_NAME)
     PowerInfusion:RegisterEvent("RAID_ROSTER_UPDATE")
     PowerInfusion:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
-    local Handlers = MoronBox.Core.Buffs.CreateHandlers({
+    local Handlers = Buffs.CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -37,9 +42,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     PowerInfusion:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then
             if not Handlers.IsOwnMessage(arg1) then return end
-            MoronBox.Core.Buffs.DispatchMessage(arg2, arg4, Handlers)
+            Buffs.DispatchMessage(arg2, arg4, Handlers)
         elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
-            MoronBox.Api.ClearTable(PowerInfusionPriests)
+            Api.ClearTable(PowerInfusionPriests)
         end
     end)
 
@@ -47,7 +52,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Overrides the priority for a specific fight, preventing accidental duplicates.
         OverridePriority = function(fightName, fn)
             if PriorityOverrides[fightName] then
-                MoronBox.Debugger:Warn("Priority override already exists for: " .. fightName)
+                Debugger:Warn("Priority override already exists for: " .. fightName)
                 return
             end
 
@@ -56,27 +61,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if MoronBox.Core.Buffs.HasActiveBuff(BUFF_KEY) then
+            if Buffs.HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local spellName = MoronBox.Core.Buffs.GetBuffSpell(BUFF_KEY)
+            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
 
             if table.getn(PowerInfusionPriests) == 0 then
                 Handlers.RequestCapable(spellName)
                 return
             end
 
-            local group = MoronBox.Core.Buffs.GetGroupNumber()
-            local member = MoronBox.Core.Buffs.GetMemberForGroup(PowerInfusionPriests, group, RACE_MODULE,
+            local group = Buffs.GetGroupNumber()
+            local member = Buffs.GetMemberForGroup(PowerInfusionPriests, group, RACE_MODULE,
                 POWER_INFUSION_MANA_COST)
 
             if not member then
-                MoronBox.Debugger:Warn("No " .. CLASS_MODULE .. " found")
+                Debugger:Warn("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = MoronBox.Core.Buffs.GetCustomPriority(PriorityOverrides,
+            local prio = Buffs.GetCustomPriority(PriorityOverrides,
                 {
                     ["Mage"] = "HIGH",
                     ["Warlock"] = "MEDIUM",
@@ -89,18 +94,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not MoronBox.Core.Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = MoronBox.Core.Buffs.GetBuffSpell(BUFF_KEY)
-            local soloResult = MoronBox.Core.Buffs.SoloBuff(BUFF_KEY, spellName)
+            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
+            local soloResult = Buffs.SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = MoronBox.Core.Buffs.GetNextTarget(Queue)
+            local targetUnitId, groupNum = Buffs.GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
@@ -123,9 +128,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return MoronBox.Core.Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
+    return Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
-    MoronBox.Core.Buffs.Unregister(MODULE_NAME)
+    Buffs.Unregister(MODULE_NAME)
 end)
 
 -- POWER INFUSION BUFF SYSTEM - COMPLETE FLOW
@@ -286,7 +291,7 @@ end)
 -- [[ Macro Entry Points ]] --
 
 -- Called to request the buff for the player's group.
-function MoronBox.Core.Buffs.RequestPowerInfusion()
+function Buffs.RequestPowerInfusion()
     if not mb_manaUser() then
         return
     end
@@ -297,14 +302,14 @@ function MoronBox.Core.Buffs.RequestPowerInfusion()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function MoronBox.Core.Buffs.ProcessPowerInfusion()
+function Buffs.ProcessPowerInfusion()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end
 end
 
 -- Called to register a custom priority function for a specific fight.
-function MoronBox.Core.Buffs.PriorityPowerInfusion(fightName, fn)
+function Buffs.PriorityPowerInfusion(fightName, fn)
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].OverridePriority(fightName, fn)
     end

@@ -1,9 +1,13 @@
 -- [[ Config & Constants ]] --
 
+MoronBox.Api = MoronBox.Api or {}
+local Api = MoronBox.Api
+
 MoronBox.Core = MoronBox.Core or {}
+local Core = MoronBox.Core
 
 --- @type MoronBoxState
-MoronBox.Core.State = {
+Core.State = {
     MBID = {},
     ToonsInGroup = {},
     RaidTanks = {},
@@ -26,31 +30,31 @@ MoronBox.Core.State = {
 }
 
 for i = 1, 8 do
-    MoronBox.Core.State.ToonsInGroup[i] = {}
+    Core.State.ToonsInGroup[i] = {}
 end
 
 --- @type MoronBoxState
-local ResetState = MoronBox.Api.CopyTable(MoronBox.Core.State)
+local ResetState = Api.CopyTable(Core.State)
 
 local myClass = UnitClass("player") --[[@as string]]
 local myName = UnitName("player") --[[@as string]]
 
 -- [[ InitializeClasslists ]]
 
---- Rebuilds all raid/party roster-derived caches under MoronBox.Core.State,
+--- Rebuilds all raid/party roster-derived caches under Core.State,
 --- isolated from the legacy mb_initializeClasslists() globals while both run
 --- side by side. Called primarily on roster changes (RAID_ROSTER_UPDATE,
 --- PARTY_MEMBERS_CHANGED).
-function MoronBox.Core.InitializeClasslists()
+function Core.InitializeClasslists()
     -- [[ Reset ]] --
     -- ResetState is a fixed template captured once at load time; CopyTable
     -- gives us a fresh, independent copy so we never mutate the template itself.
 
-    MoronBox.Core.State = MoronBox.Api.CopyTable(ResetState)
-    local State = MoronBox.Core.State
+    Core.State = Api.CopyTable(ResetState)
+    local State = Core.State
 
     -- Solo (or in an inconsistent transitional state): nothing to build, caches stay empty.
-    if not MoronBox.Api.GetGroupStatus() then
+    if not Api.GetGroupStatus() then
         return
     end
 
@@ -124,12 +128,12 @@ function MoronBox.Core.InitializeClasslists()
 
     -- [[ Sort ]] --
     ---- Keeping them in order instead of sorting is better for assigning tanks
-    -- MoronBox.Api.SortAlphabetically(State.AssignableTanks)
+    -- Api.SortAlphabetically(State.AssignableTanks)
 
-    MoronBox.Api.SortAlphabetically(State.RaidTanks)
-    MoronBox.Api.SortAlphabetically(State.DruidCasters)
+    Api.SortAlphabetically(State.RaidTanks)
+    Api.SortAlphabetically(State.DruidCasters)
 
     for _, list in pairs(State.ClassList) do
-        MoronBox.Api.SortAlphabetically(list)
+        Api.SortAlphabetically(list)
     end
 end
