@@ -145,8 +145,9 @@ function Unit.InRaidOrParty(unitId)
     return UnitInRaid(unitId) or UnitInParty(unitId)
 end
 
-function Unit.InMeleeRange()
-    return CheckInteractDistance("target", 3)
+function Unit.InMeleeRange(unitId)
+    unitId = unitId or "target"
+    return CheckInteractDistance(unitId, 3)
 end
 
 function Unit.InRange(unitId)

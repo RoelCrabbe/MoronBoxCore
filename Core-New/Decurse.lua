@@ -3,8 +3,6 @@
 MoronBox.Core.Decurse = MoronBox.Core.Decurse or {}
 local Decurse = MoronBox.Core.Decurse
 
--- MoronBox.Core.State
-
 local myClass = UnitClass("player") --[[@as string]]
 local myName = UnitName("player") --[[@as string]]
 local myRace = UnitRace("player") --[[@as string]]
