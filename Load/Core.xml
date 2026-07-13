@@ -6,5 +6,6 @@
     <Include file="..\Core-New\Buffs.lua" />
     <Include file="..\Core-New\Raid.lua" />
     <Include file="..\Core-New\Decurse.lua" />
+    <Include file="..\Core-New\Gear.lua" />
     <Include file="..\Core-New\Rotation.lua" />
 </Ui>
