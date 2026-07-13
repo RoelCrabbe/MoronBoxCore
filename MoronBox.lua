@@ -17,6 +17,9 @@ MoronBox.Registry = {}    -- Holds the public API tables ("Exposed APIs")
 MoronBox.ModuleNames = {} -- Holds the list of strings ("Keys")
 MoronBox.Api = {}         -- Extra functions
 MoronBox.Core = {}        -- All core state and configuration
+MoronBox.Unit = {}        -- All unit state and configuration
+MoronBox.Spells = {}      -- All the spell / Buff logic
+MoronBox.Report = {}      -- Reporting functions
 
 --- Creates a unique, isolated environment (sandbox) for a module.
 --- Each module receives a dedicated table instance, ensuring that global

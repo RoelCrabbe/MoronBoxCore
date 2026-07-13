@@ -1,5 +1,10 @@
 -- [[ Constants ]] --
 
+-- Common Names
+local myClass = UnitClass("player") --[[@as string]]
+local myName = UnitName("player") --[[@as string]]
+local myRace = UnitRace("player") --[[@as string]]
+
 ---
 --- Rounds `number` to the nearest integer, rounding half away from zero.
 ---
@@ -72,5 +77,87 @@ end
 --- @param list table: The table to search within.
 --- @return boolean: True if the player's own name is found in list, false otherwise.
 function FindMyNameInTable(list)
-    return FindInTable(list, UnitName("player"))
+    return FindInTable(list, myName)
+end
+
+function GetNumPartyOrRaidMembers()
+    if UnitInRaid("player") then
+        return GetNumRaidMembers()
+    end
+    return GetNumPartyMembers()
+end
+
+function GetTankDefenceStats()
+    local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
+    local total = dodge + parry + block
+    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total))
+end
+
+local CLASS_COLORS = {
+    ["Warrior"] = "|cffC79C6E",
+    ["Hunter"] = "|cffABD473",
+    ["Mage"] = "|cff69CCF0",
+    ["Rogue"] = "|cffFFF569",
+    ["Warlock"] = "|cff9482C9",
+    ["Druid"] = "|cffFF7D0A",
+    ["Shaman"] = "|cff0070DE",
+    ["Priest"] = "|cffFFFFFF",
+    ["Paladin"] = "|cffF58CBA"
+}
+
+local RAID_MARKERS = {
+    ["Skull"] = "|cffFFFFFF",
+    ["Cross"] = "|cffFF0000",
+    ["Square"] = "|cff00B4FF",
+    ["Moon"] = "|cffCEECF5",
+    ["Triangle"] = "|cff66FF00",
+    ["Diamond"] = "|cffCC00FF",
+    ["Circle"] = "|cffFF9900",
+    ["Star"] = "|cffFFFF00"
+}
+
+local function applyColor(color, text)
+    return color .. text .. "|r"
+end
+
+local function getUnitClassColor(unit, text)
+    local _, unitClass = UnitClass(unit)
+    if unitClass and CLASS_COLORS[unitClass] then
+        return applyColor(CLASS_COLORS[unitClass], text)
+    end
+    return nil
+end
+
+function GetColors(note)
+    if note == myName then
+        return getUnitClassColor("player", note)
+    end
+
+    if UnitInRaid("player") then
+        for i = 1, GetNumRaidMembers() do
+            local unit = "raid" .. i
+            if UnitName(unit) == note then
+                return getUnitClassColor(unit, note)
+            end
+        end
+    end
+
+    if UnitInParty("player") then
+        for i = 1, GetNumPartyMembers() do
+            local unit = "party" .. i
+            if UnitName(unit) == note then
+                return getUnitClassColor(unit, note)
+            end
+        end
+    end
+
+    if UnitName("target") == note then
+        return getUnitClassColor("target", note)
+    end
+
+    if RAID_MARKERS[note] then
+        return applyColor(RAID_MARKERS[note], note)
+    end
+
+    return note
 end

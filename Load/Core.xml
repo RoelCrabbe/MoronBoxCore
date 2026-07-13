@@ -1,5 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Core -->
     <Include file="..\Core-New\Core.lua" />
+    <Include file="..\Core-New\Spells.lua" />
     <Include file="..\Core-New\Buffs.lua" />
+    <Include file="..\Core-New\Raid.lua" />
+    <Include file="..\Core-New\Rotation.lua" />
 </Ui>

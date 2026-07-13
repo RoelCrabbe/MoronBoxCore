@@ -572,10 +572,6 @@ function mb_returnPlayerInRaidFromTable(list)
     return nil
 end
 
-function RaidIdx(qName)
-    return string.gsub(MBID[qName], "raid", "")
-end
-
 function mb_isItemInBagCoolDown(itemName)
     for bag = 0, 4 do
         for slot = 1, mb_bagSize(bag) do
@@ -1376,10 +1372,4 @@ function mb_executeRotation(rotation, context)
     else
         mb_cdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
     end
-end
-
-function mb_whoIsBetterTank()
-    local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
-    local total = dodge + parry + block
-    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total))
 end

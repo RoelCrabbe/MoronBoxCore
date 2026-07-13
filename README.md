@@ -137,3 +137,5 @@ Feel free to adapt it to your needs, and may your raids be smooth and your DPS p
 <p align="center">
   <sub>Active Development: 2018-2024 | Battle-Tested on Vmangos Core & Private Server Operations</sub>
 </p>
+
+Common\Handlers => Shared => mb_changeSpecc

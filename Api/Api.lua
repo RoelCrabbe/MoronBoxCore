@@ -55,6 +55,177 @@ function MoronBox.Api.SendAddonMessage(prefix, message)
     end
 end
 
+-- [[ Messages ]] --
+
+local CdMessage = {
+    History = {},
+    MaxHistory = 10,
+}
+
+--- Sends a message to the appropriate channel with a cooldown restriction.
+--- @param message string: The payload to be sent.
+--- @param timer number|nil: The cooldown in seconds (default 5).
+function MoronBox.Api.CdMessage(message, timer)
+    local coolDown = timer or 5
+    local time = GetTime()
+    local messageKey = (message or "")
+
+    local history = CdMessage.History
+    local lenght = table.getn(history)
+
+    for i = 1, lenght do
+        local entry = history[i]
+        if entry.key == messageKey and (entry.time + coolDown) > time then
+            return
+        end
+    end
+
+    if lenght >= CdMessage.MaxHistory then
+        table.remove(history, 1)
+    end
+
+    table.insert(history,
+        {
+            key = messageKey,
+            time = time
+        }
+    )
+
+    MoronBox.Api.SendChatMessage(message)
+end
+
+local CdPrint = {
+    History = {},
+    MaxHistory = 10,
+}
+
+--- Sends a message with a cooldown restriction.
+--- @param message string: The payload to be sent.
+--- @param timer number|nil: The cooldown in seconds (default 15).
+function MoronBox.Api.CdPrint(message, timer)
+    local coolDown = timer or 15
+    local time = GetTime()
+    local messageKey = (message or "")
+
+    local history = CdPrint.History
+    local lenght = table.getn(history)
+
+    for i = 1, lenght do
+        local entry = history[i]
+        if entry.key == messageKey and (entry.time + coolDown) > time then
+            return
+        end
+    end
+
+    if lenght >= CdPrint.MaxHistory then
+        table.remove(history, 1)
+    end
+
+    table.insert(history,
+        {
+            key = messageKey,
+            time = time
+        }
+    )
+
+    Print(message)
+end
+
+local CdRaidWarning = {
+    History = {},
+    MaxHistory = 10,
+}
+
+--- Sends a message with a cooldown restriction.
+--- @param message string: The payload to be sent.
+--- @param timer number|nil: The cooldown in seconds (default 15).
+function MoronBox.Api.CdRaidWarning(message, timer)
+    if not mb_imFocus() then
+        return
+    end
+
+    if not IsRaidLeader() then
+        MoronBox.Api.CdMessage(message, timer)
+        return
+    end
+
+    local coolDown = timer or 15
+    local time = GetTime()
+    local messageKey = (message or "")
+
+    local history = CdRaidWarning.History
+    local lenght = table.getn(history)
+
+    for i = 1, lenght do
+        local entry = history[i]
+        if entry.key == messageKey and (entry.time + coolDown) > time then
+            return
+        end
+    end
+
+    if lenght >= CdRaidWarning.MaxHistory then
+        table.remove(history, 1)
+    end
+
+    table.insert(history,
+        {
+            key = messageKey,
+            time = time
+        }
+    )
+
+    SendChatMessage(message, "RAID_WARNING")
+end
+
+local CdSay = {
+    History = {},
+    MaxHistory = 10,
+}
+
+--- Sends a say message with a cooldown restriction.
+--- @param message string: The payload to be sent.
+--- @param timer number|nil: The cooldown in seconds (default 5).
+function MoronBox.Api.CdSay(message, timer)
+    local coolDown = timer or 5
+    local time = GetTime()
+    local messageKey = (message or "")
+
+    local history = CdSay.History
+    local lenght = table.getn(history)
+
+    for i = 1, lenght do
+        local entry = history[i]
+        if entry.key == messageKey and (entry.time + coolDown) > time then
+            return
+        end
+    end
+
+    if lenght >= CdSay.MaxHistory then
+        table.remove(history, 1)
+    end
+
+    table.insert(history,
+        {
+            key = messageKey,
+            time = time
+        }
+    )
+
+    SendChatMessage(message, "SAY")
+end
+
+--- Abstraction for sending messages based on group status.
+--- @param message string: The payload to be sent.
+function MoronBox.Api.SendChatMessage(message)
+    if UnitInRaid("player") then
+        SendChatMessage(message, "RAID")
+    elseif GetNumPartyMembers() > 0 then
+        SendChatMessage(message, "PARTY")
+    else
+        -- How do we send a message? If not in raid nor party
+    end
+end
+
 -- [[ String Extentions ]] --
 
 --- Splits a string based on a delimiter.

@@ -415,7 +415,7 @@ function mb_mountUp()
     end
 
     if Instance.AQ40() then
-        use(GetLink("Resonating"))
+        use(MoronBox.Bag.GetItemLink("Resonating"))
         return
     end
 

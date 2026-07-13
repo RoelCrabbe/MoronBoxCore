@@ -3,6 +3,9 @@
 MoronBox.Api = MoronBox.Api or {}
 local Api = MoronBox.Api
 
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
+
 MoronBox.Core.Buffs = MoronBox.Core.Buffs or {}
 local Buffs = MoronBox.Core.Buffs
 
@@ -309,8 +312,8 @@ function Buffs.GetMemberForGroup(members, groupNum, raceName, requiredMana)
     local eligible = {}
     for _, name in pairs(members) do
         local unitId = MoronBox.Core.State.MBID[name]
-        local isAlive = mb_isAlive(unitId)
-        local hasMana = mb_manaOfUnit(name) >= requiredMana
+        local isAlive = Unit.IsAlive(unitId)
+        local hasMana = Unit.ManaOfUnit(unitId) >= requiredMana
         local matchesRace = (raceName == nil) or (UnitRace(unitId) == raceName)
 
         if isAlive and hasMana and matchesRace then
@@ -585,7 +588,7 @@ function Buffs.CheckClaimBalance(buffKey, claimedQueue)
 
     for name, n in pairs(counts) do
         if n > fairShare then
-            mb_cdMessage(string.format(
+            Api.CdMessage(string.format(
                 "%s: %s holds %d/%d claims (fair share: %d) — uneven distribution.",
                 buffKey, name, n, totalClaims, fairShare
             ))
