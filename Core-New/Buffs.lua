@@ -16,9 +16,6 @@ local BUFF_PRIORITY = {
     [DEFAULT_PRIORITY] = 40,
 }
 
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
 
 local BUFF_AURA_NAMES = {
     ["Fortitude"] = {
@@ -61,10 +58,6 @@ local BUFF_CAST_SPELLS = {
         PriorityBuff = "Prayer of Fortitude",
         SecondaryBuff = "Power Word: Fortitude",
     },
-    ["MarkOfTheWild"] = {
-        PriorityBuff = "Gift of the Wild",
-        SecondaryBuff = "Mark of the Wild",
-    },
     ["Spirit"] = {
         PriorityBuff = "Prayer of Spirit",
         SecondaryBuff = "Divine Spirit",
@@ -73,25 +66,25 @@ local BUFF_CAST_SPELLS = {
         PriorityBuff = "Prayer of Shadow Protection",
         SecondaryBuff = "Shadow Protection",
     },
+    ["PowerInfusion"] = {
+        SingleBuff = "Power Infusion",
+    },
     ["FearWard"] = {
-        PriorityBuff = "Fear Ward",
-        SecondaryBuff = "Fear Ward",
+        SingleBuff = "Fear Ward",
+    },
+    ["MarkOfTheWild"] = {
+        PriorityBuff = "Gift of the Wild",
+        SecondaryBuff = "Mark of the Wild",
     },
     ["Intellect"] = {
         PriorityBuff = "Arcane Brilliance",
         SecondaryBuff = "Arcane Intellect",
     },
-    ["PowerInfusion"] = {
-        PriorityBuff = "Power Infusion",
-        SecondaryBuff = "Power Infusion",
-    },
     ["DampenMagic"] = {
-        PriorityBuff = "Dampen Magic",
-        SecondaryBuff = "Dampen Magic",
+        SingleBuff = "Dampen Magic",
     },
     ["AmplifyMagic"] = {
-        PriorityBuff = "Amplify Magic",
-        SecondaryBuff = "Amplify Magic",
+        SingleBuff = "Amplify Magic",
     },
 }
 
@@ -117,6 +110,10 @@ local ADDON_MESSAGE_SCHEMA = {
         handler = "ICanCast"
     },
 }
+
+local myClass = UnitClass("player") --[[@as string]]
+local myName = UnitName("player") --[[@as string]]
+local myRace = UnitRace("player") --[[@as string]]
 
 --- @alias BuffKey
 --- | "Fortitude"
@@ -234,6 +231,12 @@ function Buffs.GetBuffSpell(name)
     local config = BUFF_CAST_SPELLS[name]
     if not config then
         error("Unknown buff: " .. tostring(name))
+    end
+
+    -- Buffs without a group-specific rank (e.g. Fear Ward, Power Infusion)
+    -- always cast the same spell, regardless of group status.
+    if config.SingleBuff then
+        return config.SingleBuff
     end
 
     if Api.GetGroupStatus() then
