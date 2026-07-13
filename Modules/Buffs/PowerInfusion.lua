@@ -40,7 +40,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 
     PowerInfusion:SetScript("OnEvent", function()
-        if event ~= "CHAT_MSG_ADDON" then
+        if event == "CHAT_MSG_ADDON" then
             if not Handlers.IsOwnMessage(arg1) then return end
             Buffs.DispatchMessage(arg2, arg4, Handlers)
         elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then

@@ -395,7 +395,6 @@ function Buffs.CreateHandlers(buffConfig)
 
     -- Checks if the received prefix belongs to the current buff config.
     handlers.IsOwnMessage = function(prefix)
-        if not prefix then return false end
         return string.find(prefix, "_" .. buffConfig.AddonPrefix .. "$") ~= nil
     end
 
