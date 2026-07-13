@@ -624,3 +624,9 @@ end
 function Raid.CrowdControlMCedRaidMemberNefarian()
     return Raid.CrowdControlMCedRaidMember("Shadow Command", "Sheeping")
 end
+
+-- [[ Locations ]] --
+
+function Raid.IsAtRazorgore()
+    return GetSubZoneText() == "Dragonmaw Garrison"
+end

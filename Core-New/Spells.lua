@@ -3,6 +3,12 @@
 MoronBox.Api = MoronBox.Api or {}
 local Api = MoronBox.Api
 
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
+
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+local Aura = MoronBox.Core.Aura
+
 MoronBox.Core.Spells = MoronBox.Core.Spells or {}
 local Spells = MoronBox.Core.Spells
 
@@ -288,6 +294,46 @@ function Spells.CoolDownCast(spell, cooldown)
         CastSpellByName(spell)
         MB_cooldowns[spell] = nil
     end
+end
+
+-- [[ Self Casting ]] --
+
+function Aura.SelfBuff(spell)
+    if Spells.Ready(spell) and not Aura.HasBuffOrDebuff(spell, "player", "buff") then
+        CastSpellByName(spell, 1)
+    end
+end
+
+local function AttemptBuff(unitList, spell)
+    for _, unitName in pairs(unitList) do
+        local unitID = MoronBox.Core.State.MBID[unitName]
+        if Unit.IsValidFriendlyTarget(unitID, spell) and not Aura.HasBuffOrDebuff(spell, unitID, "buff") then
+            CastSpellByName(spell, nil)
+            SpellTargetUnit(unitID)
+            SpellStopTargeting()
+            return true
+        end
+    end
+    return false
+end
+
+function Spells.TankBuff(spell)
+    AttemptBuff(MoronBox.Core.State.RaidTanks, spell)
+end
+
+function Spells.MeleeBuff(spell)
+    if AttemptBuff(MoronBox.Core.State.RaidTanks, spell) then
+        return true
+    end
+
+    if AttemptBuff(MoronBox.Core.State.ClassList["Rogue"], spell) then
+        return true
+    end
+
+    if spell == "Abolish Poison" then
+        return AttemptBuff(MoronBox.Core.State.ClassList["Warrior"], spell)
+    end
+    return false
 end
 
 -- [[ Pet Spells ]] --

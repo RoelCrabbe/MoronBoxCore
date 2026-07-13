@@ -1,123 +1,47 @@
---[####################################################################################################]--
---[########################################### Buff Tracking ##########################################]--
---[####################################################################################################]--
+-- [[ Config & Constants ]] --
 
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitLevel = UnitLevel
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitCanAttack = UnitCanAttack
-local UnitIsFriend = UnitIsFriend
-local UnitIsEnemy = UnitIsEnemy
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
-local UnitCreatureType = UnitCreatureType
-local UnitClassification = UnitClassification
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
 
--- Buff/Debuff Functions
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+local Aura = MoronBox.Core.Aura
 
--- Spell Functions
-local CastSpellByName = CastSpellByName
-local GetSpellCooldown = GetSpellCooldown
-local IsCurrentAction = IsCurrentAction
-
--- Target Functions
-local TargetUnit = TargetUnit
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-local AssistUnit = AssistUnit
-
--- Party/Raid Functions
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-local IsRaidLeader = IsRaidLeader
-
--- Player Position/Info Functions
-local GetRealZoneText = GetRealZoneText
-local GetSubZoneText = GetSubZoneText
-
--- Addon Communication (if supported on your server)
-local SendAddonMessage = SendAddonMessage
-
--- Misc Utility Functions
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
----@type table<string, string> -- key: exact spell/buff name; value: full icon texture path
 local BuffData = {}
 
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
+-- [[ Buff & Debuff ]] --
 
---- Zoekt op naam naar een buff of debuff op de opgegeven unit via tooltip-scanning.
----@param oBuff string De naam van de buff of debuff om naar te zoeken
----@param unit? UnitId De unit ID, standaard "player"
----@return "buff"|"debuff"|nil type Het type effect, of nil indien niet gevonden
----@return integer|nil index De index van het effect, of nil indien niet gevonden
----@return string|nil name De naam van het effect, of nil indien niet gevonden
-function mb_hasBuffNamed(oBuff, unit)
-    local buff = strlower(oBuff)
+function Aura.HasBuffNamed(oBuff, unit)
+    local buff = string.lower(oBuff)
+    local targetUnit = unit or "player"
     local tooltip = MMBTooltip
-    local textleft1 = getglobal(tooltip:GetName() .. "TextLeft1")
-    local text
-
-    if not unit then
-        unit = "player"
-    end
+    local textLeft1 = getglobal(tooltip:GetName() .. "TextLeft1")
 
     for i = 1, 32 do
         tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetUnitBuff(unit, i)
-        text = textleft1:GetText()
+        tooltip:SetUnitBuff(targetUnit, i)
+        local text = textLeft1:GetText()
         tooltip:Hide()
 
         if not text then
             break
         end
 
-        if strfind(strlower(text), buff) then
+        if string.find(string.lower(text), buff, 1, true) then
             return "buff", i, text
         end
     end
 
     for i = 1, 16 do
         tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        tooltip:SetUnitDebuff(unit, i)
-        text = textleft1:GetText()
+        tooltip:SetUnitDebuff(targetUnit, i)
+        local text = textLeft1:GetText()
         tooltip:Hide()
 
         if not text then
             break
         end
 
-        if strfind(strlower(text), buff) then
+        if string.find(string.lower(text), buff, 1, true) then
             return "debuff", i, text
         end
     end
@@ -126,12 +50,7 @@ function mb_hasBuffNamed(oBuff, unit)
     return nil
 end
 
---- Controleert of een unit een specifieke buff of debuff heeft, via de BuffData-lookup.
----@param spell string De sleutel in BuffData
----@param unit UnitId De unit ID
----@param buffOrDebuff "buff"|"debuff" Type check
----@return boolean found
-function mb_hasBuffOrDebuff(spell, unit, buffOrDebuff)
+function Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
     local texture = BuffData[spell]
 
     if not texture then
@@ -139,22 +58,22 @@ function mb_hasBuffOrDebuff(spell, unit, buffOrDebuff)
     end
 
     if buffOrDebuff == "buff" then
-        return mb_buffCheck(texture, unit)
+        return Aura.BuffCheck(texture, unit)
     elseif buffOrDebuff == "debuff" then
-        return mb_debuffCheck(texture, unit)
+        return Aura.DebuffCheck(texture, unit)
     end
 
     return false
 end
 
---- Controleert of een unit een buff heeft met de opgegeven texture.
----@param texture string Het texture pad van de te zoeken buff
----@param unit UnitId De unit ID (bijv. "target")
----@return boolean found
-function mb_buffCheck(texture, unit)
+function Aura.BuffCheck(texture, unit)
+    local targetUnit = unit or "player"
+
     for i = 1, 32 do
-        local buffTexture = UnitBuff(unit, i)
-        if not buffTexture then break end
+        local buffTexture = UnitBuff(targetUnit, i)
+        if not buffTexture then
+            break
+        end
 
         if buffTexture == texture then
             return true
@@ -164,14 +83,14 @@ function mb_buffCheck(texture, unit)
     return false
 end
 
---- Controleert of een unit een debuff heeft met de opgegeven texture.
----@param texture string Het texture pad van de te zoeken debuff
----@param unit UnitId De unit ID (bijv. "target")
----@return boolean found
-function mb_debuffCheck(texture, unit)
+function Aura.DebuffCheck(texture, unit)
+    local targetUnit = unit or "player"
+
     for i = 1, 16 do
-        local debuffTexture = UnitDebuff(unit, i)
-        if not debuffTexture then break end
+        local debuffTexture = UnitDebuff(targetUnit, i)
+        if not debuffTexture then
+            break
+        end
 
         if debuffTexture == texture then
             return true
@@ -181,10 +100,27 @@ function mb_debuffCheck(texture, unit)
     return false
 end
 
-function mb_debuffShadowWeavingAmount()
+function Aura.SomeoneInRaidBuffedWith(spell)
+    if UnitIsDead("player") or UnitIsGhost("player") then
+        return
+    end
+
+    for i = 1, GetNumRaidMembers() do
+        if UnitName("raid" .. i) and Unit.IsAlive("raid" .. i)
+            and Aura.HasBuffOrDebuff(spell, "raid" .. i, "buff") then
+            return true
+        end
+    end
+end
+
+-- [[ Tracking Specific Debuffs ]] --
+
+function Aura.GetShadowWeavingAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
         if texture == BuffData["Shadow Weaving"] and dispelType == "Magic" then
             return (applications or 1)
@@ -194,10 +130,12 @@ function mb_debuffShadowWeavingAmount()
     return 0
 end
 
-function mb_debuffSunderAmount()
+function Aura.GetSunderAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
         if texture == BuffData["Sunder Armor"] then
             return (applications or 1)
@@ -207,10 +145,12 @@ function mb_debuffSunderAmount()
     return 0
 end
 
-function mb_debuffArmorShatterAmount()
+function Aura.GetArmorShatterAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
         if texture == BuffData["Armor Shatter"] then
             return (applications or 1)
@@ -220,12 +160,14 @@ function mb_debuffArmorShatterAmount()
     return 0
 end
 
-function mb_debuffWintersChillAmount()
+function Aura.GetWintersChillAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
-        if texture == BuffData["Winter\'s Chill"] and dispelType == "Magic" then
+        if texture == BuffData["Winter's Chill"] and dispelType == "Magic" then
             return (applications or 1)
         end
     end
@@ -233,10 +175,12 @@ function mb_debuffWintersChillAmount()
     return 0
 end
 
-function mb_debuffImpShadowBoltAmount()
+function Aura.GetImprovedShadowBoltAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
         if texture == BuffData["Improved Shadow Bolt"] and dispelType == "Magic" then
             return (applications or 1)
@@ -246,10 +190,12 @@ function mb_debuffImpShadowBoltAmount()
     return 0
 end
 
-function mb_debuffScorchAmount()
+function Aura.GetScorchAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
-        if not texture then break end
+        if not texture then
+            break
+        end
 
         if texture == BuffData["Scorch"] and dispelType == "Magic" then
             return (applications or 1)
@@ -259,24 +205,26 @@ function mb_debuffScorchAmount()
     return 0
 end
 
-function mb_debuffIgniteAmount()
-    local iIterator = 1
-    local texture, applications = UnitDebuff("target", iIterator)
+function Aura.GetIgniteAmount()
+    local i = 1
+    local texture, applications = UnitDebuff("target", i)
 
-    while (texture) do
+    while texture do
         if texture == BuffData["Ignite"] then
             return (applications or 0)
         end
 
-        iIterator = iIterator + 1
-        texture, applications = UnitDebuff("target", iIterator)
+        i = i + 1
+        texture, applications = UnitDebuff("target", i)
     end
 
     return 0
 end
 
-function mb_mandokirGaze()
-    if not mb_hasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
+-- [[ Specific Aura At Fights ]] --
+
+function Aura.MandokirGaze()
+    if not Aura.HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
         return false
     end
 
@@ -288,59 +236,14 @@ function mb_mandokirGaze()
     return true
 end
 
-function mb_razorgoreOrb()
-    return mb_hasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
+function Aura.PlayerRazorgoreOrb()
+    return Aura.HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end
 
-function mb_isAtRazorgore()
-    return GetSubZoneText() == "Dragonmaw Garrison"
-end
+-- [[ Paladin Buffs ]] --
 
-function mb_selfBuff(spell)
-    if mb_spellReady(spell) and not mb_hasBuffOrDebuff(spell, "player", "buff") then
-        CastSpellByName(spell, 1)
-    end
-end
-
-local function AttemptBuff(unitList, spell)
-    for _, unitName in pairs(unitList) do
-        local unitID = MBID[unitName]
-        if mb_isValidFriendlyTarget(unitID, spell) and not mb_hasBuffOrDebuff(spell, unitID, "buff") then
-            CastSpellByName(spell, nil)
-            SpellTargetUnit(unitID)
-            SpellStopTargeting()
-            return true
-        end
-    end
-    return false
-end
-
-function mb_tankBuff(spell)
-    AttemptBuff(MB_raidTanks, spell)
-end
-
-function mb_meleeBuff(spell)
-    if AttemptBuff(MB_classList["Rogue"], spell) then return true end
-    if AttemptBuff(MB_raidTanks, spell) then return true end
-    if spell == "Abolish Poison" then
-        AttemptBuff(MB_classList["Warrior"], spell)
-    end
-end
-
-function mb_someoneInRaidBuffedWith(spell)
-    if UnitIsDead("player") or UnitIsGhost("player") then
-        return
-    end
-
-    for i = 1, GetNumRaidMembers() do
-        if UnitName("raid" .. i) and mb_isAlive("raid" .. i) and mb_hasBuffOrDebuff(spell, "raid" .. i, "buff") then
-            return true
-        end
-    end
-end
-
-function mb_multiBuffBlessing(spell)
-    local n, r
+function Aura.MultiBuffBlessing(spell)
+    local n, r, j
 
     if UnitInRaid("player") then
         n = GetNumRaidMembers()
@@ -352,34 +255,32 @@ function mb_multiBuffBlessing(spell)
                 j = j - n
             end
 
-            if (spell == "Greater Blessing of Wisdom" or spell == "Greater Blessing of Might") then
-                if UnitPowerType("raid" .. j) == 0 then
-                    spell = "Greater Blessing of Wisdom"
-                end
+            local unit = "raid" .. j
+            local currentSpell = spell
 
-                if (UnitPowerType("raid" .. j) == 1 or UnitPowerType("raid" .. j) == 3) then
-                    spell = "Greater Blessing of Might"
+            if (currentSpell == "Greater Blessing of Wisdom" or currentSpell == "Greater Blessing of Might") then
+                if UnitPowerType(unit) == 0 then
+                    currentSpell = "Greater Blessing of Wisdom"
+                elseif (UnitPowerType(unit) == 1 or UnitPowerType(unit) == 3) then
+                    currentSpell = "Greater Blessing of Might"
                 end
             end
 
-            if (spell == "Greater Blessing of Salvation") then
-                if mb_isValidFriendlyTarget("raid" .. j)
-                    and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff")
-                    and not FindInTable(MB_raidTanks, UnitName("raid" .. j)) then
+            if (currentSpell == "Greater Blessing of Salvation") then
+                if Unit.IsValidFriendlyTarget(unit, currentSpell)
+                    and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff")
+                    and not FindInTable(MoronBox.Core.State.RaidTanks, UnitName(unit)) then
                     ClearTarget()
-                    CastSpellByName(spell, nil)
-                    SpellTargetUnit("raid" .. j)
+                    CastSpellByName(currentSpell, nil)
+                    SpellTargetUnit(unit)
                     SpellStopTargeting()
                     return
                 end
-                return
-            end
-
-            if mb_isValidFriendlyTarget("raid" .. j)
-                and not mb_hasBuffOrDebuff(spell, "raid" .. j, "buff") then
+            elseif Unit.IsValidFriendlyTarget(unit, currentSpell)
+                and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
                 ClearTarget()
-                CastSpellByName(spell, nil)
-                SpellTargetUnit("raid" .. j)
+                CastSpellByName(currentSpell, nil)
+                SpellTargetUnit(unit)
                 SpellStopTargeting()
                 return
             end
@@ -388,26 +289,27 @@ function mb_multiBuffBlessing(spell)
         n = GetNumPartyMembers()
 
         for i = 1, n do
-            if (spell == "Greater Blessing of Wisdom" or spell == "Greater Blessing of Might") then
-                if UnitPowerType("party" .. i) == 0 then
-                    spell = "Greater Blessing of Wisdom"
-                end
+            local unit = "party" .. i
+            local currentSpell = spell
 
-                if UnitPowerType("party" .. i) == 1 or UnitPowerType("party" .. i) == 3 then
-                    spell = "Greater Blessing of Might"
+            if (currentSpell == "Greater Blessing of Wisdom" or currentSpell == "Greater Blessing of Might") then
+                if UnitPowerType(unit) == 0 then
+                    currentSpell = "Greater Blessing of Wisdom"
+                elseif UnitPowerType(unit) == 1 or UnitPowerType(unit) == 3 then
+                    currentSpell = "Greater Blessing of Might"
                 end
             end
 
-            if mb_isValidFriendlyTarget("party" .. i)
-                and not mb_hasBuffOrDebuff(spell, "party" .. i, "buff") then
-                TargetUnit("party" .. i)
-                CastSpellByName(spell)
+            if Unit.IsValidFriendlyTarget(unit, currentSpell)
+                and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
+                TargetUnit(unit)
+                CastSpellByName(currentSpell)
                 ClearTarget()
                 return
             end
         end
 
-        if not mb_dead("player") and not mb_hasBuffOrDebuff(spell, "player", "buff") then
+        if not Unit.IsDead() and not Aura.HasBuffOrDebuff(spell, "player", "buff") then
             TargetUnit("player")
             CastSpellByName(spell)
             ClearTarget()
@@ -416,9 +318,7 @@ function mb_multiBuffBlessing(spell)
     end
 end
 
---[####################################################################################################]--
---[############################################# Buff Data ############################################]--
---[####################################################################################################]--
+-- [[ Buff | Debuff Table Data ]] --
 
 BuffData["Prayer of Fortitude"]                   = "Interface\\Icons\\Spell_Holy_PrayerOfFortitude"
 BuffData["Power Word: Fortitude"]                 = "Interface\\Icons\\Spell_Holy_WordFortitude"
@@ -798,20 +698,3 @@ BuffData["Negative Charge"]                       = "Interface\\Icons\\Spell_Cha
 
 BuffData["Slow Fall"]                             = "Interface\\Icons\\Spell_Magic_FeatherFall"
 BuffData["Armor Shatter"]                         = "Interface\\Icons\\INV_Axe_12"
-
-function AmountOfBuffs()
-    local buffCount = 0
-
-    for i = 1, 32 do
-        local name = UnitBuff("player", i)
-        if name then
-            buffCount = buffCount + 1
-        end
-    end
-
-    return buffCount
-end
-
-function DebugBuffs()
-    Print("Player has " .. AmountOfBuffs() .. " buffs.")
-end
