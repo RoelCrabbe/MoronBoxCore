@@ -16,6 +16,13 @@ local PowerInfusion
 -- Minimum mana required to be considered a valid cast candidate.
 local POWER_INFUSION_MANA_COST = 250 * 0.95
 
+-- Discovery cooldown: how it works differs from Request/Claim messages.
+-- "Who can cast X" answers rarely change within a session (only on respec
+-- or roster change), so a long cooldown avoids re-asking a question whose
+-- answer almost never changes, unlike buff requests which are always
+-- time-sensitive and per-instance.
+local DISCOVERY_COOLDOWN = 300 -- 5 minutes
+
 -- References to frames.
 local Debugger = MoronBox.Debugger
 local Api = MoronBox.Api
@@ -68,7 +75,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local spellName = Buffs.GetBuffSpell(BUFF_KEY)
 
             if table.getn(PowerInfusionPriests) == 0 then
-                Handlers.RequestCapable(spellName)
+                Handlers.RequestCapable(spellName, DISCOVERY_COOLDOWN)
                 return
             end
 

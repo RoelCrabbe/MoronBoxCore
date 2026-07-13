@@ -473,14 +473,14 @@ function Buffs.CreateHandlers(buffConfig)
     -- [[ Discovery ]] --
 
     -- Step 1: broadcast the question. Fire-and-forget, no response handling here.
-    handlers.RequestCapable = function(spellName)
-        handlers.SendMessage("ANYONE_CAPABLE", string.format("ANYONE_CAPABLE_TO_CAST:%s", spellName), 15)
+    handlers.RequestCapable = function(spellName, cooldown)
+        handlers.SendMessage("ANYONE_CAPABLE", string.format("ANYONE_CAPABLE_TO_CAST:%s", spellName), cooldown)
     end
 
     -- Step 2: someone received the question. If I know the spell, announce myself.
     handlers.WhoCanCast = function(data)
         if mb_knowSpell(data.spellName) then
-            handlers.SendMessage("CAPABLE", string.format("CAPABLE_TO_CAST:%s", myName), 9)
+            handlers.SendMessage("CAPABLE", string.format("CAPABLE_TO_CAST:%s", myName), 15)
         end
     end
 
