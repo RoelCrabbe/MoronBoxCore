@@ -54,7 +54,7 @@ end
 --- Searches a table for a given value and returns true if found.
 --- Logs an error via the Debugger and returns false if list is not a valid table.
 --- @param list table: The table to search within.
---- @param needle string: The value to search for.
+--- @param needle? string|nil: The value to search for.
 --- @return boolean: True if needle is found anywhere in list, false otherwise (including invalid input).
 function FindInTable(list, needle)
     if type(list) ~= "table" then

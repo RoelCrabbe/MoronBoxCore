@@ -1,5 +1,11 @@
 -- [[ Config & Constants ]] --
 
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
+
+MoronBox.Core.Raid = MoronBox.Core.Raid or {}
+local Raid = MoronBox.Core.Raid
+
 MoronBox.Core.Decurse = MoronBox.Core.Decurse or {}
 local Decurse = MoronBox.Core.Decurse
 
@@ -15,18 +21,18 @@ function Decurse.Decurse()
     end
 
     if Instance.ZG() then
-        if mb_isAtJindo() and (myClass == "Mage" or myClass == "Druid") then
+        if Raid.IsAtJindo() and (myClass == "Mage" or myClass == "Druid") then
             return false
         end
     elseif Instance.BWL() then
-        if mb_tankTarget("Chromaggus") and MB_myAssignedHealTarget then
+        if Raid.TankTarget("Chromaggus") and MB_myAssignedHealTarget then
             return false
         end
     end
 
     if (SKERAM_InFight() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
-            or mb_tankTarget("Vaelastrasz the Corrupt") or mb_tankTarget("Princess Huhuran")
-            or mb_tankTarget("Garr") or mb_tankTarget("Firesworn") or mb_tankTarget("Anubisath Guardian")) then
+            or Raid.TankTarget("Vaelastrasz the Corrupt") or Raid.TankTarget("Princess Huhuran")
+            or Raid.TankTarget("Garr") or Raid.TankTarget("Firesworn") or Raid.TankTarget("Anubisath Guardian")) then
         return false
     end
 
@@ -45,7 +51,7 @@ function Decurse.Decurse()
             for j = 1, 16 do
                 local _, _, debuffType = UnitDebuff(unit, j, 1)
 
-                if debuffType and mb_in28yardRange(unit) then
+                if debuffType and Unit.In28yardRange(unit) then
                     local canCure = (debuffType == "Curse" and MBD.Session.Spells.Curse.Can_Cure_Curse) or
                         (debuffType == "Magic" and (MBD.Session.Spells.Magic.Can_Cure_Magic or MBD.Session.Spells.Magic.Can_Cure_Enemy_Magic)) or
                         (debuffType == "Poison" and MBD.Session.Spells.Poison.Can_Cure_Poison) or
@@ -63,7 +69,7 @@ function Decurse.Decurse()
 end
 
 function Decurse.PartyIsPoisoned()
-    if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Raid.TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 
@@ -88,7 +94,7 @@ function Decurse.PartyIsPoisoned()
 end
 
 function Decurse.RaidIsPoisoned()
-    if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Raid.TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 
@@ -106,7 +112,7 @@ function Decurse.RaidIsPoisoned()
 end
 
 function Decurse.PlayerIsPoisoned()
-    if mb_tankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Raid.TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 
