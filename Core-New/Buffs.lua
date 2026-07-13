@@ -239,7 +239,7 @@ function Buffs.GetBuffSpell(name)
         return config.SingleBuff
     end
 
-    if Api.GetGroupStatus() then
+    if Api.GetGroupStatus() and mb_knowSpell(config.PriorityBuff) then
         return config.PriorityBuff
     end
 
