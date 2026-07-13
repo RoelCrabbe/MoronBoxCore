@@ -241,9 +241,9 @@ function Buffs.GetBuffSpell(name)
 
     if Api.GetGroupStatus() then
         return config.PriorityBuff
-    else
-        return config.SecondaryBuff
     end
+
+    return config.SecondaryBuff
 end
 
 -- [[ Targeting & Priority Helpers ]] --
