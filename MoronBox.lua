@@ -211,6 +211,23 @@ MoronBox:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
         MoronBox:UpdateModules()
         MoronBox.BootUp = nil
+
+        MoronBox.QueueFunction(function()
+            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by MoroN.", 1, 1, 1)
+            DEFAULT_CHAT_FRAME:AddMessage(
+                "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
+
+            UIErrorsFrame:Hide()
+
+            MoronBox.Core.InitializeClasslists()
+            mb_mySpecc()
+            MoronBox.Core.Attack.SetAttackButton()
+            mb_getHealSpell()
+
+            if MB_raidAssist.AutoEquipSet.Active then
+                MoronBox.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
+            end
+        end)
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
         MoronBox.Core.InitializeClasslists()
         MoronBox:UpdateModules()
@@ -370,4 +387,58 @@ function MoronBox.Debugger:DumpTable(t, indent, seen)
             print(indent .. tostring(key) .. " = " .. tostring(value))
         end
     end
+end
+
+-- [[ Deferred / Queued Execution ]] --
+
+--- @class MoronBoxQueueTimer : Frame
+--- @field queue table
+--- @field interval number
+--- @field sinceLast number
+--- @field DeQueue fun(self: MoronBoxQueueTimer)
+
+--- @type MoronBoxQueueTimer
+local queueTimer
+
+--- Queues a function (with up to 9 optional arguments) to run after a short
+--- delay, spread out via a shared OnUpdate ticker. Multiple queued functions
+--- run one per tick (interval ~TOOLTIP_UPDATE_TIME), not all at once — pass a
+--- single closure wrapping multiple calls if they must run together, in order.
+--- @param a1 function: The function to call.
+--- @param a2 any|nil
+--- @param a3 any|nil
+--- @param a4 any|nil
+--- @param a5 any|nil
+--- @param a6 any|nil
+--- @param a7 any|nil
+--- @param a8 any|nil
+--- @param a9 any|nil
+function MoronBox.QueueFunction(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    if not queueTimer then
+        queueTimer = CreateFrame("Frame") --[[@as MoronBoxQueueTimer]]
+        queueTimer.queue = {}
+        queueTimer.interval = TOOLTIP_UPDATE_TIME
+
+        queueTimer.DeQueue = function()
+            local item = table.remove(queueTimer.queue, 1)
+            if item then
+                item[1](item[2], item[3], item[4], item[5], item[6], item[7], item[8], item[9])
+            end
+
+            if table.getn(queueTimer.queue) == 0 then
+                queueTimer:Hide()
+            end
+        end
+
+        queueTimer:SetScript("OnUpdate", function()
+            this.sinceLast = (this.sinceLast or 0) + arg1
+            while this.sinceLast > this.interval do
+                this.DeQueue()
+                this.sinceLast = this.sinceLast - this.interval
+            end
+        end)
+    end
+
+    table.insert(queueTimer.queue, { a1, a2, a3, a4, a5, a6, a7, a8, a9 })
+    queueTimer:Show()
 end
