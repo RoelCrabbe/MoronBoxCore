@@ -4,6 +4,8 @@ MoronBox.Core = MoronBox.Core or {}
 MoronBox.Core.Spells = MoronBox.Core.Spells or {}
 MoronBox.Core.Raid = MoronBox.Core.Raid or {}
 
+local MB_targetNearestDistanceChanged = nil
+
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
@@ -736,11 +738,6 @@ end
 
 local function HandleBWLTargetingPreFocus()
     local tName = UnitName("target")
-
-    for k, v in MB_myRazorgoreORBtank do
-        Print(k)
-        Print(v)
-    end
 
     if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
         return true

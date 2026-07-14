@@ -157,7 +157,7 @@ function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
         HasAnAtieshEquipped = true
     end
 
-    if equippedItem == atiesh and not mb_hasBuffOrDebuff("Atiesh", "player", "buff") and MoronBox.Unit.IsAlive("player") then
+    if equippedItem == atiesh and not Aura.HasBuffOrDebuff("Atiesh", "player", "buff") and MoronBox.Unit.IsAlive("player") then
         if Bag.GetAllContainerFreeSlots() >= 1 then
             PickupInventoryItem(16)
             PutItemInBackpack()

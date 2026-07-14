@@ -140,6 +140,13 @@ function MoronBox.Unit.In28YardRange(unitId)
     return Unit.InRange(unitId)
 end
 
+function MoronBox.Unit.GetNumPartyOrRaidMembers()
+    if UnitInRaid("player") then
+        return GetNumRaidMembers()
+    end
+    return GetNumPartyMembers()
+end
+
 function MoronBox.Unit.IsValidFriendlyTargetWithin28YardRange(unitId)
     return UnitExists(unitId) and
         Unit.IsAlive(unitId) and
