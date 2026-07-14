@@ -1,6 +1,6 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Core.Decurse = MoronBox.Core.Decurse or {}
+MoronBox.Core.Dispel = MoronBox.Core.Dispel or {}
 
 local myClass = UnitClass("player")
 
@@ -9,7 +9,7 @@ setfenv(1, MoronBox:GetEnvironment())
 
 -- [[ Decurse ]] --
 
-function MoronBox.Core.Decurse.Decurse()
+function MoronBox.Core.Dispel.Decurse()
     if not MBD then
         return false
     end
@@ -62,7 +62,7 @@ function MoronBox.Core.Decurse.Decurse()
     return false
 end
 
-function MoronBox.Core.Decurse.PartyIsPoisoned()
+function MoronBox.Core.Dispel.PartyIsPoisoned()
     if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
@@ -87,7 +87,7 @@ function MoronBox.Core.Decurse.PartyIsPoisoned()
     return false
 end
 
-function MoronBox.Core.Decurse.RaidIsPoisoned()
+function MoronBox.Core.Dispel.RaidIsPoisoned()
     if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
@@ -105,7 +105,7 @@ function MoronBox.Core.Decurse.RaidIsPoisoned()
     return false
 end
 
-function MoronBox.Core.Decurse.PlayerIsPoisoned()
+function MoronBox.Core.Dispel.PlayerIsPoisoned()
     if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
@@ -120,7 +120,7 @@ function MoronBox.Core.Decurse.PlayerIsPoisoned()
     return false
 end
 
-function MoronBox.Core.Decurse.PartyIsDiseased()
+function MoronBox.Core.Dispel.PartyIsDiseased()
     local numMembers = GetNumPartyMembers()
     for i = 1, numMembers do
         for x = 1, 16 do

@@ -158,6 +158,8 @@ MoronBox.Core.Healing.HealingState = {
 
 local myClass                      = UnitClass("player")
 
+local HealingState                 = MoronBox.Core.Healing.HealingState
+
 ---@diagnostic disable: undefined-global
 setfenv(1, MoronBox:GetEnvironment())
 
@@ -213,7 +215,7 @@ function MoronBox.Core.Healing.GetHealSpell()
             end
         end
     elseif myClass == "Priest" then
-        if FindMyNameInTable(MB_myFlashHealerList) then
+        if FindMyNameInTable(HealingState.Priest.FlashHealerList) then
             MB_myHealSpell = "Flash Heal"
             return true
         elseif EquippedSetCount("Vestments of Transcendence") == 8 then
@@ -242,7 +244,7 @@ function MoronBox.Core.Healing.CastSpellOnRandomRaidMember(spell, rank, percenta
         return
     end
 
-    local n, r, i, j
+    local n, r, j
     n = GetNumPartyOrRaidMembers()
     r = math.random(n) - 1
 
@@ -285,7 +287,7 @@ function MoronBox.Core.Healing.CastShieldOnRandomRaidMember(spell, rank)
         return
     end
 
-    local n, r, i, j
+    local n, r, j
     n = GetNumPartyOrRaidMembers()
     r = math.random(n) - 1
 
@@ -317,7 +319,7 @@ function MoronBox.Core.Healing.PowerShieldTanks()
     end
 
     local i = 1
-    for _, tank in MB_raidTanks do
+    for _, tank in ipairs(MB_raidTanks) do
         if IsAlive(MBID[tank]) then
             if MyClassOrder() == i then
                 TargetUnit(MBID[tank])
@@ -335,28 +337,28 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
         return false
     end
 
-    if TankTarget("Instructor Razuvious") and FindMyNameInTable(MB_myInstructorRazuviousAddHealer) then
+    if TankTarget("Instructor Razuvious") and FindMyNameInTable(HealingState.InstructorRazuviousAddHealer) then
         TargetUnit(MBID[MB_raidLeader] .. "targettarget")
 
         if UnitName("target") == "Deathknight Understudy" then
             local allowedOverHeal, spellToCast
 
             if myClass == "Shaman" then
-                allowedOverHeal = GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) *
-                    MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Healing Wave(" .. MB_myShamanMainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Healing Wave", HealingState.Shaman.MainTankHealingRank) *
+                    HealingState.MainTankOverhealingPercentage * 4
+                spellToCast = "Healing Wave(" .. HealingState.Shaman.MainTankHealingRank .. ")"
             elseif myClass == "Paladin" then
-                allowedOverHeal = GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) *
-                    MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Flash of Light", HealingState.Paladin.MainTankHealingRank) *
+                    HealingState.MainTankOverhealingPercentage * 4
+                spellToCast = "Flash of Light(" .. HealingState.Paladin.MainTankHealingRank .. ")"
             elseif myClass == "Priest" then
-                allowedOverHeal = GetHealValueFromRank("Greater Heal", MB_myPriestMainTankHealingRank) *
-                    MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Greater Heal(" .. MB_myPriestMainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Greater Heal", HealingState.Priest.MainTankHealingRank) *
+                    HealingState.MainTankOverhealingPercentage * 4
+                spellToCast = "Greater Heal(" .. HealingState.Priest.MainTankHealingRank .. ")"
             elseif myClass == "Druid" then
-                allowedOverHeal = GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) *
-                    MB_myMainTankOverhealingPercentage * 4
-                spellToCast = "Healing Touch(" .. MB_myDruidMainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Healing Touch", HealingState.Druid.MainTankHealingRank) *
+                    HealingState.MainTankOverhealingPercentage * 4
+                spellToCast = "Healing Touch(" .. HealingState.Druid.MainTankHealingRank .. ")"
             end
 
             if IsValidFriendlyTarget("target", spellToCast) and HealthDown("target") >= allowedOverHeal then

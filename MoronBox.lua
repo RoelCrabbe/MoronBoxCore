@@ -24,7 +24,7 @@ MoronBox.Core.Aura = {}     -- Subsection from Core
 MoronBox.Core.Spells = {}   -- Subsection from Core
 MoronBox.Core.Buffs = {}    -- Subsection from Core
 MoronBox.Core.Raid = {}     -- Subsection from Core
-MoronBox.Core.Decurse = {}  -- Subsection from Core
+MoronBox.Core.Dispel = {}   -- Subsection from Core
 MoronBox.Core.Gear = {}     -- Subsection from Core
 MoronBox.Core.Attack = {}   -- Subsection from Core
 MoronBox.Core.Rotation = {} -- Subsection from Core
@@ -41,18 +41,17 @@ MoronBox.Core.Report = {}   -- Subsection from Core
 --- @return table: A unique environment table with metatable fallback
 function MoronBox:GetEnvironment()
     local env = {}
+    local seen = {}
 
     local namespaces = {
         self.Api,
         self.Bag,
         self.Unit,
-
-        -- Core
         self.Core,
         self.Core.Aura,
         self.Core.Spells,
         self.Core.Raid,
-        self.Core.Decurse,
+        self.Core.Dispel,
         self.Core.Gear,
         self.Core.Attack,
         self.Core.Rotation,
@@ -60,9 +59,20 @@ function MoronBox:GetEnvironment()
         self.Core.Buffs,
     }
 
+    for _, ns in ipairs(namespaces) do
+        if ns then
+            for key, _ in pairs(ns) do
+                if seen[key] then
+                    self.Debugger:Warn("GetEnvironment: naming conflict for '" .. key .. "'")
+                    break
+                end
+                seen[key] = true
+            end
+        end
+    end
+
     setmetatable(env, {
         __index = function(_, key)
-            -- Prioritize internal API namespaces, fallback to WoW/Lua global space
             for _, ns in ipairs(namespaces) do
                 if ns and ns[key] ~= nil then
                     return ns[key]
@@ -252,7 +262,7 @@ MoronBox:SetScript("OnEvent", function()
             MoronBox.Core.InitializeClasslists()
             mb_mySpecc()
             MoronBox.Core.Attack.SetAttackButton()
-            mb_getHealSpell()
+            MoronBox.Core.Healing.GetHealSpell()
 
             if MB_raidAssist.AutoEquipSet.Active then
                 MoronBox.Core.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
