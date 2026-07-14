@@ -1,12 +1,15 @@
 -- [[ Config & Constants ]] --
 
 MoronBox.Core = MoronBox.Core or {}
+MoronBox.Core.Spells = MoronBox.Core.Spells or {}
 MoronBox.Core.Raid = MoronBox.Core.Raid or {}
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
 local Core = MoronBox.Core
+local GeneralState = Core.GeneralState
+local Spells = MoronBox.Core.Spells
 local Raid = MoronBox.Core.Raid
 
 ---@diagnostic disable: undefined-global
@@ -53,7 +56,7 @@ function MoronBox.Core.Raid.FocusAggro()
         return false
     end
 
-    local raidLeaderId = Core.GeneralState.MBID[MB_raidLeader]
+    local raidLeaderId = GeneralState.MBID[MB_raidLeader]
     if not raidLeaderId then
         return false
     end
@@ -94,7 +97,7 @@ function MoronBox.Core.Raid.TankTarget(mobName)
         return false
     end
 
-    local focusId = Core.GeneralState.MBID[MB_raidLeader]
+    local focusId = GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -108,7 +111,7 @@ function MoronBox.Core.Raid.TankTarget(mobName)
 end
 
 function MoronBox.Core.Raid.TankTargetInSet(mobSet)
-    local focusId = Core.GeneralState.MBID[MB_raidLeader]
+    local focusId = GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -126,7 +129,7 @@ function MoronBox.Core.Raid.TankTargetHealth()
         return nil
     end
 
-    local focusId = Core.GeneralState.MBID[MB_raidLeader]
+    local focusId = GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return nil
     end
@@ -144,7 +147,7 @@ function MoronBox.Core.Raid.TankTargetHealth()
 end
 
 function MoronBox.Core.Raid.TargetHealthFromRaidleader(mobName, percentage)
-    local focusId = Core.GeneralState.MBID[MB_raidLeader]
+    local focusId = GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -159,7 +162,7 @@ function MoronBox.Core.Raid.TargetHealthFromRaidleader(mobName, percentage)
 end
 
 function MoronBox.Core.Raid.TargetFromSpecificPlayer(targetName, playerName)
-    local playerId = Core.GeneralState.MBID[playerName]
+    local playerId = GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -175,7 +178,7 @@ end
 -- [[ Assist | LockOn ]] --
 
 function MoronBox.Core.Raid.AssistSpecificTargetFromPlayer(targetName, playerName)
-    local playerId = Core.GeneralState.MBID[playerName]
+    local playerId = GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -189,7 +192,7 @@ function MoronBox.Core.Raid.AssistSpecificTargetFromPlayer(targetName, playerNam
 end
 
 function MoronBox.Core.Raid.AssistSpecificTargetFromPlayerInMeleeRange(targetName, playerName)
-    local playerId = Core.GeneralState.MBID[playerName]
+    local playerId = GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -391,7 +394,7 @@ function MoronBox.Core.Raid.OffTank()
 
     for i = 1, 6 do
         if UnitExists("target") and GetRaidTargetIndex("target") == MB_myOTTarget
-            and not Dead("target") and not Raid.InCombat("target") then
+            and not Dead("target") and not InCombat("target") then
             return
         end
 
@@ -422,7 +425,7 @@ function MoronBox.Core.Raid.GetTargetNotOnTank()
     local targetTarget = UnitName("targettarget")
 
     -- Initial validation
-    if UnitIsEnemy("target", "player") and Raid.InCombat("target")
+    if UnitIsEnemy("target", "player") and InCombat("target")
         and not FindInTable(MB_raidTanks, targetTarget) then
         return
     end
@@ -433,7 +436,7 @@ function MoronBox.Core.Raid.GetTargetNotOnTank()
             TargetNearestEnemy()
         end
 
-        if UnitIsEnemy("target", "player") and Raid.InCombat("target")
+        if UnitIsEnemy("target", "player") and InCombat("target")
             and not FindInTable(MB_raidTanks, targetTarget) then
             return
         end
@@ -583,13 +586,13 @@ function MoronBox.Core.Raid.GTFO()
                 end
 
                 local runTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)
-                local runTankId = Core.GeneralState.MBID[runTank]
+                local runTankId = GeneralState.MBID[runTank]
 
                 if runTankId and IsAlive(runTankId) then
                     FollowByName(runTank, 1)
                 end
             else
-                local mainTankId = Core.GeneralState.MBID[MB_myOnyxiaFollowTarget]
+                local mainTankId = GeneralState.MBID[MB_myOnyxiaFollowTarget]
 
                 if mainTankId and InRange(mainTankId) then
                     if not InMeleeRange(mainTankId) then
@@ -612,7 +615,7 @@ function MoronBox.Core.Raid.GTFO()
             end
 
             local vaelTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
-            local vaelTankId = Core.GeneralState.MBID[vaelTank]
+            local vaelTankId = GeneralState.MBID[vaelTank]
 
             if vaelTankId and IsAlive(vaelTankId) then
                 FollowByName(vaelTank, 1)
@@ -624,7 +627,7 @@ function MoronBox.Core.Raid.GTFO()
             end
 
             local baronTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)
-            local baronTankId = Core.GeneralState.MBID[baronTank]
+            local baronTankId = GeneralState.MBID[baronTank]
 
             if baronTankId and IsAlive(baronTankId) then
                 FollowByName(baronTank, 1)
@@ -634,3 +637,639 @@ function MoronBox.Core.Raid.GTFO()
 end
 
 -- [[ Get Target ]] --
+
+local function GetTargetIfNone()
+    if not UnitName("target") or Dead("target") then
+        Raid.AssistFocus()
+    end
+end
+
+local function HandleNAXXTargetingPreFocus()
+    if THAD_TargetingPreFocus() then
+        return true
+    end
+
+    return false
+end
+
+local function HandleAQ40TargetingPreFocus()
+    if SKERAM_TargetingPreFocus() then
+        return true
+    end
+
+    if BUGTRIO_TargetingPreFocus() then
+        return true
+    end
+
+    if FANKRISS_TargetingPreFocus() then
+        return true
+    end
+
+    return false
+end
+
+local function HandleBWLTargetingPreFocus()
+    local tName = UnitName("target")
+
+    for k, v in MB_myRazorgoreORBtank do
+        Print(k)
+        Print(v)
+    end
+
+    if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+        return true
+    end
+
+    if not Raid.IsAtRazorgorePhase() then
+        return false
+    end
+
+    if (myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+            or myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) and MB_raidLeader ~= myName then
+        MB_raidLeader = myName
+    end
+
+    if not Raid.ImFocus() then
+        return false
+    end
+
+    if (myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) or myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) then
+        if not MB_targetNearestDistanceChanged then
+            SetCVar("targetNearestDistance", "15")
+            MB_targetNearestDistanceChanged = true
+        end
+
+        if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+            TargetNearestEnemy()
+            MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+            return true
+        end
+
+        if (tName == nil or Dead("target")) then
+            TargetNearestEnemy()
+            return true
+        end
+
+        CdPrint("Focussing Attacks on " .. tName, 30)
+        return true
+    end
+
+    return false
+end
+
+local function HandleNAXXTargetingPostFocus()
+    local tName = UnitName("target")
+
+    if LOA_Targeting() then
+        return true
+    end
+
+    if GROB_Targeting() then
+        return true
+    end
+
+    if THAD_TargetingPostFocus() then
+        return true
+    end
+
+    if (Raid.TankTarget("Instructor Razuvious") and FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+        (Raid.TankTarget("Grand Widow Faerlina") and FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+        return true
+    elseif Raid.TankTarget("Anub\'Rekhan") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() or ImRangedDPS() then
+            for i = 1, 2 do
+                if tName == "Crypt Guard" and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    elseif Raid.IsAtMonstrosity() then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() or ImRangedDPS() then
+            if Raid.LockOnTarget("Lightning Totem") then
+                return true
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    elseif Raid.TankTarget("Plague Beast") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() then
+            if MB_targetWrongWayOrTooFar.Active then
+                TargetNearestEnemy()
+                MB_targetWrongWayOrTooFar.Active = false
+                return true
+            end
+
+            for i = 1, 4 do
+                if tName == "Mutated Grub" and not Dead("target") then
+                    return true
+                end
+
+                if tName == "Plagued Bat" and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        elseif ImRangedDPS() then
+            Raid.AssistFocus()
+            return true
+        end
+    end
+
+    return false
+end
+
+local function HandleAQ40TargetingPostFocus()
+    local tName = UnitName("target")
+
+    if SKERAM_TargetingPostFocus() then
+        return true
+    end
+
+    if BUGTRIO_TargetingPostFocus() then
+        return true
+    end
+
+    if SARTURA_TargetingPostFocus() then
+        return true
+    end
+
+    if FANKRISS_TargetingPostFocus() then
+        return true
+    end
+
+    if Raid.TankTarget("Anubisath Defender") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        end
+
+        for i = 1, 4 do
+            if tName == "Anubisath Swarmguard" and not Dead("target") then
+                return true
+            end
+
+            if tName == "Anubisath Warrior" and not Dead("target") then
+                return true
+            end
+
+            TargetNearestEnemy()
+        end
+
+        GetTargetIfNone()
+        return true
+    end
+
+    return false
+end
+
+local function HandleBWLTargetingPostFocus()
+    local tName = UnitName("target")
+
+    if Raid.IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
+        if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+            return true
+        end
+
+        if not Raid.IsAtRazorgorePhase() then
+            return false
+        end
+
+        if (myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) or myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "15")
+                MB_targetNearestDistanceChanged = true
+            end
+
+            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+                TargetNearestEnemy()
+                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                return true
+            end
+
+            if (tName == nil or Dead("target")) then
+                TargetNearestEnemy()
+                return true
+            end
+
+            return true
+        elseif ImTank() then
+            if not MB_targetNearestDistanceChanged then
+                SetCVar("targetNearestDistance", "10")
+                MB_targetNearestDistanceChanged = true
+            end
+
+            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+                TargetNearestEnemy()
+                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                return true
+            end
+
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() then
+            if FindMyNameInTable(MB_myRazorgoreLeftDPSERS) then
+                local leftTank = ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+                if leftTank then
+                    AssistByName(leftTank)
+                end
+                return true
+            end
+            if FindMyNameInTable(MB_myRazorgoreRightDPSERS) then
+                local rightTank = ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+                if rightTank then
+                    AssistByName(rightTank)
+                end
+                return true
+            end
+
+            return true
+        elseif ImRangedDPS() then
+            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+                TargetNearestEnemy()
+                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                return true
+            end
+
+            if not Dead("target") then
+                return true
+            end
+
+            local tankOno = ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+            local tankTwo = ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+
+            if Raid.AssistSpecificTargetFromPlayer("Blackwing Mage", tankOno) then
+                return true
+            end
+
+            if Raid.AssistSpecificTargetFromPlayer("Blackwing Mage", tankTwo) then
+                return true
+            end
+
+            if Raid.AssistSpecificTargetFromPlayer("Blackwing Legionnaire", tankOno) then
+                return true
+            end
+
+            if Raid.AssistSpecificTargetFromPlayer("Blackwing Legionnaire", tankTwo) then
+                return true
+            end
+
+            if Raid.AssistSpecificTargetFromPlayer("Death Talon Dragonspawn", tankOno) then
+                return true
+            end
+
+            if Raid.AssistSpecificTargetFromPlayer("Death Talon Dragonspawn", tankTwo) then
+                return true
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+
+        return true
+    elseif GetSubZoneText() == "Shadow Wing Lair" then
+        if MB_raidLeader and Dead(DefaultState.MBID[MB_raidLeader]) then
+            Raid.LockOnTarget("Vaelastrasz the Corrupt")
+            return true
+        end
+    end
+
+    return false
+end
+
+local function HandleMCTargetingPostFocus()
+    if LUCIFRON_TargetingPostFocus() then
+        return true
+    end
+
+    if MAGMADAR_TargetingPostFocus() then
+        return true
+    end
+
+    if GEHENNAS_TargetingPostFocus() then
+        return true
+    end
+
+    if GARR_TargetingPostFocus() then
+        return true
+    end
+
+    if SHAZZRAH_TargetingPostFocus() then
+        return true
+    end
+
+    if GEDDON_TargetingPostFocus() then
+        return true
+    end
+
+    if GOLEMAGG_TargetingPostFocus() then
+        return true
+    end
+
+    if SULFURON_TargetingPostFocus() then
+        return true
+    end
+
+    if MAJORDOMO_TargetingPostFocus() then
+        return true
+    end
+
+    if RAGNAROS_TargetingPostFocus() then
+        return true
+    end
+
+    return false
+end
+
+local function HandleONYTargetingPostFocus()
+    local tName = UnitName("target")
+
+    if ImTank() then
+        Raid.GetTargetNotOnTank()
+        return true
+    elseif ImMeleeDPS() then
+        if MB_targetWrongWayOrTooFar.Active then
+            TargetNearestEnemy()
+            MB_targetWrongWayOrTooFar.Active = false
+            return true
+        end
+
+        for i = 1, 2 do
+            if tName == "Onyxian Whelp" and not Dead("target") then
+                return true
+            end
+
+            TargetNearestEnemy()
+        end
+
+        GetTargetIfNone()
+        return true
+    elseif ImRangedDPS() then
+        if Raid.AssistSpecificTargetFromPlayer("Onyxia", MB_myOnyxiaMainTank) then
+            return true
+        end
+
+        GetTargetIfNone()
+        return true
+    end
+
+    return false
+end
+
+local function HandleZGTargetingPostFocus()
+    local tName = UnitName("target")
+
+    if Raid.IsAtJindo() then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() then
+            for i = 1, 2 do
+                if tName == "Shade of Jin\'do" and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        elseif ImRangedDPS() then
+            for i = 1, 6 do
+                if tName == "Shade of Jin\'do" and not Dead("target") then
+                    return true
+                end
+
+                if tName == "Powerful Healing Ward" and not Dead("target") then
+                    return true
+                end
+
+                if tName == "Brain Wash Totem" and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    elseif Raid.TankTarget("High Priestess Mar\'li") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() then
+            Raid.AssistFocus()
+            return true
+        elseif ImRangedDPS() then
+            for i = 1, 4 do
+                if tName == "Spawn of Mar\'li" and not Dead("target") then
+                    return true
+                end
+
+                if tName == "Witherbark Speaker" and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    elseif Raid.TankTarget("High Priestess Jeklik") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImRangedDPS() then
+            for i = 1, 2 do
+                if tName == "Bloodseeker Bat" and InCombat("target") and not Dead("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    elseif Raid.TankTarget("High Priest Venoxis") then
+        if ImTank() then
+            Raid.GetTargetNotOnTank()
+            return true
+        elseif ImMeleeDPS() or ImRangedDPS() then
+            for i = 1, 2 do
+                if tName == "Razzashi Cobra" and not Dead("target")
+                    and not GetRaidTargetIndex("target") then
+                    return true
+                end
+
+                TargetNearestEnemy()
+            end
+
+            GetTargetIfNone()
+            return true
+        end
+    end
+
+    return false
+end
+
+local function HandleAQ20TargetingPostFocus()
+    local tName = UnitName("target")
+
+    if ImTank() then
+        Raid.GetTargetNotOnTank()
+        return true
+    elseif ImMeleeDPS() or ImRangedDPS() then
+        for i = 1, 2 do
+            if tName == "Hive\'Zara Larva" and not Dead("target") then
+                return true
+            end
+
+            TargetNearestEnemy()
+        end
+
+        GetTargetIfNone()
+        return true
+    end
+
+    return false
+end
+
+local function HandleUBRSTargetingPostFocus()
+    local tName = UnitName("target")
+
+    if ImTank() then
+        Raid.GetTargetNotOnTank()
+        return true
+    elseif ImMeleeDPS() or ImRangedDPS() then
+        for i = 1, 2 do
+            if tName == "Spectral Assassin" and not Dead("target") then
+                return true
+            end
+
+            TargetNearestEnemy()
+        end
+
+        GetTargetIfNone()
+        return true
+    end
+
+    return false
+end
+
+-- [[ MAGIC ]] --
+
+function MoronBox.Core.Raid.GetTarget()
+    local tName = UnitName("target")
+
+    if Instance.BWL() and Raid.IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
+        if myName == ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) and not
+            Raid.TankTarget("Razorgore the Untamed") then
+            Spells.OrbControlling()
+            return
+        end
+    end
+
+    if MB_myOTTarget then
+        return
+    end
+
+    if Instance.NAXX() then
+        if HandleNAXXTargetingPreFocus() then
+            return
+        end
+    elseif Instance.AQ40() then
+        if HandleAQ40TargetingPreFocus() then
+            return
+        end
+    elseif Instance.BWL() and Raid.IsAtRazorgore() and MB_myRazorgoreBoxStrategy then
+        if HandleBWLTargetingPreFocus() then
+            return
+        end
+    end
+
+    if ImFocus() then
+        if tName and InCombat("target") then
+            return
+        end
+
+        if not tName or UnitIsDead("target") or not UnitIsEnemy("player", "target") then
+            TargetNearestEnemy()
+        end
+        return
+    end
+
+    if Instance.NAXX() then
+        if HandleNAXXTargetingPostFocus() then
+            return
+        end
+    elseif Instance.AQ40() then
+        if HandleAQ40TargetingPostFocus() then
+            return
+        end
+    elseif Instance.BWL() then
+        if HandleBWLTargetingPostFocus() then
+            return
+        end
+    elseif Instance.MC() then
+        if HandleMCTargetingPostFocus() then
+            return
+        end
+    elseif Instance.ONY() and Raid.TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+        if HandleONYTargetingPostFocus() then
+            return
+        end
+    elseif Instance.ZG() then
+        if HandleZGTargetingPostFocus() then
+            return
+        end
+    elseif Instance.AQ20() and Raid.TankTarget("Ayamiss the Hunter") and not Dead("target") then
+        if HandleAQ20TargetingPostFocus() then
+            return
+        end
+    elseif GetRealZoneText() == "Blackrock Spire" and Raid.TankTarget("Lord Valthalak") and not Dead("target") then
+        if HandleUBRSTargetingPostFocus() then
+            return
+        end
+    end
+
+    local focId = GeneralState.MBID[MB_raidLeader]
+    if not focId then
+        Raid.AssistFocus()
+    elseif UnitName(focId .. "target") then
+        TargetUnit(focId .. "target")
+    else
+        if not UnitIsEnemy("player", "target") then
+            TargetNearestEnemy()
+        end
+    end
+
+    if ImTank() and not MB_myOTTarget then
+        Raid.GetTargetNotOnTank()
+        return
+    end
+
+    if not MB_myOTTarget then
+        Raid.AssistFocus()
+    end
+end

@@ -461,7 +461,7 @@ function MoronBox.Unit.MakeALine()
         return
     end
 
-    local headOfLine = Unit.ImFocus() and myName or Unit.GetTankName()
+    local headOfLine = Raid.ImFocus() and myName or Unit.GetTankName()
     local followList = {}
     local groups = {}
 
