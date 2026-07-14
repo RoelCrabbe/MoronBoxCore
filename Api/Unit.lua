@@ -5,6 +5,8 @@ local Unit = MoronBox.Unit
 
 MoronBox.Core = MoronBox.Core or {}
 
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
@@ -35,9 +37,9 @@ function MoronBox.Unit.PromoteEveryone()
 end
 
 function MoronBox.Unit.CrowdControlledMob()
-    if (mb_hasBuffOrDebuff("Shackle Undead", "target", "debuff")
-            or mb_hasBuffOrDebuff("Polymorph", "target", "debuff")
-            or mb_hasBuffOrDebuff("Banish", "target", "debuff")) then
+    if (MoronBox.Core.Aura.HasBuffOrDebuff("Shackle Undead", "target", "debuff")
+            or MoronBox.Core.Aura.HasBuffOrDebuff("Polymorph", "target", "debuff")
+            or MoronBox.Core.Aura.HasBuffOrDebuff("Banish", "target", "debuff")) then
         return true
     end
     return false

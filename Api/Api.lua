@@ -2,6 +2,8 @@
 
 MoronBox.Api = MoronBox.Api or {}
 
+MoronBox.Core.Raid = MoronBox.Core.Raid or {}
+
 local myName = UnitName("player")
 
 -- [[ AddonMessages ]] --
@@ -130,7 +132,7 @@ function MoronBox.Api.CdPrint(message, timer)
         }
     )
 
-    Print(message)
+    print(message)
 end
 
 local CdRaidWarning = {
@@ -142,7 +144,7 @@ local CdRaidWarning = {
 --- @param message string: The payload to be sent.
 --- @param timer number|nil: The cooldown in seconds (default 15).
 function MoronBox.Api.CdRaidWarning(message, timer)
-    if not mb_imFocus() then
+    if not MoronBox.Core.Raid.ImFocus() then
         return
     end
 
@@ -317,7 +319,7 @@ function MoronBox.Api.sPairs(t, order)
     local size
 
     for k in pairs(t) do
-        size = TableLength(keys)
+        size = MoronBox.Api.TableLength(keys)
         keys[size + 1] = k
     end
 
@@ -432,13 +434,13 @@ end
 --- @param list table: The table to search within.
 --- @return boolean: True if the player's own name is found in list, false otherwise.
 function MoronBox.Api.FindMyNameInTable(list)
-    return FindInTable(list, myName)
+    return MoronBox.Api.FindInTable(list, myName)
 end
 
 function GetTankDefenceStats()
     local dodge, parry, block = GetDodgeChance(), GetParryChance(), GetBlockChance()
     local total = dodge + parry + block
-    Print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total))
+    print(format("Def-Values: %.2f%% + %.2f%% + %.2f%% = %.2f%%", dodge, parry, block, total))
 end
 
 local CLASS_COLORS = {

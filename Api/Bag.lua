@@ -2,6 +2,8 @@
 
 MoronBox.Bag = MoronBox.Bag or {}
 
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+
 local myClass = UnitClass("player")
 
 local Bag = MoronBox.Bag
@@ -157,7 +159,7 @@ function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
         HasAnAtieshEquipped = true
     end
 
-    if equippedItem == atiesh and not Aura.HasBuffOrDebuff("Atiesh", "player", "buff") and MoronBox.Unit.IsAlive("player") then
+    if equippedItem == atiesh and not MoronBox.Core.Aura.HasBuffOrDebuff("Atiesh", "player", "buff") and MoronBox.Unit.IsAlive("player") then
         if Bag.GetAllContainerFreeSlots() >= 1 then
             PickupInventoryItem(16)
             PutItemInBackpack()
