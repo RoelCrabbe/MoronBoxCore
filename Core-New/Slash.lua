@@ -57,3 +57,27 @@ function mb_changeSpecc(specc)
         return
     end
 end
+
+function mb_assignHealerToName(assignments)
+    local _, _, healerName, assignedTarget = string.find(assignments, "(%a+)%s*(%a+)")
+
+    if mb_imFocus() then
+        if (assignedTarget == "Reset" or assignedTarget == "reset") then
+            mb_cdMessage("Unassigned " .. healerName .. " from healing a specific player.")
+            return
+        end
+
+        mb_cdMessage("Assigned " .. healerName .. " to heal " .. assignedTarget .. ".")
+    end
+
+    if myName == healerName then
+        if (assignedTarget == "Reset" or assignedTarget == "reset") then
+            Print("Unassigned myself to focusheal " .. MB_myAssignedHealTarget .. ".")
+            MB_myAssignedHealTarget = nil
+            return
+        end
+
+        MB_myAssignedHealTarget = assignedTarget
+        Print("Assigning myself to focusheal " .. MB_myAssignedHealTarget .. ".")
+    end
+end

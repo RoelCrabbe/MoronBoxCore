@@ -14,25 +14,25 @@ setfenv(1, MoronBox:GetEnvironment())
 function Report.Shards()
     if myClass == "Warlock" then
         local count = NumShards()
-        mb_cdMessage("I've got " .. count .. " shards!")
+        CdMessage("I've got " .. count .. " shards!")
     end
 end
 
 function Report.Runes()
-    if mb_imHealer() then
+    if ImHealer() then
         local count = NumDemonicRunes()
-        mb_cdMessage("I've got " .. count .. " runes!")
+        CdMessage("I've got " .. count .. " runes!")
     end
 end
 
 function Report.Manapots()
-    if mb_imHealer() then
+    if ImHealer() then
         local count = NumManapots()
-        mb_cdMessage("I've got " .. count .. " pots!")
+        CdMessage("I've got " .. count .. " pots!")
     end
 end
 
 function Report.Sands()
     local count = NumSands()
-    mb_cdMessage("I've got " .. count .. " sands!")
+    CdMessage("I've got " .. count .. " sands!")
 end

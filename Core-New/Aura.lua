@@ -13,7 +13,7 @@ setfenv(1, MoronBox:GetEnvironment())
 
 -- [[ Buff & Debuff ]] --
 
-function MoronBox.Core.AuraHasBuffNamed(oBuff, unit)
+function MoronBox.Core.Aura.HasBuffNamed(oBuff, unit)
     local buff = string.lower(oBuff)
     local targetUnit = unit or "player"
     local tooltip = MMBTooltip
@@ -53,7 +53,7 @@ function MoronBox.Core.AuraHasBuffNamed(oBuff, unit)
     return nil
 end
 
-function MoronBox.Core.AuraHasBuffOrDebuff(spell, unit, buffOrDebuff)
+function MoronBox.Core.Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
     local texture = BuffData[spell]
 
     if not texture then
@@ -69,7 +69,7 @@ function MoronBox.Core.AuraHasBuffOrDebuff(spell, unit, buffOrDebuff)
     return false
 end
 
-function MoronBox.Core.AuraBuffCheck(texture, unit)
+function MoronBox.Core.Aura.BuffCheck(texture, unit)
     local targetUnit = unit or "player"
 
     for i = 1, 32 do
@@ -86,7 +86,7 @@ function MoronBox.Core.AuraBuffCheck(texture, unit)
     return false
 end
 
-function MoronBox.Core.AuraDebuffCheck(texture, unit)
+function MoronBox.Core.Aura.DebuffCheck(texture, unit)
     local targetUnit = unit or "player"
 
     for i = 1, 16 do
@@ -103,7 +103,7 @@ function MoronBox.Core.AuraDebuffCheck(texture, unit)
     return false
 end
 
-function MoronBox.Core.AuraSomeoneInRaidBuffedWith(spell)
+function MoronBox.Core.Aura.SomeoneInRaidBuffedWith(spell)
     if UnitIsDead("player") or UnitIsGhost("player") then
         return
     end
@@ -118,7 +118,7 @@ end
 
 -- [[ Tracking Specific Debuffs ]] --
 
-function MoronBox.Core.AuraGetShadowWeavingAmount()
+function MoronBox.Core.Aura.GetShadowWeavingAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -133,7 +133,7 @@ function MoronBox.Core.AuraGetShadowWeavingAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetSunderAmount()
+function MoronBox.Core.Aura.GetSunderAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
         if not texture then
@@ -148,7 +148,7 @@ function MoronBox.Core.AuraGetSunderAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetArmorShatterAmount()
+function MoronBox.Core.Aura.GetArmorShatterAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
         if not texture then
@@ -163,7 +163,7 @@ function MoronBox.Core.AuraGetArmorShatterAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetWintersChillAmount()
+function MoronBox.Core.Aura.GetWintersChillAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -178,7 +178,7 @@ function MoronBox.Core.AuraGetWintersChillAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetImprovedShadowBoltAmount()
+function MoronBox.Core.Aura.GetImprovedShadowBoltAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -193,7 +193,7 @@ function MoronBox.Core.AuraGetImprovedShadowBoltAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetScorchAmount()
+function MoronBox.Core.Aura.GetScorchAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -208,7 +208,7 @@ function MoronBox.Core.AuraGetScorchAmount()
     return 0
 end
 
-function MoronBox.Core.AuraGetIgniteAmount()
+function MoronBox.Core.Aura.GetIgniteAmount()
     local i = 1
     local texture, applications = UnitDebuff("target", i)
 
@@ -226,12 +226,12 @@ end
 
 -- [[ Specific Aura At Fights ]] --
 
-function MoronBox.Core.AuraMandokirGaze()
+function MoronBox.Core.Aura.MandokirGaze()
     if not Aura.HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
         return false
     end
 
-    if mb_imBusy() then
+    if ImBusy() then
         SpellStopCasting()
     end
 
@@ -239,13 +239,13 @@ function MoronBox.Core.AuraMandokirGaze()
     return true
 end
 
-function MoronBox.Core.AuraPlayerRazorgoreOrb()
+function MoronBox.Core.Aura.PlayerRazorgoreOrb()
     return Aura.HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end
 
 -- [[ Paladin Buffs ]] --
 
-function MoronBox.Core.AuraMultiBuffBlessing(spell)
+function MoronBox.Core.Aura.MultiBuffBlessing(spell)
     local n, r, j
 
     if UnitInRaid("player") then

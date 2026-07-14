@@ -51,13 +51,13 @@ function MoronBox:GetEnvironment()
         self.Core,
         self.Core.Aura,
         self.Core.Spells,
-        self.Core.Buffs,
         self.Core.Raid,
         self.Core.Decurse,
         self.Core.Gear,
         self.Core.Attack,
         self.Core.Rotation,
-        self.Core.Report
+        self.Core.Report,
+        self.Core.Buffs,
     }
 
     setmetatable(env, {

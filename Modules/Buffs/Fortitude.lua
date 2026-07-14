@@ -1,5 +1,14 @@
 -- [[ Fortitude Buffing ]] --
 
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
+
+MoronBox.Core = MoronBox.Core or {}
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+MoronBox.Core.Spells = MoronBox.Core.Spells or {}
+local Aura = MoronBox.Core.Aura
+local Spells = MoronBox.Core.Spells
+
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "Fortitude"
 
@@ -85,12 +94,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return false
             end
 
-            if mb_isValidFriendlyTarget(targetUnitId, spellName) and not mb_hasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if Unit.IsValidFriendlyTarget(targetUnitId, spellName) and not Aura.HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
 
-                mb_selfBuff("Inner Focus")
+                Spells.SelfBuff("Inner Focus")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()
@@ -231,3 +240,5 @@ function Buffs.ProcessFortitude()
         MoronBox.Registry[MODULE_NAME].Process()
     end
 end
+
+-- /run MoronBox.Core.Buffs.ProcessFortitude()

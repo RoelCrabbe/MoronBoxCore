@@ -194,7 +194,7 @@ function MoronBox.Core.Buffs.HasActiveBuff(buffKey, unitId)
     end
 
     for _, buffName in pairs(list) do
-        if mb_hasBuffOrDebuff(buffName, unitId, "buff") then
+        if HasBuffOrDebuff(buffName, unitId, "buff") then
             return true
         end
     end
@@ -211,7 +211,7 @@ function MoronBox.Core.Buffs.HasBuffPremissions(buffKey, requiredClass)
         return false
     end
 
-    if mb_imBusy() then
+    if ImBusy() then
         return false
     end
 
@@ -219,7 +219,7 @@ function MoronBox.Core.Buffs.HasBuffPremissions(buffKey, requiredClass)
     if not list then return false end
 
     for _, spellName in pairs(list) do
-        if mb_spellReady(spellName) then
+        if IsSpellReady(spellName) then
             return true
         end
     end
@@ -242,7 +242,7 @@ function MoronBox.Core.Buffs.GetBuffSpell(name)
         return config.SingleBuff
     end
 
-    if GetGroupStatus() and mb_knowSpell(config.PriorityBuff) then
+    if GetGroupStatus() and IsSpellKnown(config.PriorityBuff) then
         return config.PriorityBuff
     end
 
@@ -482,7 +482,7 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
     -- Step 2: someone received the question. If I know the spell, announce myself.
     handlers.WhoCanCast = function(data)
-        if mb_knowSpell(data.spellName) then
+        if IsSpellKnown(data.spellName) then
             handlers.SendMessage("CAPABLE", string.format("CAPABLE_TO_CAST:%s", myName), 15)
         end
     end

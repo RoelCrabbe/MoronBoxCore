@@ -23,7 +23,7 @@ function MoronBox.Core.Spells.IsSpellReady(spellName, rank)
         return false
     end
 
-    return Spells.GetSpellCooldown(spellName) == 0
+    return Spells.SpellCooldown(spellName) == 0
 end
 
 function MoronBox.Core.Spells.IsSpellKnown(spellName, rank)
@@ -52,7 +52,7 @@ function MoronBox.Core.Spells.GetSpellIndex(spellName, rank)
     return nil, BOOKTYPE_SPELL
 end
 
-function MoronBox.Core.Spells.GetSpellCooldown(spellName)
+function MoronBox.Core.Spells.SpellCooldown(spellName)
     if not Spells.SpellExists(spellName) then
         return true
     end
@@ -265,9 +265,9 @@ function MoronBox.Core.Spells.CastOrWand(spell)
     end
 
     if MB_attackWandSlot then
-        mb_autoWandAttack()
+        AutoWandAttack()
     else
-        mb_autoAttack()
+        AutoAttack()
     end
 end
 

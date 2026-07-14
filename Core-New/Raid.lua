@@ -284,7 +284,7 @@ end
 
 local function IsOrbControlled()
     for i = 1, GetNumRaidMembers() do
-        if mb_hasBuffOrDebuff("Mind Exhaustion", "raid" .. i, "debuff") then
+        if HasBuffOrDebuff("Mind Exhaustion", "raid" .. i, "debuff") then
             return true
         end
     end
@@ -466,7 +466,7 @@ function MoronBox.Core.Raid.AutoAssignBanishOnMoam()
     for i = 1, 5 do
         if UnitName("target") == "Mana Fiend" and not GetRaidTargetIndex("target")
             and not Dead("target") then
-            mb_assignCrowdControl()
+            AssignCrowdControl()
             return
         end
 
@@ -553,7 +553,7 @@ end
 local AubAlertCD = GetTime()
 
 function MoronBox.Core.Raid.AnubisathAlert()
-    if mb_imFocus() or UnitName("target") ~= "Anubisath Sentinel" then
+    if Raid.ImFocus() or UnitName("target") ~= "Anubisath Sentinel" then
         return
     end
 
@@ -575,7 +575,7 @@ function MoronBox.Core.Raid.AnubisathAlert()
     }
 
     for buff, message in pairs(alerts) do
-        if mb_hasBuffOrDebuff(buff, "target", "buff") then
+        if HasBuffOrDebuff(buff, "target", "buff") then
             AubAlertCD = now
             MoronBox.Api.CdSay(message)
             break
@@ -602,9 +602,9 @@ function MoronBox.Core.Raid.CrowdControlMCedRaidMember(debuffName, message)
 
     for i = 1, GetNumRaidMembers() do
         local unitId = "raid" .. i
-        if UnitName(unitId) and Raid.IsAlive(unitId) and Raid.In28yardRange(unitId) then
-            if mb_hasBuffOrDebuff(debuffName, unitId, "debuff")
-                and not mb_hasBuffOrDebuff("Polymorph", unitId, "debuff") then
+        if UnitName(unitId) and IsAlive(unitId) and In28yardRange(unitId) then
+            if HasBuffOrDebuff(debuffName, unitId, "debuff")
+                and not HasBuffOrDebuff("Polymorph", unitId, "debuff") then
                 CastPolymorph(unitId)
 
                 if message then
@@ -641,14 +641,14 @@ function MoronBox.Core.Raid.GTFO()
 
     mb_useSandsOnChromaggus()
 
-    if mb_imFocus() then
+    if ImFocus() then
         return
     end
 
     if Instance.ONY() and MB_myOnyxiaBoxStrategy then
         if Raid.TankTarget("Onyxia") and (Raid.TankTargetHealth() <= 0.65 and Raid.TankTargetHealth() >= 0.4) and myName ~= MB_myOnyxiaMainTank then
             if Raid.FocusAggro() then
-                if myClass == "Paladin" and mb_spellReady("Divine Shield") then
+                if myClass == "Paladin" and IsSpellReady("Divine Shield") then
                     CastSpellByName("Divine Shield")
                     return
                 end
@@ -676,8 +676,8 @@ function MoronBox.Core.Raid.GTFO()
             GLUTH_GetOUT()
             GROB_GetOUT()
             mb_useFirePotsOnFaerlina()
-        elseif Instance.BWL() and mb_hasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
-            if myClass == "Paladin" and mb_spellReady("Divine Shield") then
+        elseif Instance.BWL() and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+            if myClass == "Paladin" and IsSpellReady("Divine Shield") then
                 CastSpellByName("Divine Shield")
                 return
             end
@@ -688,8 +688,8 @@ function MoronBox.Core.Raid.GTFO()
             if vaelTankId and IsAlive(vaelTankId) then
                 FollowByName(vaelTank, 1)
             end
-        elseif Instance.MC() and mb_hasBuffOrDebuff("Living Bomb", "player", "debuff") then
-            if myClass == "Paladin" and mb_spellReady("Divine Shield") then
+        elseif Instance.MC() and HasBuffOrDebuff("Living Bomb", "player", "debuff") then
+            if myClass == "Paladin" and IsSpellReady("Divine Shield") then
                 CastSpellByName("Divine Shield")
                 return
             end

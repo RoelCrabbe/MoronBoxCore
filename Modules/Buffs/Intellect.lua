@@ -1,5 +1,12 @@
 -- [[ Intellect Buffing ]] --
 
+MoronBox.Unit = MoronBox.Unit or {}
+local Unit = MoronBox.Unit
+
+MoronBox.Core = MoronBox.Core or {}
+MoronBox.Core.Aura = MoronBox.Core.Aura or {}
+local Aura = MoronBox.Core.Aura
+
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "Intellect"
 
@@ -85,7 +92,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return false
             end
 
-            if mb_isValidFriendlyTarget(targetUnitId, spellName) and not mb_hasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if Unit.IsValidFriendlyTarget(targetUnitId, spellName) and not Aura.HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
@@ -111,7 +118,7 @@ end)
 
 -- Called to request the buff for the player's group.
 function Buffs.RequestIntellect()
-    if not mb_manaUser() then
+    if not Unit.IsManaUser() then
         return
     end
 
