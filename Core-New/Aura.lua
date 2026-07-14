@@ -1,16 +1,17 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Unit = MoronBox.Unit or {}
-local Unit = MoronBox.Unit
-
 MoronBox.Core.Aura = MoronBox.Core.Aura or {}
-local Aura = MoronBox.Core.Aura
 
 local BuffData = {}
 
+local Aura = MoronBox.Core.Aura
+
+---@diagnostic disable: undefined-global
+setfenv(1, MoronBox:GetEnvironment())
+
 -- [[ Buff & Debuff ]] --
 
-function Aura.HasBuffNamed(oBuff, unit)
+function MoronBox.Core.AuraHasBuffNamed(oBuff, unit)
     local buff = string.lower(oBuff)
     local targetUnit = unit or "player"
     local tooltip = MMBTooltip
@@ -50,7 +51,7 @@ function Aura.HasBuffNamed(oBuff, unit)
     return nil
 end
 
-function Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
+function MoronBox.Core.AuraHasBuffOrDebuff(spell, unit, buffOrDebuff)
     local texture = BuffData[spell]
 
     if not texture then
@@ -66,7 +67,7 @@ function Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
     return false
 end
 
-function Aura.BuffCheck(texture, unit)
+function MoronBox.Core.AuraBuffCheck(texture, unit)
     local targetUnit = unit or "player"
 
     for i = 1, 32 do
@@ -83,7 +84,7 @@ function Aura.BuffCheck(texture, unit)
     return false
 end
 
-function Aura.DebuffCheck(texture, unit)
+function MoronBox.Core.AuraDebuffCheck(texture, unit)
     local targetUnit = unit or "player"
 
     for i = 1, 16 do
@@ -100,13 +101,13 @@ function Aura.DebuffCheck(texture, unit)
     return false
 end
 
-function Aura.SomeoneInRaidBuffedWith(spell)
+function MoronBox.Core.AuraSomeoneInRaidBuffedWith(spell)
     if UnitIsDead("player") or UnitIsGhost("player") then
         return
     end
 
     for i = 1, GetNumRaidMembers() do
-        if UnitName("raid" .. i) and Unit.IsAlive("raid" .. i)
+        if UnitName("raid" .. i) and IsAlive("raid" .. i)
             and Aura.HasBuffOrDebuff(spell, "raid" .. i, "buff") then
             return true
         end
@@ -115,7 +116,7 @@ end
 
 -- [[ Tracking Specific Debuffs ]] --
 
-function Aura.GetShadowWeavingAmount()
+function MoronBox.Core.AuraGetShadowWeavingAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -130,7 +131,7 @@ function Aura.GetShadowWeavingAmount()
     return 0
 end
 
-function Aura.GetSunderAmount()
+function MoronBox.Core.AuraGetSunderAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
         if not texture then
@@ -145,7 +146,7 @@ function Aura.GetSunderAmount()
     return 0
 end
 
-function Aura.GetArmorShatterAmount()
+function MoronBox.Core.AuraGetArmorShatterAmount()
     for i = 1, 16 do
         local texture, applications = UnitDebuff("target", i)
         if not texture then
@@ -160,7 +161,7 @@ function Aura.GetArmorShatterAmount()
     return 0
 end
 
-function Aura.GetWintersChillAmount()
+function MoronBox.Core.AuraGetWintersChillAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -175,7 +176,7 @@ function Aura.GetWintersChillAmount()
     return 0
 end
 
-function Aura.GetImprovedShadowBoltAmount()
+function MoronBox.Core.AuraGetImprovedShadowBoltAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -190,7 +191,7 @@ function Aura.GetImprovedShadowBoltAmount()
     return 0
 end
 
-function Aura.GetScorchAmount()
+function MoronBox.Core.AuraGetScorchAmount()
     for i = 1, 16 do
         local texture, applications, dispelType = UnitDebuff("target", i)
         if not texture then
@@ -205,7 +206,7 @@ function Aura.GetScorchAmount()
     return 0
 end
 
-function Aura.GetIgniteAmount()
+function MoronBox.Core.AuraGetIgniteAmount()
     local i = 1
     local texture, applications = UnitDebuff("target", i)
 
@@ -223,7 +224,7 @@ end
 
 -- [[ Specific Aura At Fights ]] --
 
-function Aura.MandokirGaze()
+function MoronBox.Core.AuraMandokirGaze()
     if not Aura.HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
         return false
     end
@@ -236,13 +237,13 @@ function Aura.MandokirGaze()
     return true
 end
 
-function Aura.PlayerRazorgoreOrb()
+function MoronBox.Core.AuraPlayerRazorgoreOrb()
     return Aura.HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end
 
 -- [[ Paladin Buffs ]] --
 
-function Aura.MultiBuffBlessing(spell)
+function MoronBox.Core.AuraMultiBuffBlessing(spell)
     local n, r, j
 
     if UnitInRaid("player") then
@@ -267,7 +268,7 @@ function Aura.MultiBuffBlessing(spell)
             end
 
             if (currentSpell == "Greater Blessing of Salvation") then
-                if Unit.IsValidFriendlyTarget(unit, currentSpell)
+                if IsValidFriendlyTarget(unit, currentSpell)
                     and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff")
                     and not FindInTable(MoronBox.Core.State.RaidTanks, UnitName(unit)) then
                     ClearTarget()
@@ -276,7 +277,7 @@ function Aura.MultiBuffBlessing(spell)
                     SpellStopTargeting()
                     return
                 end
-            elseif Unit.IsValidFriendlyTarget(unit, currentSpell)
+            elseif IsValidFriendlyTarget(unit, currentSpell)
                 and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
                 ClearTarget()
                 CastSpellByName(currentSpell, nil)
@@ -300,7 +301,7 @@ function Aura.MultiBuffBlessing(spell)
                 end
             end
 
-            if Unit.IsValidFriendlyTarget(unit, currentSpell)
+            if IsValidFriendlyTarget(unit, currentSpell)
                 and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
                 TargetUnit(unit)
                 CastSpellByName(currentSpell)
@@ -309,7 +310,7 @@ function Aura.MultiBuffBlessing(spell)
             end
         end
 
-        if not Unit.IsDead() and not Aura.HasBuffOrDebuff(spell, "player", "buff") then
+        if not IsDead() and not Aura.HasBuffOrDebuff(spell, "player", "buff") then
             TargetUnit("player")
             CastSpellByName(spell)
             ClearTarget()

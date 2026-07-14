@@ -1,23 +1,24 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Api = MoronBox.Api or {}
-local Api = MoronBox.Api
-
-MoronBox.Gear = MoronBox.Gear or {}
-local Gear = MoronBox.Gear
+MoronBox.Core.Gear = MoronBox.Core.Gear or {}
 
 local GearSets = {}
 
+local Gear = MoronBox.Core.Gear
+
+---@diagnostic disable: undefined-global
+setfenv(1, MoronBox:GetEnvironment())
+
 -- [[ Gear Sets ]] --
 
-function Gear.EquippedSetCount(set)
+function MoronBox.Core.Gear.EquippedSetCount(set)
     local item_slots = { 1, 3, 5, 6, 7, 8, 9, 10, 11, 12 }
     local count = 0
 
     for i = 1, 10 do
         local link = GetInventoryItemLink("player", item_slots[i])
         if link == nil then
-            Api.CdPrint("Missing gear in slots, can't decide proper healspell based on gear.", 30)
+            CdPrint("Missing gear in slots, can't decide proper healspell based on gear.", 30)
             return 0
         end
 
@@ -30,7 +31,7 @@ function Gear.EquippedSetCount(set)
     return count
 end
 
-function Gear.EquipRackSet(set)
+function MoronBox.Core.Gear.EquipRackSet(set)
     local _, _, _, Enabled = GetAddOnInfo("ItemRack")
 
     if Enabled then
@@ -38,27 +39,27 @@ function Gear.EquipRackSet(set)
         return
     end
 
-    Api.CdPrint("No ItemRack Addon Found")
+    CdPrint("No ItemRack Addon Found")
 end
 
-function Gear.TankGear()
+function MoronBox.Core.Gear.TankGear()
     Gear.EquipRackSet("TANK")
     MB_mySpecc = "Furytank"
     MB_warriorBinds = nil
 end
 
-function Gear.FuryGear()
+function MoronBox.Core.Gear.FuryGear()
     Gear.EquipRackSet("DPS")
     MB_mySpecc = "BT"
     MB_warriorBinds = "Fury"
 end
 
-function Gear.EvoGear()
+function MoronBox.Core.Gear.EvoGear()
     MB_evoGear = true
     Gear.EquipRackSet("EVO")
 end
 
-function Gear.MageGear()
+function MoronBox.Core.Gear.MageGear()
     MB_evoGear = false
     Gear.EquipRackSet("DPS")
 end
@@ -93,7 +94,7 @@ local AnnihilatorWeaverWeapons = {
     },
 }
 
-function Gear.GetWeaverWeapon(name, type)
+function MoronBox.Core.Gear.GetWeaverWeapon(name, type)
     return AnnihilatorWeaverWeapons[name][type]
 end
 

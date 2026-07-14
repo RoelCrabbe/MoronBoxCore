@@ -3,48 +3,20 @@
 MoronBox.Unit = MoronBox.Unit or {}
 local Unit = MoronBox.Unit
 
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
+MoronBox.Core = MoronBox.Core or {}
 
--- Spell Functions
-local CastSpellByName = CastSpellByName
-
--- Target Functions
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-
--- Party/Raid Functions
-local GetNumRaidMembers = GetNumRaidMembers
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
+local myClass = UnitClass("player")
+local myName = UnitName("player")
 
 -- [[ Unit ]] --
 
-function Unit.GetTankName()
+function MoronBox.Unit.GetTankName()
     if not MB_raidLeader then
         return nil
     end
 
-    local focusId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local GeneralState = MoronBox.Core.GeneralState
+    local focusId = GeneralState.MBID[MB_raidLeader]
 
     if focusId then
         return UnitName(focusId)
@@ -54,13 +26,15 @@ function Unit.GetTankName()
     end
 end
 
-function Unit.PromoteEveryone()
-    for toon in pairs(MoronBox.Core.State.MBID) do
+function MoronBox.Unit.PromoteEveryone()
+    local GeneralState = MoronBox.Core.GeneralState
+
+    for toon in pairs(GeneralState.MBID) do
         PromoteToAssistant(toon)
     end
 end
 
-function Unit.CrowdControlledMob()
+function MoronBox.Unit.CrowdControlledMob()
     if (mb_hasBuffOrDebuff("Shackle Undead", "target", "debuff")
             or mb_hasBuffOrDebuff("Polymorph", "target", "debuff")
             or mb_hasBuffOrDebuff("Banish", "target", "debuff")) then
@@ -69,32 +43,32 @@ function Unit.CrowdControlledMob()
     return false
 end
 
-function Unit.InCombat(unitId)
+function MoronBox.Unit.InCombat(unitId)
     unitId = unitId or "player"
     return UnitAffectingCombat(unitId)
 end
 
-function Unit.HealthPct(unitId)
+function MoronBox.Unit.HealthPct(unitId)
     unitId = unitId or "player"
     return UnitHealth(unitId) / UnitHealthMax(unitId)
 end
 
-function Unit.HealthDown(unitId)
+function MoronBox.Unit.HealthDown(unitId)
     unitId = unitId or "player"
     return UnitHealthMax(unitId) - UnitHealth(unitId)
 end
 
-function Unit.IsManaUser(unitId)
+function MoronBox.Unit.IsManaUser(unitId)
     unitId = unitId or "player"
     return UnitPowerType(unitId) == 0
 end
 
-function Unit.ManaPct(unitId)
+function MoronBox.Unit.ManaPct(unitId)
     unitId = unitId or "player"
     return UnitMana(unitId) / UnitManaMax(unitId)
 end
 
-function Unit.ManaDown(unitId)
+function MoronBox.Unit.ManaDown(unitId)
     unitId = unitId or "player"
     if not Unit.IsManaUser(unitId) then
         return 0
@@ -102,17 +76,17 @@ function Unit.ManaDown(unitId)
     return UnitManaMax(unitId) - UnitMana(unitId)
 end
 
-function Unit.ManaOfUnit(unitId)
+function MoronBox.Unit.ManaOfUnit(unitId)
     unitId = unitId or "player"
     return UnitMana(unitId)
 end
 
-function Unit.IsDead(unitId)
+function MoronBox.Unit.IsDead(unitId)
     unitId = unitId or "player"
     return UnitIsDeadOrGhost(unitId) or not (UnitHealth(unitId) > 1)
 end
 
-function Unit.IsAlive(unitId)
+function MoronBox.Unit.IsAlive(unitId)
     if not unitId then return false end
     if not UnitName(unitId) then return false end
     if UnitIsDead(unitId) then return false end
@@ -122,76 +96,78 @@ function Unit.IsAlive(unitId)
     return true
 end
 
-function Unit.ClearTargetIfNotAggroed()
+function MoronBox.Unit.ClearTargetIfNotAggroed()
     if not Unit.InCombat("target") then
         ClearTarget()
     end
 end
 
-function Unit.IsInGroup(unitName)
-    return MoronBox.Core.State.GroupID[unitName] ~= nil and
-        MoronBox.Core.State.GroupID[unitName] == MoronBox.Core.State.GroupID[myName]
+function MoronBox.Unit.IsInGroup(unitName)
+    local GeneralState = MoronBox.Core.GeneralState
+    return GeneralState.GroupID[unitName] ~= nil and
+        GeneralState.GroupID[unitName] == GeneralState.GroupID[myName]
 end
 
-function Unit.IsInRaid(unitName)
-    return MoronBox.Core.State.MBID[unitName] ~= nil
+function MoronBox.Unit.IsInRaid(unitName)
+    local GeneralState = MoronBox.Core.GeneralState
+    return GeneralState.MBID[unitName] ~= nil
 end
 
-function Unit.AggroOnPlayer()
+function MoronBox.Unit.AggroOnPlayer()
     return UnitName("targettarget") == myName
 end
 
-function Unit.InRaidOrParty(unitId)
+function MoronBox.Unit.InRaidOrParty(unitId)
     return UnitInRaid(unitId) or UnitInParty(unitId)
 end
 
-function Unit.InMeleeRange(unitId)
+function MoronBox.Unit.InMeleeRange(unitId)
     unitId = unitId or "target"
     return CheckInteractDistance(unitId, 3)
 end
 
-function Unit.InRange(unitId)
+function MoronBox.Unit.InRange(unitId)
     return CheckInteractDistance(unitId, 4)
 end
 
-function Unit.InTradeRange(unitId)
+function MoronBox.Unit.InTradeRange(unitId)
     if not unitId then return end
     return CheckInteractDistance(unitId, 2)
 end
 
-function Unit.In28YardRange(unitId)
+function MoronBox.Unit.In28YardRange(unitId)
     if not unitId then return end
     return Unit.InRange(unitId)
 end
 
-function Unit.IsValidFriendlyTargetWithin28YardRange(unitId)
+function MoronBox.Unit.IsValidFriendlyTargetWithin28YardRange(unitId)
     return UnitExists(unitId) and
         Unit.IsAlive(unitId) and
         UnitIsVisible(unitId) and
         Unit.In28YardRange(unitId)
 end
 
-function Unit.IsValidEnemyTargetWithin28YardRange(unitId)
+function MoronBox.Unit.IsValidEnemyTargetWithin28YardRange(unitId)
     return UnitExists(unitId) and
         Unit.InCombat(unitId) and
         Unit.In28YardRange(unitId)
 end
 
-function Unit.IsValidFriendlyTarget(unitId, spellName)
+function MoronBox.Unit.IsValidFriendlyTarget(unitId, spellName)
     return UnitExists(unitId) and
         Unit.IsAlive(unitId) and
         UnitIsVisible(unitId) and
         Unit.CanHelpfulSpellBeCastOn(spellName, unitId)
 end
 
-function Unit.IsValidMeleeTarget(unitId)
+function MoronBox.Unit.IsValidMeleeTarget(unitId)
     return UnitExists(unitId) and
         Unit.IsAlive(unitId) and
         Unit.InCombat(unitId) and
         Unit.InMeleeRange()
 end
 
-function Unit.IsNotValidTankableTarget()
+function MoronBox.Unit.IsNotValidTankableTarget()
     return not UnitName("target") or
         not UnitAffectingCombat("target") or
         not CheckInteractDistance("target", 3) or
@@ -199,7 +175,7 @@ function Unit.IsNotValidTankableTarget()
         Unit.CrowdControlledMob()
 end
 
-function Unit.CanHelpfulSpellBeCastOn(spell, unitId)
+function MoronBox.Unit.CanHelpfulSpellBeCastOn(spell, unitId)
     if MB_raidAssist.Use40yardHealingRangeOnInstants then
         local oldTarget = UnitName("target")
         if oldTarget then
@@ -223,7 +199,7 @@ function Unit.CanHelpfulSpellBeCastOn(spell, unitId)
     end
 end
 
-function Unit.GetUnitForPlayerName(playerName)
+function MoronBox.Unit.GetUnitForPlayerName(playerName)
     local members = Unit.GetNumPartyOrRaidMembers()
 
     for i = 1, members do
@@ -239,7 +215,7 @@ function Unit.GetUnitForPlayerName(playerName)
     return nil
 end
 
-function Unit.GetRaidIndexForPlayerName(playerName)
+function MoronBox.Unit.GetRaidIndexForPlayerName(playerName)
     local members = GetNumRaidMembers()
 
     for i = 1, members do
@@ -251,7 +227,7 @@ function Unit.GetRaidIndexForPlayerName(playerName)
     return nil
 end
 
-function Unit.GetUnitFromPartyOrRaidIndex(index)
+function MoronBox.Unit.GetUnitFromPartyOrRaidIndex(index)
     if index ~= 0 then
         if UnitInRaid("player") then
             return "raid" .. index
@@ -262,11 +238,15 @@ function Unit.GetUnitFromPartyOrRaidIndex(index)
     return "player"
 end
 
-function Unit.ReturnPlayerInRaidFromTable(list)
-    if not list then return nil end
+function MoronBox.Unit.ReturnPlayerInRaidFromTable(list)
+    if not list then
+        return nil
+    end
+
+    local GeneralState = MoronBox.Core.GeneralState
 
     for _, name in ipairs(list) do
-        if name and MoronBox.Core.State.MBID[name] then
+        if name and GeneralState.MBID[name] then
             return name
         end
     end
@@ -274,24 +254,26 @@ function Unit.ReturnPlayerInRaidFromTable(list)
     return nil
 end
 
-function Unit.PartyMana()
+function MoronBox.Unit.PartyMana()
     local mana = 0
     local maxMana = 0
     local manaPCT = 0
     local manaDown = 0
 
-    local myGroup = MoronBox.Core.State.GroupID[myName]
+    local GeneralState = MoronBox.Core.GeneralState
+
+    local myGroup = GeneralState.GroupID[myName]
     if not myGroup then
         return manaPCT, manaDown, mana, maxMana
     end
 
-    local groupMembers = MoronBox.Core.State.ToonsInGroup[myGroup]
+    local groupMembers = GeneralState.ToonsInGroup[myGroup]
     if not groupMembers then
         return manaPCT, manaDown, mana, maxMana
     end
 
     for _, name in ipairs(groupMembers) do
-        local memberId = MoronBox.Core.State.MBID[name]
+        local memberId = GeneralState.MBID[name]
         if memberId and Unit.IsAlive(memberId) and Unit.ManaUser(memberId) then
             mana = mana + UnitMana(memberId)
             maxMana = maxMana + UnitManaMax(memberId)
@@ -306,22 +288,24 @@ function Unit.PartyMana()
     return manaPCT, manaDown, mana, maxMana
 end
 
-function Unit.PartyHealth()
+function MoronBox.Unit.PartyHealth()
     local health = 0
     local maxHealth = 0
 
-    local myGroup = MoronBox.Core.State.GroupID[myName]
+    local GeneralState = MoronBox.Core.GeneralState
+
+    local myGroup = GeneralState.GroupID[myName]
     if not myGroup then
         return 0, 0
     end
 
-    local groupMembers = MoronBox.Core.State.ToonsInGroup[myGroup]
+    local groupMembers = GeneralState.ToonsInGroup[myGroup]
     if not groupMembers then
         return 0, 0
     end
 
     for _, name in ipairs(groupMembers) do
-        local memberId = MoronBox.Core.State.MBID[name]
+        local memberId = GeneralState.MBID[name]
         if memberId and Unit.IsAlive(memberId) then
             health = health + UnitHealth(memberId)
             maxHealth = maxHealth + UnitHealthMax(memberId)
@@ -335,7 +319,7 @@ function Unit.PartyHealth()
     return 0, 0
 end
 
-function Unit.RaidHealth()
+function MoronBox.Unit.RaidHealth()
     if not UnitInRaid("player") then
         return Unit.PartyHealth()
     end
@@ -343,7 +327,9 @@ function Unit.RaidHealth()
     local health = 0
     local maxHealth = 0
 
-    for _, id in pairs(MoronBox.Core.State.MBID) do
+    local GeneralState = MoronBox.Core.GeneralState
+
+    for _, id in pairs(GeneralState.MBID) do
         if id and Unit.IsAlive(id) then
             health = health + UnitHealth(id)
             maxHealth = maxHealth + UnitHealthMax(id)
@@ -357,17 +343,19 @@ function Unit.RaidHealth()
     return 0, 0
 end
 
-function Unit.WarriorHealth()
+function MoronBox.Unit.WarriorHealth()
     local health = 0
     local maxHealth = 0
 
-    local warriorList = MoronBox.Core.State.ClassList["Warrior"]
+    local GeneralState = MoronBox.Core.GeneralState
+
+    local warriorList = GeneralState.ClassList["Warrior"]
     if not warriorList then
         return 0, 0
     end
 
     for _, name in ipairs(warriorList) do
-        local warriorId = MoronBox.Core.State.MBID[name]
+        local warriorId = GeneralState.MBID[name]
 
         if warriorId and Unit.IsAlive(warriorId) then
             health = health + UnitHealth(warriorId)
@@ -382,27 +370,27 @@ function Unit.WarriorHealth()
     return 0, 0
 end
 
-function Unit.IsBearForm()
+function MoronBox.Unit.IsBearForm()
     return Unit.WarriorIsStance(1)
 end
 
-function Unit.IsSwimForm()
+function MoronBox.Unit.IsSwimForm()
     return Unit.WarriorIsStance(2)
 end
 
-function Unit.IsCatForm()
+function MoronBox.Unit.IsCatForm()
     return Unit.WarriorIsStance(3)
 end
 
-function Unit.IsTravelForm()
+function MoronBox.Unit.IsTravelForm()
     return Unit.WarriorIsStance(4)
 end
 
-function Unit.IsBoomForm()
+function MoronBox.Unit.IsBoomForm()
     return Unit.WarriorIsStance(5)
 end
 
-function Unit.IsDruidShapeShifted()
+function MoronBox.Unit.IsDruidShapeShifted()
     if myClass ~= "Druid" then
         return false
     end
@@ -414,7 +402,7 @@ function Unit.IsDruidShapeShifted()
         Unit.IsBoomForm()
 end
 
-function Unit.CancelDruidShapeShift()
+function MoronBox.Unit.CancelDruidShapeShift()
     if Unit.IsBearForm() then
         Unit.WarriorSetStance(1)
     elseif Unit.IsSwimForm() then
@@ -428,46 +416,46 @@ function Unit.CancelDruidShapeShift()
     end
 end
 
-function Unit.WarriorIsStance(id)
+function MoronBox.Unit.WarriorIsStance(id)
     local _, _, st, _ = GetShapeshiftFormInfo(id)
     return st
 end
 
-function Unit.WarriorIsBattle()
+function MoronBox.Unit.WarriorIsBattle()
     return Unit.WarriorIsStance(1)
 end
 
-function Unit.WarriorIsDefensive()
+function MoronBox.Unit.WarriorIsDefensive()
     return Unit.WarriorIsStance(2)
 end
 
-function Unit.WarriorIsBerserker()
+function MoronBox.Unit.WarriorIsBerserker()
     return Unit.WarriorIsStance(3)
 end
 
-function Unit.WarriorSetStance(id)
+function MoronBox.Unit.WarriorSetStance(id)
     CastShapeshiftForm(id)
 end
 
-function Unit.WarriorSetBattle()
+function MoronBox.Unit.WarriorSetBattle()
     if not Unit.WarriorIsBattle() then
         Unit.WarriorSetStance(1)
     end
 end
 
-function Unit.WarriorSetDefensive()
+function MoronBox.Unit.WarriorSetDefensive()
     if not Unit.WarriorIsDefensive() then
         Unit.WarriorSetStance(2)
     end
 end
 
-function Unit.WarriorSetBerserker()
+function MoronBox.Unit.WarriorSetBerserker()
     if not Unit.WarriorIsBerserker() then
         Unit.WarriorSetStance(3)
     end
 end
 
-function Unit.MakeALine()
+function MoronBox.Unit.MakeALine()
     if not UnitInRaid("player") then
         print("MakeALine only works in raid")
         return

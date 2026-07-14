@@ -12,14 +12,23 @@ MoronBox.BootUp = true
 MoronBox.CurrentModule = nil
 
 -- Core storage structures
-MoronBox.Modules = {}     -- Holds the init functions ("Recipes")
-MoronBox.Registry = {}    -- Holds the public API tables ("Exposed APIs")
-MoronBox.ModuleNames = {} -- Holds the list of strings ("Keys")
-MoronBox.Api = {}         -- Extra functions
-MoronBox.Core = {}        -- All core state and configuration
-MoronBox.Unit = {}        -- All unit state and configuration
-MoronBox.Spells = {}      -- All the spell / Buff logic
-MoronBox.Report = {}      -- Reporting functions
+MoronBox.Modules = {}       -- Holds the init functions ("Recipes")
+MoronBox.Registry = {}      -- Holds the public API tables ("Exposed APIs")
+MoronBox.ModuleNames = {}   -- Holds the list of strings ("Keys")
+MoronBox.Api = {}           -- Extra functions
+MoronBox.Bag = {}
+MoronBox.Unit = {}          -- All unit state and configuration
+
+MoronBox.Core = {}          -- All core state and configuration
+MoronBox.Core.Aura = {}     -- Subsection from Core
+MoronBox.Core.Spells = {}   -- Subsection from Core
+MoronBox.Core.Buffs = {}    -- Subsection from Core
+MoronBox.Core.Raid = {}     -- Subsection from Core
+MoronBox.Core.Decurse = {}  -- Subsection from Core
+MoronBox.Core.Gear = {}     -- Subsection from Core
+MoronBox.Core.Attack = {}   -- Subsection from Core
+MoronBox.Core.Rotation = {} -- Subsection from Core
+MoronBox.Core.Report = {}   -- Subsection from Core
 
 --- Creates a unique, isolated environment (sandbox) for a module.
 --- Each module receives a dedicated table instance, ensuring that global
@@ -33,11 +42,32 @@ MoronBox.Report = {}      -- Reporting functions
 function MoronBox:GetEnvironment()
     local env = {}
 
+    local namespaces = {
+        self.Api,
+        self.Bag,
+        self.Unit,
+
+        -- Core
+        self.Core,
+        self.Core.Aura,
+        self.Core.Spells,
+        self.Core.Buffs,
+        self.Core.Raid,
+        self.Core.Decurse,
+        self.Core.Gear,
+        self.Core.Attack,
+        self.Core.Rotation,
+        self.Core.Report
+    }
+
     setmetatable(env, {
         __index = function(_, key)
-            -- Prioritize internal API, fallback to WoW/Lua global space
-            local v = self.Api[key]
-            if v ~= nil then return v end
+            -- Prioritize internal API namespaces, fallback to WoW/Lua global space
+            for _, ns in ipairs(namespaces) do
+                if ns and ns[key] ~= nil then
+                    return ns[key]
+                end
+            end
             return getfenv(0)[key]
         end
     })
@@ -225,7 +255,7 @@ MoronBox:SetScript("OnEvent", function()
             mb_getHealSpell()
 
             if MB_raidAssist.AutoEquipSet.Active then
-                MoronBox.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
+                MoronBox.Core.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
             end
         end)
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then

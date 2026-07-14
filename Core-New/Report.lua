@@ -1,40 +1,38 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Bag = MoronBox.Bag or {}
-local Bag = MoronBox.Bag
+MoronBox.Core.Report = MoronBox.Core.Report or {}
 
-MoronBox.Report = MoronBox.Report or {}
-local Report = MoronBox.Report
+local myClass = UnitClass("player")
 
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
+local Report = MoronBox.Core.Report
+
+---@diagnostic disable: undefined-global
+setfenv(1, MoronBox:GetEnvironment())
 
 -- [[ Report ]] --
 
 function Report.Shards()
     if myClass == "Warlock" then
-        local count = Bag.NumShards()
+        local count = NumShards()
         mb_cdMessage("I've got " .. count .. " shards!")
     end
 end
 
 function Report.Runes()
     if mb_imHealer() then
-        local count = Bag.NumDemonicRunes()
+        local count = NumDemonicRunes()
         mb_cdMessage("I've got " .. count .. " runes!")
     end
 end
 
 function Report.Manapots()
     if mb_imHealer() then
-        local count = Bag.NumManapots()
+        local count = NumManapots()
         mb_cdMessage("I've got " .. count .. " pots!")
     end
 end
 
 function Report.Sands()
-    local count = Bag.NumSands()
+    local count = NumSands()
     mb_cdMessage("I've got " .. count .. " sands!")
 end

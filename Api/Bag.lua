@@ -1,16 +1,14 @@
 -- [[ Config & Constants ]] --
 
 MoronBox.Bag = MoronBox.Bag or {}
-local Bag = MoronBox.Bag
 
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
+local myClass = UnitClass("player")
+
+local Bag = MoronBox.Bag
 
 -- [[ Bag ]] --
 
-function Bag.GetItemLink(itemName)
+function MoronBox.Bag.GetItemLink(itemName)
     for bag = 0, 4 do
         for slot = 1, GetContainerNumSlots(bag) do
             local link = GetContainerItemLink(bag, slot)
@@ -22,7 +20,7 @@ function Bag.GetItemLink(itemName)
     return nil
 end
 
-function Bag.IsItemInBagCoolDown(itemName)
+function MoronBox.Bag.IsItemInBagCoolDown(itemName)
     local bag, slot = Bag.GetItemLocation(itemName)
     if not bag then
         return nil
@@ -32,11 +30,11 @@ function Bag.IsItemInBagCoolDown(itemName)
     return (enable == 1 and duration > 1.5)
 end
 
-function Bag.HaveInBags(itemName)
+function MoronBox.Bag.HaveInBags(itemName)
     return Bag.GetItemLink(itemName) ~= nil
 end
 
-function Bag.UseFromBags(itemName)
+function MoronBox.Bag.UseFromBags(itemName)
     local bag, slot = Bag.GetItemLocation(itemName)
     if bag then
         UseContainerItem(bag, slot)
@@ -45,7 +43,7 @@ function Bag.UseFromBags(itemName)
     return false
 end
 
-function Bag.GetAllContainerFreeSlots()
+function MoronBox.Bag.GetAllContainerFreeSlots()
     local sum = 0
     for bag = 0, 4 do
         sum = sum + Bag.GetContainerNumFreeSlots(bag)
@@ -53,7 +51,7 @@ function Bag.GetAllContainerFreeSlots()
     return sum
 end
 
-function Bag.GetContainerNumFreeSlots(bag)
+function MoronBox.Bag.GetContainerNumFreeSlots(bag)
     local count = 0
     for slot = 1, GetContainerNumSlots(bag) do
         if not GetContainerItemLink(bag, slot) then
@@ -63,7 +61,7 @@ function Bag.GetContainerNumFreeSlots(bag)
     return count
 end
 
-function Bag.HasAmmoBag()
+function MoronBox.Bag.HasAmmoBag()
     for bag = 1, 4 do
         local bagName = GetBagName(bag)
         if bagName and (string.find(bagName, "Quiver") or string.find(bagName, "Ammo Pouch")) then
@@ -73,7 +71,7 @@ function Bag.HasAmmoBag()
     return false
 end
 
-function Bag.HasItem(itemName)
+function MoronBox.Bag.HasItem(itemName)
     local count = 0
 
     for bag = 0, 4 do
@@ -93,7 +91,7 @@ function Bag.HasItem(itemName)
     return count
 end
 
-function Bag.CountItem(itemName)
+function MoronBox.Bag.CountItem(itemName)
     local count = 0
     for bag = 0, 4 do
         for slot = 1, GetContainerNumSlots(bag) do
@@ -107,23 +105,23 @@ function Bag.CountItem(itemName)
     return count
 end
 
-function Bag.NumShards()
+function MoronBox.Bag.NumShards()
     return Bag.CountItem("Soul Shard")
 end
 
-function Bag.NumManapots()
+function MoronBox.Bag.NumManapots()
     return Bag.CountItem("Major Mana Potion")
 end
 
-function Bag.NumDemonicRunes()
+function MoronBox.Bag.NumDemonicRunes()
     return Bag.CountItem("Demonic Rune")
 end
 
-function Bag.NumSands()
+function MoronBox.Bag.NumSands()
     return Bag.CountItem("Hourglass Sand")
 end
 
-function Bag.GetItemNameOfEquippedSlot(slotId)
+function MoronBox.Bag.GetItemNameOfEquippedSlot(slotId)
     local link = GetInventoryItemLink("player", slotId)
     if not link then
         return nil
@@ -133,7 +131,7 @@ function Bag.GetItemNameOfEquippedSlot(slotId)
     return itemName
 end
 
-function Bag.GetEquippedItemSubType(slotId)
+function MoronBox.Bag.GetEquippedItemSubType(slotId)
     local itemLink = GetInventoryItemLink("player", slotId)
     if not itemLink then
         return "Bow"
@@ -147,7 +145,7 @@ end
 
 local HasAnAtieshEquipped = nil
 
-function Bag.ReEquipAtieshIfNoAtieshBuff()
+function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
     if (myClass == "Warrior" or myClass == "Rogue" or (myClass == "Druid" and MB_raidAssist.Druid.PrioritizePriestsAtieshBuff)) then
         return
     end
@@ -174,7 +172,7 @@ function Bag.ReEquipAtieshIfNoAtieshBuff()
     end
 end
 
-function Bag.TrinketOnCD(slotId)
+function MoronBox.Bag.TrinketOnCD(slotId)
     if not GetInventoryItemLink("player", slotId) then
         return false
     end
@@ -248,17 +246,17 @@ local function useTrinket(slotId, trinketList)
     end
 end
 
-function Bag.HealerTrinkets()
+function MoronBox.Bag.HealerTrinkets()
     useTrinket(13, HealerTrinkets)
     useTrinket(14, HealerTrinkets)
 end
 
-function Bag.CasterTrinkets()
+function MoronBox.Bag.CasterTrinkets()
     useTrinket(13, CasterTrinkets)
     useTrinket(14, CasterTrinkets)
 end
 
-function Bag.MeleeTrinkets()
+function MoronBox.Bag.MeleeTrinkets()
     useTrinket(13, MeleeTrinkets)
     useTrinket(14, MeleeTrinkets)
 end

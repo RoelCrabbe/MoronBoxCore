@@ -1,16 +1,9 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Api = MoronBox.Api or {}
-local Api = MoronBox.Api
-
-MoronBox.Unit = MoronBox.Unit or {}
-local Unit = MoronBox.Unit
-
 MoronBox.Core = MoronBox.Core or {}
-local Core = MoronBox.Core
 
 --- @type MoronBoxState
-Core.State = {
+MoronBox.Core.GeneralState = {
     MBID = {},
     ToonsInGroup = {},
     RaidTanks = {},
@@ -33,18 +26,23 @@ Core.State = {
 }
 
 for i = 1, 8 do
-    Core.State.ToonsInGroup[i] = {}
+    MoronBox.Core.GeneralState.ToonsInGroup[i] = {}
 end
 
---- @type MoronBoxState
-local ResetState = Api.CopyTable(Core.State)
+local myClass = UnitClass("player")
+local myName = UnitName("player")
 
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
+local Core = MoronBox.Core
+
+---@diagnostic disable: undefined-global
+setfenv(1, MoronBox:GetEnvironment())
+
+--- @type MoronBoxState
+local ResetState = CopyTable(Core.GeneralState)
 
 -- [[ InitializeClasslists ]]
 
---- Rebuilds all raid/party roster-derived caches under Core.State,
+--- Rebuilds all raid/party roster-derived caches under Core.GeneralState,
 --- isolated from the legacy mb_initializeClasslists() globals while both run
 --- side by side. Called primarily on roster changes (RAID_ROSTER_UPDATE,
 --- PARTY_MEMBERS_CHANGED).
@@ -53,11 +51,11 @@ function Core.InitializeClasslists()
     -- ResetState is a fixed template captured once at load time; CopyTable
     -- gives us a fresh, independent copy so we never mutate the template itself.
 
-    Core.State = Api.CopyTable(ResetState)
-    local State = Core.State
+    Core.GeneralState = CopyTable(ResetState)
+    local GeneralState = Core.GeneralState
 
     -- Solo (or in an inconsistent transitional state): nothing to build, caches stay empty.
-    if not Api.GetGroupStatus() then
+    if not GetGroupStatus() then
         return
     end
 
@@ -69,10 +67,10 @@ function Core.InitializeClasslists()
             -- A gap in the roster index shouldn't wipe out everything already
             -- collected — skip this slot and keep processing the rest.
             if name and class and UnitIsConnected("raid" .. i) and UnitExists("raid" .. i) then
-                State.MBID[name] = "raid" .. i
-                table.insert(State.ClassList[class], name)
-                table.insert(State.ToonsInGroup[subGroup], name)
-                State.GroupID[name] = subGroup
+                GeneralState.MBID[name] = "raid" .. i
+                table.insert(GeneralState.ClassList[class], name)
+                table.insert(GeneralState.ToonsInGroup[subGroup], name)
+                GeneralState.GroupID[name] = subGroup
             end
         end
     else
@@ -93,51 +91,51 @@ function Core.InitializeClasslists()
                 break
             end
 
-            State.MBID[name] = unitId
-            table.insert(State.ClassList[class], name)
-            table.insert(State.ToonsInGroup[1], name)
-            State.GroupID[name] = 1
+            GeneralState.MBID[name] = unitId
+            table.insert(GeneralState.ClassList[class], name)
+            table.insert(GeneralState.ToonsInGroup[1], name)
+            GeneralState.GroupID[name] = 1
         end
     end
 
     -- [[ Tank Lists ]] --
     for _, tank in ipairs(MB_tankList) do
-        local tankId = State.MBID[tank]
+        local tankId = GeneralState.MBID[tank]
         if tankId then
             local tankClass = UnitClass(tankId)
 
             if UnitInParty(tankId) then
                 if tankClass == "Druid" then
-                    State.DruidTankInParty = true
+                    GeneralState.DruidTankInParty = true
                 end
                 if tankClass == "Warrior" then
-                    State.WarriorTankInParty = true
+                    GeneralState.WarriorTankInParty = true
                 end
             end
 
             if tank ~= myName then
-                table.insert(State.AssignableTanks, tank)
+                table.insert(GeneralState.AssignableTanks, tank)
             end
 
-            table.insert(State.RaidTanks, tank)
+            table.insert(GeneralState.RaidTanks, tank)
         end
     end
 
-    for _, name in pairs(State.ClassList["Druid"]) do
-        if not FindInTable(State.RaidTanks, name) then
-            table.insert(State.DruidCasters, name)
+    for _, name in pairs(GeneralState.ClassList["Druid"]) do
+        if not FindInTable(GeneralState.RaidTanks, name) then
+            table.insert(GeneralState.DruidCasters, name)
         end
     end
 
     -- [[ Sort ]] --
     ---- Keeping them in order instead of sorting is better for assigning tanks
-    -- Api.SortAlphabetically(State.AssignableTanks)
+    -- SortAlphabetically(State.AssignableTanks)
 
-    Api.SortAlphabetically(State.RaidTanks)
-    Api.SortAlphabetically(State.DruidCasters)
+    SortAlphabetically(GeneralState.RaidTanks)
+    SortAlphabetically(GeneralState.DruidCasters)
 
-    for _, list in pairs(State.ClassList) do
-        Api.SortAlphabetically(list)
+    for _, list in pairs(GeneralState.ClassList) do
+        SortAlphabetically(list)
     end
 end
 
@@ -215,10 +213,11 @@ end
 
 function Core.MyClassOrder()
     local myClassToons = {}
+    local GeneralState = Core.GeneralState
 
-    for name, id in MBID do
+    for name, id in GeneralState.MBID do
         local class = UnitClass(id)
-        if class == myClass and Unit.IsAlive(id) then
+        if class == myClass and IsAlive(id) then
             if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
             else
@@ -244,10 +243,11 @@ end
 
 function Core.MyInvertedClassOrder()
     local myClassToons = {}
+    local GeneralState = Core.GeneralState
 
-    for name, id in MBID do
+    for name, id in GeneralState.MBID do
         local class = UnitClass(id)
-        if class == myClass and Unit.IsAlive(id) then
+        if class == myClass and IsAlive(id) then
             if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
             else
@@ -285,7 +285,7 @@ function Core.MyGroupClassOrder()
         local class = UnitClass(unit)
         local partyName = UnitName(unit)
 
-        if class == myClass and partyName and Unit.IsAlive(unit) then
+        if class == myClass and partyName and IsAlive(unit) then
             if UnitPowerType(unit) == 0 then
                 myClassToons[partyName] = UnitManaMax(unit)
             else
@@ -323,7 +323,7 @@ function Core.MyInvertedGroupClassOrder()
         local class = UnitClass(unit)
         local partyName = UnitName(unit)
 
-        if class == myClass and partyName and Unit.IsAlive(unit) then
+        if class == myClass and partyName and IsAlive(unit) then
             if UnitPowerType(unit) == 0 then
                 myClassToons[partyName] = UnitManaMax(unit)
             else
@@ -349,11 +349,12 @@ end
 
 function Core.MyClassAlphabeticalOrder()
     local myClassToons = {}
+    local GeneralState = Core.GeneralState
 
-    for name, id in MBID do
+    for name, id in GeneralState.MBID do
         local class = UnitClass(id)
 
-        if class == myClass and Unit.IsAlive(id) then
+        if class == myClass and IsAlive(id) then
             table.insert(myClassToons, name)
         end
     end
@@ -373,13 +374,15 @@ end
 
 function Core.NumberOfClassInParty(checkClass)
     local i = 0
-    local myGroup = Core.State.GroupID[myName]
+    local GeneralState = Core.GeneralState
+    local myGroup = GeneralState.GroupID[myName]
 
     if not myGroup then
         return 0
     end
 
-    for _, name in ipairs(MB_toonsInGroup[myGroup]) do
+    for _, name in ipairs(GeneralState.ToonsInGroup[myGroup]) do
+        local MBID = GeneralState.MBID
         if MBID[name] and UnitClass(MBID[name]) == checkClass then
             i = i + 1
         end
@@ -389,8 +392,9 @@ end
 
 function Core.NumberOfClassInRaid(checkClass)
     local i = 0
+    local GeneralState = Core.GeneralState
 
-    for _, id in pairs(MBID) do
+    for _, id in pairs(GeneralState.MBID) do
         if UnitClass(id) == checkClass then
             i = i + 1
         end
@@ -400,7 +404,8 @@ function Core.NumberOfClassInRaid(checkClass)
 end
 
 function Core.GetRandomMageInGroup()
-    local mages = MoronBox.Core.State.ClassList["Mage"]
+    local GeneralState = Core.GeneralState
+    local mages = GeneralState.ClassList["Mage"]
 
     if not mages or table.getn(mages) == 0 then
         return nil

@@ -9,4 +9,5 @@
     <Include file="..\Core-New\Gear.lua" />
     <Include file="..\Core-New\Attack.lua" />
     <Include file="..\Core-New\Rotation.lua" />
+    <Include file="..\Core-New\Report.lua" />
 </Ui>
