@@ -1,9 +1,11 @@
 -- [[ Config & Constants ]] --
 
+MoronBox.Core = MoronBox.Core or {}
 MoronBox.Core.Aura = MoronBox.Core.Aura or {}
 
 local BuffData = {}
 
+local Core = MoronBox.Core
 local Aura = MoronBox.Core.Aura
 
 ---@diagnostic disable: undefined-global
@@ -270,7 +272,7 @@ function MoronBox.Core.AuraMultiBuffBlessing(spell)
             if (currentSpell == "Greater Blessing of Salvation") then
                 if IsValidFriendlyTarget(unit, currentSpell)
                     and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff")
-                    and not FindInTable(MoronBox.Core.State.RaidTanks, UnitName(unit)) then
+                    and not FindInTable(Core.GeneralState.RaidTanks, UnitName(unit)) then
                     ClearTarget()
                     CastSpellByName(currentSpell, nil)
                     SpellTargetUnit(unit)

@@ -1,10 +1,12 @@
 -- [[ Config & Constants ]] --
 
+MoronBox.Core = MoronBox.Core or {}
 MoronBox.Core.Raid = MoronBox.Core.Raid or {}
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
+local Core = MoronBox.Core
 local Raid = MoronBox.Core.Raid
 
 ---@diagnostic disable: undefined-global
@@ -51,7 +53,7 @@ function MoronBox.Core.Raid.FocusAggro()
         return false
     end
 
-    local raidLeaderId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local raidLeaderId = Core.GeneralState.MBID[MB_raidLeader]
     if not raidLeaderId then
         return false
     end
@@ -92,7 +94,7 @@ function MoronBox.Core.Raid.TankTarget(mobName)
         return false
     end
 
-    local focusId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local focusId = Core.GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -106,7 +108,7 @@ function MoronBox.Core.Raid.TankTarget(mobName)
 end
 
 function MoronBox.Core.Raid.TankTargetInSet(mobSet)
-    local focusId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local focusId = Core.GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -124,7 +126,7 @@ function MoronBox.Core.Raid.TankTargetHealth()
         return nil
     end
 
-    local focusId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local focusId = Core.GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return nil
     end
@@ -142,7 +144,7 @@ function MoronBox.Core.Raid.TankTargetHealth()
 end
 
 function MoronBox.Core.Raid.TargetHealthFromRaidleader(mobName, percentage)
-    local focusId = MoronBox.Core.State.MBID[MB_raidLeader]
+    local focusId = Core.GeneralState.MBID[MB_raidLeader]
     if not focusId then
         return false
     end
@@ -157,7 +159,7 @@ function MoronBox.Core.Raid.TargetHealthFromRaidleader(mobName, percentage)
 end
 
 function MoronBox.Core.Raid.TargetFromSpecificPlayer(targetName, playerName)
-    local playerId = MoronBox.Core.State.MBID[playerName]
+    local playerId = Core.GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -173,7 +175,7 @@ end
 -- [[ Assist | LockOn ]] --
 
 function MoronBox.Core.Raid.AssistSpecificTargetFromPlayer(targetName, playerName)
-    local playerId = MoronBox.Core.State.MBID[playerName]
+    local playerId = Core.GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -187,7 +189,7 @@ function MoronBox.Core.Raid.AssistSpecificTargetFromPlayer(targetName, playerNam
 end
 
 function MoronBox.Core.Raid.AssistSpecificTargetFromPlayerInMeleeRange(targetName, playerName)
-    local playerId = MoronBox.Core.State.MBID[playerName]
+    local playerId = Core.GeneralState.MBID[playerName]
     if not playerId then
         return false
     end
@@ -581,13 +583,13 @@ function MoronBox.Core.Raid.GTFO()
                 end
 
                 local runTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Onyxia)
-                local runTankId = MoronBox.Core.State.MBID[runTank]
+                local runTankId = Core.GeneralState.MBID[runTank]
 
                 if runTankId and IsAlive(runTankId) then
                     FollowByName(runTank, 1)
                 end
             else
-                local mainTankId = MoronBox.Core.State.MBID[MB_myOnyxiaFollowTarget]
+                local mainTankId = Core.GeneralState.MBID[MB_myOnyxiaFollowTarget]
 
                 if mainTankId and InRange(mainTankId) then
                     if not InMeleeRange(mainTankId) then
@@ -610,7 +612,7 @@ function MoronBox.Core.Raid.GTFO()
             end
 
             local vaelTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Vaelastrasz)
-            local vaelTankId = MoronBox.Core.State.MBID[vaelTank]
+            local vaelTankId = Core.GeneralState.MBID[vaelTank]
 
             if vaelTankId and IsAlive(vaelTankId) then
                 FollowByName(vaelTank, 1)
@@ -622,7 +624,7 @@ function MoronBox.Core.Raid.GTFO()
             end
 
             local baronTank = ReturnPlayerInRaidFromTable(MB_raidAssist.GTFO.Baron)
-            local baronTankId = MoronBox.Core.State.MBID[baronTank]
+            local baronTankId = Core.GeneralState.MBID[baronTank]
 
             if baronTankId and IsAlive(baronTankId) then
                 FollowByName(baronTank, 1)
@@ -630,3 +632,5 @@ function MoronBox.Core.Raid.GTFO()
         end
     end
 end
+
+-- [[ Get Target ]] --
