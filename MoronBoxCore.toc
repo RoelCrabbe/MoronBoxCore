@@ -93,5 +93,6 @@ Rotation\Warlock.lua
 Rotation\Warrior.lua
 
 Load\Api.xml
+Load\Config.xml
 Load\Core.xml
 Load\Modules.xml

@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Include file="..\Api\Api.lua" />
+    <Include file="..\Api\Unit.lua" />
+    <Include file="..\Api\Bag.lua" />
+</Ui>
