@@ -33,16 +33,17 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 
 local Core = MoronBox.Core
+local GeneralState = Core.GeneralState
 
 ---@diagnostic disable: undefined-global
 setfenv(1, MoronBox:GetEnvironment())
 
 --- @type MoronBoxState
-local ResetState = CopyTable(Core.GeneralState)
+local ResetState = CopyTable(GeneralState)
 
 -- [[ InitializeClasslists ]]
 
---- Rebuilds all raid/party roster-derived caches under Core.GeneralState,
+--- Rebuilds all raid/party roster-derived caches under GeneralState,
 --- isolated from the legacy mb_initializeClasslists() globals while both run
 --- side by side. Called primarily on roster changes (RAID_ROSTER_UPDATE,
 --- PARTY_MEMBERS_CHANGED).
@@ -51,8 +52,7 @@ function Core.InitializeClasslists()
     -- ResetState is a fixed template captured once at load time; CopyTable
     -- gives us a fresh, independent copy so we never mutate the template itself.
 
-    Core.GeneralState = CopyTable(ResetState)
-    local GeneralState = Core.GeneralState
+    GeneralState = CopyTable(ResetState)
 
     -- Solo (or in an inconsistent transitional state): nothing to build, caches stay empty.
     if not GetGroupStatus() then
@@ -213,7 +213,6 @@ end
 
 function Core.MyClassOrder()
     local myClassToons = {}
-    local GeneralState = Core.GeneralState
 
     for name, id in GeneralState.MBID do
         local class = UnitClass(id)
@@ -243,7 +242,6 @@ end
 
 function Core.MyInvertedClassOrder()
     local myClassToons = {}
-    local GeneralState = Core.GeneralState
 
     for name, id in GeneralState.MBID do
         local class = UnitClass(id)
@@ -349,7 +347,6 @@ end
 
 function Core.MyClassAlphabeticalOrder()
     local myClassToons = {}
-    local GeneralState = Core.GeneralState
 
     for name, id in GeneralState.MBID do
         local class = UnitClass(id)
@@ -374,7 +371,6 @@ end
 
 function Core.NumberOfClassInParty(checkClass)
     local i = 0
-    local GeneralState = Core.GeneralState
     local myGroup = GeneralState.GroupID[myName]
 
     if not myGroup then
@@ -392,7 +388,6 @@ end
 
 function Core.NumberOfClassInRaid(checkClass)
     local i = 0
-    local GeneralState = Core.GeneralState
 
     for _, id in pairs(GeneralState.MBID) do
         if UnitClass(id) == checkClass then
@@ -404,7 +399,6 @@ function Core.NumberOfClassInRaid(checkClass)
 end
 
 function Core.GetRandomMageInGroup()
-    local GeneralState = Core.GeneralState
     local mages = GeneralState.ClassList["Mage"]
 
     if not mages or table.getn(mages) == 0 then
