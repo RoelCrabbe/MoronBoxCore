@@ -23,10 +23,10 @@ function MoronBox.Core.CrowdControl.CrowdControlAsPull()
         return
     end
 
-    getCrowdControl().CrowdControl()
+    getCrowdControl().CastCrowdControl()
 end
 
-function MoronBox.Core.CrowdControl.CrowdControl()
+function MoronBox.Core.CrowdControl.CastCrowdControl()
     if not MB_myCCTarget then
         getCrowdControl().CrowdControlFear()
         return false

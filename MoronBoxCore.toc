@@ -95,3 +95,4 @@ Load\Api.xml
 Load\Config.xml
 Load\Core.xml
 Load\Modules.xml
+Load\Macro.xml

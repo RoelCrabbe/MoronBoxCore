@@ -12,4 +12,5 @@
     <Include file="..\Core-New\Healing.lua" />
     <Include file="..\Core-New\Rotation.lua" />
     <Include file="..\Core-New\Report.lua" />
+    <Include file="..\Core-New\Slash.lua" />
 </Ui>

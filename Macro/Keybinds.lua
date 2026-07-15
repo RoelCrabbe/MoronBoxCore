@@ -1,77 +1,18 @@
---[####################################################################################################]--
---[######################################## CREATE MACROS #############################################]--
---[####################################################################################################]--
+-- [[ Config & Constants ]] --
 
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitLevel = UnitLevel
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitCanAttack = UnitCanAttack
-local UnitIsFriend = UnitIsFriend
-local UnitIsEnemy = UnitIsEnemy
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
-local UnitCreatureType = UnitCreatureType
-local UnitClassification = UnitClassification
+MoronBox.Core.Keybinds = MoronBox.Core.Keybinds or {}
 
--- Buff/Debuff Functions
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local myClass = UnitClass("player")
+local myName = UnitName("player")
+local myRace = UnitRace("player")
 
--- Spell Functions
-local CastSpellByName = CastSpellByName
-local GetSpellCooldown = GetSpellCooldown
-local IsCurrentAction = IsCurrentAction
+function getKeybinds()
+    return MoronBox.Core.Keybinds
+end
 
--- Target Functions
-local TargetUnit = TargetUnit
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-local AssistUnit = AssistUnit
-
--- Party/Raid Functions
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-local IsRaidLeader = IsRaidLeader
-
--- Player Position/Info Functions
-local GetRealZoneText = GetRealZoneText
-local GetSubZoneText = GetSubZoneText
-
--- Addon Communication (if supported on your server)
-local SendAddonMessage = SendAddonMessage
-
--- Misc Utility Functions
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-function mb_createBinds()
+function MoronBox.Core.Keybinds.CreateBinds()
     LoadBindings(1)                   -- Load binds.
-    mb_unbindAllKeys()                -- Unbind all keys.
+    getMacro().UnbindAllKeys()        -- Unbind all keys.
 
     SetBinding("B", "OPENALLBAGS")    -- Open all bags.
     SetBinding("SHIFT-R", "REPLY")    -- Reply whisper.
@@ -134,7 +75,3 @@ function mb_createBinds()
 
     SaveBindings(1)
 end
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--

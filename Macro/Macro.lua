@@ -1,75 +1,18 @@
---[####################################################################################################]--
---[######################################## CREATE MACROS #############################################]--
---[####################################################################################################]--
+-- [[ Config & Constants ]] --
 
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitLevel = UnitLevel
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitCanAttack = UnitCanAttack
-local UnitIsFriend = UnitIsFriend
-local UnitIsEnemy = UnitIsEnemy
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
-local UnitCreatureType = UnitCreatureType
-local UnitClassification = UnitClassification
+MoronBox.Core.Macro = MoronBox.Core.Macro or {}
 
--- Buff/Debuff Functions
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local myClass = UnitClass("player")
+local myName = UnitName("player")
+local myRace = UnitRace("player")
 
--- Spell Functions
-local CastSpellByName = CastSpellByName
-local GetSpellCooldown = GetSpellCooldown
-local IsCurrentAction = IsCurrentAction
+function getMacro()
+    return MoronBox.Core.Macro
+end
 
--- Target Functions
-local TargetUnit = TargetUnit
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-local AssistUnit = AssistUnit
+-- [[ Create Macro's ]] --
 
--- Party/Raid Functions
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-local IsRaidLeader = IsRaidLeader
-
--- Player Position/Info Functions
-local GetRealZoneText = GetRealZoneText
-local GetSubZoneText = GetSubZoneText
-
--- Addon Communication (if supported on your server)
-local SendAddonMessage = SendAddonMessage
-
--- Misc Utility Functions
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-function mb_createMacros()
+function MoronBox.Core.Macro.CreateMacros()
     SetActionBarToggles(1, 1, 1, 1, 1)
     SHOW_MULTI_ACTIONBAR_1 = "1"
     SHOW_MULTI_ACTIONBAR_2 = "1"
@@ -85,21 +28,21 @@ function mb_createMacros()
         DeleteMacro(i)
     end
 
-    mb_deleteMacros()
-    mb_deleteSuperMacros()
+    getMacro().DeleteMacros()
+    getMacro().DeleteSuperMacros()
 
     CreateMacro("01Setup", 487, "/script mb_setup()", 1, 0)
     CreateMacro("02Single", 121, "/script mb_single()", 1, 0)
     CreateMacro("03Multi", 155, "/script mb_multi()", 1, 0)
-    CreateMacro("04Cooldowns", 21, "/script mb_cooldowns()", 1, 0)
+    CreateMacro("04Cooldowns", 21, "/script MoronBox.Core.Rotation.Cooldowns()", 1, 0)
     CreateMacro("05AOE", 206, "/script mb_AOE()", 1, 0)
     CreateMacro("06Mount", 90, "/script mb_mountUp()", 1, 0)
     CreateMacro("07InviteSum", 63, "/script mb_requestInviteSummon()", 1, 0)
-    CreateMacro("08PWStanksCCPull", 394, "/script mb_crowdControlAsPull()", 1, 0)
-    CreateMacro("09FocusME", 471, "/script mb_setFocus()", 1, 0)
-    CreateMacro("10AssignOT", 22, "/script mb_assignOffTank()", 1, 0)
-    CreateMacro("11AssignCC", 394, "/script mb_assignCrowdControl()", 1, 0)
-    CreateMacro("12ClearAssign", 492, "/script mb_clearRaidTarget()", 1, 0)
+    CreateMacro("08PWStanksCCPull", 394, "/script MoronBox.Core.CrowdControl.CrowdControlAsPull()", 1, 0)
+    CreateMacro("09FocusME", 471, "/script MoronBox.Core.Rotation.SetFocus()", 1, 0)
+    CreateMacro("10AssignOT", 22, "/script MoronBox.Core.CrowdControl.AssignOffTank()", 1, 0)
+    CreateMacro("11AssignCC", 394, "/script MoronBox.Core.CrowdControl.AssignCrowdControl()", 1, 0)
+    CreateMacro("12ClearAssign", 492, "/script MoronBox.Core.Rotation.ClearRaidTarget()", 1, 0)
     CreateMacro("13MakeWater", 339, "/script mb_makeWater()", 1, 0)
     CreateMacro("14DrinkWater", 339, "/script mb_smartDrink()", 1, 0)
     CreateMacro("15BreakFear", 489, "/script mb_fearBreak()", 1, 0)
@@ -108,24 +51,27 @@ function mb_createMacros()
     CreateMacro("18Ress", 303, "/script mb_ress()", 1, 0)
     CreateMacro("19TankNheal", 165, "/script mb_healAndTank()", 1, 1)
     CreateMacro("20CraftCooldowns", 170, "/script mb_craftCooldowns()", 1, 1)
-    CreateMacro("21Interrupt", 180, "/script mb_interruptSpell()", 1, 1)
+    CreateMacro("21Interrupt", 180, "/script MoronBox.Core.CrowdControl.AssignInterrupt()", 1, 1)
     CreateMacro("22CasterFollow", 180, "/script mb_casterFollow()", 1, 1)
     CreateMacro("23MeleeFollow", 180, "/script mb_meleeFollow()", 1, 1)
     CreateMacro("24HealerFollow", 180, "/script mb_healerFollow()", 1, 1)
     CreateMacro("25TankFollow", 180, "/script mb_tankFollow()", 1, 1)
-    CreateMacro("26ManualReck", 21, "/script mb_useManualRecklessness()", 1, 1)
+    CreateMacro("26ManualReck", 21, "/script MoronBox.Core.Rotation.UseManualRecklessness()", 1, 1)
     CreateMacro("27ReportMyCooldowns", 21, "/script mb_reportCooldowns()", 1, 1)
     CreateMacro("28TankShoot", 87, "/script mb_tankShoot()", 1, 1)
     CreateMacro("29ManualTaunt", 402, "/script mb_manualTaunt()", 1, 1)
     CreateMacro("30PreCast", 83, "/script mb_preCast()", 1, 1)
     CreateMacro("31Reload", 8, "/script ReloadUI()", 1, 1)
 
-    mb_createBinds()
-    mb_addonsDisableEnable()
+    getKeybinds().CreateBinds()
+    getMacro().AddonsDisableEnable()
+
     TrinketMenu_MainFrame:Hide()
 end
 
-local DeleteMacros = {
+-- [[ Delet Macro's & Super Macro's ]] --
+
+local Macros = {
     "01Setup", "02Single", "03Multi", "04Cooldowns", "05AOE", "06Mount", "07InviteSum",
     "08PWStanks", "08PWStanksCCPull", "09FocusME", "10AssignOT", "11AssignCC",
     "12ClearAssign", "13MakeWater", "14DrinkWater", "15BreakFear", "16Follow",
@@ -135,23 +81,25 @@ local DeleteMacros = {
     "29ManualTaunt", "30PreCast", "31Reload"
 }
 
-function mb_deleteMacros()
-    for _, m in pairs(DeleteMacros) do
+function MoronBox.Core.Macro.DeleteMacros()
+    for _, m in pairs(Macros) do
         while (GetMacroIndexByName(m)) > 0 do
             DeleteMacro(GetMacroIndexByName(m))
         end
     end
 end
 
-function mb_deleteSuperMacros()
-    for _, m in pairs(DeleteMacros) do
+function MoronBox.Core.Macro.DeleteSuperMacros()
+    for _, m in pairs(Macros) do
         while (GetSuperMacroInfo(m, "name")) do
             DeleteSuperMacro(GetSuperMacroInfo(m, "name"))
         end
     end
 end
 
-function mb_unbindAllKeys()
+-- [[ Unbind Keys ]] --
+
+function MoronBox.Core.Macro.UnbindAllKeys()
     SetBinding("SHIFT-1")
     SetBinding("SHIFT-2")
     SetBinding("SHIFT-3")
@@ -282,20 +230,17 @@ function mb_unbindAllKeys()
     SetBinding("SHIFT-MOUSEWHEELDOWN")
 end
 
---[####################################################################################################]--
---[####################################### DISABLE ADDONS #############################################]--
---[####################################################################################################]--
+-- Disable Other Addons
 
 local EnableDisableAddons = {
     ["MoronBoxDecursive"] = function()
-        return (mb_imHealer() or mb_imRangedDPS()) and myClass ~= "Warlock" and myClass ~= "Hunter"
+        return (getCore().ImHealer() or getCore().ImRangedDPS()) and myClass ~= "Warlock" and myClass ~= "Hunter"
     end,
-    ["MoronBoxHeal"]      = function() return mb_imHealer() end,
+    ["MoronBoxHeal"]      = function() return getCore().ImHealer() end,
     ["MoronBoxSummon"]    = function() return myClass == "Warlock" end,
-    ["MoronBoxGM"]        = function() return false end,
 }
 
-function mb_addonsDisableEnable()
+function MoronBox.Core.Macro.AddonsDisableEnable()
     for addonName, roleCheck in pairs(EnableDisableAddons) do
         local shouldEnable = roleCheck()
         local _, _, _, enabled, _, _, _ = GetAddOnInfo(addonName)

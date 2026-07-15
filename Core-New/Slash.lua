@@ -88,11 +88,8 @@ local function AssignHealerToName(assignments)
     end
 end
 
---[####################################################################################################]--
---[################################### SLASH COMMAND DEFINITIONS ######################################]--
---[####################################################################################################]--
+-- [[ Slash Commands ]] --
 
--- Slash command definitions
 SLASH_INIT1 = "/init"
 SLASH_INIT2 = "/Init"
 
@@ -197,7 +194,7 @@ SlashCmdList["AQBOOKS"] = function()
 end
 
 SlashCmdList["INIT"] = function()
-    mb_createMacros()
+    getMacro().CreateMacros()
 end
 
 SlashCmdList["DISBAND"] = function()

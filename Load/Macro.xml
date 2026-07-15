@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!-- Macro -->
+    <Include file="..\Macro\Keybinds.lua" />
+    <Include file="..\Macro\Macro.lua" />
+</Ui>
