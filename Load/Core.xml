@@ -10,6 +10,8 @@
     <Include file="..\Core\Gear.lua" />
     <Include file="..\Core\Attack.lua" />
     <Include file="..\Core\Healing.lua" />
+    <Include file="..\Core\Cons.lua" />
+    <Include file="..\Core\Water.lua" />
     <Include file="..\Core\Rotation.lua" />
     <Include file="..\Core\Report.lua" />
     <Include file="..\Core\Slash.lua" />

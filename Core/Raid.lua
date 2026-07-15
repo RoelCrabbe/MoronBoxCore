@@ -633,7 +633,7 @@ function MoronBox.Core.Raid.GTFO()
         return
     end
 
-    mb_useSandsOnChromaggus()
+    getCons().SandsOnChromaggus()
 
     if getRaid().ImFocus() then
         return
@@ -669,7 +669,7 @@ function MoronBox.Core.Raid.GTFO()
         if Instance.NAXX() then
             GLUTH_GetOUT()
             GROB_GetOUT()
-            mb_useFirePotsOnFaerlina()
+            getCons().FirePotsOnFaerlina()
         elseif Instance.BWL() and getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
             if myClass == "Paladin" and getSpells().IsSpellReady("Divine Shield") then
                 CastSpellByName("Divine Shield")
