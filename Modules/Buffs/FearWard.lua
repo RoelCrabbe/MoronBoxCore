@@ -129,7 +129,9 @@ end
 
 -- Called to process the buff queue (cast on the next valid target).
 function MoronBox.Core.Buffs.ProcessFearWard()
-    if Faction.IsHorde() then return end
+    if Faction.IsHorde() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
@@ -138,7 +140,9 @@ end
 
 -- Called to register a custom priority function for a specific fight.
 function FW_RegisterFearWardPriority(fightName, fn)
-    if Faction.IsHorde() then return end
+    if Faction.IsHorde() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].OverridePriority(fightName, fn)

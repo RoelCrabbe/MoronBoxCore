@@ -626,7 +626,7 @@ function MoronBox.Core.Cons.UseFAP()
         return
     end
 
-    if not mb_bossUseFAPon() then
+    if not getTables().BossUseFAPon() then
         return
     end
 

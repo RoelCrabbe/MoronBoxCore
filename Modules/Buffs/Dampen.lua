@@ -109,7 +109,9 @@ end)
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestDampenMagic()
-    if not mb_mobsToDampenMagic() then return end
+    if not getTables().MobsToDampenMagic() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()

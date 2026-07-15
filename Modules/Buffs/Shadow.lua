@@ -216,7 +216,9 @@ end)
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestShadowProtection()
-    if Instance.MC() then return end
+    if Instance.MC() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
@@ -225,7 +227,9 @@ end
 
 -- Called to process the buff queue (cast on the next valid target).
 function MoronBox.Core.Buffs.ProcessShadowProtection()
-    if Instance.MC() then return end
+    if Instance.MC() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()

@@ -15,6 +15,9 @@ MoronBox.CurrentModule = nil
 MoronBox.Modules = {}           -- Holds the init functions ("Recipes")
 MoronBox.Registry = {}          -- Holds the public API tables ("Exposed APIs")
 MoronBox.ModuleNames = {}       -- Holds the list of strings ("Keys")
+
+MoronBox.Config = {}            -- Config | Tables
+
 MoronBox.Debugger = {}          -- Debugger
 MoronBox.Api = {}               -- Extra functions
 MoronBox.Bag = {}

@@ -390,6 +390,21 @@ function MoronBox.Core.Spells.DoRazuviousActions()
     end
 end
 
+function MoronBox.Core.Spells.GetMCActions()
+    if getAura().HasBuffNamed("Mind Control", "player") then
+        return
+    end
+
+    if not UnitExists("pet") then
+        return
+    end
+
+    if UnitName("target") == "Deathknight Understudy"
+        or UnitName("target") == "Naxxramas Worshipper" then
+        CastSpellByName("Mind Control")
+    end
+end
+
 function MoronBox.Core.Spells.DoFaerlinaActions()
     if not UnitExists("pet") then
         return

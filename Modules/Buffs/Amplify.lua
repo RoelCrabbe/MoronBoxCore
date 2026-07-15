@@ -113,7 +113,7 @@ function MoronBox.Core.Buffs.RequestAmplifyMagic()
         return
     end
 
-    if not mb_mobsToAmplifyMagic() then
+    if not getTables().MobsToAmplifyMagic() then
         return
     end
 

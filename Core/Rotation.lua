@@ -34,17 +34,30 @@ local PlayerMounts = {
     "Swift Palomino"
 }
 
+local MageCounter = {
+    Cycle = function()
+        MB_buffingCounterMage = (MB_buffingCounterMage >= getApi().TableLength(MB_classList["Mage"]))
+            and 1 or (MB_buffingCounterMage + 1)
+    end
+}
+
 function getRotation()
     return MoronBox.Core.Rotation
 end
 
 -- [[ Simple Rotations ]] --
 
-function MoronBox.Core.Rotation.Execute(rotation, context)
-    if type(rotation) == "function" then
-        rotation()
+function MoronBox.Core.Rotation.ExecuteRotation(rotationType)
+    local moduleName = "MODULE_" .. string.upper(myClass) .. "_ROTATION"
+    local rotationModule = MoronBox.Registry[moduleName]
+
+    if rotationModule and rotationModule[rotationType] then
+        local status, err = pcall(rotationModule[rotationType])
+        if not status then
+            getDebugger().ErrorMsg("Rotation error [" .. rotationType .. "] for " .. myClass .. ": " .. tostring(err))
+        end
     else
-        getApi().CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+        getDebugger().WarnMsg("No " .. rotationType .. " rotation registered for class: " .. myClass)
     end
 end
 
@@ -107,6 +120,440 @@ function MoronBox.Core.Rotation.SetFocus()
     else
         MB_raidLeader = myName
         getApi().SendAddonMessage(MB_RAID, "MB_FOCUSME")
+    end
+end
+
+-- [[ Rotation Utils ]] --
+
+local function SpecialRotation()
+    if Instance.NAXX() and getAura().HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
+        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+            getSpells().GetMCActions()
+            return true
+        end
+    elseif Instance.BWL() and not getRaid().TankTarget("Razorgore the Untamed") then
+        if getRaid().IsAtRazorgore() and myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+            getSpells().OrbControlling()
+            return true
+        end
+    elseif Instance.ZG() and getRaid().TankTarget("Bloodlord Mandokir") then
+        if getAura().MandokirGaze() then
+            return true
+        end
+    elseif Instance.AQ20() and getRaid().TankTarget("Moam") then
+        getRaid().AutoAssignBanishOnMoam()
+    end
+
+    return false
+end
+
+local function CheckWeapon()
+    if getCore().ImRangedDPS() or getCore().ImHealer() then
+        getBag().ReEquipAtieshIfNoAtieshBuff()
+    end
+
+    if getBag().GetItemNameOfEquippedSlot(16) == nil then
+        getApi().CdMessage("I don\'t have a weapon equipped.", 500)
+    end
+end
+
+local function CheckWarStomp()
+    if not getUnit().InCombat() then
+        return
+    end
+
+    if not getTables().StunnableMob() then
+        return
+    end
+
+    if not getUnit().InMeleeRange() then
+        return
+    end
+
+    if not getSpells().IsSpellReady("War Stomp") then
+        return
+    end
+
+    if getUnit().IsDruidShapeShifted() then
+        return
+    end
+
+    CastSpellByName("War Stomp")
+end
+
+local function CheckStoneForm()
+    if not getUnit().InCombat() then
+        return
+    end
+
+    if not getSpells().IsSpellReady("Stoneform") then
+        return
+    end
+
+    if not getDispel().PlayerIsPoisoned() then
+        return
+    end
+
+    CastSpellByName("Stoneform", 1)
+end
+
+-- [[ Single ]] --
+
+function MoronBox.Core.Rotation.Single()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() or getAura().HasBuffNamed("Mind Control", "player") or SpecialRotation() then
+        return
+    end
+
+    CheckWeapon()
+    getCons().UseLIP()
+    getCons().UseFAP()
+    getRaid().GTFO()
+
+    if getAura().HasBuffOrDebuff("First Aid", "player", "buff") and getAura().HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
+        return
+    end
+
+    CheckWarStomp()
+    CheckStoneForm()
+
+    if LOA_Rotation() then
+        return
+    end
+
+    getRotation().ExecuteRotation("Single")
+end
+
+-- [[ Multi ]] --
+
+function MoronBox.Core.Rotation.Multi()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() or getAura().HasBuffNamed("Mind Control", "player") or SpecialRotation() then
+        return
+    end
+
+    CheckWeapon()
+    getCons().UseLIP()
+    getCons().UseFAP()
+    getRaid().GTFO()
+
+    if getAura().HasBuffOrDebuff("First Aid", "player", "buff") and getAura().HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
+        return
+    end
+
+    CheckWarStomp()
+    CheckStoneForm()
+
+    if LOA_Rotation() then
+        return
+    end
+
+    getRotation().ExecuteRotation("Multi")
+end
+
+-- [[ AOE ]] --
+
+function MoronBox.Core.Rotation.AOE()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() or getAura().HasBuffNamed("Mind Control", "player") or SpecialRotation() then
+        return
+    end
+
+    CheckWeapon()
+    getCons().UseLIP()
+    getCons().UseFAP()
+    getRaid().GTFO()
+
+    if getAura().HasBuffOrDebuff("First Aid", "player", "buff") and getAura().HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
+        return
+    end
+
+    CheckWarStomp()
+    CheckStoneForm()
+
+    if LOA_Rotation() then
+        return
+    end
+
+    getRotation().ExecuteRotation("AOE")
+end
+
+-- [[ Setup ]] --
+
+function MoronBox.Core.Rotation.Setup()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() or getAura().HasBuffNamed("Mind Control", "player") or SpecialRotation() then
+        return
+    end
+
+    CheckWeapon()
+    getCons().UseLIP()
+    getCons().UseFAP()
+    getRaid().GTFO()
+
+    if getAura().HasBuffOrDebuff("First Aid", "player", "buff") and getAura().HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
+        return
+    end
+
+    if IsControlKeyDown() then
+        getRaid().MakeALine()
+        return
+    end
+
+    getCons().SpeedRunPots()
+
+    if myClass == "Mage" or myClass == "Warlock" then
+        if Instance.NAXX() and MB_myLoathebBoxStrategy then
+            RunLine("/trinket load top UNDEAD")
+            RunLine("/trinket load top UNDEAD")
+        else
+            RunLine("/trinket load top NRML")
+            RunLine("/trinket load top NRML")
+        end
+    end
+
+    getBuffs().RequestMarkOfTheWild()
+
+    getBuffs().RequestFortitude()
+    -- getBuffs().RequestShadowProtection()
+    -- getBuffs().RequestSpirit()
+    -- getBuffs().RequestFearWard()
+
+    getBuffs().RequestIntellect()
+    -- getBuffs().RequestAmplifyMagic()
+    -- getBuffs().RequestDampenMagic()
+
+    if myClass == "Warrior" then
+        return
+    end
+
+    getRotation().ExecuteRotation("Setup")
+end
+
+-- [[ PreCast ]] --
+
+function MoronBox.Core.Rotation.PreCast()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() then
+        return
+    end
+
+    if not getCore().ImRangedDPS() then
+        return
+    end
+
+    getRaid().AssistFocus()
+
+    if not UnitName("target") then
+        return
+    end
+
+    getRotation().ExecuteRotation("PreCast")
+end
+
+-- [[ Heal & Tank ]] --
+
+local function InterruptingHealAndTank()
+    if getCore().ImTank() then
+        return
+    end
+
+    if not getSpells().IsSpellReady(MB_myInterruptSpell[myClass]) then
+        return
+    end
+
+    if not MB_doInterrupt.Active then
+        return
+    end
+
+    getRaid().GetMyInterruptTarget()
+
+    if myClass == "Warrior" then
+        if UnitMana("player") >= 10 then
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+    elseif myClass == "Shaman" then
+        if getSpells().ImBusy() then
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
+    elseif myClass == "Rogue" then
+        if UnitMana("player") >= 25 then
+            CastSpellByName(MB_myInterruptSpell[myClass])
+        end
+    elseif myClass == "Mage" then
+        if not MB_isCastingMyCCSpell then
+            SpellStopCasting()
+        end
+
+        CastSpellByName(MB_myInterruptSpell[myClass])
+    end
+
+    MB_doInterrupt.Active = false
+end
+
+local function SpecialHealAndTankClass()
+    if myClass == "Hunter" then
+        if getTables().UseTranquilizingShot() and getSpells().IsSpellReady("Tranquilizing Shot") then
+            CastSpellByName("Tranquilizing Shot")
+        end
+
+        if GLUTH_IsAtGluth() then
+            FreezingTrap()
+        end
+    end
+
+    if myClass == "Mage" then
+        getDispel().Decurse()
+
+        if getTables().MobsToDetectMagic() and not getAura().HasBuffOrDebuff("Detect Magic", "target", "debuff") then
+            if not getAura().HasBuffOrDebuff("Detect Magic", "player", "debuff") then
+                CastSpellByName("Detect Magic")
+                return true
+            end
+        end
+    end
+
+    if myClass == "Warlock" and getAura().HasBuffOrDebuff("Hellfire", "player", "buff") then
+        CastSpellByName("Life Tap(Rank 1)")
+        return true
+    end
+
+    return false
+end
+
+local function SpecialHealAndTankSituation()
+    if Instance.ZG() and myClass == "Mage" and getRaid().TankTarget("Hakkar") then
+        if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
+            ClearTarget()
+            return true
+        end
+
+        if not MB_autoToggleSheeps.Active then
+            MB_autoToggleSheeps.Active = true
+            MB_autoToggleSheeps.Time = GetTime() + 10
+            MageCounter.Cycle()
+        end
+
+        if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterMage then
+            getRaid().CrowdControlMCedRaidMemberHakkar()
+        end
+    elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
+        if SKERAM_CrowdControl() then
+            return true
+        end
+    elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and getRaid().IsAtNefarianPhase() then
+        if getAura().HasBuffOrDebuff("Shadow Command", "target", "debuff") then
+            ClearTarget()
+            return true
+        end
+
+        if myClass == "Mage" then
+            if not MB_autoToggleSheeps.Active then
+                MB_autoToggleSheeps.Active = true
+                MB_autoToggleSheeps.Time = GetTime() + 3
+                MageCounter.Cycle()
+            end
+
+            if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterMage then
+                getRaid().CrowdControlMCedRaidMemberNefarian()
+            end
+        end
+    elseif Instance.NAXX() and myClass == "Priest" then
+        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+            getSpells().GetMCActions()
+            return true
+        end
+    end
+
+    return false
+end
+
+function MoronBox.Core.Rotation.HealAndTank()
+    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+        getApi().CdPrint("WARNING: You have not chosen a raid leader")
+    end
+
+    if getUnit().IsDead() then
+        return
+    end
+
+    getRaid().GetTarget()
+
+    if getAura().HasBuffNamed("Mind Control", "player") or SpecialRotation() then
+        return
+    end
+
+    CheckWeapon()
+    getCons().UseLIP()
+    getCons().UseFAP()
+    getRaid().GTFO()
+
+    if getAura().HasBuffOrDebuff("First Aid", "player", "buff") and getAura().HasBuffOrDebuff("Recently Bandaged", "player", "debuff") then
+        return
+    end
+
+    CheckWarStomp()
+    CheckStoneForm()
+    InterruptingHealAndTank()
+
+    if SpecialHealAndTankClass() then
+        return
+    end
+
+    if SpecialHealAndTankSituation() then
+        return
+    end
+
+    if getCrowdControl().CastCrowdControl() then
+        return
+    end
+
+    if UnitName("target") then
+        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not getAura().HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
+            if getCrowdControl().CastCrowdControl() then
+                return
+            end
+        end
+
+        if getUnit().CrowdControlledMob() then
+            getRaid().GetTarget()
+        end
+    end
+
+    if LOA_Rotation() then
+        return
+    end
+
+    if getCore().ImTank() then
+        getRotation().ExecuteRotation("Single")
+    elseif getCore().ImHealer() then
+        if myClass == "Druid" then
+            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
+                CastSpellByName("Hibernate(Rank 1)")
+                return
+            end
+        end
+
+        getRotation().ExecuteRotation("Single")
     end
 end
 
@@ -207,7 +654,7 @@ function MoronBox.Core.Rotation.UseManualRecklessness()
         end
     end
 
-    if mb_mobsNoTotems() then
+    if getTables().MobsNoTotems() then
         return
     end
 
