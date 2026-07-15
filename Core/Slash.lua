@@ -198,7 +198,7 @@ SlashCmdList["INIT"] = function()
 end
 
 SlashCmdList["DISBAND"] = function()
-    mb_disbandRaid()
+    getUnit().DisbandRaid()
 end
 
 SlashCmdList["USEBAGITEM"] = function(item)

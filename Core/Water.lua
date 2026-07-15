@@ -118,7 +118,7 @@ function MoronBox.Core.Water.MakeWater()
     end
 end
 
-function MoronBox.Core.Macro.SmartDrink()
+function MoronBox.Core.Water.SmartDrink()
     if getUnit().ManaPct("player") > 0.99 and getAura().HasBuffNamed("Drink", "player") then
         DoEmote("Stand")
         return

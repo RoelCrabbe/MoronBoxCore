@@ -4,6 +4,10 @@ MoronBox.Core.Dispel = MoronBox.Core.Dispel or {}
 
 local myClass = UnitClass("player")
 
+function getDispel()
+    return MoronBox.Core.Dispel
+end
+
 -- [[ Decurse ]] --
 
 function MoronBox.Core.Dispel.Decurse()

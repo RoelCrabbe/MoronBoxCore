@@ -15,4 +15,6 @@
     <Include file="..\Modules\Turning\Turning.lua" />
     <!-- Flash -->
     <Include file="..\Modules\Flash\Flash.lua" />
+    <!-- Shaman -->
+    <Include file="..\Modules\Shaman\Totem.lua" />
 </Ui>

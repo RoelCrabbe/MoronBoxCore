@@ -32,6 +32,23 @@ function MoronBox.Unit.PromoteEveryone()
     end
 end
 
+function MoronBox.Unit.DisbandRaid()
+    if UnitInRaid("player") then
+        for i = 1, 40 do
+            local _, rank = GetRaidRosterInfo(i);
+            if rank ~= 2 then
+                UninviteFromParty("raid" .. i)
+            end
+        end
+    else
+        for i = 1, GetNumPartyMembers() do
+            UninviteFromParty("party" .. i)
+        end
+    end
+
+    LeaveParty()
+end
+
 function MoronBox.Unit.CrowdControlledMob()
     if (getAura().HasBuffOrDebuff("Shackle Undead", "target", "debuff")
             or getAura().HasBuffOrDebuff("Polymorph", "target", "debuff")
