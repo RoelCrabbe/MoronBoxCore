@@ -75,7 +75,7 @@ function MoronBox.Core.Raid.GetMyInterruptTarget()
         local targetIndex = GetRaidTargetIndex("target")
 
         if targetIndex == MB_myInterruptTarget then
-            if not getUnit().Dead("target") then
+            if not getUnit().IsDead("target") then
                 return
             end
 
@@ -207,7 +207,7 @@ end
 
 function MoronBox.Core.Raid.LockOnTarget(target)
     for i = 1, 3 do
-        if UnitName("target") == target and not getUnit().Dead("target") then
+        if UnitName("target") == target and not getUnit().IsDead("target") then
             return true
         end
 
@@ -217,7 +217,7 @@ function MoronBox.Core.Raid.LockOnTarget(target)
 end
 
 function MoronBox.Core.Raid.FixateOnTarget(target)
-    return UnitName("target") == target and not getUnit().Dead("target")
+    return UnitName("target") == target and not getUnit().IsDead("target")
 end
 
 -- [[ Encounters ]] --
@@ -378,7 +378,7 @@ function MoronBox.Core.Raid.OffTank()
     end
 
     if UnitExists("target") and GetRaidTargetIndex("target") == MB_myOTTarget then
-        if getUnit().Dead("target") then
+        if getUnit().IsDead("target") then
             MB_myOTTarget = nil
             TargetUnit("playertarget")
             return
@@ -390,7 +390,7 @@ function MoronBox.Core.Raid.OffTank()
 
     for i = 1, 6 do
         if UnitExists("target") and GetRaidTargetIndex("target") == MB_myOTTarget
-            and not getUnit().Dead("target") and not getUnit().InCombat("target") then
+            and not getUnit().IsDead("target") and not getUnit().InCombat("target") then
             return
         end
 
@@ -405,7 +405,7 @@ local IgnoredTargets = {
 }
 
 function MoronBox.Core.Raid.GetTargetNotOnTank()
-    if getUnit().Dead("player") then
+    if getUnit().IsDead() then
         return
     end
 
@@ -459,7 +459,7 @@ function MoronBox.Core.Raid.AutoAssignBanishOnMoam()
 
     for i = 1, 5 do
         if UnitName("target") == "Mana Fiend" and not GetRaidTargetIndex("target")
-            and not getUnit().Dead("target") then
+            and not getUnit().IsDead("target") then
             getCrowdControl().AssignCrowdControl()
             return
         end
@@ -471,7 +471,7 @@ function MoronBox.Core.Raid.AutoAssignBanishOnMoam()
         TargetByName("Moam")
     end
 
-    if getUnit().Dead("target") and UnitName("target") == "Moam" then
+    if getUnit().IsDead("target") and UnitName("target") == "Moam" then
         moamDead = true
     end
 end
@@ -590,7 +590,7 @@ local function CastPolymorph(unitId)
 end
 
 function MoronBox.Core.Raid.CrowdControlMCedRaidMember(debuffName, message)
-    if getUnit().Dead("player") then
+    if getUnit().IsDead() then
         return false
     end
 
@@ -701,7 +701,7 @@ end
 -- [[ Get Target ]] --
 
 local function GetTargetIfNone()
-    if not UnitName("target") or getUnit().Dead("target") then
+    if not UnitName("target") or getUnit().IsDead("target") then
         getRaid().AssistFocus()
     end
 end
@@ -762,7 +762,7 @@ local function HandleBWLTargetingPreFocus()
             return true
         end
 
-        if (tName == nil or getUnit().Dead("target")) then
+        if (tName == nil or getUnit().IsDead("target")) then
             TargetNearestEnemy()
             return true
         end
@@ -798,7 +798,7 @@ local function HandleNAXXTargetingPostFocus()
             return true
         elseif getCore().ImMeleeDPS() or getCore().ImRangedDPS() then
             for i = 1, 2 do
-                if tName == "Crypt Guard" and not getUnit().Dead("target") then
+                if tName == "Crypt Guard" and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -832,11 +832,11 @@ local function HandleNAXXTargetingPostFocus()
             end
 
             for i = 1, 4 do
-                if tName == "Mutated Grub" and not getUnit().Dead("target") then
+                if tName == "Mutated Grub" and not getUnit().IsDead("target") then
                     return true
                 end
 
-                if tName == "Plagued Bat" and not getUnit().Dead("target") then
+                if tName == "Plagued Bat" and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -880,11 +880,11 @@ local function HandleAQ40TargetingPostFocus()
         end
 
         for i = 1, 4 do
-            if tName == "Anubisath Swarmguard" and not getUnit().Dead("target") then
+            if tName == "Anubisath Swarmguard" and not getUnit().IsDead("target") then
                 return true
             end
 
-            if tName == "Anubisath Warrior" and not getUnit().Dead("target") then
+            if tName == "Anubisath Warrior" and not getUnit().IsDead("target") then
                 return true
             end
 
@@ -922,7 +922,7 @@ local function HandleBWLTargetingPostFocus()
                 return true
             end
 
-            if (tName == nil or getUnit().Dead("target")) then
+            if (tName == nil or getUnit().IsDead("target")) then
                 TargetNearestEnemy()
                 return true
             end
@@ -966,7 +966,7 @@ local function HandleBWLTargetingPostFocus()
                 return true
             end
 
-            if not getUnit().Dead("target") then
+            if not getUnit().IsDead("target") then
                 return true
             end
 
@@ -1070,7 +1070,7 @@ local function HandleONYTargetingPostFocus()
         end
 
         for i = 1, 2 do
-            if tName == "Onyxian Whelp" and not getUnit().Dead("target") then
+            if tName == "Onyxian Whelp" and not getUnit().IsDead("target") then
                 return true
             end
 
@@ -1100,7 +1100,7 @@ local function HandleZGTargetingPostFocus()
             return true
         elseif getCore().ImMeleeDPS() then
             for i = 1, 2 do
-                if tName == "Shade of Jin\'do" and not getUnit().Dead("target") then
+                if tName == "Shade of Jin\'do" and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -1111,15 +1111,15 @@ local function HandleZGTargetingPostFocus()
             return true
         elseif getCore().ImRangedDPS() then
             for i = 1, 6 do
-                if tName == "Shade of Jin\'do" and not getUnit().Dead("target") then
+                if tName == "Shade of Jin\'do" and not getUnit().IsDead("target") then
                     return true
                 end
 
-                if tName == "Powerful Healing Ward" and not getUnit().Dead("target") then
+                if tName == "Powerful Healing Ward" and not getUnit().IsDead("target") then
                     return true
                 end
 
-                if tName == "Brain Wash Totem" and not getUnit().Dead("target") then
+                if tName == "Brain Wash Totem" and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -1138,11 +1138,11 @@ local function HandleZGTargetingPostFocus()
             return true
         elseif getCore().ImRangedDPS() then
             for i = 1, 4 do
-                if tName == "Spawn of Mar\'li" and not getUnit().Dead("target") then
+                if tName == "Spawn of Mar\'li" and not getUnit().IsDead("target") then
                     return true
                 end
 
-                if tName == "Witherbark Speaker" and not getUnit().Dead("target") then
+                if tName == "Witherbark Speaker" and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -1158,7 +1158,7 @@ local function HandleZGTargetingPostFocus()
             return true
         elseif getCore().ImRangedDPS() then
             for i = 1, 2 do
-                if tName == "Bloodseeker Bat" and getUnit().InCombat("target") and not getUnit().Dead("target") then
+                if tName == "Bloodseeker Bat" and getUnit().InCombat("target") and not getUnit().IsDead("target") then
                     return true
                 end
 
@@ -1174,7 +1174,7 @@ local function HandleZGTargetingPostFocus()
             return true
         elseif getCore().ImMeleeDPS() or getCore().ImRangedDPS() then
             for i = 1, 2 do
-                if tName == "Razzashi Cobra" and not getUnit().Dead("target")
+                if tName == "Razzashi Cobra" and not getUnit().IsDead("target")
                     and not GetRaidTargetIndex("target") then
                     return true
                 end
@@ -1198,7 +1198,7 @@ local function HandleAQ20TargetingPostFocus()
         return true
     elseif getCore().ImMeleeDPS() or getCore().ImRangedDPS() then
         for i = 1, 2 do
-            if tName == "Hive\'Zara Larva" and not getUnit().Dead("target") then
+            if tName == "Hive\'Zara Larva" and not getUnit().IsDead("target") then
                 return true
             end
 
@@ -1220,7 +1220,7 @@ local function HandleUBRSTargetingPostFocus()
         return true
     elseif getCore().ImMeleeDPS() or getCore().ImRangedDPS() then
         for i = 1, 2 do
-            if tName == "Spectral Assassin" and not getUnit().Dead("target") then
+            if tName == "Spectral Assassin" and not getUnit().IsDead("target") then
                 return true
             end
 
@@ -1300,11 +1300,11 @@ function MoronBox.Core.Raid.GetTarget()
         if HandleZGTargetingPostFocus() then
             return
         end
-    elseif Instance.AQ20() and getRaid().TankTarget("Ayamiss the Hunter") and not getUnit().Dead("target") then
+    elseif Instance.AQ20() and getRaid().TankTarget("Ayamiss the Hunter") and not getUnit().IsDead("target") then
         if HandleAQ20TargetingPostFocus() then
             return
         end
-    elseif GetRealZoneText() == "Blackrock Spire" and getRaid().TankTarget("Lord Valthalak") and not getUnit().Dead("target") then
+    elseif GetRealZoneText() == "Blackrock Spire" and getRaid().TankTarget("Lord Valthalak") and not getUnit().IsDead("target") then
         if HandleUBRSTargetingPostFocus() then
             return
         end

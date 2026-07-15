@@ -174,7 +174,7 @@ function MoronBox.Unit.IsNotValidTankableTarget()
     return not UnitName("target") or
         not UnitAffectingCombat("target") or
         not CheckInteractDistance("target", 3) or
-        not getUnit().Dead("target") or
+        not getUnit().IsDead("target") or
         getUnit().CrowdControlledMob()
 end
 
