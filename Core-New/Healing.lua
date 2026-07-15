@@ -158,10 +158,13 @@ MoronBox.Core.Healing.HealingState = {
 
 local myClass                      = UnitClass("player")
 
-local HealingState                 = MoronBox.Core.Healing.HealingState
+function getHealing()
+    return MoronBox.Core.Healing
+end
 
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getHealingState()
+    return MoronBox.Core.Healing.HealingState
+end
 
 -- [[ Healing Local Functions ]] --
 
@@ -200,10 +203,10 @@ end
 
 function MoronBox.Core.Healing.GetHealSpell()
     if myClass == "Shaman" then
-        if EquippedSetCount("Earthfury") == 8 then
+        if getGear().EquippedSetCount("Earthfury") == 8 then
             MB_myHealSpell = "Healing Wave"
             return true
-        elseif EquippedSetCount("The Ten Storms") >= 3 and EquippedSetCount("Stormcaller\'s Garb") == 5 then
+        elseif getGear().EquippedSetCount("The Ten Storms") >= 3 and getGear().EquippedSetCount("Stormcaller\'s Garb") == 5 then
             MB_myHealSpell = "Chain Heal"
             return true
         else
@@ -215,17 +218,17 @@ function MoronBox.Core.Healing.GetHealSpell()
             end
         end
     elseif myClass == "Priest" then
-        if FindMyNameInTable(HealingState.Priest.FlashHealerList) then
+        if getApi().FindMyNameInTable(getHealingState().Priest.FlashHealerList) then
             MB_myHealSpell = "Flash Heal"
             return true
-        elseif EquippedSetCount("Vestments of Transcendence") == 8 then
+        elseif getGear().EquippedSetCount("Vestments of Transcendence") == 8 then
             MB_myHealSpell = "Greater Heal"
             return true
         else
             MB_myHealSpell = "Heal"
             return true
         end
-    elseif myClass == "Druid" and EquippedSetCount("Dreamwalker Raiment") >= 2 then
+    elseif myClass == "Druid" and getGear().EquippedSetCount("Dreamwalker Raiment") >= 2 then
         MB_myHealSpell = "Rejuvenation"
         return true
     end
@@ -236,16 +239,16 @@ function MoronBox.Core.Healing.CastSpellOnRandomRaidMember(spell, rank, percenta
         return
     end
 
-    if ImBusy() then
+    if getSpells().ImBusy() then
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn") then
         return
     end
 
     local n, r, j
-    n = GetNumPartyOrRaidMembers()
+    n = getUnit().GetNumPartyOrRaidMembers()
     r = math.random(n) - 1
 
     for i = 1, n do
@@ -254,9 +257,9 @@ function MoronBox.Core.Healing.CastSpellOnRandomRaidMember(spell, rank, percenta
             j = j - n
         end
 
-        if HealthPct("raid" .. j) < percentage
-            and not HasBuffNamed(spell, "raid" .. j)
-            and IsValidFriendlyTarget("raid" .. j, spell) then
+        if getUnit().HealthPct("raid" .. j) < percentage
+            and not getAura().HasBuffNamed(spell, "raid" .. j)
+            and getUnit().IsValidFriendlyTarget("raid" .. j, spell) then
             if UnitIsFriend("player", "raid" .. j) then
                 ClearTarget()
             end
@@ -275,7 +278,7 @@ function MoronBox.Core.Healing.CastSpellOnRandomRaidMember(spell, rank, percenta
 end
 
 function MoronBox.Core.Healing.CastShieldOnRandomRaidMember(spell, rank)
-    if ImBusy() then
+    if getSpells().ImBusy() then
         return
     end
 
@@ -283,12 +286,12 @@ function MoronBox.Core.Healing.CastShieldOnRandomRaidMember(spell, rank)
         return
     end
 
-    if TankTarget("Garr") or TankTarget("Firesworn") then
+    if getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn") then
         return
     end
 
     local n, r, j
-    n = GetNumPartyOrRaidMembers()
+    n = getUnit().GetNumPartyOrRaidMembers()
     r = math.random(n) - 1
 
     for i = 1, n do
@@ -297,9 +300,9 @@ function MoronBox.Core.Healing.CastShieldOnRandomRaidMember(spell, rank)
             j = j - n
         end
 
-        if not HasBuffNamed("Power Word: Shield", "raid" .. j)
-            and not HasBuffNamed("Weakened Soul", "raid" .. j)
-            and IsValidFriendlyTarget("raid" .. j, spell) then
+        if not getAura().HasBuffNamed("Power Word: Shield", "raid" .. j)
+            and not getAura().HasBuffNamed("Weakened Soul", "raid" .. j)
+            and getUnit().IsValidFriendlyTarget("raid" .. j, spell) then
             if UnitIsFriend("player", "raid" .. j) then
                 ClearTarget()
             end
@@ -320,8 +323,8 @@ function MoronBox.Core.Healing.PowerShieldTanks()
 
     local i = 1
     for _, tank in ipairs(MB_raidTanks) do
-        if IsAlive(MBID[tank]) then
-            if MyClassOrder() == i then
+        if getUnit().IsAlive(MBID[tank]) then
+            if getCore().MyClassOrder() == i then
                 TargetUnit(MBID[tank])
                 CastSpellByName("Power Word: Shield")
                 return
@@ -337,31 +340,31 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
         return false
     end
 
-    if TankTarget("Instructor Razuvious") and FindMyNameInTable(HealingState.InstructorRazuviousAddHealer) then
+    if getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(getHealingState().InstructorRazuviousAddHealer) then
         TargetUnit(MBID[MB_raidLeader] .. "targettarget")
 
         if UnitName("target") == "Deathknight Understudy" then
             local allowedOverHeal, spellToCast
 
             if myClass == "Shaman" then
-                allowedOverHeal = GetHealValueFromRank("Healing Wave", HealingState.Shaman.MainTankHealingRank) *
-                    HealingState.MainTankOverhealingPercentage * 4
-                spellToCast = "Healing Wave(" .. HealingState.Shaman.MainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Healing Wave", getHealingState().Shaman.MainTankHealingRank) *
+                    getHealingState().MainTankOverhealingPercentage * 4
+                spellToCast = "Healing Wave(" .. getHealingState().Shaman.MainTankHealingRank .. ")"
             elseif myClass == "Paladin" then
-                allowedOverHeal = GetHealValueFromRank("Flash of Light", HealingState.Paladin.MainTankHealingRank) *
-                    HealingState.MainTankOverhealingPercentage * 4
-                spellToCast = "Flash of Light(" .. HealingState.Paladin.MainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Flash of Light", getHealingState().Paladin.MainTankHealingRank) *
+                    getHealingState().MainTankOverhealingPercentage * 4
+                spellToCast = "Flash of Light(" .. getHealingState().Paladin.MainTankHealingRank .. ")"
             elseif myClass == "Priest" then
-                allowedOverHeal = GetHealValueFromRank("Greater Heal", HealingState.Priest.MainTankHealingRank) *
-                    HealingState.MainTankOverhealingPercentage * 4
-                spellToCast = "Greater Heal(" .. HealingState.Priest.MainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Greater Heal", getHealingState().Priest.MainTankHealingRank) *
+                    getHealingState().MainTankOverhealingPercentage * 4
+                spellToCast = "Greater Heal(" .. getHealingState().Priest.MainTankHealingRank .. ")"
             elseif myClass == "Druid" then
-                allowedOverHeal = GetHealValueFromRank("Healing Touch", HealingState.Druid.MainTankHealingRank) *
-                    HealingState.MainTankOverhealingPercentage * 4
-                spellToCast = "Healing Touch(" .. HealingState.Druid.MainTankHealingRank .. ")"
+                allowedOverHeal = GetHealValueFromRank("Healing Touch", getHealingState().Druid.MainTankHealingRank) *
+                    getHealingState().MainTankOverhealingPercentage * 4
+                spellToCast = "Healing Touch(" .. getHealingState().Druid.MainTankHealingRank .. ")"
             end
 
-            if IsValidFriendlyTarget("target", spellToCast) and HealthDown("target") >= allowedOverHeal then
+            if getUnit().IsValidFriendlyTarget("target", spellToCast) and getUnit().HealthDown("target") >= allowedOverHeal then
                 CastSpellByName(spellToCast)
             end
             return true

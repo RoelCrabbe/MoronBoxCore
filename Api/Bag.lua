@@ -2,11 +2,11 @@
 
 MoronBox.Bag = MoronBox.Bag or {}
 
-MoronBox.Core.Aura = MoronBox.Core.Aura or {}
-
 local myClass = UnitClass("player")
 
-local Bag = MoronBox.Bag
+function getBag()
+    return MoronBox.Bag
+end
 
 -- [[ Bag ]] --
 
@@ -23,7 +23,7 @@ function MoronBox.Bag.GetItemLink(itemName)
 end
 
 function MoronBox.Bag.IsItemInBagCoolDown(itemName)
-    local bag, slot = Bag.GetItemLocation(itemName)
+    local bag, slot = getBag().GetItemLocation(itemName)
     if not bag then
         return nil
     end
@@ -33,11 +33,11 @@ function MoronBox.Bag.IsItemInBagCoolDown(itemName)
 end
 
 function MoronBox.Bag.HaveInBags(itemName)
-    return Bag.GetItemLink(itemName) ~= nil
+    return getBag().GetItemLink(itemName) ~= nil
 end
 
 function MoronBox.Bag.UseFromBags(itemName)
-    local bag, slot = Bag.GetItemLocation(itemName)
+    local bag, slot = getBag().GetItemLocation(itemName)
     if bag then
         UseContainerItem(bag, slot)
         return true
@@ -48,7 +48,7 @@ end
 function MoronBox.Bag.GetAllContainerFreeSlots()
     local sum = 0
     for bag = 0, 4 do
-        sum = sum + Bag.GetContainerNumFreeSlots(bag)
+        sum = sum + getBag().GetContainerNumFreeSlots(bag)
     end
     return sum
 end
@@ -108,19 +108,19 @@ function MoronBox.Bag.CountItem(itemName)
 end
 
 function MoronBox.Bag.NumShards()
-    return Bag.CountItem("Soul Shard")
+    return getBag().CountItem("Soul Shard")
 end
 
 function MoronBox.Bag.NumManapots()
-    return Bag.CountItem("Major Mana Potion")
+    return getBag().CountItem("Major Mana Potion")
 end
 
 function MoronBox.Bag.NumDemonicRunes()
-    return Bag.CountItem("Demonic Rune")
+    return getBag().CountItem("Demonic Rune")
 end
 
 function MoronBox.Bag.NumSands()
-    return Bag.CountItem("Hourglass Sand")
+    return getBag().CountItem("Hourglass Sand")
 end
 
 function MoronBox.Bag.GetItemNameOfEquippedSlot(slotId)
@@ -153,14 +153,14 @@ function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
     end
 
     local atiesh = "Atiesh, Greatstaff of the Guardian"
-    local equippedItem = Bag.GetItemNameOfEquippedSlot(16)
+    local equippedItem = getBag().GetItemNameOfEquippedSlot(16)
 
     if equippedItem == atiesh then
         HasAnAtieshEquipped = true
     end
 
-    if equippedItem == atiesh and not MoronBox.Core.Aura.HasBuffOrDebuff("Atiesh", "player", "buff") and MoronBox.Unit.IsAlive("player") then
-        if Bag.GetAllContainerFreeSlots() >= 1 then
+    if equippedItem == atiesh and not getAura().HasBuffOrDebuff("Atiesh", "player", "buff") and getUnit().IsAlive("player") then
+        if getBag().GetAllContainerFreeSlots() >= 1 then
             PickupInventoryItem(16)
             PutItemInBackpack()
             ClearCursor()
@@ -169,7 +169,7 @@ function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
         end
     end
 
-    if HasAnAtieshEquipped and not GetInventoryItemLink("player", 16) and MoronBox.Unit.IsAlive("player") then
+    if HasAnAtieshEquipped and not GetInventoryItemLink("player", 16) and getUnit().IsAlive("player") then
         UseItemByName(atiesh)
     end
 end
@@ -231,11 +231,11 @@ local MeleeTrinkets = {
 }
 
 local function useTrinket(slotId, trinketList)
-    if not MoronBox.Unit.InCombat() or Bag.TrinketOnCD(slotId) then
+    if not getUnit().InCombat() or getBag().TrinketOnCD(slotId) then
         return
     end
 
-    local equippedName = Bag.GetItemNameOfEquippedSlot(slotId)
+    local equippedName = getBag().GetItemNameOfEquippedSlot(slotId)
     if not equippedName then
         return
     end

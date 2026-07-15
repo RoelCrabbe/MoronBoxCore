@@ -4,10 +4,9 @@ MoronBox.Core.Gear = MoronBox.Core.Gear or {}
 
 local GearSets = {}
 
-local Gear = MoronBox.Core.Gear
-
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getGear()
+    return MoronBox.Core.Gear
+end
 
 -- [[ Gear Sets ]] --
 
@@ -18,7 +17,7 @@ function MoronBox.Core.Gear.EquippedSetCount(set)
     for i = 1, 10 do
         local link = GetInventoryItemLink("player", item_slots[i])
         if link == nil then
-            CdPrint("Missing gear in slots, can't decide proper healspell based on gear.", 30)
+            getApi().CdPrint("Missing gear in slots, can't decide proper healspell based on gear.", 30)
             return 0
         end
 
@@ -39,29 +38,29 @@ function MoronBox.Core.Gear.EquipRackSet(set)
         return
     end
 
-    CdPrint("No ItemRack Addon Found")
+    getRaid().CdPrint("No ItemRack Addon Found")
 end
 
 function MoronBox.Core.Gear.TankGear()
-    Gear.EquipRackSet("TANK")
     MB_mySpecc = "Furytank"
     MB_warriorBinds = nil
+    getGear().EquipRackSet("TANK")
 end
 
 function MoronBox.Core.Gear.FuryGear()
-    Gear.EquipRackSet("DPS")
     MB_mySpecc = "BT"
     MB_warriorBinds = "Fury"
+    getGear().EquipRackSet("DPS")
 end
 
 function MoronBox.Core.Gear.EvoGear()
     MB_evoGear = true
-    Gear.EquipRackSet("EVO")
+    getGear().EquipRackSet("EVO")
 end
 
 function MoronBox.Core.Gear.MageGear()
     MB_evoGear = false
-    Gear.EquipRackSet("DPS")
+    getGear().EquipRackSet("DPS")
 end
 
 -- [[ Annilathor ]] --

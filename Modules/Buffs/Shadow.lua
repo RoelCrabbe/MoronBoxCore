@@ -1,11 +1,5 @@
 -- [[ Shadow Protection Buffing ]] --
-
-MoronBox.Unit = MoronBox.Unit or {}
-local Unit = MoronBox.Unit
-
-MoronBox.Core = MoronBox.Core or {}
-MoronBox.Core.Aura = MoronBox.Core.Aura or {}
-local Aura = MoronBox.Core.Aura
+---@diagnostic disable: undefined-global
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "ShadowProtection"
@@ -23,17 +17,13 @@ local ShadowProtection
 -- Minimum mana required to be considered a valid cast candidate.
 local SHADOW_MANA_COST = 1300 * 0.95
 
--- References to frames.
-local Debugger = MoronBox.Debugger
-local Buffs = MoronBox.Core.Buffs
-
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    ShadowProtection = Buffs.Register(MODULE_NAME)
+    ShadowProtection = Register(MODULE_NAME)
 
-    local Handlers = Buffs.CreateHandlers({
+    local Handlers = CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -43,25 +33,25 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     ShadowProtection:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
-        Buffs.DispatchMessage(arg2, arg4, Handlers)
+        DispatchMessage(arg2, arg4, Handlers)
     end)
 
     MoronBox:RegisterExpose({
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if Buffs.HasActiveBuff(BUFF_KEY) then
+            if HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local group = Buffs.GetGroupNumber()
-            local member = Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE, SHADOW_MANA_COST)
+            local group = GetGroupNumber()
+            local member = GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE, SHADOW_MANA_COST)
 
             if not member then
-                Debugger:Warn("No " .. CLASS_MODULE .. " found")
+                WarnMsg("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = Buffs.GetPriority(
+            local prio = GetPriority(
                 {
                     ["Shaman"] = "HIGH",
                     ["Mage"] = "MEDIUM",
@@ -74,24 +64,24 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
-            local soloResult = Buffs.SoloBuff(BUFF_KEY, spellName)
+            local spellName = GetBuffSpell(BUFF_KEY)
+            local soloResult = SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = Buffs.GetNextTarget(Queue)
+            local targetUnitId, groupNum = GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
             end
 
-            if Unit.IsValidFriendlyTarget(targetUnitId, spellName) and not Aura.HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
@@ -108,9 +98,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
+    return UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
-    Buffs.Unregister(MODULE_NAME)
+    Unregister(MODULE_NAME)
 end)
 
 -- SHADOW PROTECTION BUFF SYSTEM - COMPLETE FLOW
@@ -222,9 +212,10 @@ end)
 -- Direct group access → No need to search all groups for targets
 
 -- [[ Macro Entry Points ]] --
+---@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
-function Buffs.RequestShadowProtection()
+function MoronBox.Core.Buffs.RequestShadowProtection()
     if Instance.MC() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
@@ -233,7 +224,7 @@ function Buffs.RequestShadowProtection()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function Buffs.ProcessShadowProtection()
+function MoronBox.Core.Buffs.ProcessShadowProtection()
     if Instance.MC() then return end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then

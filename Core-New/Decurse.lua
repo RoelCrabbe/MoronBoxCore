@@ -4,9 +4,6 @@ MoronBox.Core.Dispel = MoronBox.Core.Dispel or {}
 
 local myClass = UnitClass("player")
 
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
-
 -- [[ Decurse ]] --
 
 function MoronBox.Core.Dispel.Decurse()
@@ -15,22 +12,22 @@ function MoronBox.Core.Dispel.Decurse()
     end
 
     if Instance.ZG() then
-        if IsAtJindo() and (myClass == "Mage" or myClass == "Druid") then
+        if getRaid().IsAtJindo() and (myClass == "Mage" or myClass == "Druid") then
             return false
         end
     elseif Instance.BWL() then
-        if TankTarget("Chromaggus") and MB_myAssignedHealTarget then
+        if getRaid().TankTarget("Chromaggus") and MB_myAssignedHealTarget then
             return false
         end
     end
 
     if (SKERAM_InFight() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
-            or TankTarget("Vaelastrasz the Corrupt") or TankTarget("Princess Huhuran")
-            or TankTarget("Garr") or TankTarget("Firesworn") or TankTarget("Anubisath Guardian")) then
+            or getRaid().TankTarget("Vaelastrasz the Corrupt") or getRaid().TankTarget("Princess Huhuran")
+            or getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn") or getRaid().TankTarget("Anubisath Guardian")) then
         return false
     end
 
-    if not MBD.Session.Spells.HasSpells or UnitMana("player") < 320 or ImBusy() then
+    if not MBD.Session.Spells.HasSpells or UnitMana("player") < 320 or getSpells().ImBusy() then
         return false
     end
 
@@ -45,7 +42,7 @@ function MoronBox.Core.Dispel.Decurse()
             for j = 1, 16 do
                 local _, _, debuffType = UnitDebuff(unit, j, 1)
 
-                if debuffType and In28yardRange(unit) then
+                if debuffType and getUnit().In28yardRange(unit) then
                     local canCure = (debuffType == "Curse" and MBD.Session.Spells.Curse.Can_Cure_Curse) or
                         (debuffType == "Magic" and (MBD.Session.Spells.Magic.Can_Cure_Magic or MBD.Session.Spells.Magic.Can_Cure_Enemy_Magic)) or
                         (debuffType == "Poison" and MBD.Session.Spells.Poison.Can_Cure_Poison) or
@@ -63,7 +60,7 @@ function MoronBox.Core.Dispel.Decurse()
 end
 
 function MoronBox.Core.Dispel.PartyIsPoisoned()
-    if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 
@@ -88,7 +85,7 @@ function MoronBox.Core.Dispel.PartyIsPoisoned()
 end
 
 function MoronBox.Core.Dispel.RaidIsPoisoned()
-    if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 
@@ -106,7 +103,7 @@ function MoronBox.Core.Dispel.RaidIsPoisoned()
 end
 
 function MoronBox.Core.Dispel.PlayerIsPoisoned()
-    if TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
         return false
     end
 

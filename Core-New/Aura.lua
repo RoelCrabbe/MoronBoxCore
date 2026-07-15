@@ -5,11 +5,9 @@ MoronBox.Core.Aura = MoronBox.Core.Aura or {}
 
 local BuffData = {}
 
-local Core = MoronBox.Core
-local Aura = MoronBox.Core.Aura
-
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getAura()
+    return MoronBox.Core.Aura
+end
 
 -- [[ Buff & Debuff ]] --
 
@@ -61,9 +59,9 @@ function MoronBox.Core.Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
     end
 
     if buffOrDebuff == "buff" then
-        return Aura.BuffCheck(texture, unit)
+        return getAura().BuffCheck(texture, unit)
     elseif buffOrDebuff == "debuff" then
-        return Aura.DebuffCheck(texture, unit)
+        return getAura().DebuffCheck(texture, unit)
     end
 
     return false
@@ -109,8 +107,8 @@ function MoronBox.Core.Aura.SomeoneInRaidBuffedWith(spell)
     end
 
     for i = 1, GetNumRaidMembers() do
-        if UnitName("raid" .. i) and IsAlive("raid" .. i)
-            and Aura.HasBuffOrDebuff(spell, "raid" .. i, "buff") then
+        if UnitName("raid" .. i) and getUnit().IsAlive("raid" .. i)
+            and getAura().HasBuffOrDebuff(spell, "raid" .. i, "buff") then
             return true
         end
     end
@@ -227,11 +225,11 @@ end
 -- [[ Specific Aura At Fights ]] --
 
 function MoronBox.Core.Aura.MandokirGaze()
-    if not Aura.HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
+    if not getAura().HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
         return false
     end
 
-    if ImBusy() then
+    if getSpells().ImBusy() then
         SpellStopCasting()
     end
 
@@ -240,7 +238,7 @@ function MoronBox.Core.Aura.MandokirGaze()
 end
 
 function MoronBox.Core.Aura.PlayerRazorgoreOrb()
-    return Aura.HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
+    return getAura().HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end
 
 -- [[ Paladin Buffs ]] --
@@ -270,17 +268,17 @@ function MoronBox.Core.Aura.MultiBuffBlessing(spell)
             end
 
             if (currentSpell == "Greater Blessing of Salvation") then
-                if IsValidFriendlyTarget(unit, currentSpell)
-                    and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff")
-                    and not FindInTable(Core.GeneralState.RaidTanks, UnitName(unit)) then
+                if getUnit().IsValidFriendlyTarget(unit, currentSpell)
+                    and not getAura().HasBuffOrDebuff(currentSpell, unit, "buff")
+                    and not getApi().FindInTable(getCoreState().RaidTanks, UnitName(unit)) then
                     ClearTarget()
                     CastSpellByName(currentSpell, nil)
                     SpellTargetUnit(unit)
                     SpellStopTargeting()
                     return
                 end
-            elseif IsValidFriendlyTarget(unit, currentSpell)
-                and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
+            elseif getUnit().IsValidFriendlyTarget(unit, currentSpell)
+                and not getAura().HasBuffOrDebuff(currentSpell, unit, "buff") then
                 ClearTarget()
                 CastSpellByName(currentSpell, nil)
                 SpellTargetUnit(unit)
@@ -303,8 +301,8 @@ function MoronBox.Core.Aura.MultiBuffBlessing(spell)
                 end
             end
 
-            if IsValidFriendlyTarget(unit, currentSpell)
-                and not Aura.HasBuffOrDebuff(currentSpell, unit, "buff") then
+            if getUnit().IsValidFriendlyTarget(unit, currentSpell)
+                and not getAura().HasBuffOrDebuff(currentSpell, unit, "buff") then
                 TargetUnit(unit)
                 CastSpellByName(currentSpell)
                 ClearTarget()
@@ -312,7 +310,7 @@ function MoronBox.Core.Aura.MultiBuffBlessing(spell)
             end
         end
 
-        if not IsDead() and not Aura.HasBuffOrDebuff(spell, "player", "buff") then
+        if not getUnit().IsDead() and not getAura().HasBuffOrDebuff(spell, "player", "buff") then
             TargetUnit("player")
             CastSpellByName(spell)
             ClearTarget()

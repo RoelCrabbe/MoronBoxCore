@@ -1,11 +1,5 @@
 -- [[ Spirit Buffing ]] --
-
-MoronBox.Unit = MoronBox.Unit or {}
-local Unit = MoronBox.Unit
-
-MoronBox.Core = MoronBox.Core or {}
-MoronBox.Core.Aura = MoronBox.Core.Aura or {}
-local Aura = MoronBox.Core.Aura
+---@diagnostic disable: undefined-global
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "Spirit"
@@ -30,21 +24,16 @@ local SPIRIT_MANA_COST = 1940 * 0.95
 -- time-sensitive and per-instance.
 local DISCOVERY_COOLDOWN = 300 -- 5 minutes
 
--- References to frames.
-local Debugger = MoronBox.Debugger
-local Api = MoronBox.Api
-local Buffs = MoronBox.Core.Buffs
-
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
     local SpiritPriests = {}
 
-    Spirit = Buffs.Register(MODULE_NAME)
+    Spirit = Register(MODULE_NAME)
     Spirit:RegisterEvent("RAID_ROSTER_UPDATE")
     Spirit:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
-    local Handlers = Buffs.CreateHandlers({
+    local Handlers = CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -55,35 +44,35 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     Spirit:SetScript("OnEvent", function()
         if event == "CHAT_MSG_ADDON" then
             if not Handlers.IsOwnMessage(arg1) then return end
-            Buffs.DispatchMessage(arg2, arg4, Handlers)
+            DispatchMessage(arg2, arg4, Handlers)
         elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
-            Api.ClearTable(SpiritPriests)
+            ClearTable(SpiritPriests)
         end
     end)
 
     MoronBox:RegisterExpose({
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if Buffs.HasActiveBuff(BUFF_KEY) then
+            if HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
+            local spellName = GetBuffSpell(BUFF_KEY)
 
             if table.getn(SpiritPriests) == 0 then
                 Handlers.RequestCapable(spellName, DISCOVERY_COOLDOWN)
                 return
             end
 
-            local group = Buffs.GetGroupNumber()
-            local member = Buffs.GetMemberForGroup(SpiritPriests, group, RACE_MODULE, SPIRIT_MANA_COST)
+            local group = GetGroupNumber()
+            local member = GetMemberForGroup(SpiritPriests, group, RACE_MODULE, SPIRIT_MANA_COST)
 
             if not member then
-                Debugger:Warn("No " .. CLASS_MODULE .. " found")
+                WarnMsg("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = Buffs.GetPriority(
+            local prio = GetPriority(
                 {
                     ["Shaman"] = "HIGH",
                     ["Mage"] = "MEDIUM",
@@ -96,24 +85,24 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
-            local soloResult = Buffs.SoloBuff(BUFF_KEY, spellName)
+            local spellName = GetBuffSpell(BUFF_KEY)
+            local soloResult = SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = Buffs.GetNextTarget(Queue)
+            local targetUnitId, groupNum = GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
             end
 
-            if Unit.IsValidFriendlyTarget(targetUnitId, spellName) and not Aura.HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
@@ -130,9 +119,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
+    return UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
-    Buffs.Unregister(MODULE_NAME)
+    Unregister(MODULE_NAME)
 end)
 
 -- SPIRIT BUFF SYSTEM - COMPLETE FLOW
@@ -244,10 +233,11 @@ end)
 -- Direct group access → No need to search all groups for targets
 
 -- [[ Macro Entry Points ]] --
+---@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
-function Buffs.RequestSpirit()
-    if not Unit.IsManaUser() then
+function MoronBox.Core.Buffs.RequestSpirit()
+    if not getUnit().IsManaUser() then
         return
     end
 
@@ -257,7 +247,7 @@ function Buffs.RequestSpirit()
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function Buffs.ProcessSpirit()
+function MoronBox.Core.Buffs.ProcessSpirit()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end

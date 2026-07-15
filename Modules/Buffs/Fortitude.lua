@@ -1,13 +1,5 @@
 -- [[ Fortitude Buffing ]] --
-
-MoronBox.Unit = MoronBox.Unit or {}
-local Unit = MoronBox.Unit
-
-MoronBox.Core = MoronBox.Core or {}
-MoronBox.Core.Aura = MoronBox.Core.Aura or {}
-MoronBox.Core.Spells = MoronBox.Core.Spells or {}
-local Aura = MoronBox.Core.Aura
-local Spells = MoronBox.Core.Spells
+---@diagnostic disable: undefined-global
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "Fortitude"
@@ -25,17 +17,13 @@ local Fortitude
 -- Minimum mana required to be considered a valid cast candidate.
 local FORTITUDE_MANA_COST = 3400 * 0.95
 
--- References to frames.
-local Debugger = MoronBox.Debugger
-local Buffs = MoronBox.Core.Buffs
-
 MoronBox:RegisterModule(MODULE_NAME, function()
     local Queue = {}
     local ClaimedQueue = {}
 
-    Fortitude = Buffs.Register(MODULE_NAME)
+    Fortitude = Register(MODULE_NAME)
 
-    local Handlers = Buffs.CreateHandlers({
+    local Handlers = CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -45,26 +33,26 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     Fortitude:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
-        Buffs.DispatchMessage(arg2, arg4, Handlers)
+        DispatchMessage(arg2, arg4, Handlers)
     end)
 
     MoronBox:RegisterExpose({
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if Buffs.HasActiveBuff(BUFF_KEY) then
+            if MoronBox.Core.Buffs.HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local group = Buffs.GetGroupNumber()
-            local member = Buffs.GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
+            local group = GetGroupNumber()
+            local member = GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
                 FORTITUDE_MANA_COST)
 
             if not member then
-                Debugger:Warn("No " .. CLASS_MODULE .. " found")
+                WarnMsg("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = Buffs.GetPriority(
+            local prio = GetPriority(
                 {
                     ["Shaman"] = "HIGH",
                     ["Mage"] = "MEDIUM",
@@ -77,29 +65,29 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not Buffs.HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = Buffs.GetBuffSpell(BUFF_KEY)
-            local soloResult = Buffs.SoloBuff(BUFF_KEY, spellName)
+            local spellName = GetBuffSpell(BUFF_KEY)
+            local soloResult = SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = Buffs.GetNextTarget(Queue)
+            local targetUnitId, groupNum = GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
             end
 
-            if Unit.IsValidFriendlyTarget(targetUnitId, spellName) and not Aura.HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
 
-                Spells.SelfBuff("Inner Focus")
+                SelfBuff("Inner Focus")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()
@@ -112,9 +100,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return Buffs.UnLoad(CLASS_MODULE, RACE_MODULE)
+    return UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
-    Buffs.Unregister(MODULE_NAME)
+    Unregister(MODULE_NAME)
 end)
 
 -- FORTITUDE BUFF SYSTEM - COMPLETE FLOW
@@ -226,19 +214,18 @@ end)
 -- Direct group access → No need to search all groups for targets
 
 -- [[ Macro Entry Points ]] --
+---@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
-function Buffs.RequestFortitude()
+function MoronBox.Core.Buffs.RequestFortitude()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()
     end
 end
 
 -- Called to process the buff queue (cast on the next valid target).
-function Buffs.ProcessFortitude()
+function MoronBox.Core.Buffs.ProcessFortitude()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Process then
         MoronBox.Registry[MODULE_NAME].Process()
     end
 end
-
--- /run MoronBox.Core.Buffs.ProcessFortitude()

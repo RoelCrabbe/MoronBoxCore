@@ -32,22 +32,19 @@ local PlayerMounts = {
     "Swift Palomino"
 }
 
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
-
 -- [[ Simple Rotations ]] --
 
 function MoronBox.Core.Rotation.Execute(rotation, context)
     if type(rotation) == "function" then
         rotation()
     else
-        CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
+        getApi().CdMessage("I don't know what to do for " .. (context or "this situation") .. ".", 500)
     end
 end
 
 function MoronBox.Core.Rotation.HealerJindo(spellName)
-    if Instance.ZG() and HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
-        if UnitName("target") == "Shade of Jin'do" and not Dead("target") then
+    if Instance.ZG() and getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
+        if UnitName("target") == "Shade of Jin'do" and not getUnit().Dead("target") then
             CastSpellByName(spellName)
         end
         return true
@@ -56,29 +53,29 @@ function MoronBox.Core.Rotation.HealerJindo(spellName)
 end
 
 function MoronBox.Core.Rotation.MountUp()
-    if myClass == "Druid" and IsDruidShapeShifted() and not InCombat() then
-        CancelDruidShapeShift()
+    if myClass == "Druid" and getUnit().IsDruidShapeShifted() and not getUnit().InCombat() then
+        getUnit().CancelDruidShapeShift()
     end
 
-    if ImBusy() then
+    if getSpells().ImBusy() then
         return
     end
 
     if Instance.AQ40() then
-        use(GetItemLink("Resonating"))
+        use(getBag().GetItemLink("Resonating"))
         return
     end
 
     for _, mount in PlayerMounts do
-        use(GetItemLink(mount))
+        use(getBag().GetItemLink(mount))
     end
 
-    if myClass == "Warlock" and IsSpellKnown("Summon Dreadsteed") then
+    if myClass == "Warlock" and getSpells().IsSpellKnown("Summon Dreadsteed") then
         CastSpellByName("Summon Dreadsteed")
         return
     end
 
-    if myClass == "Paladin" and IsSpellKnown("Summon Charger") then
+    if myClass == "Paladin" and getSpells().IsSpellKnown("Summon Charger") then
         CastSpellByName("Summon Charger")
         return
     end

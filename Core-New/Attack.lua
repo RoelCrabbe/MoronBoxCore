@@ -10,11 +10,13 @@ MoronBox.Core.Attack.AttackState = {
 
 local myClass = UnitClass("player")
 
-local Attack = MoronBox.Core.Attack
-local AttackState = Attack.AttackState
+function getAttack()
+    return MoronBox.Core.Attack
+end
 
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getAttackState()
+    return MoronBox.Core.Attack.AttackState
+end
 
 -- [[ Attacking ]] --
 
@@ -33,41 +35,41 @@ local function FindActionSlot(spellName)
 end
 
 function MoronBox.Core.Attack.AutoAttack()
-    local atkSlot = tonumber(AttackState.AttackSlot)
+    local atkSlot = tonumber(getAttackState().AttackSlot)
     if atkSlot and not IsCurrentAction(atkSlot) then
         CastSpellByName("Attack")
     end
 end
 
 function MoronBox.Core.Attack.AutoRangedAttack()
-    local atkSlot = tonumber(AttackState.RangedSlot)
+    local atkSlot = tonumber(getAttackState().RangedSlot)
     if atkSlot and not IsAutoRepeatAction(atkSlot) then
         CastSpellByName("Auto Shot")
     end
 end
 
 function MoronBox.Core.Attack.AutoWandAttack()
-    local wndSlot = tonumber(AttackState.WandSlot)
+    local wndSlot = tonumber(getAttackState().WandSlot)
     if wndSlot and not IsAutoRepeatAction(wndSlot) then
         CastSpellByName("Shoot")
     end
 end
 
 function MoronBox.Core.Attack.SetAttackButton()
-    AttackState.AttackSlot = FindActionSlot("Attack")
-    if not AttackState.AttackSlot then
-        CdMessage("No Auto-Attack on my bars.")
+    getAttackState().AttackSlot = FindActionSlot("Attack")
+    if not getAttackState().AttackSlot then
+        getApi().CdMessage("No Auto-Attack on my bars.")
     end
 
     if myClass == "Mage" or myClass == "Warlock" or myClass == "Priest" then
-        AttackState.WandSlot = FindActionSlot("Shoot")
-        if not AttackState.WandSlot then
-            CdMessage("No Shoot on my bars.")
+        getAttackState().WandSlot = FindActionSlot("Shoot")
+        if not getAttackState().WandSlot then
+            getApi().CdMessage("No Shoot on my bars.")
         end
     elseif myClass == "Hunter" then
-        AttackState.RangedSlot = FindActionSlot("Auto Shot")
-        if not AttackState.RangedSlot then
-            CdMessage("No Ranged Auto-Attack on my bars.")
+        getAttackState().RangedSlot = FindActionSlot("Auto Shot")
+        if not getAttackState().RangedSlot then
+            getApi().CdMessage("No Ranged Auto-Attack on my bars.")
         end
     end
 end
@@ -88,6 +90,6 @@ end
 
 AttackFrame:SetScript("OnEvent", function()
     if event == "ACTIONBAR_SLOT_CHANGED" then
-        Attack.SetAttackButton()
+        getAttack().SetAttackButton()
     end
 end)

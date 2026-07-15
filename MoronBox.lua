@@ -12,23 +12,25 @@ MoronBox.BootUp = true
 MoronBox.CurrentModule = nil
 
 -- Core storage structures
-MoronBox.Modules = {}       -- Holds the init functions ("Recipes")
-MoronBox.Registry = {}      -- Holds the public API tables ("Exposed APIs")
-MoronBox.ModuleNames = {}   -- Holds the list of strings ("Keys")
-MoronBox.Api = {}           -- Extra functions
+MoronBox.Modules = {}           -- Holds the init functions ("Recipes")
+MoronBox.Registry = {}          -- Holds the public API tables ("Exposed APIs")
+MoronBox.ModuleNames = {}       -- Holds the list of strings ("Keys")
+MoronBox.Debugger = {}          -- Debugger
+MoronBox.Api = {}               -- Extra functions
 MoronBox.Bag = {}
-MoronBox.Unit = {}          -- All unit state and configuration
+MoronBox.Unit = {}              -- All unit state and configuration
 
-MoronBox.Core = {}          -- All core state and configuration
-MoronBox.Core.Aura = {}     -- Subsection from Core
-MoronBox.Core.Spells = {}   -- Subsection from Core
-MoronBox.Core.Buffs = {}    -- Subsection from Core
-MoronBox.Core.Raid = {}     -- Subsection from Core
-MoronBox.Core.Dispel = {}   -- Subsection from Core
-MoronBox.Core.Gear = {}     -- Subsection from Core
-MoronBox.Core.Attack = {}   -- Subsection from Core
-MoronBox.Core.Rotation = {} -- Subsection from Core
-MoronBox.Core.Report = {}   -- Subsection from Core
+MoronBox.Core = {}              -- All core state and configuration
+MoronBox.Core.Aura = {}         -- Subsection from Core
+MoronBox.Core.Spells = {}       -- Subsection from Core
+MoronBox.Core.Buffs = {}        -- Subsection from Core
+MoronBox.Core.Raid = {}         -- Subsection from Core
+MoronBox.Core.Dispel = {}       -- Subsection from Core
+MoronBox.Core.Gear = {}         -- Subsection from Core
+MoronBox.Core.Attack = {}       -- Subsection from Core
+MoronBox.Core.Rotation = {}     -- Subsection from Core
+MoronBox.Core.Report = {}       -- Subsection from Core
+MoronBox.Core.CrowdControl = {} -- Subsection from Core
 
 --- Creates a unique, isolated environment (sandbox) for a module.
 --- Each module receives a dedicated table instance, ensuring that global
@@ -44,6 +46,7 @@ function MoronBox:GetEnvironment()
     local seen = {}
 
     local namespaces = {
+        self.Debugger,
         self.Api,
         self.Bag,
         self.Unit,
@@ -57,13 +60,14 @@ function MoronBox:GetEnvironment()
         self.Core.Rotation,
         self.Core.Report,
         self.Core.Buffs,
+        self.Core.CrowdControl
     }
 
     for _, ns in ipairs(namespaces) do
         if ns then
             for key, _ in pairs(ns) do
                 if seen[key] then
-                    self.Debugger:Warn("GetEnvironment: naming conflict for '" .. key .. "'")
+                    getDebugger().WarnMsg("GetEnvironment: naming conflict for '" .. key .. "'")
                     break
                 end
                 seen[key] = true
@@ -173,7 +177,7 @@ function MoronBox:LoadModule(name)
 
     if not status then
         -- Log to our centralized Debugger instead of crashing
-        self.Debugger:Error("Module '" .. name .. "' failed to load: " .. tostring(err))
+        getDebugger().ErrorMsg("Module '" .. name .. "' failed to load: " .. tostring(err))
         return
     end
 
@@ -234,7 +238,7 @@ function MoronBox:UpdateModules()
         -- Fallback: if pcall fails, treat as false for safety
         if not status then
             shouldBeLoaded = false
-            self.Debugger:Error("Module condition check failed for: " .. name)
+            getDebugger().ErrorMsg("Module condition check failed for: " .. name)
         end
 
         -- State Machine: Synchronize module state
@@ -242,189 +246,6 @@ function MoronBox:UpdateModules()
             self:LoadModule(name)
         elseif not shouldBeLoaded and mod.isLoaded then
             self:UnloadModule(name)
-        end
-    end
-end
-
-MoronBox:SetScript("OnEvent", function()
-    -- Only act when our specific addon is fully loaded by the client
-    if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
-        MoronBox:UpdateModules()
-        MoronBox.BootUp = nil
-
-        MoronBox.QueueFunction(function()
-            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by MoroN.", 1, 1, 1)
-            DEFAULT_CHAT_FRAME:AddMessage(
-                "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
-
-            UIErrorsFrame:Hide()
-
-            MoronBox.Core.InitializeClasslists()
-            mb_mySpecc()
-            MoronBox.Core.Attack.SetAttackButton()
-            MoronBox.Core.Healing.GetHealSpell()
-
-            if MB_raidAssist.AutoEquipSet.Active then
-                MoronBox.Core.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
-            end
-        end)
-    elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-        MoronBox.Core.InitializeClasslists()
-        MoronBox:UpdateModules()
-    end
-end)
-
--- [[ Debugger & Logging ]] --
-
---- @section Debugger
---- The Debugger provides centralized, deduplicated logging across all modules.
---- It includes an error handler that intercepts WoW-native Lua exceptions.
-
-MoronBox.Debugger = {
-    Enabled = true,        -- Toggle overall logging
-    Inline_Enabled = true, -- Print logs to chat frame
-    History = {},          -- Persistent log storage for session review
-    Seen = {}              -- Deduplication cache (prevents chat spam)
-}
-
---- Extracts the call stack to identify the origin of a log or error call.
---- @return string: "FunctionName - Filename:LineNumber"
-function MoronBox.Debugger:GetShortStack()
-    local trace = debugstack(4, 2, 0)
-    local _, _, line1, line2 = string.find(trace, "(.-)\n(.-)\n")
-    if not line1 then line1 = trace end
-    local _, _, funcName = string.find(line1, "`([^`]+)'")
-    local _, _, file, line = string.find(line2, "([%w%.]+%.lua):(%d+):")
-    return (funcName or "Unknown") .. " - " .. (file or "Unknown") .. ":" .. (line or "0")
-end
-
---- Returns the color code string for a given log level.
---- @param level string: Severity level ("INFO", "WARN", "ERROR")
---- @return string: WoW color hex code
-function MoronBox.Debugger:GetColor(level)
-    if level == "INFO" then return "|cFF00FF00" end
-    if level == "WARN" then return "|cFFFFFF00" end
-    return "|cFFFF0000" -- ERROR
-end
-
---- Records, deduplicates, and optionally prints log entries to the chat.
---- @param level "INFO"|"WARN"|"ERROR": Log severity level.
---- @param message string: The diagnostic message to log.
-function MoronBox.Debugger:Log(level, message)
-    if not self.Enabled then return end
-
-    local source = self:GetShortStack()
-    local key = level .. ":" .. source .. ":" .. message
-
-    -- Discard duplicates to prevent chat spam
-    if self.Seen[key] then return end
-    self.Seen[key] = true
-
-    local h, m = GetGameTime()
-    table.insert(self.History, {
-        level = level,
-        source = source,
-        message = message,
-        time = string.format("%02d:%02d", h, m)
-    })
-
-    if self.Inline_Enabled then
-        local color = self:GetColor(level)
-        print(color .. "[" .. level .. "]|r (" .. source .. ") " .. message)
-    end
-end
-
--- Public logging API methods
-function MoronBox.Debugger:Warn(msg) self:Log("WARN", msg) end
-
-function MoronBox.Debugger:Error(msg) self:Log("ERROR", msg) end
-
-function MoronBox.Debugger:Info(msg) self:Log("INFO", msg) end
-
---- Prints all unique warnings/errors captured during the current session.
---- Useful for reviewing issues without scrolling through chat history.
-function MoronBox.Debugger:PrintHistory()
-    if table.getn(self.History) == 0 then
-        print("|cffcccc33[MoronBox]|r No warnings or errors logged this session.")
-        return
-    end
-
-    print("|cffcccc33[MoronBox]|r Session History:")
-    for _, entry in ipairs(self.History) do
-        local color = self:GetColor(entry.level)
-        print(color .. "[" .. entry.time .. " " .. entry.level .. "]|r (" .. entry.source .. ") " .. entry.message)
-    end
-end
-
---- Clears the session history table.
---- Note: This does not affect the deduplication memory (Seen table),
---- so you won't be spammed by the same errors again even after clearing history.
-function MoronBox.Debugger:ClearHistory()
-    self.History = {}
-    print("|cffcccc33[MoronBox]|r History cleared.")
-end
-
--- Slash command registratie
-SLASH_MBLOG1 = "/mblog"
-SlashCmdList["MBLOG"] = function()
-    MoronBox.Debugger:PrintHistory()
-end
-
--- [[ Global Environment Handling ]] --
-
---- Routes standard 'print' calls to the MoronBox chat output.
-local function PrintHandler(msg)
-    DEFAULT_CHAT_FRAME:AddMessage("|cffcccc33INFO:|r |cffffffff" .. tostring(msg))
-end
-
-print = print or PrintHandler
-
---- Intercepts Lua exceptions to prevent engine popups and log to MoronBox.
---- @param msg string: Raw error message from the WoW client.
-local function ErrorHandler(msg)
-    if MoronBox.Debugger.Inline_Enabled then
-        print(debugstack(1, 12, 10))
-    end
-
-    -- Only handle errors related to our workspace
-    if string.find(msg, "AddOns\\MoronBoxCore") then
-        MoronBox.Debugger:Log("ERROR", msg)
-    end
-end
-
-seterrorhandler(ErrorHandler)
-
---- Recursively prints the full contents of a table, including nested tables.
---- @param t table: The table to print.
---- @param indent? string|nil: Internal use — current indentation prefix (leave nil when calling).
---- @param seen? table|nil: Internal use — tracks visited tables to avoid infinite loops on circular references.
-function MoronBox.Debugger:DumpTable(t, indent, seen)
-    indent = indent or ""
-    seen = seen or {}
-
-    if type(t) ~= "table" then
-        print(indent .. tostring(t))
-        return
-    end
-
-    if next(t) == nil then
-        print(indent .. "Table is empty.")
-        return
-    end
-
-    if seen[t] then
-        print(indent .. "*circular reference*")
-        return
-    end
-
-    seen[t] = true
-
-    for key, value in pairs(t) do
-        if type(value) == "table" then
-            print(indent .. tostring(key) .. ":")
-            self:DumpTable(value, indent .. "  ", seen)
-        else
-            print(indent .. tostring(key) .. " = " .. tostring(value))
         end
     end
 end
@@ -482,3 +303,32 @@ function MoronBox.QueueFunction(a1, a2, a3, a4, a5, a6, a7, a8, a9)
     table.insert(queueTimer.queue, { a1, a2, a3, a4, a5, a6, a7, a8, a9 })
     queueTimer:Show()
 end
+
+MoronBox:SetScript("OnEvent", function()
+    -- Only act when our specific addon is fully loaded by the client
+    if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
+        MoronBox:UpdateModules()
+
+        MoronBox.QueueFunction(function()
+            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by MoroN.", 1, 1, 1)
+            DEFAULT_CHAT_FRAME:AddMessage(
+                "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
+
+            UIErrorsFrame:Hide()
+
+            MoronBox.Core.InitializeClasslists()
+            mb_mySpecc()
+            MoronBox.Core.Attack.SetAttackButton()
+            MoronBox.Core.Healing.GetHealSpell()
+
+            if MB_raidAssist.AutoEquipSet.Active then
+                MoronBox.Core.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
+            end
+        end)
+
+        MoronBox.BootUp = nil
+    elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+        MoronBox.Core.InitializeClasslists()
+        MoronBox:UpdateModules()
+    end
+end)

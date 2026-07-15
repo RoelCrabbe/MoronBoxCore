@@ -32,14 +32,16 @@ end
 local myClass = UnitClass("player")
 local myName = UnitName("player")
 
-local Core = MoronBox.Core
-local GeneralState = Core.GeneralState
-
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
-
 --- @type MoronBoxState
-local ResetState = CopyTable(GeneralState)
+local ResetState = getApi().CopyTable(MoronBox.Core.GeneralState)
+
+function getCore()
+    return MoronBox.Core
+end
+
+function getCoreState()
+    return MoronBox.Core.GeneralState
+end
 
 -- [[ InitializeClasslists ]]
 
@@ -47,15 +49,15 @@ local ResetState = CopyTable(GeneralState)
 --- isolated from the legacy mb_initializeClasslists() globals while both run
 --- side by side. Called primarily on roster changes (RAID_ROSTER_UPDATE,
 --- PARTY_MEMBERS_CHANGED).
-function Core.InitializeClasslists()
+function MoronBox.Core.InitializeClasslists()
     -- [[ Reset ]] --
     -- ResetState is a fixed template captured once at load time; CopyTable
     -- gives us a fresh, independent copy so we never mutate the template itself.
 
-    GeneralState = CopyTable(ResetState)
+    MoronBox.Core.GeneralState = getApi().CopyTable(ResetState)
 
     -- Solo (or in an inconsistent transitional state): nothing to build, caches stay empty.
-    if not GetGroupStatus() then
+    if not getApi().GetGroupStatus() then
         return
     end
 
@@ -67,10 +69,10 @@ function Core.InitializeClasslists()
             -- A gap in the roster index shouldn't wipe out everything already
             -- collected — skip this slot and keep processing the rest.
             if name and class and UnitIsConnected("raid" .. i) and UnitExists("raid" .. i) then
-                GeneralState.MBID[name] = "raid" .. i
-                table.insert(GeneralState.ClassList[class], name)
-                table.insert(GeneralState.ToonsInGroup[subGroup], name)
-                GeneralState.GroupID[name] = subGroup
+                getCoreState().MBID[name] = "raid" .. i
+                table.insert(getCoreState().ClassList[class], name)
+                table.insert(getCoreState().ToonsInGroup[subGroup], name)
+                getCoreState().GroupID[name] = subGroup
             end
         end
     else
@@ -91,39 +93,39 @@ function Core.InitializeClasslists()
                 break
             end
 
-            GeneralState.MBID[name] = unitId
-            table.insert(GeneralState.ClassList[class], name)
-            table.insert(GeneralState.ToonsInGroup[1], name)
-            GeneralState.GroupID[name] = 1
+            getCoreState().MBID[name] = unitId
+            table.insert(getCoreState().ClassList[class], name)
+            table.insert(getCoreState().ToonsInGroup[1], name)
+            getCoreState().GroupID[name] = 1
         end
     end
 
     -- [[ Tank Lists ]] --
     for _, tank in ipairs(MB_tankList) do
-        local tankId = GeneralState.MBID[tank]
+        local tankId = getCoreState().MBID[tank]
         if tankId then
             local tankClass = UnitClass(tankId)
 
             if UnitInParty(tankId) then
                 if tankClass == "Druid" then
-                    GeneralState.DruidTankInParty = true
+                    getCoreState().DruidTankInParty = true
                 end
                 if tankClass == "Warrior" then
-                    GeneralState.WarriorTankInParty = true
+                    getCoreState().WarriorTankInParty = true
                 end
             end
 
             if tank ~= myName then
-                table.insert(GeneralState.AssignableTanks, tank)
+                table.insert(getCoreState().AssignableTanks, tank)
             end
 
-            table.insert(GeneralState.RaidTanks, tank)
+            table.insert(getCoreState().RaidTanks, tank)
         end
     end
 
-    for _, name in pairs(GeneralState.ClassList["Druid"]) do
-        if not FindInTable(GeneralState.RaidTanks, name) then
-            table.insert(GeneralState.DruidCasters, name)
+    for _, name in pairs(getCoreState().ClassList["Druid"]) do
+        if not getApi().FindInTable(getCoreState().RaidTanks, name) then
+            table.insert(getCoreState().DruidCasters, name)
         end
     end
 
@@ -131,17 +133,17 @@ function Core.InitializeClasslists()
     ---- Keeping them in order instead of sorting is better for assigning tanks
     -- SortAlphabetically(State.AssignableTanks)
 
-    SortAlphabetically(GeneralState.RaidTanks)
-    SortAlphabetically(GeneralState.DruidCasters)
+    getApi().SortAlphabetically(getCoreState().RaidTanks)
+    getApi().SortAlphabetically(getCoreState().DruidCasters)
 
-    for _, list in pairs(GeneralState.ClassList) do
-        SortAlphabetically(list)
+    for _, list in pairs(getCoreState().ClassList) do
+        getApi().SortAlphabetically(list)
     end
 end
 
 -- [[ Roles Checking ]] --
 
-function Core.ImRangedDPS()
+function MoronBox.Core.ImRangedDPS()
     if myClass == "Hunter" or myClass == "Warlock" or myClass == "Mage" then
         return true
     elseif myClass == "Shaman" and MB_mySpecc == "Elemental" then
@@ -154,7 +156,7 @@ function Core.ImRangedDPS()
     return false
 end
 
-function Core.ImMeleeDPS()
+function MoronBox.Core.ImMeleeDPS()
     if myClass == "Rogue" then
         return true
     elseif myClass == "Warrior" and MB_mySpecc == "BT" then
@@ -163,7 +165,7 @@ function Core.ImMeleeDPS()
     return false
 end
 
-function Core.ImTank()
+function MoronBox.Core.ImTank()
     if myClass == "Warrior" and (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
         return true
     elseif myClass == "Druid" and MB_mySpecc == "Feral" then
@@ -172,7 +174,7 @@ function Core.ImTank()
     return false
 end
 
-function Core.ImHealer()
+function MoronBox.Core.ImHealer()
     if myClass == "Druid" and (MB_mySpecc == "Resto" or MB_mySpecc == "Swiftmend") then
         return true
     elseif myClass == "Shaman" and MB_mySpecc ~= "Elemental" then
@@ -187,7 +189,7 @@ end
 
 -- [[ Group ]] --
 
-function Core.MyGroupOrder()
+function MoronBox.Core.MyGroupOrder()
     local myParty = {}
 
     table.insert(myParty, myName)
@@ -211,12 +213,12 @@ function Core.MyGroupOrder()
     return order
 end
 
-function Core.MyClassOrder()
+function MoronBox.Core.MyClassOrder()
     local myClassToons = {}
 
-    for name, id in GeneralState.MBID do
+    for name, id in getCoreState().MBID do
         local class = UnitClass(id)
-        if class == myClass and IsAlive(id) then
+        if class == myClass and getUnit().IsAlive(id) then
             if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
             else
@@ -226,7 +228,7 @@ function Core.MyClassOrder()
     end
 
     local order = 1
-    for name, _ in sPairs(myClassToons,
+    for name, _ in getApi().sPairs(myClassToons,
         function(t, a, b)
             return t[b] < t[a]
         end)
@@ -240,12 +242,12 @@ function Core.MyClassOrder()
     return 0
 end
 
-function Core.MyInvertedClassOrder()
+function MoronBox.Core.MyInvertedClassOrder()
     local myClassToons = {}
 
-    for name, id in GeneralState.MBID do
+    for name, id in getCoreState().MBID do
         local class = UnitClass(id)
-        if class == myClass and IsAlive(id) then
+        if class == myClass and getUnit().IsAlive(id) then
             if UnitPowerType(id) == 0 then
                 myClassToons[name] = UnitManaMax(id)
             else
@@ -255,7 +257,7 @@ function Core.MyInvertedClassOrder()
     end
 
     local order = 1
-    for name, _ in sPairs(myClassToons,
+    for name, _ in getApi().sPairs(myClassToons,
         function(t, a, b)
             return t[b] > t[a]
         end)
@@ -269,7 +271,7 @@ function Core.MyInvertedClassOrder()
     return 0
 end
 
-function Core.MyGroupClassOrder()
+function MoronBox.Core.MyGroupClassOrder()
     local myClassToons = {}
 
     if UnitPowerType("player") == 0 then
@@ -283,7 +285,7 @@ function Core.MyGroupClassOrder()
         local class = UnitClass(unit)
         local partyName = UnitName(unit)
 
-        if class == myClass and partyName and IsAlive(unit) then
+        if class == myClass and partyName and getUnit().IsAlive(unit) then
             if UnitPowerType(unit) == 0 then
                 myClassToons[partyName] = UnitManaMax(unit)
             else
@@ -293,7 +295,7 @@ function Core.MyGroupClassOrder()
     end
 
     local order = 1
-    for name, _ in sPairs(myClassToons,
+    for name, _ in getApi().sPairs(myClassToons,
         function(t, a, b)
             return t[b] < t[a]
         end)
@@ -307,7 +309,7 @@ function Core.MyGroupClassOrder()
     return 0
 end
 
-function Core.MyInvertedGroupClassOrder()
+function MoronBox.Core.MyInvertedGroupClassOrder()
     local myClassToons = {}
 
     if UnitPowerType("player") == 0 then
@@ -321,7 +323,7 @@ function Core.MyInvertedGroupClassOrder()
         local class = UnitClass(unit)
         local partyName = UnitName(unit)
 
-        if class == myClass and partyName and IsAlive(unit) then
+        if class == myClass and partyName and getUnit().IsAlive(unit) then
             if UnitPowerType(unit) == 0 then
                 myClassToons[partyName] = UnitManaMax(unit)
             else
@@ -331,7 +333,7 @@ function Core.MyInvertedGroupClassOrder()
     end
 
     local order = 1
-    for name, _ in sPairs(myClassToons,
+    for name, _ in getApi().sPairs(myClassToons,
         function(t, a, b)
             return t[b] > t[a]
         end)
@@ -345,13 +347,13 @@ function Core.MyInvertedGroupClassOrder()
     return 0
 end
 
-function Core.MyClassAlphabeticalOrder()
+function MoronBox.Core.MyClassAlphabeticalOrder()
     local myClassToons = {}
 
-    for name, id in GeneralState.MBID do
+    for name, id in getCoreState().MBID do
         local class = UnitClass(id)
 
-        if class == myClass and IsAlive(id) then
+        if class == myClass and getUnit().IsAlive(id) then
             table.insert(myClassToons, name)
         end
     end
@@ -369,16 +371,16 @@ function Core.MyClassAlphabeticalOrder()
     return 0
 end
 
-function Core.NumberOfClassInParty(checkClass)
+function MoronBox.Core.NumberOfClassInParty(checkClass)
     local i = 0
-    local myGroup = GeneralState.GroupID[myName]
+    local myGroup = getCoreState().GroupID[myName]
 
     if not myGroup then
         return 0
     end
 
-    for _, name in ipairs(GeneralState.ToonsInGroup[myGroup]) do
-        local MBID = GeneralState.MBID
+    for _, name in ipairs(getCoreState().ToonsInGroup[myGroup]) do
+        local MBID = getCoreState().MBID
         if MBID[name] and UnitClass(MBID[name]) == checkClass then
             i = i + 1
         end
@@ -386,10 +388,10 @@ function Core.NumberOfClassInParty(checkClass)
     return i
 end
 
-function Core.NumberOfClassInRaid(checkClass)
+function MoronBox.Core.NumberOfClassInRaid(checkClass)
     local i = 0
 
-    for _, id in pairs(GeneralState.MBID) do
+    for _, id in pairs(getCoreState().MBID) do
         if UnitClass(id) == checkClass then
             i = i + 1
         end
@@ -398,8 +400,8 @@ function Core.NumberOfClassInRaid(checkClass)
     return i
 end
 
-function Core.GetRandomMageInGroup()
-    local mages = GeneralState.ClassList["Mage"]
+function MoronBox.Core.GetRandomMageInGroup()
+    local mages = getCoreState().ClassList["Mage"]
 
     if not mages or table.getn(mages) == 0 then
         return nil
@@ -408,13 +410,13 @@ function Core.GetRandomMageInGroup()
     return mages[math.random(table.getn(mages))]
 end
 
-function Core.MeleeDPSInParty()
-    return Core.NumberOfClassInParty("Warrior") > 0 or Core.NumberOfClassInParty("Rogue") > 0
+function MoronBox.Core.MeleeDPSInParty()
+    return getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0
 end
 
-function Core.NumOfCasterHealerInParty()
-    return Core.NumberOfClassInParty("Mage")
-        + Core.NumberOfClassInParty("Priest")
-        + Core.NumberOfClassInParty("Druid")
-        + Core.NumberOfClassInParty("Shaman")
+function MoronBox.Core.NumOfCasterHealerInParty()
+    return getCore().NumberOfClassInParty("Mage")
+        + getCore().NumberOfClassInParty("Priest")
+        + getCore().NumberOfClassInParty("Druid")
+        + getCore().NumberOfClassInParty("Shaman")
 end

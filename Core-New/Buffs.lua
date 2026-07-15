@@ -1,8 +1,5 @@
 -- [[ Config & Constants ]] --
 
-MoronBox.Core = MoronBox.Core or {}
-local Core = MoronBox.Core
-
 MoronBox.Core.Buffs = MoronBox.Core.Buffs or {}
 
 local DEFAULT_PRIORITY = "NONE"
@@ -113,10 +110,9 @@ local myClass = UnitClass("player")
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 
-local Buffs = MoronBox.Core.Buffs
-
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getBuffs()
+    return MoronBox.Core.Buffs
+end
 
 --- @alias BuffKey
 --- | "Fortitude"
@@ -171,7 +167,7 @@ function MoronBox.Core.Buffs.UnLoad(className, raceName)
         return true
     end
 
-    local members = Core.GeneralState.ClassList[className]
+    local members = getCoreState().ClassList[className]
     if not members then
         return false
     end
@@ -194,7 +190,7 @@ function MoronBox.Core.Buffs.HasActiveBuff(buffKey, unitId)
     end
 
     for _, buffName in pairs(list) do
-        if HasBuffOrDebuff(buffName, unitId, "buff") then
+        if getAura().HasBuffOrDebuff(buffName, unitId, "buff") then
             return true
         end
     end
@@ -211,7 +207,7 @@ function MoronBox.Core.Buffs.HasBuffPremissions(buffKey, requiredClass)
         return false
     end
 
-    if ImBusy() then
+    if getSpells().ImBusy() then
         return false
     end
 
@@ -219,7 +215,7 @@ function MoronBox.Core.Buffs.HasBuffPremissions(buffKey, requiredClass)
     if not list then return false end
 
     for _, spellName in pairs(list) do
-        if IsSpellReady(spellName) then
+        if getSpells().IsSpellReady(spellName) then
             return true
         end
     end
@@ -242,7 +238,7 @@ function MoronBox.Core.Buffs.GetBuffSpell(name)
         return config.SingleBuff
     end
 
-    if GetGroupStatus() and IsSpellKnown(config.PriorityBuff) then
+    if getApi().GetGroupStatus() and getSpells().IsSpellKnown(config.PriorityBuff) then
         return config.PriorityBuff
     end
 
@@ -263,14 +259,14 @@ end
 --- @param map table: A table mapping class names to priority keys (e.g., { ["Shaman"] = "HIGH" }).
 --- @return number: The numerical priority value associated with the player's class or the default priority.
 function MoronBox.Core.Buffs.GetCustomPriority(overwrites, map)
-    local focId = Core.GeneralState.MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[MB_raidLeader]
     local targetName = focId and UnitName(focId .. "target")
 
     if targetName and overwrites[targetName] then
         return overwrites[targetName]()
     end
 
-    return Buffs.GetPriority(map)
+    return getBuffs().GetPriority(map)
 end
 
 --- Determines the next target in the queue based on the lowest priority value.
@@ -311,9 +307,9 @@ function MoronBox.Core.Buffs.GetMemberForGroup(members, groupNum, raceName, requ
 
     local eligible = {}
     for _, name in pairs(members) do
-        local unitId = Core.GeneralState.MBID[name]
-        local isAlive = IsAlive(unitId)
-        local hasMana = ManaOfUnit(unitId) >= requiredMana
+        local unitId = getCoreState().MBID[name]
+        local isAlive = getUnit().IsAlive(unitId)
+        local hasMana = getUnit().ManaOfUnit(unitId) >= requiredMana
         local matchesRace = (raceName == nil) or (UnitRace(unitId) == raceName)
 
         if isAlive and hasMana and matchesRace then
@@ -340,7 +336,7 @@ end
 --- @param requiredMana number: The minimum mana required for a member to be considered valid.
 --- @return string|nil: The selected player name, or nil if no eligible candidate was found.
 function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceName, requiredMana)
-    local members = Core.GeneralState.ClassList[className]
+    local members = getCoreState().ClassList[className]
     if not members or table.getn(members) == 0 then
         if myClass == className then
             return myName
@@ -348,13 +344,13 @@ function MoronBox.Core.Buffs.GetClassMemberForGroup(className, groupNum, raceNam
         return nil
     end
 
-    return Buffs.GetMemberForGroup(members, groupNum, raceName, requiredMana)
+    return getBuffs().GetMemberForGroup(members, groupNum, raceName, requiredMana)
 end
 
 --- Retrieves the current group number for the player from the cached group list.
 --- @return number: The group number (defaults to 1 if not found).
 function MoronBox.Core.Buffs.GetGroupNumber()
-    return Core.GeneralState.GroupID[myName] or 1
+    return getCoreState().GroupID[myName] or 1
 end
 
 -- [[ Casting ]] --
@@ -364,13 +360,13 @@ end
 --- @param spellName string: The exact spell name to cast.
 --- @return boolean|nil: true if cast successfully, false if already active or solo-condition met but no action, nil if in a group.
 function MoronBox.Core.Buffs.SoloBuff(buffKey, spellName)
-    if GetGroupStatus() then
+    if getApi().GetGroupStatus() then
         return nil
     end
 
     ClearTarget()
 
-    if Buffs.HasActiveBuff(buffKey) then
+    if getBuffs().HasActiveBuff(buffKey) then
         return false
     end
 
@@ -408,7 +404,7 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
     -- Sends an addon message using the predefined cooldown API.
     handlers.SendMessage = function(prefix, message, cooldown)
-        CdAddonMessage(handlers.GetPrefix(prefix), message, cooldown)
+        getApi().CdAddonMessage(handlers.GetPrefix(prefix), message, cooldown)
     end
 
     -- Handles incoming buff requests from other players.
@@ -417,19 +413,19 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
         local priority = tonumber(data.priority)
         local groupNum = tonumber(data.groupNum)
         local assignedPlayer = data.assigned or myName
-        local requestPlayerId = Core.GeneralState.MBID[sender] or "player"
+        local requestPlayerId = getCoreState().MBID[sender] or "player"
 
         -- Validate required packet data and ensure this player is the assigned target.
         if not requestPlayerId or not groupNum or not priority then
             return
         end
 
-        if GetGroupStatus() and assignedPlayer ~= myName then
+        if getApi().GetGroupStatus() and assignedPlayer ~= myName then
             return
         end
 
         -- Verify if the player already has the buff; if so, notify the requester.
-        if Buffs.HasActiveBuff(buffConfig.BuffKey, requestPlayerId) then
+        if getBuffs().HasActiveBuff(buffConfig.BuffKey, requestPlayerId) then
             handlers.SendMessage("BUFFED", string.format("BUFFED:%s:%d", requestPlayerId, groupNum))
             return
         end
@@ -482,16 +478,16 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
     -- Step 2: someone received the question. If I know the spell, announce myself.
     handlers.WhoCanCast = function(data)
-        if IsSpellKnown(data.spellName) then
+        if getSpells().IsSpellKnown(data.spellName) then
             handlers.SendMessage("CAPABLE", string.format("CAPABLE_TO_CAST:%s", myName), 15)
         end
     end
 
     -- Step 3: someone received an announcement. Record the player if not already known.
     handlers.ICanCast = function(data)
-        if buffConfig.CapableList and not FindInTable(buffConfig.CapableList, data.playerName) then
+        if buffConfig.CapableList and not getApi().FindInTable(buffConfig.CapableList, data.playerName) then
             table.insert(buffConfig.CapableList, data.playerName)
-            SortAlphabetically(buffConfig.CapableList)
+            getApi().SortAlphabetically(buffConfig.CapableList)
         end
     end
 
@@ -508,7 +504,7 @@ end
 ---     fields: table    -- An array of strings representing the data keys to map the message parts to.
 ---   }
 function MoronBox.Core.Buffs.DispatchMessage(message, sender, handlers)
-    local parts = { StringSplit(message) }
+    local parts = { getApi().StringSplit(message) }
     local msgType = parts[1]
     local schema = ADDON_MESSAGE_SCHEMA[msgType]
 
@@ -533,28 +529,28 @@ end
 --- @param queue table: The module's Queue table (groupNum -> { [unitId] = priority }).
 --- @param claimedQueue table: The module's ClaimedQueue table (groupNum -> claiming player name).
 function MoronBox.Core.Buffs.DebugTables(moduleName, queue, claimedQueue)
-    MoronBox.Debugger:Info("--- " .. moduleName .. " Debug State ---")
+    getDebugger().InfoMsg("--- " .. moduleName .. " Debug State ---")
 
     -- Queue Debug
     local queueCount = 0
     for groupNum, players in pairs(queue) do
         for player, prio in pairs(players) do
             queueCount = queueCount + 1
-            MoronBox.Debugger:Info(string.format("Queue: Group %d | Player %s | Prio %d", groupNum, player, prio))
+            getDebugger().InfoMsg(string.format("Queue: Group %d | Player %s | Prio %d", groupNum, player, prio))
         end
     end
     if queueCount == 0 then
-        MoronBox.Debugger:Info("Queue is empty.")
+        getDebugger().InfoMsg("Queue is empty.")
     end
 
     -- ClaimedQueue Debug
     local claimCount = 0
     for groupNum, priest in pairs(claimedQueue) do
         claimCount = claimCount + 1
-        MoronBox.Debugger:Info(string.format("Claim: Group %d | Claimed by %s", groupNum, priest))
+        getDebugger().InfoMsg(string.format("Claim: Group %d | Claimed by %s", groupNum, priest))
     end
     if claimCount == 0 then
-        MoronBox.Debugger:Info("ClaimedQueue is empty.")
+        getDebugger().InfoMsg("ClaimedQueue is empty.")
     end
 end
 
@@ -588,7 +584,7 @@ function MoronBox.Core.Buffs.CheckClaimBalance(buffKey, claimedQueue)
 
     for name, n in pairs(counts) do
         if n > fairShare then
-            CdMessage(string.format(
+            getApi().CdMessage(string.format(
                 "%s: %s holds %d/%d claims (fair share: %d) — uneven distribution.",
                 buffKey, name, n, totalClaims, fairShare
             ))

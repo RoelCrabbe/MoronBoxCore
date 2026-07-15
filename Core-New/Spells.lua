@@ -11,23 +11,26 @@ local IsChanneling = false
 
 local myClass = UnitClass("player")
 
-local Spells = MoronBox.Core.Spells
+function getSpells()
+    return MoronBox.Core.Spells
+end
 
----@diagnostic disable: undefined-global
-setfenv(1, MoronBox:GetEnvironment())
+function getSpellsState()
+    return MoronBox.Core.Spells.SpellState
+end
 
 -- [[ Spells ]] --
 
 function MoronBox.Core.Spells.IsSpellReady(spellName, rank)
-    if not Spells.IsSpellKnown(spellName, rank) then
+    if not getSpells().IsSpellKnown(spellName, rank) then
         return false
     end
 
-    return Spells.SpellCooldown(spellName) == 0
+    return getSpells().SpellCooldown(spellName) == 0
 end
 
 function MoronBox.Core.Spells.IsSpellKnown(spellName, rank)
-    local ispellIndex = Spells.GetSpellIndex(spellName, rank)
+    local ispellIndex = getSpells().GetSpellIndex(spellName, rank)
     return ispellIndex ~= nil
 end
 
@@ -53,11 +56,11 @@ function MoronBox.Core.Spells.GetSpellIndex(spellName, rank)
 end
 
 function MoronBox.Core.Spells.SpellCooldown(spellName)
-    if not Spells.SpellExists(spellName) then
+    if not getSpells().SpellExists(spellName) then
         return true
     end
 
-    local spellIndex = Spells.GetSpellIndex(spellName)
+    local spellIndex = getSpells().GetSpellIndex(spellName)
 
     if not spellIndex then
         return true
@@ -241,7 +244,7 @@ function MoronBox.Core.Spells.GetSpellManaCost(spellName, rankText)
         return nil
     end
 
-    local getRank = rankText or Spells.GetMaxSpellRank(spellName)
+    local getRank = rankText or getSpells().GetMaxSpellRank(spellName)
     local cacheKey = spellName .. (getRank or "")
 
     if SpellManaCostCache[cacheKey] then
@@ -256,8 +259,8 @@ end
 -- [[ Wand & Cooldown Casting ]] --
 
 function MoronBox.Core.Spells.CastOrWand(spell)
-    if Spells.IsSpellKnown(spell) then
-        local spellCost = Spells.GetSpellManaCost(spell)
+    if getSpells().IsSpellKnown(spell) then
+        local spellCost = getSpells().GetSpellManaCost(spell)
         if spellCost and UnitMana("player") > spellCost then
             CastSpellByName(spell)
             return
@@ -265,9 +268,9 @@ function MoronBox.Core.Spells.CastOrWand(spell)
     end
 
     if MB_attackWandSlot then
-        AutoWandAttack()
+        getAttack().AutoWandAttack()
     else
-        AutoAttack()
+        getAttack().AutoAttack()
     end
 end
 
@@ -293,7 +296,7 @@ end
 -- [[ Self Casting ]] --
 
 function MoronBox.Core.Spells.SelfBuff(spell)
-    if Spells.IsSpellReady(spell) and not HasBuffOrDebuff(spell, "player", "buff") then
+    if getSpells().IsSpellReady(spell) and not getAura().HasBuffOrDebuff(spell, "player", "buff") then
         CastSpellByName(spell, 1)
     end
 end
@@ -301,7 +304,7 @@ end
 local function AttemptBuff(unitList, spell)
     for _, unitName in pairs(unitList) do
         local unitID = MoronBox.Core.State.MBID[unitName]
-        if IsValidFriendlyTarget(unitID, spell) and not HasBuffOrDebuff(spell, unitID, "buff") then
+        if getUnit().IsValidFriendlyTarget(unitID, spell) and not getAura().HasBuffOrDebuff(spell, unitID, "buff") then
             CastSpellByName(spell, nil)
             SpellTargetUnit(unitID)
             SpellStopTargeting()
@@ -333,7 +336,7 @@ end
 -- [[ Pet Spells ]] --
 
 function MoronBox.Core.Spells.PetSpellCooldown(spellName)
-    local index = Spells.GetPetSpellOnBar(spellName)
+    local index = getSpells().GetPetSpellOnBar(spellName)
     if not index then
         return 0
     end
@@ -348,7 +351,7 @@ function MoronBox.Core.Spells.PetSpellCooldown(spellName)
 end
 
 function MoronBox.Core.Spells.PetSpellReady(spellName)
-    return Spells.PetSpellCooldown(spellName) == 0
+    return getSpells().PetSpellCooldown(spellName) == 0
 end
 
 function MoronBox.Core.Spells.GetPetSpellOnBar(spellName)
@@ -365,7 +368,7 @@ function MoronBox.Core.Spells.CastPetAction(spellName)
         return
     end
 
-    local index = Spells.GetPetSpellOnBar(spellName)
+    local index = getSpells().GetPetSpellOnBar(spellName)
     if index then
         CastPetAction(index)
     end
@@ -380,9 +383,9 @@ function MoronBox.Core.Spells.DoRazuviousActions()
         TargetByName("Instructor Razuvious")
         PetAttack()
 
-        if Spells.PetSpellReady("Shield Wall") then
-            Spells.CastPetAction("Shield Wall")
-            CdMessage("Shield Wall!")
+        if getSpells().PetSpellReady("Shield Wall") then
+            getSpells().CastPetAction("Shield Wall")
+            getApi().CdMessage("Shield Wall!")
         end
     end
 end
@@ -404,7 +407,7 @@ function MoronBox.Core.Spells.OrbControlling()
     end
 
     for _ = 1, 8 do
-        Spells.CastPetAction("Destroy Egg")
+        getSpells().CastPetAction("Destroy Egg")
         CastPetAction(5)
     end
 end
@@ -433,11 +436,11 @@ SpellsFrame:SetScript("OnEvent", function()
         IsCasting = true
 
         if arg1 == MB_myCCSpell[myClass] then
-            Spells.SpellState.IsCastingMyCCSpell = true
+            getSpellsState().IsCastingMyCCSpell = true
         end
     elseif event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_STOP" or event == "SPELLCAST_FAILED" then
         IsCasting = false
-        Spells.SpellState.IsCastingMyCCSpell = false
+        getSpellsState().IsCastingMyCCSpell = false
     elseif event == "SPELLCAST_CHANNEL_START" then
         IsChanneling = true
     elseif event == "SPELLCAST_CHANNEL_STOP" then

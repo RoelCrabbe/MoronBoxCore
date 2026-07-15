@@ -2,9 +2,11 @@
 
 MoronBox.Api = MoronBox.Api or {}
 
-MoronBox.Core.Raid = MoronBox.Core.Raid or {}
-
 local myName = UnitName("player")
+
+function getApi()
+    return MoronBox.Api
+end
 
 -- [[ AddonMessages ]] --
 
@@ -144,7 +146,7 @@ local CdRaidWarning = {
 --- @param message string: The payload to be sent.
 --- @param timer number|nil: The cooldown in seconds (default 15).
 function MoronBox.Api.CdRaidWarning(message, timer)
-    if not MoronBox.Core.Raid.ImFocus() then
+    if not getRaid().ImFocus() then
         return
     end
 
@@ -384,7 +386,7 @@ function MoronBox.Api.TableLength(tab)
         count = count + 1
     end
     if count == n then
-        MoronBox.Debugger:Warn(
+        getDebugger().WarnMsg(
             "Called on a sequential table — could use ArrayLength() instead for better performance.")
     end
     return count
@@ -402,7 +404,7 @@ function MoronBox.Api.ArrayLength(tab)
         count = count + 1
     end
     if count ~= n then
-        MoronBox.Debugger:Error(
+        getDebugger().ErrorMsg(
             "Called on a non-sequential table — result may be wrong! Should use TableLength() instead.")
     end
     return n
@@ -415,7 +417,7 @@ end
 --- @return boolean: True if needle is found anywhere in list, false otherwise (including invalid input).
 function MoronBox.Api.FindInTable(list, needle)
     if type(list) ~= "table" then
-        MoronBox.Debugger:Error("FindInTable: expected a table, got " .. type(list))
+        getDebugger().ErrorMsg("FindInTable: expected a table, got " .. type(list))
         return false
     end
 
@@ -430,7 +432,6 @@ end
 
 --- Convenience wrapper around FindInTable that checks for the current player's
 --- own name specifically, e.g. to check if the player is already in a role/list
---- such as MoronBox.Core.State.RaidTanks.
 --- @param list table: The table to search within.
 --- @return boolean: True if the player's own name is found in list, false otherwise.
 function MoronBox.Api.FindMyNameInTable(list)
