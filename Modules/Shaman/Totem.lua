@@ -4,6 +4,8 @@
 local NAME = "Shaman Totems"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myClass = UnitClass("player")
+
 MoronBox:RegisterModule(MODULE_NAME, function()
     local function ChooseAirTotem()
         if Instance.NAXX() then
