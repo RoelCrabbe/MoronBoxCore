@@ -1,16 +1,16 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Core -->
-    <Include file="..\Core-New\Core.lua" />
-    <Include file="..\Core-New\Aura.lua" />
-    <Include file="..\Core-New\Spells.lua" />
-    <Include file="..\Core-New\Buffs.lua" />
-    <Include file="..\Core-New\Raid.lua" />
-    <Include file="..\Core-New\Decurse.lua" />
-    <Include file="..\Core-New\CrowdControl.lua" />
-    <Include file="..\Core-New\Gear.lua" />
-    <Include file="..\Core-New\Attack.lua" />
-    <Include file="..\Core-New\Healing.lua" />
-    <Include file="..\Core-New\Rotation.lua" />
-    <Include file="..\Core-New\Report.lua" />
-    <Include file="..\Core-New\Slash.lua" />
+    <Include file="..\Core\Core.lua" />
+    <Include file="..\Core\Aura.lua" />
+    <Include file="..\Core\Spells.lua" />
+    <Include file="..\Core\Buffs.lua" />
+    <Include file="..\Core\Raid.lua" />
+    <Include file="..\Core\Decurse.lua" />
+    <Include file="..\Core\CrowdControl.lua" />
+    <Include file="..\Core\Gear.lua" />
+    <Include file="..\Core\Attack.lua" />
+    <Include file="..\Core\Healing.lua" />
+    <Include file="..\Core\Rotation.lua" />
+    <Include file="..\Core\Report.lua" />
+    <Include file="..\Core\Slash.lua" />
 </Ui>

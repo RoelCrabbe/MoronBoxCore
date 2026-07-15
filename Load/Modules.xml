@@ -11,4 +11,8 @@
     <Include file="..\Modules\Buffs\Intellect.lua" />
     <Include file="..\Modules\Buffs\Amplify.lua" />
     <Include file="..\Modules\Buffs\Dampen.lua" />
+    <!-- Auto Turn -->
+    <Include file="..\Modules\Turning\Turning.lua" />
+    <!-- Flash -->
+    <Include file="..\Modules\Flash\Flash.lua" />
 </Ui>
