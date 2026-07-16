@@ -27,14 +27,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["R.O.I.D.S."]       = "Rage of Ages"
     }
 
-    local function CancelAuras()
-        for itemName, buffName in pairs(RemoveBuffs) do
-            if HasBuffOrDebuff(itemName, "player", "buff") then
-                CancelBuff(buffName)
-            end
-        end
-    end
-
     local function Fade()
         local aggrox = AceLibrary("Banzai-1.0")
 
@@ -569,7 +561,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function Single()
         GetTarget()
-        CancelAuras()
+        CancelAuraSet(RemoveBuffs)
 
         if CastCrowdControl() then
             return
@@ -698,7 +690,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end,
         LoaHeal = function()
             GetTarget()
-            CancelAuras()
+            CancelAuraSet(RemoveBuffs)
             Fade()
 
             if InCombat() then

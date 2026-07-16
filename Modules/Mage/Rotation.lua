@@ -21,14 +21,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["R.O.I.D.S."]       = "Rage of Ages"
     }
 
-    local function MageCancelAuras()
-        for itemName, buffName in pairs(RemovedBuffs) do
-            if HasBuffOrDebuff(itemName, "player", "buff") then
-                CancelBuff(buffName)
-            end
-        end
-    end
-
     local function WinterChill()
         local _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
         return TalentsIn > 4
@@ -401,7 +393,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end,
         Single = function()
             GetTarget()
-            MageCancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if not ConfigState.PlayerSpecc then
                 CdMessage("My specc is fucked. Defaulting to Frost.")
@@ -521,7 +513,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end,
         AOE = function()
             GetTarget()
-            MageCancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if not ConfigState.PlayerSpecc then
                 CdMessage("My specc is fucked. Defaulting to Frost.")

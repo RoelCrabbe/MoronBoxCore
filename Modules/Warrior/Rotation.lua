@@ -18,14 +18,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["Sweet Surprise"]    = "Sweet Surprise",
     }
 
-    local function CancelAuras()
-        for itemName, buffName in pairs(RemovedBuffs) do
-            if HasBuffOrDebuff(itemName, "player", "buff") then
-                CancelBuff(buffName)
-            end
-        end
-    end
-
     local textLeft1 = getglobal(MoronBoxTooltip:GetName() .. "TextLeft1")
     local textLeft2 = getglobal(MoronBoxTooltip:GetName() .. "TextLeft2")
     local buffTexture = "Interface\\Icons\\Ability_Warrior_BattleShout"
@@ -833,7 +825,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            CancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then
@@ -883,7 +875,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            CancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then
@@ -933,7 +925,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            CancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then

@@ -18,14 +18,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["Sweet Surprise"]    = "Sweet Surprise",
     }
 
-    local function CancelAuras()
-        for itemName, buffName in pairs(RemoveBuffs) do
-            if HasBuffOrDebuff(itemName, "player", "buff") then
-                CancelBuff(buffName)
-            end
-        end
-    end
-
     local function ImprovedExpose()
         local _, _, _, _, TalentsIn = GetTalentInfo(1, 8)
         return TalentsIn == 2
@@ -64,7 +56,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function Single()
         GetTarget()
-        CancelAuras()
+        CancelAuraSet(RemoveBuffs)
 
         if not InCombat("target") then
             return

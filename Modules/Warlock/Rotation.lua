@@ -22,14 +22,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["Very Berry Cream"] = "Very Berry Cream",
     }
 
-    local function CancelAuras()
-        for itemName, buffName in pairs(RemoveBuffs) do
-            if HasBuffOrDebuff(itemName, "player", "buff") then
-                CancelBuff(buffName)
-            end
-        end
-    end
-
     local function HavePet()
         return UnitHealth("pet") > 0
     end
@@ -376,7 +368,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function Single()
         GetTarget()
-        CancelAuras()
+        CancelAuraSet(RemoveBuffs)
 
         if not ConfigState.PlayerSpecc then
             CdMessage("My specc is fucked. Defaulting to Corruption.")
@@ -512,7 +504,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         Multi = Single,
         AOE = function()
             GetTarget()
-            CancelAuras()
+            CancelAuraSet(RemoveBuffs)
 
             if not ConfigState.PlayerSpecc then
                 CdMessage("My specc is fucked. Defaulting to Corruption.")

@@ -114,6 +114,14 @@ function MoronBox.Core.Aura.SomeoneInRaidBuffedWith(spell)
     end
 end
 
+function MoronBox.Core.Aura.CancelAuraSet(list)
+    for itemName, buffName in pairs(list) do
+        if getAura().HasBuffOrDebuff(itemName, "player", "buff") then
+            CancelBuff(buffName)
+        end
+    end
+end
+
 -- [[ Tracking Specific Debuffs ]] --
 
 function MoronBox.Core.Aura.GetShadowWeavingAmount()
