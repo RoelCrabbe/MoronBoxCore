@@ -10,42 +10,44 @@
     - Logic definitions for instance detection, faction checks, and targeting
 --]]
 
-MoronBox.Config = MoronBox.Config or {}
+MoronBox.Settings = MoronBox.Settings or {}
 
-MoronBox.Config.ConfigState = {
+MoronBox.Settings.SettingsState = {
     -- [[ SpeedRun ]] --
     SpeedRunEnabled = false,
 
-    -- [[ Raid Leader ]] --
-    RaidLeader      = nil,
+    -- [[ Warrior ]] --
+    Warrior = {
+        AnnihilatorActive = true,
+        AnnihilatorWeavers = {
+            -- Horde
+            "Jokamok",
+            "Crymeariver",
 
-    -- [[ Rotations ]] --
-    PlayerSpecc     = nil,
-    WarriorBinds    = "Fury",
+            "Suecia",   -- Tank
+            "Ajlano",   -- Tank
+            "Almisael", -- Tank
 
-    -- [[ Cooldowns ]]
-    UseCooldowns    = { Active = false, Time = 0 },
-    UseBigCooldowns = { Active = false, Time = 0 },
-
-    -- [[ Interrupts ]]
-    DoInterrupt     = { Active = false, Time = 0 },
-    InterruptSpell  = {
-        Rogue = "Kick",
-        Shaman = "Earth Shock",
-        Mage = "Counterspell",
-        Warrior = "Pummel",
-        Priest = "Silence",
-        Paladin = "Hammer of Justice"
+            -- Alliance
+            "Miksmaks",
+        }
     },
 
-    -- [[ Tanking ]] --
-    OffTankTarget   = nil
+    -- [[ Fury Tanks ]] --
+    FurysThatCanTank = {
+        -- Horde
+        "Crymeariver",
+        "Jokamok",
+
+        -- Alliance
+        "Alliance Fury 1"
+    }
 }
 
-function getConfig()
-    return MoronBox.Config
+function getSettings()
+    return MoronBox.Settings
 end
 
-function getConfigState()
-    return MoronBox.Config.ConfigState
+function getSettingsState()
+    return MoronBox.Settings.SettingsState
 end

@@ -94,9 +94,9 @@ function MoronBox.Core.Rotation.RequestInviteSummon()
     end
 
     if IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown() then
-        if MB_raidLeader then
+        if getConfigState().RaidLeader then
             local unit = UnitInRaid("player") and "raid" or "party"
-            local index = getUnit().GetRaidIndexForPlayerName(MB_raidLeader)
+            local index = getUnit().GetRaidIndexForPlayerName(getConfigState().RaidLeader)
             if index and not getUnit().InRange(unit .. index) then
                 getApi().CdMessage("123", 10)
                 return
@@ -115,10 +115,10 @@ end
 function MoronBox.Core.Rotation.SetFocus()
     if IsShiftKeyDown() then
         local targetLeader = UnitName("target")
-        MB_raidLeader = targetLeader
-        getApi().SendAddonMessage(MB_RAID .. "_FTAR", MB_raidLeader .. " " .. myName)
+        getConfigState().RaidLeader = targetLeader
+        getApi().SendAddonMessage(MB_RAID .. "_FTAR", getConfigState().RaidLeader .. " " .. myName)
     else
-        MB_raidLeader = myName
+        getConfigState().RaidLeader = myName
         getApi().SendAddonMessage(MB_RAID, "MB_FOCUSME")
     end
 end
@@ -201,7 +201,7 @@ end
 -- [[ Single ]] --
 
 function MoronBox.Core.Rotation.Single()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -231,7 +231,7 @@ end
 -- [[ Multi ]] --
 
 function MoronBox.Core.Rotation.Multi()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -261,7 +261,7 @@ end
 -- [[ AOE ]] --
 
 function MoronBox.Core.Rotation.AOE()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -291,7 +291,7 @@ end
 -- [[ Setup ]] --
 
 function MoronBox.Core.Rotation.Setup()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -346,7 +346,7 @@ end
 -- [[ PreCast ]] --
 
 function MoronBox.Core.Rotation.PreCast()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -374,11 +374,11 @@ local function InterruptingHealAndTank()
         return
     end
 
-    if not getSpells().IsSpellReady(MB_myInterruptSpell[myClass]) then
+    if not getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
         return
     end
 
-    if not MB_doInterrupt.Active then
+    if not getConfigState().DoInterrupt.Active then
         return
     end
 
@@ -386,27 +386,27 @@ local function InterruptingHealAndTank()
 
     if myClass == "Warrior" then
         if UnitMana("player") >= 10 then
-            CastSpellByName(MB_myInterruptSpell[myClass])
+            CastSpellByName(getConfigState().InterruptSpell[myClass])
         end
     elseif myClass == "Shaman" then
         if getSpells().ImBusy() then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
+        CastSpellByName(getConfigState().InterruptSpell[myClass] .. "(Rank 1)")
     elseif myClass == "Rogue" then
         if UnitMana("player") >= 25 then
-            CastSpellByName(MB_myInterruptSpell[myClass])
+            CastSpellByName(getConfigState().InterruptSpell[myClass])
         end
     elseif myClass == "Mage" then
         if not MB_isCastingMyCCSpell then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass])
+        CastSpellByName(getConfigState().InterruptSpell[myClass])
     end
 
-    MB_doInterrupt.Active = false
+    getConfigState().DoInterrupt.Active = false
 end
 
 local function SpecialHealAndTankClass()
@@ -488,7 +488,7 @@ local function SpecialHealAndTankSituation()
 end
 
 function MoronBox.Core.Rotation.HealAndTank()
-    if not MB_raidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -605,7 +605,7 @@ end
 -- [[ COOLDOWNS ]] --
 
 function MoronBox.Core.Rotation.Cooldowns()
-    if not MB_raidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -640,7 +640,7 @@ function MoronBox.Core.Rotation.Cooldowns()
 end
 
 function MoronBox.Core.Rotation.UseManualRecklessness()
-    if not MB_raidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -693,8 +693,8 @@ local function SpecialFollowing()
 end
 
 local function FollowRaidLeader()
-    if MB_raidLeader then
-        FollowByName(MB_raidLeader, 1)
+    if getConfigState().RaidLeader then
+        FollowByName(getConfigState().RaidLeader, 1)
         SetView(5)
     end
 end
@@ -883,7 +883,7 @@ function MoronBox.Core.Rotation.Interrupt()
         return
     end
 
-    if not getSpells().IsSpellReady(MB_myInterruptSpell[myClass]) then
+    if not getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
         return
     end
 
@@ -891,24 +891,24 @@ function MoronBox.Core.Rotation.Interrupt()
 
     if myClass == "Warrior" then
         if UnitMana("player") >= 10 then
-            CastSpellByName(MB_myInterruptSpell[myClass])
+            CastSpellByName(getConfigState().InterruptSpell[myClass])
         end
     elseif myClass == "Shaman" then
         if getSpells().ImBusy() then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
+        CastSpellByName(getConfigState().InterruptSpell[myClass] .. "(Rank 1)")
     elseif myClass == "Rogue" then
         if UnitMana("player") >= 25 then
-            CastSpellByName(MB_myInterruptSpell[myClass])
+            CastSpellByName(getConfigState().InterruptSpell[myClass])
         end
     elseif myClass == "Mage" then
         if getSpells().ImBusy() then
             SpellStopCasting()
         end
 
-        CastSpellByName(MB_myInterruptSpell[myClass])
+        CastSpellByName(getConfigState().InterruptSpell[myClass])
     end
 end
 
@@ -933,7 +933,7 @@ end
 -- [[ Tank Shoot or Taunt ]] --
 
 function MoronBox.Core.Rotation.TankShoot()
-    if not MB_raidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -969,7 +969,7 @@ function MoronBox.Core.Rotation.TankShoot()
 end
 
 function MoronBox.Core.Rotation.ManualTaunt()
-    if not MB_raidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 

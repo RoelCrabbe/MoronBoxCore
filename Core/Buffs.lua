@@ -259,7 +259,7 @@ end
 --- @param map table: A table mapping class names to priority keys (e.g., { ["Shaman"] = "HIGH" }).
 --- @return number: The numerical priority value associated with the player's class or the default priority.
 function MoronBox.Core.Buffs.GetCustomPriority(overwrites, map)
-    local focId = getCoreState().MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[getConfigState().RaidLeader]
     local targetName = focId and UnitName(focId .. "target")
 
     if targetName and overwrites[targetName] then

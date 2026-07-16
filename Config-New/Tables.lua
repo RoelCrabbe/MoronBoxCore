@@ -485,8 +485,9 @@ function MoronBox.Config.Tables.BossesIShouldUseBandageOn()
 end
 
 function MoronBox.Config.Tables.BossesIShouldUseRecklessnessOn()
-    if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader] .. "target") then
-        local tankTargetName = UnitName(MBID[MB_raidLeader] .. "target")
+    local raidLeaderId = getCoreState().MBID[getConfigState().RaidLeader]
+    if raidLeaderId and UnitName(raidLeaderId .. "target") then
+        local tankTargetName = UnitName(raidLeaderId .. "target")
         local healthThreshold = RecklessnessTargetsSet[tankTargetName]
 
         if healthThreshold then

@@ -341,7 +341,7 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
     end
 
     if getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(getHealingState().InstructorRazuviousAddHealer) then
-        TargetUnit(MBID[MB_raidLeader] .. "targettarget")
+        TargetUnit(MBID[getConfigState().RaidLeader] .. "targettarget")
 
         if UnitName("target") == "Deathknight Understudy" then
             local allowedOverHeal, spellToCast

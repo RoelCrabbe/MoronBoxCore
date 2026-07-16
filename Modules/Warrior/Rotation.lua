@@ -69,7 +69,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         return itemType == "Shields"
     end
 
-
     local function ImpExecute()
         local _, _, _, _, TalentsIn = GetTalentInfo(2, 10)
         return TalentsIn > 1
@@ -88,6 +87,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         PotionsWhenPossible(potion)
     end
 
+    -- Not used
     local function UseSpeedRunJujusWhenPossible(potion)
         if not SettingsState.SpeedRunEnabled then
             return
@@ -253,7 +253,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         DPSCooldowns(myRage)
     end
 
-    function UseDPSCooldowns(myRage)
+    local function UseDPSCooldowns(myRage)
         if not CanUseCooldowns() then
             return
         end
@@ -278,7 +278,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSSingleRotation(myRage)
-        local btSpellCD, wwSpellCD, canUseHam = WarriorDPSInfo()
+        local btSpellCD, _, canUseHam = WarriorDPSInfo()
 
         if InMeleeRange() then
             if IsSpellReady("Bloodthirst") and myRage >= 30 then
@@ -627,7 +627,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         TANKSurvival()
         OffTank()
 
-        if UnitName("target") and CrowdControlledMob() and not myName == ConfigState.RaidLeader then
+        if UnitName("target") and CrowdControlledMob() and myName ~= ConfigState.RaidLeader then
             ClearTarget()
             return
         end
@@ -743,7 +743,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         TANKSurvival()
         OffTank()
 
-        if UnitName("target") and CrowdControlledMob() and not myName == ConfigState.RaidLeader then
+        if UnitName("target") and CrowdControlledMob() and myName ~= ConfigState.RaidLeader then
             ClearTarget()
             return
         end

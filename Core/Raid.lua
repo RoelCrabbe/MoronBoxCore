@@ -14,7 +14,7 @@ end
 -- [[ Focus | Assist ]] --
 
 function MoronBox.Core.Raid.ImFocus()
-    return MB_raidLeader == myName
+    return getConfigState().RaidLeader == myName
 end
 
 function MoronBox.Core.Raid.AssistFocus()
@@ -28,7 +28,7 @@ function MoronBox.Core.Raid.AssistFocus()
         return true
     end
 
-    local assistUnit = getUnit().GetUnitForPlayerName(MB_raidLeader)
+    local assistUnit = getUnit().GetUnitForPlayerName(getConfigState().RaidLeader)
     if not assistUnit then
         return true
     end
@@ -48,11 +48,11 @@ function MoronBox.Core.Raid.AssistFocus()
 end
 
 function MoronBox.Core.Raid.FocusAggro()
-    if not MB_raidLeader then
+    if not getConfigState().RaidLeader then
         return false
     end
 
-    local raidLeaderId = getCoreState().MBID[MB_raidLeader]
+    local raidLeaderId = getCoreState().MBID[getConfigState().RaidLeader]
     if not raidLeaderId then
         return false
     end
@@ -89,11 +89,11 @@ end
 -- [[ Raid Targetting ]] --
 
 function MoronBox.Core.Raid.TankTarget(mobName)
-    if not MB_raidLeader then
+    if not getConfigState().RaidLeader then
         return false
     end
 
-    local focusId = getCoreState().MBID[MB_raidLeader]
+    local focusId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focusId then
         return false
     end
@@ -107,7 +107,7 @@ function MoronBox.Core.Raid.TankTarget(mobName)
 end
 
 function MoronBox.Core.Raid.TankTargetInSet(mobSet)
-    local focusId = getCoreState().MBID[MB_raidLeader]
+    local focusId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focusId then
         return false
     end
@@ -121,11 +121,11 @@ function MoronBox.Core.Raid.TankTargetInSet(mobSet)
 end
 
 function MoronBox.Core.Raid.TankTargetHealth()
-    if not MB_raidLeader then
+    if not getConfigState().RaidLeader then
         return nil
     end
 
-    local focusId = getCoreState().MBID[MB_raidLeader]
+    local focusId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focusId then
         return nil
     end
@@ -143,7 +143,7 @@ function MoronBox.Core.Raid.TankTargetHealth()
 end
 
 function MoronBox.Core.Raid.TargetHealthFromRaidleader(mobName, percentage)
-    local focusId = getCoreState().MBID[MB_raidLeader]
+    local focusId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focusId then
         return false
     end
@@ -742,8 +742,8 @@ local function HandleBWLTargetingPreFocus()
     end
 
     if (myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
-            or myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) and MB_raidLeader ~= myName then
-        MB_raidLeader = myName
+            or myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)) and getConfigState().RaidLeader ~= myName then
+        getConfigState().RaidLeader = myName
     end
 
     if not getRaid().ImFocus() then
@@ -1003,7 +1003,7 @@ local function HandleBWLTargetingPostFocus()
 
         return true
     elseif GetSubZoneText() == "Shadow Wing Lair" then
-        if MB_raidLeader and getUnit().Dead(getCoreState().MBID[MB_raidLeader]) then
+        if getConfigState().RaidLeader and getUnit().Dead(getCoreState().MBID[getConfigState().RaidLeader]) then
             getRaid().LockOnTarget("Vaelastrasz the Corrupt")
             return true
         end
@@ -1310,7 +1310,7 @@ function MoronBox.Core.Raid.GetTarget()
         end
     end
 
-    local focId = getCoreState().MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focId then
         getRaid().AssistFocus()
     elseif UnitName(focId .. "target") then
