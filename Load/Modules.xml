@@ -28,4 +28,8 @@
     <!-- Shaman -->
     <Include file="..\Modules\Shaman\Totem.lua" />
     <Include file="..\Modules\Shaman\Rotation.lua" />
+    <!-- Hunter -->
+    <Include file="..\Modules\Hunter\Rotation.lua" />
+    <!-- Druid -->
+    <Include file="..\Modules\Druid\Rotation.lua" />
 </Ui>
