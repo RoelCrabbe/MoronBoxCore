@@ -346,6 +346,124 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         return false
     end
 
+    local function Single()
+        GetTarget()
+        CancelAuraSet(RemoveBuffs)
+
+        if not ConfigState.PlayerSpecc then
+            CdMessage("My specc is fucked. Defaulting to Frost.")
+            ConfigState.PlayerSpecc = "Frost"
+        end
+
+        if CastCrowdControl() or HasBuffOrDebuff("Evocation", "player", "buff") then
+            return
+        end
+
+        Decurse()
+
+        if TankTarget("Ossirian the Unscarred") then
+            return
+        end
+
+        if UnitName("target") then
+            if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
+                and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+                if CastCrowdControl() then
+                    return
+                end
+            end
+
+            if CrowdControlledMob() then
+                GetTarget()
+            end
+        end
+
+        if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
+            if SKERAM_CastCrowdControl() then
+                return
+            end
+        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then
+            if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
+                ClearTarget()
+                return
+            end
+
+            if not ConfigState.AutoToggleCC.Active then
+                ConfigState.AutoToggleCC.Active = true
+                ConfigState.AutoToggleCC.Time = GetTime() + 3
+                MageCounter.Cycle()
+            end
+
+            if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
+                CrowdControlMCedRaidMemberNefarian()
+            end
+        elseif Instance.ZG() and TankTarget("Hakkar") then
+            if HasBuffOrDebuff("Mind Control", "target", "debuff") then
+                ClearTarget()
+                return
+            end
+
+            if not ConfigState.AutoToggleCC.Active then
+                ConfigState.AutoToggleCC.Active = true
+                ConfigState.AutoToggleCC.Time = GetTime() + 10
+                MageCounter.Cycle()
+            end
+
+            if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
+                CrowdControlMCedRaidMemberHakkar()
+            end
+        end
+
+        if not InCombat("target") then
+            return
+        end
+
+        if InCombat() then
+            UseManaGems()
+            TakeManaPotionAndRunes()
+
+            if ManaPct() <= 0.1 and IsSpellReady("Evocation") then
+                CastSpellByName("Evocation")
+                return
+            end
+        end
+
+        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
+            if ConfigState.InterruptTarget then
+                GetMyInterruptTarget()
+            end
+
+            if ImBusy() then
+                SpellStopCasting()
+            end
+
+            CastSpellByName(ConfigState.InterruptSpell[myClass])
+            CdPrint("Interrupting!")
+            ConfigState.DoInterrupt.Active = false
+            return
+        end
+
+        if BossSpecificDPS() then
+            return
+        end
+
+        if ConfigState.PlayerSpecc == "Fire" then
+            if IsFireImmune() then
+                CastOrWand("Frostbolt")
+                return
+            end
+
+            Fire()
+        elseif ConfigState.PlayerSpecc == "Frost" then
+            if IsFrostImmune() then
+                CastOrWand("Fireball")
+                return
+            end
+
+            Frost()
+        end
+    end
+
     MoronBox:RegisterExpose({
         Specc = function()
             local _, _, _, _, frostCap = GetTalentInfo(3, 16)
@@ -391,126 +509,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 SmartDrink()
             end
         end,
-        Single = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
-
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Frost.")
-                ConfigState.PlayerSpecc = "Frost"
-            end
-
-            if CastCrowdControl() or HasBuffOrDebuff("Evocation", "player", "buff") then
-                return
-            end
-
-            Decurse()
-
-            if TankTarget("Ossirian the Unscarred") then
-                return
-            end
-
-            if UnitName("target") then
-                if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
-                    and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                    if CastCrowdControl() then
-                        return
-                    end
-                end
-
-                if CrowdControlledMob() then
-                    GetTarget()
-                end
-            end
-
-            if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
-                if SKERAM_CastCrowdControl() then
-                    return
-                end
-            elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then
-                if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
-                    ClearTarget()
-                    return
-                end
-
-                if not ConfigState.AutoToggleCC.Active then
-                    ConfigState.AutoToggleCC.Active = true
-                    ConfigState.AutoToggleCC.Time = GetTime() + 3
-                    MageCounter.Cycle()
-                end
-
-                if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
-                    CrowdControlMCedRaidMemberNefarian()
-                end
-            elseif Instance.ZG() and TankTarget("Hakkar") then
-                if HasBuffOrDebuff("Mind Control", "target", "debuff") then
-                    ClearTarget()
-                    return
-                end
-
-                if not ConfigState.AutoToggleCC.Active then
-                    ConfigState.AutoToggleCC.Active = true
-                    ConfigState.AutoToggleCC.Time = GetTime() + 10
-                    MageCounter.Cycle()
-                end
-
-                if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
-                    CrowdControlMCedRaidMemberHakkar()
-                end
-            end
-
-            if not InCombat("target") then
-                return
-            end
-
-            if InCombat() then
-                UseManaGems()
-                TakeManaPotionAndRunes()
-
-                if ManaPct() <= 0.1 and IsSpellReady("Evocation") then
-                    CastSpellByName("Evocation")
-                    return
-                end
-            end
-
-            if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
-                if ConfigState.InterruptTarget then
-                    GetMyInterruptTarget()
-                end
-
-                if ImBusy() then
-                    SpellStopCasting()
-                end
-
-                CastSpellByName(ConfigState.InterruptSpell[myClass])
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
-                return
-            end
-
-            if BossSpecificDPS() then
-                return
-            end
-
-            if ConfigState.PlayerSpecc == "Fire" then
-                if IsFireImmune() then
-                    CastOrWand("Frostbolt")
-                    return
-                end
-
-                Fire()
-            elseif ConfigState.PlayerSpecc == "Frost" then
-                if IsFrostImmune() then
-                    CastOrWand("Fireball")
-                    return
-                end
-
-                Frost()
-            end
-        end,
-        Multi = function()
-
-        end,
+        Single = Single,
+        Multi = Single,
         AOE = function()
             GetTarget()
             CancelAuraSet(RemoveBuffs)
