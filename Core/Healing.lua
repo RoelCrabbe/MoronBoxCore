@@ -234,6 +234,66 @@ function MoronBox.Core.Healing.GetHealSpell()
     end
 end
 
+function MoronBox.Core.Healing.NatureSwiftnessLowAggroedPlayer()
+    if not UnitInRaid("player") then
+        return false
+    end
+
+    if not getUnit().InCombat() then
+        return false
+    end
+
+    if (getSpells().IsSpellReady("Nature\'s Swiftness") or getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff")) then
+        local blastNSatThisPercentage = 0.2
+        local instantSpell = "Healing Touch"
+
+        if getCore().MyClassOrder() == 1 then
+            blastNSatThisPercentage = 0.35
+        elseif getCore().MyClassOrder() == 2 then
+            blastNSatThisPercentage = 0.30
+        elseif getCore().MyClassOrder() == 3 then
+            blastNSatThisPercentage = 0.25
+        elseif getCore().MyClassOrder() == 4 then
+            blastNSatThisPercentage = 0.20
+        elseif getCore().MyClassOrder() >= 5 then
+            blastNSatThisPercentage = 0.15
+        end
+
+        if myClass == "Shaman" then
+            instantSpell = "Healing Wave"
+        end
+
+        local aggrox = AceLibrary("Banzai-1.0")
+        for i = 1, GetNumRaidMembers() do
+            local NSTarget = "raid" .. i
+
+            if NSTarget and aggrox:GetUnitAggroByUnitId(NSTarget) then
+                if getUnit().IsValidFriendlyTarget(NSTarget, instantSpell)
+                    and getUnit().HealthPct(NSTarget) <= blastNSatThisPercentage
+                    and not getAura().HasBuffOrDebuff("Feign Death", NSTarget, "buff") then
+                    if UnitIsFriend("player", NSTarget) then
+                        ClearTarget()
+                    end
+
+                    if not getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+                        SpellStopCasting()
+                    end
+
+                    getSpells().SelfBuff("Nature\'s Swiftness")
+
+                    if getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+                        CastSpellByName(instantSpell, nil)
+                        SpellTargetUnit(NSTarget)
+                        SpellStopTargeting()
+                    end
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 function MoronBox.Core.Healing.CastSpellOnRandomRaidMember(spell, rank, percentage)
     if not UnitInRaid("player") then
         return

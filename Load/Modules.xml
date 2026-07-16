@@ -15,8 +15,6 @@
     <Include file="..\Modules\Turning\Turning.lua" />
     <!-- Flash -->
     <Include file="..\Modules\Flash\Flash.lua" />
-    <!-- Shaman -->
-    <Include file="..\Modules\Shaman\Totem.lua" />
     <!-- Warrior -->
     <Include file="..\Modules\Warrior\Rotation.lua" />
     <!-- Mage -->
@@ -25,6 +23,9 @@
     <Include file="..\Modules\Warlock\Rotation.lua" />
     <!-- Priest -->
     <Include file="..\Modules\Priest\Rotation.lua" />
-    <!-- Priest -->
+    <!-- Rogue -->
     <Include file="..\Modules\Rogue\Rotation.lua" />
+    <!-- Shaman -->
+    <Include file="..\Modules\Shaman\Totem.lua" />
+    <Include file="..\Modules\Shaman\Rotation.lua" />
 </Ui>
