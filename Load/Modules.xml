@@ -21,4 +21,6 @@
     <Include file="..\Modules\Warrior\Rotation.lua" />
     <!-- Mage -->
     <Include file="..\Modules\Mage\Rotation.lua" />
+    <!-- Warlock -->
+    <Include file="..\Modules\Warlock\Rotation.lua" />
 </Ui>

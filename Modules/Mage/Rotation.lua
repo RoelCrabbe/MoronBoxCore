@@ -7,6 +7,13 @@ local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 local myClass = UnitClass("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
+    local MageCounter = {
+        Cycle = function()
+            ConfigState.SheepingMageNr = (ConfigState.SheepingMageNr >= getApi().TableLength(MB_classList["Mage"]))
+                and 1 or (ConfigState.SheepingMageNr + 1)
+        end
+    }
+
     local RemovedBuffs = {
         ["Battle Shout"]     = "Battle Shout",
         ["Fengus' Ferocity"] = "Fengus' Ferocity",

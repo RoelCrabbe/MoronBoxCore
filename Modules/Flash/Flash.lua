@@ -40,7 +40,7 @@ local function FlashFrameFlashHandler()
         return
     end
 
-    local leaderID = getCoreState().MBID[MB_raidLeader]
+    local leaderID = getCoreState().MBID[getConfigState().RaidLeader]
     if leaderID and UnitName(leaderID .. "targettarget") == myName and UnitIsEnemy("target", "player") then
         if getApi().FindInTable(MB_tankList, myName) then
             for _, tex in ipairs({ t1, t2, t3, t4 }) do
@@ -87,7 +87,7 @@ local function FlashFrameEventHandler()
             "Target not in line of sight",
             "Target too close"
         }
-        if MB_raidLeader and MB_raidLeader ~= myName and TableContains(msgs, arg1) then
+        if getConfigState().RaidLeader and getConfigState().RaidLeader ~= myName and TableContains(msgs, arg1) then
             IndicatorFrame.FlashTime = GetTime() + 1
             IndicatorFrame.FlashColor = { red = 1, green = 1, blue = 0, alpha = 0.4 }
         end

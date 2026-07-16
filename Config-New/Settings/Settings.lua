@@ -41,6 +41,10 @@ MoronBox.Settings.SettingsState = {
         -- Frost
         SpellToKeepWintersChillUp = "Frostbolt(Rank 1)",
     },
+    Warlock = {
+        ShouldBeWhores = false, -- Set to true to use Shadowburn on targets with 5x Shadoweaving and Improved Shadowbolt
+
+    },
 
     -- [[ Fury Tanks ]] --
     FurysThatCanTank = {

@@ -108,7 +108,7 @@ local IsBoomForm = mb_isBoomForm
 local IsDruidShapeShifted = mb_isDruidShapeShifted
 local IsValidFriendlyTarget = mb_isValidFriendlyTarget
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
-local KnowSpell = mb_knowSpell
+local IsSpellKnown = mb_IsSpellKnown
 local LOA_Healing = LOA_Healing
 local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
@@ -314,7 +314,7 @@ local function DruidHeal()
 
         Druid:RejuvAggroedPlayer()
 
-        if KnowSpell("Swiftmend") then
+        if IsSpellKnown("Swiftmend") then
             if IsSpellReady("Swiftmend") then
                 Druid:SwiftmendOnRandomRaidMember("Swiftmend", MB_druidSwiftmendAtPercentage)
             end

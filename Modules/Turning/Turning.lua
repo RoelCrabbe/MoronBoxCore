@@ -24,7 +24,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function HandleFollow(delay)
         local now = GetTime()
 
-        if not MB_raidLeader then
+        if not ConfigState.RaidLeader then
             return
         end
 
@@ -32,8 +32,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if InRange(MBID[MB_raidLeader]) then
-            FollowByName(MB_raidLeader, 1)
+        if InRange(MBID[ConfigState.RaidLeader]) then
+            FollowByName(ConfigState.RaidLeader, 1)
             SavedBinding.Time = now + delay
             SetBinding("2", "MOVEBACKWARD")
             SetBinding("3", "MOVEBACKWARD")
@@ -47,7 +47,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if (event == "UI_ERROR_MESSAGE") then
             if (arg1 == "Target needs to be in front of you") then
                 HandleFollow(1.5)
-            elseif (arg1 == "Can't do that while moving" and InRange(MBID[MB_raidLeader])) then
+            elseif (arg1 == "Can't do that while moving" and InRange(MBID[ConfigState.RaidLeader])) then
                 if not SavedBinding.Active and (now > SavedBinding.Time) and (now < SavedBinding.Time + 0.5) then
                     HandleFollow(0.75)
                 end
