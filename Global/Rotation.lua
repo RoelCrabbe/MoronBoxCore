@@ -158,7 +158,6 @@ MB_druidTankInParty     = false
 ---@type boolean
 MB_warriorTankInParty   = false
 
-MB_myCCTarget           = nil
 MB_myInterruptTarget    = nil
 MB_myOTTarget           = nil
 
@@ -171,19 +170,13 @@ MB_currentFear          = { Warlock = 1 }
 MB_currentRaidTarget    = 1
 MB_Ot_Index             = 1
 
-MB_myCCSpell            = {
-    Priest = "Shackle Undead",
-    Mage = "Polymorph",
-    Warlock = "Banish",
-    Druid = "Hibernate"
-}
 
 
-MB_myFearSpell                                         = {
+MB_myFearSpell        = {
     Warlock = "Fear"
 }
 
-MB_raidTargetNames                                     = {
+MB_raidTargetNames    = {
     [8] = "Skull",
     [7] = "Cross",
     [6] = "Square",
@@ -195,16 +188,14 @@ MB_raidTargetNames                                     = {
 }
 
 ---@type boolean|nil
-MB_isCasting                                           = nil
+MB_isCasting          = nil
 
 ---@type boolean|nil
-MB_isChanneling                                        = nil
+MB_isChanneling       = nil
 
 ---@type boolean|nil
-MB_isCastingMyCCSpell                                  = nil
-MB_ignite                                              = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 }
+MB_isCastingMyCCSpell = nil
 
-MB_isMoving                                            = { Active = false, Time = 0 }
 
 MB_buffingCounterWarlock                               = 1
 MB_buffingCounterDruid                                 = 1
@@ -226,7 +217,6 @@ MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange = { Active = false, Time 
 MB_razorgoreNewTargetBecauseTargetIsBehind             = { Active = false, Time = 0 }
 MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time = 0 }
 MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
-MB_autoToggleSheeps                                    = { Active = false, Time = 0 }
 MB_autoBuff                                            = { Active = false, Time = 0 }
 MB_hunterFeign                                         = { Active = false, Time = 0 }
 MB_autoBuyReagents                                     = { Active = false, Time = 0 }

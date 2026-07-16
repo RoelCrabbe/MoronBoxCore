@@ -36,8 +36,8 @@ local PlayerMounts = {
 
 local MageCounter = {
     Cycle = function()
-        MB_buffingCounterMage = (MB_buffingCounterMage >= getApi().TableLength(MB_classList["Mage"]))
-            and 1 or (MB_buffingCounterMage + 1)
+        getConfigState().SheepingMageNr = (getConfigState().SheepingMageNr >= getApi().TableLength(MB_classList["Mage"]))
+            and 1 or (getConfigState().SheepingMageNr + 1)
     end
 }
 
@@ -446,13 +446,13 @@ local function SpecialHealAndTankSituation()
             return true
         end
 
-        if not MB_autoToggleSheeps.Active then
-            MB_autoToggleSheeps.Active = true
-            MB_autoToggleSheeps.Time = GetTime() + 10
+        if not getConfigState().AutoToggleCC.Active then
+            getConfigState().AutoToggleCC.Active = true
+            getConfigState().AutoToggleCC.Time = GetTime() + 10
             MageCounter.Cycle()
         end
 
-        if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterMage then
+        if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
             getRaid().CrowdControlMCedRaidMemberHakkar()
         end
     elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
@@ -466,13 +466,13 @@ local function SpecialHealAndTankSituation()
         end
 
         if myClass == "Mage" then
-            if not MB_autoToggleSheeps.Active then
-                MB_autoToggleSheeps.Active = true
-                MB_autoToggleSheeps.Time = GetTime() + 3
+            if not getConfigState().AutoToggleCC.Active then
+                getConfigState().AutoToggleCC.Active = true
+                getConfigState().AutoToggleCC.Time = GetTime() + 3
                 MageCounter.Cycle()
             end
 
-            if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterMage then
+            if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
                 getRaid().CrowdControlMCedRaidMemberNefarian()
             end
         end
@@ -528,7 +528,7 @@ function MoronBox.Core.Rotation.HealAndTank()
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not getAura().HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
+        if getConfigState().CrowdControlTarget and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
             if getCrowdControl().CastCrowdControl() then
                 return
             end
@@ -547,7 +547,7 @@ function MoronBox.Core.Rotation.HealAndTank()
         getRotation().ExecuteRotation("Single")
     elseif getCore().ImHealer() then
         if myClass == "Druid" then
-            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
+            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget then
                 CastSpellByName("Hibernate(Rank 1)")
                 return
             end
@@ -625,11 +625,11 @@ function MoronBox.Core.Rotation.Cooldowns()
 
     if UnitInRaid("player") then
         if getUnit().InCombat("player") then
-            if not MB_useCooldowns.Active then
+            if not getConfigState().UseCooldowns.Active then
                 getApi().CdPrint("Sending out request to use Cooldowns.")
             else
                 getApi().CdPrint("Stop Cooldown Requesting, still " ..
-                    math.round(MB_useCooldowns.Time - GetTime()) .. "s remaining")
+                    math.round(getConfigState().UseCooldowns.Time - GetTime()) .. "s remaining")
             end
         end
 
@@ -664,11 +664,11 @@ function MoronBox.Core.Rotation.UseManualRecklessness()
 
     if UnitInRaid("player") then
         if getUnit().InCombat("player") then
-            if not MB_useBigCooldowns.Active then
+            if not getConfigState().UseBigCooldowns.Active then
                 getApi().CdPrint("Sending out request to use Recklessness.")
             else
                 getApi().CdPrint("Stop Recklessness Requesting, still " ..
-                    math.round(MB_useBigCooldowns.Time - GetTime()) .. "s remaining")
+                    math.round(getConfigState().UseBigCooldowns.Time - GetTime()) .. "s remaining")
             end
         end
 

@@ -450,7 +450,7 @@ SpellsFrame:SetScript("OnEvent", function()
     if event == "SPELLCAST_START" then
         IsCasting = true
 
-        if arg1 == MB_myCCSpell[myClass] then
+        if arg1 == getConfigState().CrowdControlSpell[myClass] then
             getSpellsState().IsCastingMyCCSpell = true
         end
     elseif event == "SPELLCAST_INTERRUPTED" or event == "SPELLCAST_STOP" or event == "SPELLCAST_FAILED" then

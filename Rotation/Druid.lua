@@ -79,7 +79,7 @@ local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
 local CancelDruidShapeShift = mb_cancelDruidShapeShift
 local CasterTrinkets = mb_casterTrinkets
 local CastSpellOnRandomRaidMember = mb_castSpellOnRandomRaidMember
-local CastSpellOrWand = mb_castSpellOrWand
+local CastOrWand = mb_CastOrWand
 local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
 local CrowdControl = mb_crowdControl
@@ -268,7 +268,7 @@ local function DruidHeal()
         end
     end
 
-    if MB_isMoving.Active then
+    if ConfigState.IsMoving.Active then
         if Instance.ONY() and TankTarget("Onyxia") then
             CoolDownCast("Moonfire", 12)
         end
@@ -746,18 +746,18 @@ local function DruidSingle()
         return
     end
 
-    if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
+    if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget then
         CastSpellByName("Hibernate(Rank 1)")
         return
     end
 
-    if CrowdControl() then
+    if CastCrowdControl() then
         return
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-            if CrowdControl() then
+        if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+            if CastCrowdControl() then
                 return
             end
         end
@@ -824,7 +824,7 @@ function Druid:Balance()
         return
     end
 
-    CastSpellOrWand("Starfire")
+    CastOrWand("Starfire")
 end
 
 function Druid:BossSpecificDPS()
@@ -853,18 +853,18 @@ function Druid:BossSpecificDPS()
     elseif Instance.ZG() then
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
             if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
-                CastSpellOrWand("Wrath")
+                CastOrWand("Wrath")
                 return true
             end
         end
 
         if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not Dead("target") then
-            CastSpellOrWand("Wrath")
+            CastOrWand("Wrath")
             return true
         end
     elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
         if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
-            CastSpellOrWand("Wrath")
+            CastOrWand("Wrath")
             return true
         end
     end
@@ -987,18 +987,18 @@ local function DruidMulti()
         return
     end
 
-    if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == MB_myCCTarget then
+    if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget then
         CastSpellByName("Hibernate(Rank 1)")
         return
     end
 
-    if CrowdControl() then
+    if CastCrowdControl() then
         return
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-            if CrowdControl() then
+        if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+            if CastCrowdControl() then
                 return
             end
         end

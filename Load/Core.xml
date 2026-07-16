@@ -5,7 +5,7 @@
     <Include file="..\Core\Spells.lua" />
     <Include file="..\Core\Buffs.lua" />
     <Include file="..\Core\Raid.lua" />
-    <Include file="..\Core\Decurse.lua" />
+    <Include file="..\Core\Dispel.lua" />
     <Include file="..\Core\CrowdControl.lua" />
     <Include file="..\Core\Gear.lua" />
     <Include file="..\Core\Attack.lua" />

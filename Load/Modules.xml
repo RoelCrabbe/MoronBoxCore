@@ -19,4 +19,6 @@
     <Include file="..\Modules\Shaman\Totem.lua" />
     <!-- Warrior -->
     <Include file="..\Modules\Warrior\Rotation.lua" />
+    <!-- Mage -->
+    <Include file="..\Modules\Mage\Rotation.lua" />
 </Ui>

@@ -74,7 +74,7 @@ if myClass ~= "Warlock" then return end
 
 local AutoWandAttack = mb_autoWandAttack
 local CasterTrinkets = mb_casterTrinkets
-local CastSpellOrWand = mb_castSpellOrWand
+local CastOrWand = mb_CastOrWand
 local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
 local CorruptedTotems = mb_corruptedTotems
@@ -197,7 +197,7 @@ local function WarlockSingle()
         ConfigState.PlayerSpecc = "Corruption"
     end
 
-    if CrowdControl() then
+    if CastCrowdControl() then
         return
     end
 
@@ -212,8 +212,8 @@ local function WarlockSingle()
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-            if CrowdControl() then
+        if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+            if CastCrowdControl() then
                 return
             end
         end
@@ -243,7 +243,7 @@ local function WarlockSingle()
             Warlock:SumPetAndSac()
         end
 
-        if MB_isMoving.Active then
+        if ConfigState.IsMoving.Active then
             Warlock:TapWhileMoving()
         end
 
@@ -265,10 +265,10 @@ local function WarlockSingle()
     if ConfigState.PlayerSpecc == "Shadowburn" and MB_raidAssist.Warlock.ShouldBeWhores then
         Warlock:ShadowBoltWhoring()
     else
-        CastSpellOrWand("Shadow Bolt")
+        CastOrWand("Shadow Bolt")
 
         if not IsSpellReady("Shadow Bolt") then
-            CastSpellOrWand("Searing Pain")
+            CastOrWand("Searing Pain")
         end
     end
 end
@@ -298,9 +298,9 @@ function Warlock:ShadowBoltWhoring()
 
     if gonnaWhore and IsSpellReady("Shadowburn") and NumShards() > 12 then
         CastSpellByName("Shadowburn")
-        CastSpellOrWand("Shadow Bolt")
+        CastOrWand("Shadow Bolt")
     else
-        CastSpellOrWand("Shadow Bolt")
+        CastOrWand("Shadow Bolt")
     end
 end
 
@@ -387,10 +387,10 @@ function Warlock:BossSpecificDPS()
 
     if HasBuffNamed("Shadow and Frost Reflect", "target") then
         if IsSpellReady("Soul Fire") and NumShards() > 10 then
-            CastSpellOrWand("Soul Fire")
+            CastOrWand("Soul Fire")
         end
 
-        CastSpellOrWand("Immolate")
+        CastOrWand("Immolate")
         return true
     elseif HasBuffOrDebuff("Magic Reflection", "target", "buff") then
         if ImBusy() then
@@ -431,15 +431,15 @@ function Warlock:BossSpecificDPS()
         end
     elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then
         Warlock:SaveShardShadowBurn(12)
-        CastSpellOrWand("Searing Pain")
+        CastOrWand("Searing Pain")
         return true
     elseif Instance.MC() and TankTarget("Shazzrah") then
         if not IsSpellReady("Shadow Bolt") then
-            CastSpellOrWand("Immolate")
+            CastOrWand("Immolate")
             return true
         end
     elseif Instance.ONY() and TankTarget("Onyxia") then
-        if MB_isMoving.Active then
+        if ConfigState.IsMoving.Active then
             CoolDownCast("Corruption", 18)
 
             if TankTargetHealth() <= 0.65 and TankTargetHealth() >= 0.4 then
@@ -450,14 +450,14 @@ function Warlock:BossSpecificDPS()
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
             if UnitName("target") == "Shade of Jin\'do" and not Dead("target") then
                 Warlock:SaveShardShadowBurn(12)
-                CastSpellOrWand("Searing Pain")
+                CastOrWand("Searing Pain")
                 return true
             end
         end
 
         if (UnitName("target") == "Powerful Healing Ward" or UnitName("target") == "Brain Wash Totem") and not Dead("target") then
             Warlock:SaveShardShadowBurn(12)
-            CastSpellOrWand("Searing Pain")
+            CastOrWand("Searing Pain")
             return true
         end
     elseif Instance.AQ20() then
@@ -468,13 +468,13 @@ function Warlock:BossSpecificDPS()
         if TankTarget("Ossirian the Unscarred") then
             if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
                 if IsSpellReady("Soul Fire") and NumShards() > 10 then
-                    CastSpellOrWand("Soul Fire")
+                    CastOrWand("Soul Fire")
                 end
 
-                CastSpellOrWand("Immolate")
+                CastOrWand("Immolate")
                 return true
             elseif HasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
-                CastSpellOrWand("Shadow Bolt")
+                CastOrWand("Shadow Bolt")
                 return true
             end
         end

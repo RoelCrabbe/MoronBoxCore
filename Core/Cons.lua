@@ -355,7 +355,7 @@ local function UseThresholdItem(thresholdList)
 end
 
 function MoronBox.Core.Cons.TakeManaPotionAndRunes()
-    if getRaid().ImBusy() or not getUnit().InCombat() then
+    if getSpells().ImBusy() or not getUnit().InCombat() then
         return
     end
 
@@ -434,7 +434,7 @@ function MoronBox.Core.Cons.FirePotsOnFaerlina()
         return
     end
 
-    if getRaid().ImBusy() or not getUnit().InCombat() then
+    if getSpells().ImBusy() or not getUnit().InCombat() then
         return
     end
 
@@ -450,7 +450,7 @@ function MoronBox.Core.Cons.FirePotsOnVaelastrasz()
         return
     end
 
-    if getRaid().ImBusy() or not getUnit().InCombat() then
+    if getSpells().ImBusy() or not getUnit().InCombat() then
         return
     end
 
@@ -466,7 +466,7 @@ function MoronBox.Core.Cons.NaturePotsOnHuhuran()
         return
     end
 
-    if getRaid().ImBusy() or not getUnit().InCombat() then
+    if getSpells().ImBusy() or not getUnit().InCombat() then
         return
     end
 
@@ -571,7 +571,7 @@ function MoronBox.Core.Cons.SpeedRunPots()
         return
     end
 
-    if getRaid().ImBusy() or getUnit().InCombat() then
+    if getSpells().ImBusy() or getUnit().InCombat() then
         return
     end
 
@@ -595,7 +595,7 @@ function MoronBox.Core.Cons.UseLIP()
         return
     end
 
-    if getRaid().ImBusy() then
+    if getSpells().ImBusy() then
         return
     end
 
@@ -618,7 +618,7 @@ function MoronBox.Core.Cons.UseFAP()
         return
     end
 
-    if getRaid().ImBusy() then
+    if getSpells().ImBusy() then
         return
     end
 

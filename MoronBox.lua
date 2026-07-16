@@ -80,7 +80,8 @@ function MoronBox:GetEnvironment()
         self.Core.Rotation,
         self.Core.Report,
         self.Core.Buffs,
-        self.Core.CrowdControl
+        self.Core.CrowdControl,
+        self.Core.Cons
     }
 
     for _, ns in ipairs(namespaces) do

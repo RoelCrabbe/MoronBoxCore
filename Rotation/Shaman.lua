@@ -75,7 +75,7 @@ if myClass ~= "Shaman" then return end
 local AutoAttack = mb_autoAttack
 local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
 local CasterTrinkets = mb_casterTrinkets
-local CastSpellOrWand = mb_castSpellOrWand
+local CastOrWand = mb_CastOrWand
 local CdMessage = mb_cdMessage
 local CdPrint = mb_cdPrint
 local CoolDownCast = mb_coolDownCast
@@ -419,10 +419,10 @@ function Shaman:Elemental()
     end
 
     if IsSpellReady("Chain Lightning") then
-        CastSpellOrWand("Chain Lightning")
+        CastOrWand("Chain Lightning")
     end
 
-    CastSpellOrWand("Lightning Bolt")
+    CastOrWand("Lightning Bolt")
 end
 
 function Shaman:BossSpecificDPS()

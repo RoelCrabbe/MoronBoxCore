@@ -66,7 +66,7 @@ function MoronBox.Core.Raid.FocusAggro()
 end
 
 function MoronBox.Core.Raid.GetMyInterruptTarget()
-    if not MB_myInterruptTarget then
+    if not getConfigState().InterruptTarget then
         getRaid().AssistFocus()
         return
     end
@@ -74,7 +74,7 @@ function MoronBox.Core.Raid.GetMyInterruptTarget()
     for i = 1, 6 do
         local targetIndex = GetRaidTargetIndex("target")
 
-        if targetIndex == MB_myInterruptTarget then
+        if targetIndex == getConfigState().InterruptTarget then
             if not getUnit().IsDead("target") then
                 return
             end

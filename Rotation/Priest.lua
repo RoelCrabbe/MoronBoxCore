@@ -76,7 +76,7 @@ local AutoWandAttack = mb_autoWandAttack
 local BossNeverInterruptHeal = mb_bossNeverInterruptHeal
 local CasterTrinkets = mb_casterTrinkets
 local CastSpellOnRandomRaidMember = mb_castSpellOnRandomRaidMember
-local CastSpellOrWand = mb_castSpellOrWand
+local CastOrWand = mb_CastOrWand
 local CdMessage = mb_cdMessage
 local CoolDownCast = mb_coolDownCast
 local CrowdControl = mb_crowdControl
@@ -266,7 +266,7 @@ local function PriestHeal()
         end
     end
 
-    if MB_isMoving.Active then
+    if ConfigState.IsMoving.Active then
         CastSpellOnRandomRaidMember("Renew", MB_priestRenewLowRandomRank, MB_priestRenewLowRandomPercentage)
     end
 
@@ -607,13 +607,13 @@ local function PriestSingle()
     GetTarget()
     PriestCancelAuras()
 
-    if CrowdControl() then
+    if CastCrowdControl() then
         return
     end
 
     if UnitName("target") then
-        if MB_myCCTarget and GetRaidTargetIndex("target") == MB_myCCTarget and not HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-            if CrowdControl() then
+        if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+            if CastCrowdControl() then
                 return
             end
         end
@@ -630,7 +630,7 @@ local function PriestSingle()
             return
         end
     elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
-        if SKERAM_CrowdControl() then
+        if SKERAM_CastCrowdControl() then
             return
         end
     end
@@ -684,10 +684,10 @@ function Priest:Shadow()
     end
 
     if IsSpellReady("Mind Blast") then
-        CastSpellOrWand("Mind Blast")
+        CastOrWand("Mind Blast")
     end
 
-    CastSpellOrWand("Mind Flay")
+    CastOrWand("Mind Flay")
 end
 
 function Priest:ShadowWeaving()
@@ -899,7 +899,7 @@ function Priest:ManaDrain()
     if (Instance.AQ40() and TankTarget("Obsidian Eradicator")) or
         (Instance.AQ20() and TankTarget("Moam")) then
         if ManaPct("target") > 0.25 then
-            CastSpellOrWand("Mana Burn")
+            CastOrWand("Mana Burn")
             return true
         end
     end
@@ -947,7 +947,7 @@ function Priest:UseWand()
     GetTarget()
 
     if MB_mySpeedRunStrategy and IsSpellReady("Mind Blast") then
-        CastSpellOrWand("Mind Blast")
+        CastOrWand("Mind Blast")
         return
     end
 
@@ -970,7 +970,7 @@ local function LOA_Attack()
     end
 
     if IsSpellReady("Mind Blast") then
-        CastSpellOrWand("Mind Blast")
+        CastOrWand("Mind Blast")
         return
     end
 

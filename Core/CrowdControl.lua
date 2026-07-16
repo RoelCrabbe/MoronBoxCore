@@ -27,12 +27,12 @@ function MoronBox.Core.CrowdControl.CrowdControlAsPull()
 end
 
 function MoronBox.Core.CrowdControl.CastCrowdControl()
-    if not MB_myCCTarget then
+    if not getConfigState().CrowdControlTarget then
         getCrowdControl().CrowdControlFear()
         return false
     end
 
-    if myClass == "Druid" and GetRaidTargetIndex("target") == MB_myCCTarget then
+    if myClass == "Druid" and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget then
         if UnitName("target") == "Death Talon Wyrmkin" then
             CastSpellByName("Hibernate(Rank 1)")
             return true
@@ -40,19 +40,19 @@ function MoronBox.Core.CrowdControl.CastCrowdControl()
     end
 
     for _ = 1, 10 do
-        if GetRaidTargetIndex("target") == MB_myCCTarget and not UnitIsDead("target") and not getAura().HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
-            getApi().CdPrint("CC spell is: " .. MB_myCCSpell[myClass])
-            getApi().CdMessage(MB_myCCSpell[myClass] .. "ing " .. UnitName("target"))
-            CastSpellByName(MB_myCCSpell[myClass])
+        if GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and not UnitIsDead("target") and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
+            getApi().CdPrint("CC spell is: " .. getConfigState().CrowdControlSpell[myClass])
+            getApi().CdMessage(getConfigState().CrowdControlSpell[myClass] .. "ing " .. UnitName("target"))
+            CastSpellByName(getConfigState().CrowdControlSpell[myClass])
             return true
         end
 
-        if GetRaidTargetIndex("target") == MB_myCCTarget and not UnitIsDead("target") and getAura().HasBuffOrDebuff(MB_myCCSpell[myClass], "target", "debuff") then
+        if GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and not UnitIsDead("target") and getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
             return false
         end
 
-        if GetRaidTargetIndex("target") == MB_myCCTarget and UnitIsDead("target") then
-            MB_myCCTarget = nil
+        if GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and UnitIsDead("target") then
+            getConfigState().CrowdControlTarget = nil
             return false
         end
 

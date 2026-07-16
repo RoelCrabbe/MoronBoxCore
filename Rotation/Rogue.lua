@@ -162,7 +162,7 @@ local function RogueSingle()
         return
     end
 
-    if MB_useCooldowns.Active then
+    if ConfigState.UseCooldowns.Active then
         Rogue:Cooldowns()
     end
 

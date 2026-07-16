@@ -22,9 +22,21 @@ function MoronBox.Bag.GetItemLink(itemName)
     return nil
 end
 
+function MoronBox.Bag.GetItemLocation(itemName)
+    for bag = 0, 4 do
+        for slot = 1, GetContainerNumSlots(bag) do
+            local link = GetContainerItemLink(bag, slot)
+            if link and string.find(link, itemName) then
+                return bag, slot
+            end
+        end
+    end
+    return nil, nil
+end
+
 function MoronBox.Bag.IsItemInBagCoolDown(itemName)
     local bag, slot = getBag().GetItemLocation(itemName)
-    if not bag then
+    if not bag or not slot then
         return nil
     end
 
@@ -38,7 +50,7 @@ end
 
 function MoronBox.Bag.UseFromBags(itemName)
     local bag, slot = getBag().GetItemLocation(itemName)
-    if bag then
+    if bag and slot then
         UseContainerItem(bag, slot)
         return true
     end
@@ -230,8 +242,8 @@ local MeleeTrinkets = {
     "Devilsaur Eye"
 }
 
-local function useTrinket(slotId, trinketList)
-    if not getUnit().InCombat() or getBag().TrinketOnCD(slotId) then
+local function useTrinket(slotId, trinketList, requireCombat)
+    if (requireCombat and not getUnit().InCombat()) or getBag().TrinketOnCD(slotId) then
         return
     end
 
@@ -249,16 +261,21 @@ local function useTrinket(slotId, trinketList)
 end
 
 function MoronBox.Bag.HealerTrinkets()
-    useTrinket(13, HealerTrinkets)
-    useTrinket(14, HealerTrinkets)
+    useTrinket(13, HealerTrinkets, true)
+    useTrinket(14, HealerTrinkets, true)
 end
 
 function MoronBox.Bag.CasterTrinkets()
-    useTrinket(13, CasterTrinkets)
-    useTrinket(14, CasterTrinkets)
+    useTrinket(13, CasterTrinkets, true)
+    useTrinket(14, CasterTrinkets, true)
 end
 
 function MoronBox.Bag.MeleeTrinkets()
-    useTrinket(13, MeleeTrinkets)
-    useTrinket(14, MeleeTrinkets)
+    useTrinket(13, MeleeTrinkets, true)
+    useTrinket(14, MeleeTrinkets, true)
+end
+
+function MoronBox.Bag.PreCastTrinkets()
+    useTrinket(13, CasterTrinkets, false)
+    useTrinket(14, CasterTrinkets, false)
 end
