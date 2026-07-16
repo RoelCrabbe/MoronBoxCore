@@ -365,8 +365,8 @@ local function ShamanSingle()
 
     Decurse()
 
-    if MB_doInterrupt.Active and IsSpellReady(MB_myInterruptSpell[myClass]) then
-        if MB_myInterruptTarget then
+    if ConfigState.DoInterrupt.Active and IsSpellReady(MB_myInterruptSpell[myClass]) then
+        if ConfigState.InterruptTarget then
             GetMyInterruptTarget()
         end
 
@@ -376,7 +376,7 @@ local function ShamanSingle()
 
         CastSpellByName(MB_myInterruptSpell[myClass] .. "(Rank 1)")
         CdPrint("Interrupting!")
-        MB_doInterrupt.Active = false
+        ConfigState.DoInterrupt.Active = false
         return
     end
 
