@@ -32,4 +32,6 @@
     <Include file="..\Modules\Hunter\Rotation.lua" />
     <!-- Druid -->
     <Include file="..\Modules\Druid\Rotation.lua" />
+    <!-- Paladin -->
+    <Include file="..\Modules\Paladin\Rotation.lua" />
 </Ui>
