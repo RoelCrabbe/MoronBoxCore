@@ -279,3 +279,8 @@ function MoronBox.Bag.PreCastTrinkets()
     useTrinket(13, CasterTrinkets, false)
     useTrinket(14, CasterTrinkets, false)
 end
+
+function MoronBox.Bag.PreCastMeleeTrinkets()
+    useTrinket(13, MeleeTrinkets, false)
+    useTrinket(14, MeleeTrinkets, false)
+end

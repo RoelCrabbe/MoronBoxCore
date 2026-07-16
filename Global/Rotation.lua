@@ -218,5 +218,4 @@ MB_razorgoreNewTargetBecauseTargetIsBehind             = { Active = false, Time 
 MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time = 0 }
 MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
 MB_autoBuff                                            = { Active = false, Time = 0 }
-MB_hunterFeign                                         = { Active = false, Time = 0 }
 MB_autoBuyReagents                                     = { Active = false, Time = 0 }

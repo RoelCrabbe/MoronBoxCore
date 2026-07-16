@@ -14,24 +14,24 @@ MoronBox.Config = MoronBox.Config or {}
 
 MoronBox.Config.ConfigState = {
     -- [[ Raid Leader ]] --
-    RaidLeader = nil,
+    RaidLeader         = nil,
 
     -- [[ Rotations ]] --
-    PlayerSpecc = nil,
-    WarriorBinds = "Fury",
+    PlayerSpecc        = nil,
+    WarriorBinds       = "Fury",
 
     -- [[ Healing ]] --
-    HealSpell = nil,
+    HealSpell          = nil,
     AssignedHealTarget = nil,
 
     -- [[ Cooldowns ]]
-    UseCooldowns = { Active = false, Time = 0 },
-    UseBigCooldowns = { Active = false, Time = 0 },
+    UseCooldowns       = { Active = false, Time = 0 },
+    UseBigCooldowns    = { Active = false, Time = 0 },
 
     -- [[ Interrupts ]]
-    InterruptTarget = nil,
-    DoInterrupt = { Active = false, Time = 0 },
-    InterruptSpell = {
+    InterruptTarget    = nil,
+    DoInterrupt        = { Active = false, Time = 0 },
+    InterruptSpell     = {
         Rogue = "Kick",
         Shaman = "Earth Shock",
         Mage = "Counterspell",
@@ -41,26 +41,27 @@ MoronBox.Config.ConfigState = {
     },
 
     -- [[ Tanking ]] --
-    OffTankTarget = nil,
+    OffTankTarget      = nil,
 
     -- [[ CC ]] --
     CrowdControlTarget = nil,
-    CrowdControlSpell = {
+    CrowdControlSpell  = {
         Priest = "Shackle Undead",
         Mage = "Polymorph",
         Warlock = "Banish",
         Druid = "Hibernate"
     },
-    AutoToggleCC = { Active = false, Time = 0 },
-    SheepingMageNr = 1,
-    SheepingWarlockNr = 1,
+    AutoToggleCC       = { Active = false, Time = 0 },
+    SheepingMageNr     = 1,
+    SheepingWarlockNr  = 1,
 
     -- [[ Ignite ]] --
-    Ignite = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 },
+    Ignite             = { Active = nil, Starter = nil, Amount = 0, Stacks = 0 },
 
     -- [[ Extra ]] --
-    IsMoving = { Active = false, Time = 0 },
-    AutoSoulStone = { Active = false, Time = 0 }
+    IsMoving           = { Active = false, Time = 0 },
+    AutoSoulStone      = { Active = false, Time = 0 },
+    HunterFeign        = { Active = false, Time = 0 }
 }
 
 function getConfig()
