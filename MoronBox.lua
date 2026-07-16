@@ -7,6 +7,16 @@ MoronBox:RegisterEvent("RAID_ROSTER_UPDATE")
 MoronBox:RegisterEvent("PARTY_MEMBERS_CHANGED")
 MoronBox:RegisterEvent("PLAYER_ENTERING_WORLD")
 
+---@class MoronBoxTooltip: GameTooltip
+MoronBoxTooltip = CreateFrame("GameTooltip", "MoronBoxTooltip", UIParent, "GameTooltipTemplate")
+
+---@class MBx: Frame
+MBx = CreateFrame("Frame")
+MBx.ACE = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
+MBx.ACE.ItemBonus = AceLibrary("ItemBonusLib-1.0")
+MBx.ACE.Banzai = AceLibrary("Banzai-1.0")
+MBx.ACE.HealComm = AceLibrary("HealComm-1.0")
+
 -- Flag to track initialization state
 MoronBox.BootUp = true
 MoronBox.CurrentModule = nil
@@ -16,6 +26,7 @@ MoronBox.Modules = {}           -- Holds the init functions ("Recipes")
 MoronBox.Registry = {}          -- Holds the public API tables ("Exposed APIs")
 MoronBox.ModuleNames = {}       -- Holds the list of strings ("Keys")
 
+MoronBox.Settings = {}          -- Custom Config | Tables
 MoronBox.Config = {}            -- Config | Tables
 
 MoronBox.Debugger = {}          -- Debugger
@@ -49,10 +60,16 @@ function MoronBox:GetEnvironment()
     local seen = {}
 
     local namespaces = {
+        -- Config
+        self.Settings,
+        self.Config,
+        self.Config.Tables,
+        -- Api
         self.Debugger,
         self.Api,
         self.Bag,
         self.Unit,
+        -- Core
         self.Core,
         self.Core.Aura,
         self.Core.Spells,
@@ -320,7 +337,7 @@ MoronBox:SetScript("OnEvent", function()
             UIErrorsFrame:Hide()
 
             MoronBox.Core.InitializeClasslists()
-            mb_mySpecc()
+            MoronBox.Core.GetMySpecc()
             MoronBox.Core.Attack.SetAttackButton()
             MoronBox.Core.Healing.GetHealSpell()
 

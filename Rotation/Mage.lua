@@ -114,7 +114,7 @@ local MultiBuff = mb_multiBuff
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankBuff = mb_tankBuff
 local TankTarget = mb_tankTarget
@@ -155,34 +155,34 @@ local function MageSpecc()
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Frost"
+        ConfigState.PlayerSpecc = "Frost"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(2, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Fire"
+        ConfigState.PlayerSpecc = "Fire"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
     _, _, _, _, TalentsInA = GetTalentInfo(2, 8)
     if TalentsIn > 0 and TalentsInA > 0 then
-        MB_mySpecc = "Fire"
+        ConfigState.PlayerSpecc = "Fire"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 8)
     if TalentsIn > 0 and TalentsInA > 1 then
-        MB_mySpecc = "Frost"
+        ConfigState.PlayerSpecc = "Frost"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Mage"] = MageSpecc
+ConfigState.PlayerSpeccList["Mage"] = MageSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -220,9 +220,9 @@ local function MageSingle()
     GetTarget()
     MageCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Frost.")
-        MB_mySpecc = "Frost"
+        ConfigState.PlayerSpecc = "Frost"
     end
 
     if CrowdControl() then
@@ -296,13 +296,13 @@ local function MageSingle()
 
         TakeManaPotionAndRunes()
 
-        if ManaPct() <= 0.1 and SpellReady("Evocation") then
+        if ManaPct() <= 0.1 and IsSpellReady("Evocation") then
             CastSpellByName("Evocation")
             return
         end
     end
 
-    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and IsSpellReady(MB_myInterruptSpell[myClass]) then
         if MB_myInterruptTarget then
             GetMyInterruptTarget()
         end
@@ -321,14 +321,14 @@ local function MageSingle()
         return
     end
 
-    if MB_mySpecc == "Fire" then
+    if ConfigState.PlayerSpecc == "Fire" then
         if IsFireImmune() then
             CastSpellOrWand("Frostbolt")
             return
         end
 
         Mage:Fire()
-    elseif MB_mySpecc == "Frost" then
+    elseif ConfigState.PlayerSpecc == "Frost" then
         if IsFrostImmune() then
             CastSpellOrWand("Fireball")
             return
@@ -403,7 +403,7 @@ function Mage:BossSpecificDPS()
             return true
         end
     elseif Instance.BWL() and CorruptedTotems() and not Dead("target") then
-        if SpellReady("Fireblast") then
+        if IsSpellReady("Fireblast") then
             CastSpellByName("Fire Blast")
         end
 
@@ -411,17 +411,17 @@ function Mage:BossSpecificDPS()
         return true
     elseif Instance.MC() then
         if TankTarget("Shazzrah") then
-            if MB_mySpecc == "Fire" and not SpellReady("Fireball") then
+            if ConfigState.PlayerSpecc == "Fire" and not IsSpellReady("Fireball") then
                 Mage:Frost()
                 return true
-            elseif MB_mySpecc == "Frost" and not SpellReady("Frostbolt") then
+            elseif ConfigState.PlayerSpecc == "Frost" and not IsSpellReady("Frostbolt") then
                 Mage:Fire()
                 return true
             end
         end
 
         if tName == "Lava Spawn" and InMeleeRange() then
-            if SpellReady("Cone of Cold") then
+            if IsSpellReady("Cone of Cold") then
                 CastSpellOrWand("Cone of Cold")
                 return true
             end
@@ -429,7 +429,7 @@ function Mage:BossSpecificDPS()
     elseif Instance.ZG() then
         if HasBuffOrDebuff("Delusions of Jin\'do", "player", "debuff") then
             if tName == "Shade of Jin\'do" and not Dead("target") then
-                if SpellReady("Fire Blast") then
+                if IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end
 
@@ -439,7 +439,7 @@ function Mage:BossSpecificDPS()
         end
 
         if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not Dead("target") then
-            if SpellReady("Fire Blast") then
+            if IsSpellReady("Fire Blast") then
                 CastSpellByName("Fire Blast")
             end
 
@@ -479,7 +479,7 @@ function Mage:Fire()
             SelfBuff("Combustion") -- pop Combustion once at start
 
             -- Fire Blast if allowed, in melee, and ready
-            if MB_raidAssist.Mage.AllowFireBlastDuringIgnite and InMeleeRange() and SpellReady("Fire Blast") then
+            if MB_raidAssist.Mage.AllowFireBlastDuringIgnite and InMeleeRange() and IsSpellReady("Fire Blast") then
                 CastSpellByName("Fire Blast")
             end
 
@@ -516,7 +516,7 @@ function Mage:Frost()
         Mage:UseFrostCooldowns()
 
         -- Ice Block if low health (except Grobbulus)
-        if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then
+        if IsSpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then
             SelfBuff("Ice Block")
             return
         end
@@ -528,7 +528,7 @@ function Mage:Frost()
         end
 
         -- Ice Barrier
-        if SpellReady("Ice Barrier") and HealthPct("player") >= 0.65 and not HasBuffOrDebuff("Ice Barrier", "player", "buff") then
+        if IsSpellReady("Ice Barrier") and HealthPct("player") >= 0.65 and not HasBuffOrDebuff("Ice Barrier", "player", "buff") then
             SelfBuff("Ice Barrier")
             return
         end
@@ -541,7 +541,7 @@ function Mage:Frost()
     end
 
     -- Frostbolt rotation (Fireball as backup if GCD)
-    if SpellReady("Frostbolt") then
+    if IsSpellReady("Frostbolt") then
         CastSpellOrWand("Frostbolt")
     else
         CastSpellOrWand("Fireball")
@@ -564,9 +564,9 @@ local function MageAOE()
     GetTarget()
     MageCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Frost.")
-        MB_mySpecc = "Frost"
+        ConfigState.PlayerSpecc = "Frost"
     end
 
     if HasBuffOrDebuff("Evocation", "player", "buff") then
@@ -603,20 +603,20 @@ local function MageAOE()
     end
 
     if InMeleeRange() then
-        if MB_mySpecc == "Fire" then
+        if ConfigState.PlayerSpecc == "Fire" then
             if IsFireImmune() then
                 return
             end
 
-            if SpellReady("Blast Wave") then
+            if IsSpellReady("Blast Wave") then
                 CastSpellByName("Blast Wave")
             end
-        elseif MB_mySpecc == "Frost" then
+        elseif ConfigState.PlayerSpecc == "Frost" then
             if IsFrostImmune() then
                 return
             end
 
-            if SpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then
+            if IsSpellReady("Ice Block") and HealthPct("player") <= 0.22 and not GROB_IsAtGrobbulus() then
                 SelfBuff("Ice Block")
                 return
             end
@@ -626,7 +626,7 @@ local function MageAOE()
                 return
             end
 
-            if SpellReady("Ice Barrier") and HealthPct("player") >= 0.65 then
+            if IsSpellReady("Ice Barrier") and HealthPct("player") >= 0.65 then
                 SelfBuff("Ice Barrier")
                 return
             end
@@ -688,13 +688,13 @@ local function MagePreCast()
         end
     end
 
-    if MB_mySpecc == "Fire" then
+    if ConfigState.PlayerSpecc == "Fire" then
         if IsFireImmune() then
             CastSpellByName("Frostbolt")
         else
             CastSpellByName("Fireball")
         end
-    elseif MB_mySpecc == "Frost" then
+    elseif ConfigState.PlayerSpecc == "Frost" then
         if IsFrostImmune() then
             CastSpellByName("Fireball")
         else

@@ -109,7 +109,7 @@ local PartyIsPoisoned = mb_partyIsPoisoned
 local PartyMana = mb_partyMana
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
@@ -133,26 +133,26 @@ local function ShamanSpecc()
     _, _, _, _, TalentsIn = GetTalentInfo(3, 13)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 15)
     if TalentsIn > 0 and TalentsInA > 0 then
-        MB_mySpecc = "Deep Resto"
+        ConfigState.PlayerSpecc = "Deep Resto"
         return
     end
     _, _, _, _, TalentsIn = GetTalentInfo(3, 13)
     _, _, _, _, TalentsInA = GetTalentInfo(2, 12)
     if TalentsIn > 0 and TalentsInA > 1 then
-        MB_mySpecc = "Totem Resto"
+        ConfigState.PlayerSpecc = "Totem Resto"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 14)
     if TalentsIn > 0 then
-        MB_mySpecc = "Elemental"
+        ConfigState.PlayerSpecc = "Elemental"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Shaman"] = ShamanSpecc
+ConfigState.PlayerSpeccList["Shaman"] = ShamanSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -182,7 +182,7 @@ local function ShamanHeal()
     end
 
     if InCombat("player") then
-        if SpellReady("Mana Tide Totem")
+        if IsSpellReady("Mana Tide Totem")
             and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
             local _, partyManaDown = PartyMana()
             local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
@@ -293,7 +293,7 @@ function Shaman:MTHeals(assignedTarget)
         end
     end
 
-    if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
+    if IsSpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
         if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
             SpellStopCasting()
         end
@@ -334,9 +334,9 @@ local function ShamanSingle()
     GetTarget()
     ShamanCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Elemental.")
-        MB_mySpecc = "Elemental"
+        ConfigState.PlayerSpecc = "Elemental"
     end
 
     if PartyIsPoisoned() then
@@ -365,7 +365,7 @@ local function ShamanSingle()
 
     Decurse()
 
-    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and IsSpellReady(MB_myInterruptSpell[myClass]) then
         if MB_myInterruptTarget then
             GetMyInterruptTarget()
         end
@@ -382,7 +382,7 @@ local function ShamanSingle()
 
     DropTotems()
 
-    if MB_mySpecc == "Elemental" then
+    if ConfigState.PlayerSpecc == "Elemental" then
         Shaman:Elemental()
         return
     end
@@ -418,7 +418,7 @@ function Shaman:Elemental()
         return
     end
 
-    if SpellReady("Chain Lightning") then
+    if IsSpellReady("Chain Lightning") then
         CastSpellOrWand("Chain Lightning")
     end
 
@@ -456,7 +456,7 @@ MB_myMultiList["Shaman"] = ShamanSingle
 --[####################################################################################################]--
 
 local function ShamanAOE()
-    if MobsToAoeTotem() and SpellReady("Fire Nova Totem") then
+    if MobsToAoeTotem() and IsSpellReady("Fire Nova Totem") then
         CastSpellByName("Fire Nova Totem")
         return
     end
@@ -544,7 +544,7 @@ local function LOA_Attack()
         return
     end
 
-    if SpellReady("Lightning Bolt") then
+    if IsSpellReady("Lightning Bolt") then
         CoolDownCast("Lightning Bolt", 6)
         return
     end
@@ -570,7 +570,7 @@ local function LOA_Heal()
     if InCombat("player") then
         TakeManaPotionAndRunes()
 
-        if SpellReady("Mana Tide Totem")
+        if IsSpellReady("Mana Tide Totem")
             and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
             local _, partyManaDown = PartyMana()
             local avgManaDown = partyManaDown / NumOfCasterHealerInParty()

@@ -100,7 +100,7 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -209,7 +209,7 @@ local function UseStoneShieldPotsOnFankriss()
         return
     end
 
-    TakePotionsWhenPossible("Greater Stoneshield Potion")
+    PotionsWhenPossible("Greater Stoneshield Potion")
 end
 
 --[####################################################################################################]--
@@ -293,8 +293,8 @@ function FANKRISS_MageDPS(Mage)
         CastSpellByName("Fire Blast")
     end
 
-    if Mage[MB_mySpecc] then
-        Mage[MB_mySpecc](Mage)
+    if Mage[getConfigState().PlayerSpecc] then
+        Mage[getConfigState().PlayerSpecc](Mage)
     end
 
     return true

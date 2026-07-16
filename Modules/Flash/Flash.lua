@@ -40,7 +40,7 @@ local function FlashFrameFlashHandler()
         return
     end
 
-    local leaderID = MBID[MB_raidLeader]
+    local leaderID = getCoreState().MBID[MB_raidLeader]
     if leaderID and UnitName(leaderID .. "targettarget") == myName and UnitIsEnemy("target", "player") then
         if getApi().FindInTable(MB_tankList, myName) then
             for _, tex in ipairs({ t1, t2, t3, t4 }) do

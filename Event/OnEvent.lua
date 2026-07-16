@@ -566,7 +566,7 @@ function MMB:OnEvent()
             mb_clearTargetIfNotAggroed()
         end
 
-        if MB_warriorBinds == "Fury" and mb_imMeleeDPS() then
+        if getConfigState().WarriorBinds == "Fury" and mb_imMeleeDPS() then
             if mb_myNameInTable(MB_furysThatCanTank) then
                 mb_furyGear()
             end
@@ -821,7 +821,7 @@ function mb_initializeClasslists()
 end
 
 function mb_mySpecc()
-    local GetMySpecc = MB_mySpeccList[myClass]
+    local GetMySpecc = getConfigState().PlayerSpeccList[myClass]
     if GetMySpecc and type(GetMySpecc) == "function" then
         GetMySpecc()
     end

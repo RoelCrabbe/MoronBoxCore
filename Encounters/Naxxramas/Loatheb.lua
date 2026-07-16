@@ -91,7 +91,7 @@ local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local NumberOfClassInRaid = mb_numberOfClassInRaid
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -350,7 +350,7 @@ local function UseShadowPotsOnLoatheb()
         return
     end
 
-    TakePotionsWhenPossible("Greater Shadow Protection Potion")
+    PotionsWhenPossible("Greater Shadow Protection Potion")
 end
 
 --[####################################################################################################]--

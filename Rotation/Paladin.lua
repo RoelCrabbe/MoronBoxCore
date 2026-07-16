@@ -106,7 +106,7 @@ local NumberOfClassInParty = mb_numberOfClassInParty
 local RaidIsPoisoned = mb_raidIsPoisoned
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local StunnableMob = mb_stunnableMob
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
@@ -277,7 +277,7 @@ function Paladin:ShockLowAggroedPlayer()
     if not MB_raidAssist.Paladin.HolyShockLowHealthAggroedPlayers
         or not UnitInRaid("player")
         or not InCombat("player")
-        or not SpellReady("Holy Shock") then
+        or not IsSpellReady("Holy Shock") then
         return false
     end
 
@@ -324,7 +324,7 @@ function Paladin:BOPLowRandom()
         or not UnitInRaid("player")
         or not InCombat("player")
         or ImBusy()
-        or not SpellReady("Blessing of Protection") then
+        or not IsSpellReady("Blessing of Protection") then
         return false
     end
 
@@ -397,7 +397,7 @@ local function PaladinSingle()
         end
 
         if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
-            if SpellReady("Hammer of Justice") then
+            if IsSpellReady("Hammer of Justice") then
                 AssistFocus()
                 CastSpellByName("Hammer of Justice")
             end

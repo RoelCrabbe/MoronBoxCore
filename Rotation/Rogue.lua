@@ -86,7 +86,7 @@ local InMeleeRange = mb_inMeleeRange
 local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
 local MeleeTrinkets = mb_meleeTrinkets
 local SelfBuff = mb_selfBuff
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local StunnableMob = mb_stunnableMob
 local TankTarget = mb_tankTarget
 local TrinketOnCD = mb_trinketOnCD
@@ -107,17 +107,17 @@ local function RogueSpecc()
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
     if TalentsIn > 0 then
-        MB_mySpecc = "Hemo"
+        ConfigState.PlayerSpecc = "Hemo"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(2, 19)
     if TalentsIn > 0 then
-        MB_mySpecc = "AR"
+        ConfigState.PlayerSpecc = "AR"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
 local function ImprovedExposeCheck()
@@ -125,7 +125,7 @@ local function ImprovedExposeCheck()
     return TalentsIn == 2
 end
 
-MB_mySpeccList["Rogue"] = RogueSpecc
+ConfigState.PlayerSpeccList["Rogue"] = RogueSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -176,7 +176,7 @@ local function RogueSingle()
         end
     end
 
-    if MB_doInterrupt.Active and SpellReady(MB_myInterruptSpell[myClass]) then
+    if MB_doInterrupt.Active and IsSpellReady(MB_myInterruptSpell[myClass]) then
         if UnitMana("player") >= 25 then
             if MB_myInterruptTarget then
                 GetMyInterruptTarget()
@@ -195,10 +195,10 @@ local function RogueSingle()
 
     local aggrox = AceLibrary("Banzai-1.0")
     if aggrox:GetUnitAggroByUnitId("player") then
-        if HealthPct("player") < 0.8 and SpellReady("Evasion") then
+        if HealthPct("player") < 0.8 and IsSpellReady("Evasion") then
             CastSpellByName("Evasion")
             return
-        elseif HealthPct("player") < 0.45 and SpellReady("Vanish") then
+        elseif HealthPct("player") < 0.45 and IsSpellReady("Vanish") then
             CastSpellByName("Vanish")
             return
         end
@@ -209,11 +209,11 @@ local function RogueSingle()
     end
 
     local cp = GetComboPoints("target")
-    if SpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then
+    if IsSpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then
         CastSpellByName("Kidney Shot")
     end
 
-    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+    if IsSpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
         CastSpellByName("Blade Flurry")
     end
 
@@ -247,7 +247,7 @@ local function RogueSingle()
         end
     end
 
-    if MB_mySpecc == "Hemo" then
+    if ConfigState.PlayerSpecc == "Hemo" then
         CastSpellByName("Hemorrhage")
         return
     end
@@ -292,14 +292,14 @@ function Rogue:Cooldowns()
         return
     end
 
-    if SpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+    if IsSpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
         CastSpellByName("Blade Flurry")
     end
 
     SelfBuff("Berserking")
     SelfBuff("Blood Fury")
 
-    if SpellReady("Adrenaline Rush") then
+    if IsSpellReady("Adrenaline Rush") then
         CastSpellByName("Adrenaline Rush")
     end
 end

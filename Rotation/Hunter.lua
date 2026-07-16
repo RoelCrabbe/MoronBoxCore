@@ -90,7 +90,7 @@ local ItemNameOfEquippedSlot = mb_itemNameOfEquippedSlot
 local ManaDown = mb_manaDown
 local MeleeTrinkets = mb_meleeTrinkets
 local SelfBuff = mb_selfBuff
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankTarget = mb_tankTarget
 local TrinketOnCD = mb_trinketOnCD
@@ -112,26 +112,26 @@ local function HunterSpecc()
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 14)
     if TalentsIn > 0 then
-        MB_mySpecc = "Marksmanship"
+        ConfigState.PlayerSpecc = "Marksmanship"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 15)
     if TalentsIn > 0 then
-        MB_mySpecc = "Survival"
+        ConfigState.PlayerSpecc = "Survival"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 13)
     if TalentsIn > 0 then
-        MB_mySpecc = "BeastMastery"
+        ConfigState.PlayerSpecc = "BeastMastery"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Hunter"] = HunterSpecc
+ConfigState.PlayerSpeccList["Hunter"] = HunterSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -164,9 +164,9 @@ local function HunterSingle()
     GetTarget()
     HunterCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Marksmanship.")
-        MB_mySpecc = "Marksmanship"
+        ConfigState.PlayerSpecc = "Marksmanship"
     end
 
     if IsControlKeyDown() then
@@ -236,24 +236,24 @@ local function HunterSingle()
     if not MB_hunterFeign.Active then
         local aggrox = AceLibrary("Banzai-1.0")
 
-        if aggrox:GetUnitAggroByUnitId("player") and SpellReady("Feign Death") then
+        if aggrox:GetUnitAggroByUnitId("player") and IsSpellReady("Feign Death") then
             MB_hunterFeign.Active = true
             MB_hunterFeign.Time = GetTime() + 0.2
             CastSpellByName("Feign Death")
         end
     end
 
-    if HealthPct("target") > 0.1 and SpellReady("Aimed Shot") then
+    if HealthPct("target") > 0.1 and IsSpellReady("Aimed Shot") then
         CastSpellByName("Aimed Shot")
     end
 
-    if HealthPct("target") < 0.95 and SpellReady("Multi-Shot") then
+    if HealthPct("target") < 0.95 and IsSpellReady("Multi-Shot") then
         CastSpellByName("Multi-Shot")
     end
 end
 
 function Hunter:BossSpecificDPS()
-    if UseTranquilizingShot() and SpellReady("Tranquilizing Shot") then
+    if UseTranquilizingShot() and IsSpellReady("Tranquilizing Shot") then
         CastSpellByName("Tranquilizing Shot")
     end
 
@@ -347,7 +347,7 @@ function Hunter:Cooldowns()
 end
 
 function Hunter:ExplosiveTrap()
-    if not SpellReady("Explosive Trap") then
+    if not IsSpellReady("Explosive Trap") then
         return
     end
 
@@ -362,7 +362,7 @@ function Hunter:ExplosiveTrap()
 end
 
 function Hunter:FreezingTrap()
-    if not SpellReady("Frost Trap") then
+    if not IsSpellReady("Frost Trap") then
         return
     end
 

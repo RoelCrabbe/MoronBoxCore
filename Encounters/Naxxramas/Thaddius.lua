@@ -93,7 +93,7 @@ local IsDruidShapeShifted = mb_isDruidShapeShifted
 local IsItemInBagCoolDown = mb_isItemInBagCoolDown
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -294,7 +294,7 @@ local function UseNaturePotsOnThaddius()
         return
     end
 
-    TakePotionsWhenPossible("Greater Nature Protection Potion")
+    PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 local function UseSlowFallPotsOnThaddiusP1()

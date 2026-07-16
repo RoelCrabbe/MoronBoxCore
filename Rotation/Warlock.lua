@@ -102,7 +102,7 @@ local ManaDown = mb_manaDown
 local ManaPct = mb_manaPct
 local MobsToShadowWard = mb_mobsToShadowWard
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
-local MyNameInTable = mb_myNameInTable
+local FindMyNameInTable = mb_FindMyNameInTable
 local NumShards = mb_numShards
 local NumberOfClassInRaid = mb_numberOfClassInRaid
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
@@ -110,7 +110,7 @@ local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
 local SomeoneInRaidBuffedWith = mb_someoneInRaidBuffedWith
 local SpellNumber = mb_spellNumber
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
@@ -141,20 +141,20 @@ local function WarlockSpecc()
     _, _, _, _, TalentsIn = GetTalentInfo(2, 13)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 8)
     if TalentsIn > 0 and TalentsInA > 0 then
-        MB_mySpecc = "Shadowburn"
+        ConfigState.PlayerSpecc = "Shadowburn"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 11)
     if TalentsIn > 0 then
-        MB_mySpecc = "Corruption"
+        ConfigState.PlayerSpecc = "Corruption"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Warlock"] = WarlockSpecc
+ConfigState.PlayerSpeccList["Warlock"] = WarlockSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -192,9 +192,9 @@ local function WarlockSingle()
     GetTarget()
     WarlockCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Corruption.")
-        MB_mySpecc = "Corruption"
+        ConfigState.PlayerSpecc = "Corruption"
     end
 
     if CrowdControl() then
@@ -262,12 +262,12 @@ local function WarlockSingle()
         return
     end
 
-    if MB_mySpecc == "Shadowburn" and MB_raidAssist.Warlock.ShouldBeWhores then
+    if ConfigState.PlayerSpecc == "Shadowburn" and MB_raidAssist.Warlock.ShouldBeWhores then
         Warlock:ShadowBoltWhoring()
     else
         CastSpellOrWand("Shadow Bolt")
 
-        if not SpellReady("Shadow Bolt") then
+        if not IsSpellReady("Shadow Bolt") then
             CastSpellOrWand("Searing Pain")
         end
     end
@@ -296,7 +296,7 @@ function Warlock:ShadowBoltWhoring()
         gonnaWhore = nil
     end
 
-    if gonnaWhore and SpellReady("Shadowburn") and NumShards() > 12 then
+    if gonnaWhore and IsSpellReady("Shadowburn") and NumShards() > 12 then
         CastSpellByName("Shadowburn")
         CastSpellOrWand("Shadow Bolt")
     else
@@ -378,7 +378,7 @@ function Warlock:BossSpecificDPS()
         end
     end
 
-    if not HasBuffOrDebuff("Shadow Ward", "player", "buff") and SpellReady("Shadow Ward") then
+    if not HasBuffOrDebuff("Shadow Ward", "player", "buff") and IsSpellReady("Shadow Ward") then
         if MobsToShadowWard() or DebuffsToShadowWard() then
             SelfBuff("Shadow Ward")
             return true
@@ -386,7 +386,7 @@ function Warlock:BossSpecificDPS()
     end
 
     if HasBuffNamed("Shadow and Frost Reflect", "target") then
-        if SpellReady("Soul Fire") and NumShards() > 10 then
+        if IsSpellReady("Soul Fire") and NumShards() > 10 then
             CastSpellOrWand("Soul Fire")
         end
 
@@ -411,11 +411,11 @@ function Warlock:BossSpecificDPS()
     end
 
     if Instance.AQ40() then
-        if UnitName("target") == "Emperor Vek\'lor" and MyNameInTable(MB_myTwinsWarlockTank) then
+        if UnitName("target") == "Emperor Vek\'lor" and FindMyNameInTable(MB_myTwinsWarlockTank) then
             SelfBuff("Shadow Ward")
             Warlock:SaveShardShadowBurn(3)
 
-            if HealthPct("player") < 0.25 and SpellReady("Death Coil") then
+            if HealthPct("player") < 0.25 and IsSpellReady("Death Coil") then
                 CastSpellByName("Death Coil")
             end
 
@@ -434,7 +434,7 @@ function Warlock:BossSpecificDPS()
         CastSpellOrWand("Searing Pain")
         return true
     elseif Instance.MC() and TankTarget("Shazzrah") then
-        if not SpellReady("Shadow Bolt") then
+        if not IsSpellReady("Shadow Bolt") then
             CastSpellOrWand("Immolate")
             return true
         end
@@ -467,7 +467,7 @@ function Warlock:BossSpecificDPS()
 
         if TankTarget("Ossirian the Unscarred") then
             if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
-                if SpellReady("Soul Fire") and NumShards() > 10 then
+                if IsSpellReady("Soul Fire") and NumShards() > 10 then
                     CastSpellOrWand("Soul Fire")
                 end
 
@@ -499,9 +499,9 @@ local function WarlockAOE()
     GetTarget()
     WarlockCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Corruption.")
-        MB_mySpecc = "Corruption"
+        ConfigState.PlayerSpecc = "Corruption"
     end
 
     if UnitMana("player") < 1250 and not ImBusy() then
@@ -638,7 +638,7 @@ function Warlock:SumPetAndSac()
         return
     end
 
-    if KnowSpell("Summon Succubus") and KnowSpell("Fel Domination") and SpellReady("Fel Domination") then
+    if KnowSpell("Summon Succubus") and KnowSpell("Fel Domination") and IsSpellReady("Fel Domination") then
         CastSpellByName("Fel Domination")
         return
     end
@@ -661,7 +661,7 @@ end
 function Warlock:SaveShardShadowBurn(shardsToSave)
     shardsToSave = shardsToSave or 0
 
-    if not SpellReady("Shadowburn") or NumShards() <= shardsToSave then
+    if not IsSpellReady("Shadowburn") or NumShards() <= shardsToSave then
         return
     end
 

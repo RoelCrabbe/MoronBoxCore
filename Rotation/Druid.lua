@@ -118,13 +118,13 @@ local MultiBuff = mb_multiBuff
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyClassOrder = mb_myClassOrder
 local MyGroupClassOrder = mb_myGroupClassOrder
-local MyNameInTable = mb_myNameInTable
+local FindMyNameInTable = mb_FindMyNameInTable
 local NatureSwiftnessLowAggroedPlayer = mb_natureSwiftnessLowAggroedPlayer
 local OffTank = mb_offTank
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local StunnableMob = mb_stunnableMob
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankBuff = mb_tankBuff
@@ -158,32 +158,32 @@ local function DruidSpecc()
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Balance"
+        ConfigState.PlayerSpecc = "Balance"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(2, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Feral"
+        ConfigState.PlayerSpecc = "Feral"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 15)
     if TalentsIn > 0 then
-        MB_mySpecc = "Swiftmend"
+        ConfigState.PlayerSpecc = "Swiftmend"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 3)
     if TalentsIn > 4 then
-        MB_mySpecc = "Resto"
+        ConfigState.PlayerSpecc = "Resto"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Druid"] = DruidSpecc
+ConfigState.PlayerSpeccList["Druid"] = DruidSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -297,7 +297,7 @@ local function DruidHeal()
             end
         end
 
-        if SpellReady("Swiftmend") and (swiftmendRaidThrottleTimer == nil or GetTime() - swiftmendRaidThrottleTimer > 1.5) then
+        if IsSpellReady("Swiftmend") and (swiftmendRaidThrottleTimer == nil or GetTime() - swiftmendRaidThrottleTimer > 1.5) then
             swiftmendRaidThrottleTimer = GetTime();
             Druid:SwiftmendOnRandomRaidMember("Swiftmend", 0.5)
         end
@@ -315,7 +315,7 @@ local function DruidHeal()
         Druid:RejuvAggroedPlayer()
 
         if KnowSpell("Swiftmend") then
-            if SpellReady("Swiftmend") then
+            if IsSpellReady("Swiftmend") then
                 Druid:SwiftmendOnRandomRaidMember("Swiftmend", MB_druidSwiftmendAtPercentage)
             end
 
@@ -360,7 +360,7 @@ function Druid:MTHeals(assignedTarget)
         end
     end
 
-    if SpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
+    if IsSpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
         if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
             SpellStopCasting()
         end
@@ -453,7 +453,7 @@ function Druid:Innervate()
         return
     end
 
-    if not SpellReady("Innervate") then
+    if not IsSpellReady("Innervate") then
         return
     end
 
@@ -463,7 +463,7 @@ function Druid:Innervate()
         if IsValidFriendlyTarget(unitID, "Innervate")
             and HealthPct(unitID) <= 0.5
             and not HasBuffNamed("Innervate", unitID)
-            and SpellReady("Innervate") then
+            and IsSpellReady("Innervate") then
             if UnitIsFriend("player", unitID) then
                 ClearTarget()
             end
@@ -732,12 +732,12 @@ local function DruidSingle()
     GetTarget()
     DruidCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Resto.")
-        MB_mySpecc = "Resto"
+        ConfigState.PlayerSpecc = "Resto"
     end
 
-    if MB_mySpecc == "Feral" then
+    if ConfigState.PlayerSpecc == "Feral" then
         if Instance.AQ40() then
             AnubisathAlert()
         end
@@ -767,7 +767,7 @@ local function DruidSingle()
         end
     end
 
-    if MB_mySpecc == "Balance" then
+    if ConfigState.PlayerSpecc == "Balance" then
         Druid:Balance()
         return
     end
@@ -882,7 +882,7 @@ local function DruidTankSingleRotation()
         CastSpellByName("Faerie Fire (Feral)()")
     end
 
-    if SpellReady("Enrage") and UnitMana("player") <= 15 then
+    if IsSpellReady("Enrage") and UnitMana("player") <= 15 then
         CastSpellByName("Enrage")
     end
 
@@ -911,7 +911,7 @@ function Druid:TankSingle()
     end
 
     if InCombat("player") then
-        if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then
+        if HealthPct("player") < 0.3 and IsSpellReady("Frenzied Regeneration") then
             CastSpellByName("Frenzied Regeneration")
         end
 
@@ -920,7 +920,7 @@ function Druid:TankSingle()
                 Druid:Cooldowns()
             end
 
-            if SpellReady("Bash") and StunnableMob() then
+            if IsSpellReady("Bash") and StunnableMob() then
                 CastSpellByName("Bash")
             end
 
@@ -973,12 +973,12 @@ local function DruidMulti()
     GetTarget()
     DruidCancelAuras()
 
-    if not MB_mySpecc then
+    if not ConfigState.PlayerSpecc then
         CdMessage("My specc is fucked. Defaulting to Resto.")
-        MB_mySpecc = "Resto"
+        ConfigState.PlayerSpecc = "Resto"
     end
 
-    if MB_mySpecc == "Feral" then
+    if ConfigState.PlayerSpecc == "Feral" then
         if Instance.AQ40() then
             AnubisathAlert()
         end
@@ -1008,7 +1008,7 @@ local function DruidMulti()
         end
     end
 
-    if MB_mySpecc == "Balance" then
+    if ConfigState.PlayerSpecc == "Balance" then
         Druid:Balance()
         return
     end
@@ -1050,7 +1050,7 @@ function Druid:TankMulti()
     end
 
     if InCombat("player") then
-        if HealthPct("player") < 0.3 and SpellReady("Frenzied Regeneration") then
+        if HealthPct("player") < 0.3 and IsSpellReady("Frenzied Regeneration") then
             CastSpellByName("Frenzied Regeneration")
         end
 
@@ -1059,7 +1059,7 @@ function Druid:TankMulti()
                 Druid:Cooldowns()
             end
 
-            if SpellReady("Bash") and StunnableMob() then
+            if IsSpellReady("Bash") and StunnableMob() then
                 CastSpellByName("Bash")
             end
 
@@ -1107,7 +1107,7 @@ function Druid:TankMulti()
         CastSpellByName("Faerie Fire (Feral)()")
     end
 
-    if SpellReady("Enrage") and UnitMana("player") <= 15 then
+    if IsSpellReady("Enrage") and UnitMana("player") <= 15 then
         CastSpellByName("Enrage")
     end
 
@@ -1136,7 +1136,7 @@ local function DruidAOE()
             end
         end
 
-        if MyNameInTable(MB_myMaexxnaDruidHealer) then
+        if FindMyNameInTable(MB_myMaexxnaDruidHealer) then
             Druid:MaxRejuvAggroedPlayer()
             Druid:MaxAbolishAggroedPlayer()
             Druid:MaxRegrowthAggroedPlayer()
@@ -1182,7 +1182,7 @@ MB_mySetupList["Druid"] = DruidSetup
 --[####################################################################################################]--
 
 local function DruidPreCast()
-    if MB_mySpecc == "Feral" then
+    if ConfigState.PlayerSpecc == "Feral" then
         SelfBuff("Dire Bear Form")
         CancelDruidShapeShift()
         return
@@ -1221,7 +1221,7 @@ function Druid:Cooldowns()
         return
     end
 
-    if MB_mySpecc == "Feral" then
+    if ConfigState.PlayerSpecc == "Feral" then
         MeleeTrinkets()
         return
     end
@@ -1235,13 +1235,13 @@ function Druid:Taunt()
         return
     end
 
-    if SpellReady("Growl") then
+    if IsSpellReady("Growl") then
         CastSpellByName("Growl")
         return
     end
 
     if UnitName("target") and InCombat("target") then
-        if SpellReady("Faerie Fire (Feral)()") then
+        if IsSpellReady("Faerie Fire (Feral)()") then
             CastSpellByName("Faerie Fire (Feral)()")
         end
     end
@@ -1262,7 +1262,7 @@ local function LOA_Attack()
         return
     end
 
-    if SpellReady("Starfire") then
+    if IsSpellReady("Starfire") then
         CoolDownCast("Starfire", 6)
         return
     end

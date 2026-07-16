@@ -25,7 +25,7 @@ local function ChangeSpecc(specc)
     local playerClass = string.lower(UnitClass("player"))
     local inputSpecc = string.lower(restOfString or "")
 
-    getDebugger().InfoMsg("Your current specc is: " .. MB_mySpecc)
+    getDebugger().InfoMsg("Your current specc is: " .. getConfigState().PlayerSpecc)
 
     if inputClass ~= playerClass then
         getDebugger().InfoMsg("You had the wrong class given.")
@@ -50,12 +50,12 @@ local function ChangeSpecc(specc)
 
     if playerClass == "druid" then
         if inputSpecc == "tank" then
-            MB_mySpecc = "Feral"
+            getConfigState().PlayerSpecc = "Feral"
             return
         end
 
         if inputSpecc == "dps" then
-            MB_mySpecc = "Kitty"
+            getConfigState().PlayerSpecc = "Kitty"
             return
         end
 

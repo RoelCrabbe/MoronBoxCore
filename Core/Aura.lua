@@ -14,7 +14,7 @@ end
 function MoronBox.Core.Aura.HasBuffNamed(oBuff, unit)
     local buff = string.lower(oBuff)
     local targetUnit = unit or "player"
-    local tooltip = MMBTooltip
+    local tooltip = MoronBoxTooltip
     local textLeft1 = getglobal(tooltip:GetName() .. "TextLeft1")
 
     for i = 1, 32 do

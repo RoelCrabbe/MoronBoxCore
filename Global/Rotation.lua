@@ -140,57 +140,44 @@ for i = 1, 8 do
     MB_toonsInGroup[i] = {}
 end
 
-MB_raidLeader                                          = nil
+MB_raidLeader       = nil
 
 ---@type string|nil
-MB_mySpecc                                             = nil
----@type string|nil
-MB_myHealSpell                                         = nil
-MB_attackSlot                                          = nil
-MB_attackRangedSlot                                    = nil
-MB_attackWandSlot                                      = nil
+MB_myHealSpell      = nil
+MB_attackSlot       = nil
+MB_attackRangedSlot = nil
+MB_attackWandSlot   = nil
 
----@type string|nil
-MB_warriorBinds                                        = "Fury"
 
 ---@type boolean
-MB_evoGear                                             = false
-MB_cooldowns                                           = {}
+MB_evoGear              = false
+MB_cooldowns            = {}
 
 ---@type boolean
-MB_druidTankInParty                                    = false
+MB_druidTankInParty     = false
 ---@type boolean
-MB_warriorTankInParty                                  = false
+MB_warriorTankInParty   = false
 
-MB_myCCTarget                                          = nil
-MB_myInterruptTarget                                   = nil
-MB_doInterrupt                                         = { Active = false, Time = 0 }
-MB_myOTTarget                                          = nil
+MB_myCCTarget           = nil
+MB_myInterruptTarget    = nil
+MB_myOTTarget           = nil
 
 ---@type string|nil
-MB_myAssignedHealTarget                                = nil
+MB_myAssignedHealTarget = nil
 
-MB_currentCC                                           = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
-MB_currentInterrupt                                    = { Rogue = 1, Mage = 1, Shaman = 1 }
-MB_currentFear                                         = { Warlock = 1 }
-MB_currentRaidTarget                                   = 1
-MB_Ot_Index                                            = 1
+MB_currentCC            = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
+MB_currentInterrupt     = { Rogue = 1, Mage = 1, Shaman = 1 }
+MB_currentFear          = { Warlock = 1 }
+MB_currentRaidTarget    = 1
+MB_Ot_Index             = 1
 
-MB_myCCSpell                                           = {
+MB_myCCSpell            = {
     Priest = "Shackle Undead",
     Mage = "Polymorph",
     Warlock = "Banish",
     Druid = "Hibernate"
 }
 
-MB_myInterruptSpell                                    = {
-    Rogue = "Kick",
-    Shaman = "Earth Shock",
-    Mage = "Counterspell",
-    Warrior = "Pummel",
-    Priest = "Silence",
-    Paladin = "Hammer of Justice"
-}
 
 MB_myFearSpell                                         = {
     Warlock = "Fear"
@@ -241,7 +228,5 @@ MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time 
 MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
 MB_autoToggleSheeps                                    = { Active = false, Time = 0 }
 MB_autoBuff                                            = { Active = false, Time = 0 }
-MB_useCooldowns                                        = { Active = false, Time = 0 }
-MB_useBigCooldowns                                     = { Active = false, Time = 0 }
 MB_hunterFeign                                         = { Active = false, Time = 0 }
 MB_autoBuyReagents                                     = { Active = false, Time = 0 }

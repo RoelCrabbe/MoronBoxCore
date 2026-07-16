@@ -88,7 +88,7 @@ local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -144,7 +144,7 @@ local function UseArcanePotsOnShazzrah()
         return
     end
 
-    TakePotionsWhenPossible("Greater Arcane Protection Potion")
+    PotionsWhenPossible("Greater Arcane Protection Potion")
 end
 
 --[####################################################################################################]--

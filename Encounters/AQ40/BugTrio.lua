@@ -98,7 +98,7 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -155,7 +155,7 @@ local function UseNaturePotsOnBugTrio()
         return
     end
 
-    TakePotionsWhenPossible("Greater Nature Protection Potion")
+    PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 --[####################################################################################################]--

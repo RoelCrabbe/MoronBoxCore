@@ -87,7 +87,7 @@ local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -153,7 +153,7 @@ local function UseNaturePotsOnGrobbulus()
         return
     end
 
-    TakePotionsWhenPossible("Greater Nature Protection Potion")
+    PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 --[####################################################################################################]--
@@ -382,7 +382,7 @@ function GROB_Targeting()
                 return true
             end
 
-            if MB_mySpecc ~= "Fire" then
+            if getConfigState().PlayerSpecc ~= "Fire" then
                 for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
                     if AssistSpecificTargetFromPlayer("Fallout Slime", tankName) then
                         return true

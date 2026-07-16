@@ -16,10 +16,7 @@ MoronBox.lua
 Config\Config.lua
 Config\Encounters.lua
 
-Event\Flash.lua
-Event\Turning.lua
-Event\OnUpdate.lua
-Event\OnEvent.lua
+Global\Rotation.lua
 
 Encounters\MoltenCore\Lucifron.lua
 Encounters\MoltenCore\Magmadar.lua
@@ -41,16 +38,6 @@ Encounters\Naxxramas\Gluth.lua
 Encounters\Naxxramas\Grobbulus.lua
 Encounters\Naxxramas\Loatheb.lua
 Encounters\Naxxramas\Thaddius.lua
-
-Rotation\Druid.lua
-Rotation\Hunter.lua
-Rotation\Mage.lua
-Rotation\Paladin.lua
-Rotation\Priest.lua
-Rotation\Rogue.lua
-Rotation\Shaman.lua
-Rotation\Warlock.lua
-Rotation\Warrior.lua
 
 Load\Config.xml
 Load\Api.xml

@@ -42,14 +42,14 @@ function MoronBox.Core.Gear.EquipRackSet(set)
 end
 
 function MoronBox.Core.Gear.TankGear()
-    MB_mySpecc = "Furytank"
-    MB_warriorBinds = nil
+    getConfigState().PlayerSpecc = "Furytank"
+    getConfigState().WarriorBinds = nil
     getGear().EquipRackSet("TANK")
 end
 
 function MoronBox.Core.Gear.FuryGear()
-    MB_mySpecc = "BT"
-    MB_warriorBinds = "Fury"
+    getConfigState().PlayerSpecc = "BT"
+    getConfigState().WarriorBinds = "Fury"
     getGear().EquipRackSet("DPS")
 end
 

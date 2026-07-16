@@ -86,7 +86,7 @@ local ImTank = mb_imTank
 local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -135,7 +135,7 @@ local function UseNaturePotsOnGluth()
         return
     end
 
-    TakePotionsWhenPossible("Greater Nature Protection Potion")
+    PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 --[####################################################################################################]--

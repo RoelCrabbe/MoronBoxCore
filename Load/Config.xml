@@ -1,4 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Config -->
+    <Include file="..\Config-New\Settings\Settings.lua" />
+    <Include file="..\Config-New\Globals.lua" />
     <Include file="..\Config-New\Tables.lua" />
 </Ui>

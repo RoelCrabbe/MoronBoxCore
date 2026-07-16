@@ -179,7 +179,7 @@ local function CostOfSpell(spellName, rankText)
         return nil
     end
 
-    local tooltip = MMBTooltip
+    local tooltip = MoronBoxTooltip
     tooltip:SetOwner(UIParent, "ANCHOR_NONE")
 
     local i = 1

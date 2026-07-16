@@ -372,7 +372,7 @@ end
 local lastSandTime
 
 function MoronBox.Core.Cons.SandsOnChromaggus()
-    if getRaid().ImBusy() or not getUnit().InCombat() then
+    if getSpells().ImBusy() or not getUnit().InCombat() then
         return
     end
 
@@ -410,7 +410,7 @@ end
 
 local lastPotionTime
 
-function MoronBox.Core.Cons.TakePotionsWhenPossible(potion)
+function MoronBox.Core.Cons.PotionsWhenPossible(potion)
     if not getBag().HaveInBags(potion) or getBag().IsItemInBagCoolDown(potion) then
         return
     end
@@ -442,7 +442,7 @@ function MoronBox.Core.Cons.FirePotsOnFaerlina()
         return
     end
 
-    getCons().TakePotionsWhenPossible("Greater Fire Protection Potion")
+    getCons().PotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 function MoronBox.Core.Cons.FirePotsOnVaelastrasz()
@@ -458,7 +458,7 @@ function MoronBox.Core.Cons.FirePotsOnVaelastrasz()
         return
     end
 
-    getCons().TakePotionsWhenPossible("Greater Fire Protection Potion")
+    getCons().PotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 function MoronBox.Core.Cons.NaturePotsOnHuhuran()
@@ -478,7 +478,7 @@ function MoronBox.Core.Cons.NaturePotsOnHuhuran()
         return
     end
 
-    getCons().TakePotionsWhenPossible("Greater Nature Protection Potion")
+    getCons().PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 -- [[ Jujus ]] --
@@ -512,15 +512,15 @@ end
 
 local function ZanzaPotions()
     if Instance.NAXX() then
-        getCons().TakePotionsWhenPossible("Spirit of Zanza")
+        getCons().PotionsWhenPossible("Spirit of Zanza")
     else
-        getCons().TakePotionsWhenPossible("Swiftness of Zanza")
+        getCons().PotionsWhenPossible("Swiftness of Zanza")
     end
 end
 
 local function ProtectionPotions()
     if Instance.NAXX() and LOA_IsAtLoatheb() then
-        getCons().TakePotionsWhenPossible("Greater Shadow Protection Potion")
+        getCons().PotionsWhenPossible("Greater Shadow Protection Potion")
     end
 end
 
@@ -528,8 +528,8 @@ local function MeleeSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    getCons().TakePotionsWhenPossible("Flask of the Titans")
-    getCons().TakePotionsWhenPossible("Elixir of the Mongoose")
+    getCons().PotionsWhenPossible("Flask of the Titans")
+    getCons().PotionsWhenPossible("Elixir of the Mongoose")
 
     getCons().JujuWhenPossible("Juju Might")
     getCons().JujuWhenPossible("Juju Power")
@@ -539,18 +539,18 @@ local function CasterSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    getCons().TakePotionsWhenPossible("Flask of Supreme Power")
-    getCons().TakePotionsWhenPossible("Mageblood Potion")
-    getCons().TakePotionsWhenPossible("Greater Arcane Elixir")
+    getCons().PotionsWhenPossible("Flask of Supreme Power")
+    getCons().PotionsWhenPossible("Mageblood Potion")
+    getCons().PotionsWhenPossible("Greater Arcane Elixir")
 
     if myClass == "Mage" then
-        if MB_mySpecc == "Frost" then
-            getCons().TakePotionsWhenPossible("Elixir of Frost Power")
+        if getConfigState().PlayerSpecc == "Frost" then
+            getCons().PotionsWhenPossible("Elixir of Frost Power")
         else
-            getCons().TakePotionsWhenPossible("Elixir of Greater Firepower")
+            getCons().PotionsWhenPossible("Elixir of Greater Firepower")
         end
     elseif myClass == "Warlock" then
-        getCons().TakePotionsWhenPossible("Elixir of Shadow Power")
+        getCons().PotionsWhenPossible("Elixir of Shadow Power")
     end
 end
 
@@ -558,8 +558,8 @@ local function HealerSpeedRunPots()
     ZanzaPotions()
     ProtectionPotions()
 
-    getCons().TakePotionsWhenPossible("Flask of Distilled Wisdom")
-    getCons().TakePotionsWhenPossible("Mageblood Potion")
+    getCons().PotionsWhenPossible("Flask of Distilled Wisdom")
+    getCons().PotionsWhenPossible("Mageblood Potion")
 end
 
 function MoronBox.Core.Cons.SpeedRunPots()
@@ -605,7 +605,7 @@ function MoronBox.Core.Cons.UseLIP()
 
     local aggrox = AceLibrary("Banzai-1.0")
     if aggrox:GetUnitAggroByUnitId("player") and getUnit().HealthPct("player") <= 0.25 then
-        getCons().TakePotionsWhenPossible("Limited Invulnerability Potion")
+        getCons().PotionsWhenPossible("Limited Invulnerability Potion")
     end
 end
 
@@ -630,5 +630,5 @@ function MoronBox.Core.Cons.UseFAP()
         return
     end
 
-    getCons().TakePotionsWhenPossible("Free Action Potion")
+    getCons().PotionsWhenPossible("Free Action Potion")
 end

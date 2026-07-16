@@ -111,11 +111,11 @@ local MultiBuff = mb_multiBuff
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local MyClassOrder = mb_myClassOrder
 local MyGroupClassOrder = mb_myGroupClassOrder
-local MyNameInTable = mb_myNameInTable
+local FindMyNameInTable = mb_FindMyNameInTable
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SmartDrink = mb_smartDrink
-local SpellReady = mb_spellReady
+local IsSpellReady = mb_spellReady
 local TakeManaPotionAndRunes = mb_takeManaPotionAndRunes
 local TankName = mb_tankName
 local TankTarget = mb_tankTarget
@@ -160,27 +160,27 @@ local function PriestSpecc()
     _, _, _, _, TalentsIn = GetTalentInfo(2, 10)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 11)
     if TalentsIn > 0 and TalentsInA > 3 then
-        MB_mySpecc = "Bitch"
+        ConfigState.PlayerSpecc = "Bitch"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(1, 15)
     _, _, _, _, TalentsInA = GetTalentInfo(3, 11)
     if TalentsIn > 0 and TalentsInA == 5 then
-        MB_mySpecc = "Bitch"
+        ConfigState.PlayerSpecc = "Bitch"
         return
     end
 
     _, _, _, _, TalentsIn = GetTalentInfo(3, 16)
     if TalentsIn > 0 then
-        MB_mySpecc = "Shadow"
+        ConfigState.PlayerSpecc = "Shadow"
         return
     end
 
-    MB_mySpecc = nil
+    ConfigState.PlayerSpecc = nil
 end
 
-MB_mySpeccList["Priest"] = PriestSpecc
+ConfigState.PlayerSpeccList["Priest"] = PriestSpecc
 
 --[####################################################################################################]--
 --[####################################################################################################]--
@@ -231,7 +231,7 @@ local function PriestHeal()
             return
         end
 
-        if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then
+        if IsSpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then
             CastSpellByName("Desperate Prayer")
             return
         end
@@ -307,7 +307,7 @@ local function PriestHeal()
                 SpellStopCasting()
             end
 
-            if SpellReady("Power Word: Shield") then
+            if IsSpellReady("Power Word: Shield") then
                 CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
             end
 
@@ -329,7 +329,7 @@ local function PriestHeal()
         end
 
         if InCombat("player") then
-            if SpellReady("Power Word: Shield") then
+            if IsSpellReady("Power Word: Shield") then
                 Priest:ShieldAggroedPlayer()
                 CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", MB_priestShieldLowRandomPercentage)
             end
@@ -375,7 +375,7 @@ function Priest:MTHeals(assignedTarget)
                 SpellStopCasting()
             end
 
-            if SpellReady("Power Word: Shield") then
+            if IsSpellReady("Power Word: Shield") then
                 CastSpellOnRandomRaidMember("Weakened Soul", "rank 10", 0.9)
             end
 
@@ -384,7 +384,7 @@ function Priest:MTHeals(assignedTarget)
         end
     end
 
-    if (HealthPct("target") < 0.5) and SpellReady("Power Word: Shield") and not HasBuffOrDebuff("Weakened Soul", "target", "debuff") then
+    if (HealthPct("target") < 0.5) and IsSpellReady("Power Word: Shield") and not HasBuffOrDebuff("Weakened Soul", "target", "debuff") then
         CastSpellByName("Power Word: Shield")
     end
 
@@ -434,7 +434,7 @@ function Priest:MaxShieldAggroedPlayer()
         return
     end
 
-    if not SpellReady("Power Word: Shield") then
+    if not IsSpellReady("Power Word: Shield") then
         return
     end
 
@@ -529,7 +529,7 @@ function Priest:ShieldAggroedPlayer()
             and IsValidFriendlyTarget(shieldTarget, "Power Word: Shield")
             and HealthPct(shieldTarget) <= MB_priestShieldAggroedPlayerPercentage
             and not HasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff")
-            and SpellReady("Power Word: Shield") then
+            and IsSpellReady("Power Word: Shield") then
             if UnitIsFriend("player", shieldTarget) then
                 ClearTarget()
             end
@@ -590,7 +590,7 @@ function Priest:ShieldToBombFollowTarget()
     if not targetID
         or not IsAlive(targetID)
         or HasBuffOrDebuff("Weakened Soul", targetID, "debuff")
-        or not SpellReady("Power Word: Shield") then
+        or not IsSpellReady("Power Word: Shield") then
         return
     end
 
@@ -624,8 +624,8 @@ local function PriestSingle()
     end
 
     if Instance.NAXX() then
-        if (TankTarget("Instructor Razuvious") and MyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
-            (TankTarget("Grand Widow Faerlina") and MyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+        if (TankTarget("Instructor Razuvious") and FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
+            (TankTarget("Grand Widow Faerlina") and FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
             GetMCActions()
             return
         end
@@ -638,9 +638,9 @@ local function PriestSingle()
     Priest:Fade()
     Decurse()
 
-    if MB_mySpecc == "Bitch" then
+    if ConfigState.PlayerSpecc == "Bitch" then
         Priest:ShadowWeaving()
-    elseif MB_mySpecc == "Shadow" then
+    elseif ConfigState.PlayerSpecc == "Shadow" then
         Priest:Shadow()
         return
     end
@@ -669,7 +669,7 @@ function Priest:Shadow()
             Priest:Cooldowns()
         end
 
-        if SpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then
+        if IsSpellReady("Desperate Prayer") and HealthPct("player") < 0.2 then
             CastSpellByName("Desperate Prayer")
             return
         end
@@ -683,7 +683,7 @@ function Priest:Shadow()
         return
     end
 
-    if SpellReady("Mind Blast") then
+    if IsSpellReady("Mind Blast") then
         CastSpellOrWand("Mind Blast")
     end
 
@@ -777,7 +777,7 @@ local function PriestAOE()
             end
         end
 
-        if MyNameInTable(MB_myMaexxnaPriestHealer) then
+        if FindMyNameInTable(MB_myMaexxnaPriestHealer) then
             Priest:MaxRenewAggroedPlayer()
             Priest:MaxShieldAggroedPlayer()
             return
@@ -946,7 +946,7 @@ function Priest:UseWand()
 
     GetTarget()
 
-    if MB_mySpeedRunStrategy and SpellReady("Mind Blast") then
+    if MB_mySpeedRunStrategy and IsSpellReady("Mind Blast") then
         CastSpellOrWand("Mind Blast")
         return
     end
@@ -969,12 +969,12 @@ local function LOA_Attack()
         return
     end
 
-    if SpellReady("Mind Blast") then
+    if IsSpellReady("Mind Blast") then
         CastSpellOrWand("Mind Blast")
         return
     end
 
-    if SpellReady("Smite") then
+    if IsSpellReady("Smite") then
         CoolDownCast("Smite", 8)
     end
 

@@ -69,7 +69,7 @@ function MoronBox.Core.Keybinds.CreateBinds()
         SetBinding("J", "SM_MACRO18") -- Ress with MoronHeal. (Add delay in HKN).
     end
 
-    if myClass == "Warrior" or MB_mySpecc == "Feral" then
+    if myClass == "Warrior" or getConfigState().PlayerSpecc == "Feral" then
         SetBinding("R", "SM_MACRO29") -- Warrior / Feral Taunt.
     end
 

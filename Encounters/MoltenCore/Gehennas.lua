@@ -87,7 +87,7 @@ local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -148,7 +148,7 @@ local function UseFirePotsOnGehennas()
         return
     end
 
-    TakePotionsWhenPossible("Greater Fire Protection Potion")
+    PotionsWhenPossible("Greater Fire Protection Potion")
 end
 
 local function UseFAPPotsOnGehennas()
@@ -160,7 +160,7 @@ local function UseFAPPotsOnGehennas()
         return
     end
 
-    TakePotionsWhenPossible("Free Action Potion")
+    PotionsWhenPossible("Free Action Potion")
 end
 
 --[####################################################################################################]--

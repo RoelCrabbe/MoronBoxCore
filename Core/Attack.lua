@@ -22,10 +22,10 @@ end
 
 local function FindActionSlot(spellName)
     for i = 1, 132 do
-        MMBTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-        MMBTooltip:SetAction(i)
+        MoronBoxTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+        MoronBoxTooltip:SetAction(i)
 
-        local textObject = getglobal("MMBTooltipTextLeft1")
+        local textObject = getglobal("MoronBoxTooltipTextLeft1")
         if textObject and textObject:GetText() == spellName then
             return i
         end

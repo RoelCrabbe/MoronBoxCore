@@ -143,14 +143,26 @@ end
 
 -- [[ Roles Checking ]] --
 
+function MoronBox.Core.GetMySpecc()
+    local moduleName = "MODULE_" .. string.upper(myClass) .. "_ROTATION"
+    local rotationModule = MoronBox.Registry[moduleName]
+
+    if rotationModule and type(rotationModule["Specc"]) == "function" then
+        local status, err = pcall(rotationModule["Specc"])
+        if not status then
+            getDebugger().ErrorMsg("Specc error for " .. myClass .. ": " .. tostring(err))
+        end
+    end
+end
+
 function MoronBox.Core.ImRangedDPS()
     if myClass == "Hunter" or myClass == "Warlock" or myClass == "Mage" then
         return true
-    elseif myClass == "Shaman" and MB_mySpecc == "Elemental" then
+    elseif myClass == "Shaman" and getConfigState().PlayerSpecc == "Elemental" then
         return true
-    elseif myClass == "Priest" and MB_mySpecc == "Shadow" then
+    elseif myClass == "Priest" and getConfigState().PlayerSpecc == "Shadow" then
         return true
-    elseif myClass == "Druid" and MB_mySpecc == "Balance" then
+    elseif myClass == "Druid" and getConfigState().PlayerSpecc == "Balance" then
         return true
     end
     return false
@@ -159,27 +171,27 @@ end
 function MoronBox.Core.ImMeleeDPS()
     if myClass == "Rogue" then
         return true
-    elseif myClass == "Warrior" and MB_mySpecc == "BT" then
+    elseif myClass == "Warrior" and getConfigState().PlayerSpecc == "BT" then
         return true
     end
     return false
 end
 
 function MoronBox.Core.ImTank()
-    if myClass == "Warrior" and (MB_mySpecc == "Prottank" or MB_mySpecc == "Furytank") then
+    if myClass == "Warrior" and (getConfigState().PlayerSpecc == "Prottank" or getConfigState().PlayerSpecc == "Furytank") then
         return true
-    elseif myClass == "Druid" and MB_mySpecc == "Feral" then
+    elseif myClass == "Druid" and getConfigState().PlayerSpecc == "Feral" then
         return true
     end
     return false
 end
 
 function MoronBox.Core.ImHealer()
-    if myClass == "Druid" and (MB_mySpecc == "Resto" or MB_mySpecc == "Swiftmend") then
+    if myClass == "Druid" and (getConfigState().PlayerSpecc == "Resto" or getConfigState().PlayerSpecc == "Swiftmend") then
         return true
-    elseif myClass == "Shaman" and MB_mySpecc ~= "Elemental" then
+    elseif myClass == "Shaman" and getConfigState().PlayerSpecc ~= "Elemental" then
         return true
-    elseif myClass == "Priest" and MB_mySpecc ~= "Shadow" then
+    elseif myClass == "Priest" and getConfigState().PlayerSpecc ~= "Shadow" then
         return true
     elseif myClass == "Paladin" then
         return true
