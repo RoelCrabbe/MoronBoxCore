@@ -22,7 +22,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["Very Berry Cream"] = "Very Berry Cream",
     }
 
-    local function WarlockCancelAuras()
+    local function CancelAuras()
         for itemName, buffName in pairs(RemoveBuffs) do
             if HasBuffOrDebuff(itemName, "player", "buff") then
                 CancelBuff(buffName)
@@ -162,7 +162,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         "Curse of Recklessness", "Curse of the Elements", "Curse of Shadow"
     }
 
-    local function WarlockCurses()
+    local function Curses()
         if Instance.NAXX() and THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
             return THAD_WarlockDebuffP1()
         end
@@ -259,7 +259,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        if not HasBuffNamed("Shadow and Frost Reflect", "target") and WarlockCurses() then
+        if not HasBuffNamed("Shadow and Frost Reflect", "target") and Curses() then
             return true
         end
 
@@ -374,6 +374,91 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         return false
     end
 
+    local function Single()
+        GetTarget()
+        CancelAuras()
+
+        if not ConfigState.PlayerSpecc then
+            CdMessage("My specc is fucked. Defaulting to Corruption.")
+            ConfigState.PlayerSpecc = "Corruption"
+        end
+
+        if CastCrowdControl() then
+            return
+        end
+
+        if ManaPct() < 0.40 and HealthPct() > 0.75 then
+            CastSpellByName("Life Tap")
+            return
+        end
+
+        if HasBuffOrDebuff("Hellfire", "player", "buff") then
+            CastSpellByName("Life Tap(Rank 1)")
+            return
+        end
+
+        if UnitName("target") then
+            if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
+                and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
+                if CastCrowdControl() then
+                    return
+                end
+            end
+
+            if CrowdControlledMob() then
+                GetTarget()
+            end
+        end
+
+        if Instance.AQ40() then
+            if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+                ClearTarget()
+                return
+            end
+        end
+
+        if not InCombat("target") then
+            return
+        end
+
+        if InCombat() then
+            HealthStone()
+            TakeManaPotionAndRunes()
+
+            if IsSpellKnown("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
+                SumPetAndSac()
+            end
+
+            if ConfigState.IsMoving.Active then
+                TapWhileMoving()
+            end
+
+            if ManaDown() > 600 then
+                Cooldowns()
+            end
+        end
+
+        if BossSpecificDPS() then
+            return
+        end
+
+        if not Instance.IsWorldBoss() and HealthPct("target") < 0.2 and NumShards() < 60
+            and GetAllContainerFreeSlots() >= 10 and not ImBusy() then
+            CastSpellByName("Drain Soul(Rank 1)")
+            return
+        end
+
+        if ConfigState.PlayerSpecc == "Shadowburn" and SettingsState.Warlock.ShouldBeWhores then
+            ShadowBoltWhoring()
+        else
+            CastOrWand("Shadow Bolt")
+
+            if not IsSpellReady("Shadow Bolt") then
+                CastOrWand("Searing Pain")
+            end
+        end
+    end
+
     MoronBox:RegisterExpose({
         Specc = function()
             local _, _, _, _, shadowBurn = GetTalentInfo(2, 13)
@@ -423,177 +508,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 SmartDrink()
             end
         end,
-        Single = function()
-            GetTarget()
-            WarlockCancelAuras()
-
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Corruption.")
-                ConfigState.PlayerSpecc = "Corruption"
-            end
-
-            if CastCrowdControl() then
-                return
-            end
-
-            if ManaPct() < 0.40 and HealthPct() > 0.75 then
-                CastSpellByName("Life Tap")
-                return
-            end
-
-            if HasBuffOrDebuff("Hellfire", "player", "buff") then
-                CastSpellByName("Life Tap(Rank 1)")
-                return
-            end
-
-            if UnitName("target") then
-                if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
-                    and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                    if CastCrowdControl() then
-                        return
-                    end
-                end
-
-                if CrowdControlledMob() then
-                    GetTarget()
-                end
-            end
-
-            if Instance.AQ40() then
-                if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                    ClearTarget()
-                    return
-                end
-            end
-
-            if not InCombat("target") then
-                return
-            end
-
-            if InCombat() then
-                HealthStone()
-                TakeManaPotionAndRunes()
-
-                if IsSpellKnown("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
-                    SumPetAndSac()
-                end
-
-                if ConfigState.IsMoving.Active then
-                    TapWhileMoving()
-                end
-
-                if ManaDown() > 600 then
-                    Cooldowns()
-                end
-            end
-
-            if BossSpecificDPS() then
-                return
-            end
-
-            if not Instance.IsWorldBoss() and HealthPct("target") < 0.2 and NumShards() < 60
-                and GetAllContainerFreeSlots() >= 10 and not ImBusy() then
-                CastSpellByName("Drain Soul(Rank 1)")
-                return
-            end
-
-            if ConfigState.PlayerSpecc == "Shadowburn" and SettingsState.Warlock.ShouldBeWhores then
-                ShadowBoltWhoring()
-            else
-                CastOrWand("Shadow Bolt")
-
-                if not IsSpellReady("Shadow Bolt") then
-                    CastOrWand("Searing Pain")
-                end
-            end
-        end,
-        Multi = function()
-            GetTarget()
-            WarlockCancelAuras()
-
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Corruption.")
-                ConfigState.PlayerSpecc = "Corruption"
-            end
-
-            if CastCrowdControl() then
-                return
-            end
-
-            if ManaPct() < 0.40 and HealthPct() > 0.75 then
-                CastSpellByName("Life Tap")
-                return
-            end
-
-            if HasBuffOrDebuff("Hellfire", "player", "buff") then
-                CastSpellByName("Life Tap(Rank 1)")
-                return
-            end
-
-            if UnitName("target") then
-                if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
-                    and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                    if CastCrowdControl() then
-                        return
-                    end
-                end
-
-                if CrowdControlledMob() then
-                    GetTarget()
-                end
-            end
-
-            if Instance.AQ40() then
-                if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
-                    ClearTarget()
-                    return
-                end
-            end
-
-            if not InCombat("target") then
-                return
-            end
-
-            if InCombat() then
-                HealthStone()
-                TakeManaPotionAndRunes()
-
-                if IsSpellKnown("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
-                    SumPetAndSac()
-                end
-
-                if ConfigState.IsMoving.Active then
-                    TapWhileMoving()
-                end
-
-                if ManaDown() > 600 then
-                    Cooldowns()
-                end
-            end
-
-            if BossSpecificDPS() then
-                return
-            end
-
-            if not Instance.IsWorldBoss() and HealthPct("target") < 0.2 and NumShards() < 60
-                and GetAllContainerFreeSlots() >= 10 and not ImBusy() then
-                CastSpellByName("Drain Soul(Rank 1)")
-                return
-            end
-
-            if ConfigState.PlayerSpecc == "Shadowburn" and SettingsState.Warlock.ShouldBeWhores then
-                ShadowBoltWhoring()
-            else
-                CastOrWand("Shadow Bolt")
-
-                if not IsSpellReady("Shadow Bolt") then
-                    CastOrWand("Searing Pain")
-                end
-            end
-        end,
+        Single = Single,
+        Multi = Single,
         AOE = function()
             GetTarget()
-            WarlockCancelAuras()
+            CancelAuras()
 
             if not ConfigState.PlayerSpecc then
                 CdMessage("My specc is fucked. Defaulting to Corruption.")

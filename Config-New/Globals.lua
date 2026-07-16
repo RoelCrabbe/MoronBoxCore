@@ -20,6 +20,10 @@ MoronBox.Config.ConfigState = {
     PlayerSpecc = nil,
     WarriorBinds = "Fury",
 
+    -- [[ Healing ]] --
+    HealSpell = nil,
+    AssignedHealTarget = nil,
+
     -- [[ Cooldowns ]]
     UseCooldowns = { Active = false, Time = 0 },
     UseBigCooldowns = { Active = false, Time = 0 },

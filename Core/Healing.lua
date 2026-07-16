@@ -188,7 +188,7 @@ local function ExtractRank(str)
     return tonumber(num)
 end
 
-local function GetHealValueFromRank(spell, rank)
+function MoronBox.Core.Healing.GetHealValueFromRank(spell, rank)
     return floor(MBx.ACE.HealComm.Spells[spell][ExtractRank(rank)](GetHealBonus()))
 end
 
@@ -204,32 +204,32 @@ end
 function MoronBox.Core.Healing.GetHealSpell()
     if myClass == "Shaman" then
         if getGear().EquippedSetCount("Earthfury") == 8 then
-            MB_myHealSpell = "Healing Wave"
+            getConfigState().HealSpell = "Healing Wave"
             return true
         elseif getGear().EquippedSetCount("The Ten Storms") >= 3 and getGear().EquippedSetCount("Stormcaller\'s Garb") == 5 then
-            MB_myHealSpell = "Chain Heal"
+            getConfigState().HealSpell = "Chain Heal"
             return true
         else
             if MB_raidAssist.Shaman.DefaultToHealingWave then
-                MB_myHealSpell = "Healing Wave"
+                getConfigState().HealSpell = "Healing Wave"
                 return true
             else
-                MB_myHealSpell = "Chain Heal"
+                getConfigState().HealSpell = "Chain Heal"
             end
         end
     elseif myClass == "Priest" then
         if getApi().FindMyNameInTable(getHealingState().Priest.FlashHealerList) then
-            MB_myHealSpell = "Flash Heal"
+            getConfigState().HealSpell = "Flash Heal"
             return true
         elseif getGear().EquippedSetCount("Vestments of Transcendence") == 8 then
-            MB_myHealSpell = "Greater Heal"
+            getConfigState().HealSpell = "Greater Heal"
             return true
         else
-            MB_myHealSpell = "Heal"
+            getConfigState().HealSpell = "Heal"
             return true
         end
     elseif myClass == "Druid" and getGear().EquippedSetCount("Dreamwalker Raiment") >= 2 then
-        MB_myHealSpell = "Rejuvenation"
+        getConfigState().HealSpell = "Rejuvenation"
         return true
     end
 end
@@ -347,19 +347,23 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
             local allowedOverHeal, spellToCast
 
             if myClass == "Shaman" then
-                allowedOverHeal = GetHealValueFromRank("Healing Wave", getHealingState().Shaman.MainTankHealingRank) *
+                allowedOverHeal = getHealing().GetHealValueFromRank("Healing Wave",
+                        getHealingState().Shaman.MainTankHealingRank) *
                     getHealingState().MainTankOverhealingPercentage * 4
                 spellToCast = "Healing Wave(" .. getHealingState().Shaman.MainTankHealingRank .. ")"
             elseif myClass == "Paladin" then
-                allowedOverHeal = GetHealValueFromRank("Flash of Light", getHealingState().Paladin.MainTankHealingRank) *
+                allowedOverHeal = getHealing().GetHealValueFromRank("Flash of Light",
+                        getHealingState().Paladin.MainTankHealingRank) *
                     getHealingState().MainTankOverhealingPercentage * 4
                 spellToCast = "Flash of Light(" .. getHealingState().Paladin.MainTankHealingRank .. ")"
             elseif myClass == "Priest" then
-                allowedOverHeal = GetHealValueFromRank("Greater Heal", getHealingState().Priest.MainTankHealingRank) *
+                allowedOverHeal = getHealing().GetHealValueFromRank("Greater Heal",
+                        getHealingState().Priest.MainTankHealingRank) *
                     getHealingState().MainTankOverhealingPercentage * 4
                 spellToCast = "Greater Heal(" .. getHealingState().Priest.MainTankHealingRank .. ")"
             elseif myClass == "Druid" then
-                allowedOverHeal = GetHealValueFromRank("Healing Touch", getHealingState().Druid.MainTankHealingRank) *
+                allowedOverHeal = getHealing().GetHealValueFromRank("Healing Touch",
+                        getHealingState().Druid.MainTankHealingRank) *
                     getHealingState().MainTankOverhealingPercentage * 4
                 spellToCast = "Healing Touch(" .. getHealingState().Druid.MainTankHealingRank .. ")"
             end

@@ -23,4 +23,6 @@
     <Include file="..\Modules\Mage\Rotation.lua" />
     <!-- Warlock -->
     <Include file="..\Modules\Warlock\Rotation.lua" />
+    <!-- Priest -->
+    <Include file="..\Modules\Priest\Rotation.lua" />
 </Ui>

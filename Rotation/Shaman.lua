@@ -87,7 +87,7 @@ local GetMyInterruptTarget = mb_getMyInterruptTarget
 local GetTarget = mb_getTarget
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
-local HealerJindoRotation = mb_healerJindoRotation
+local HealerJindo = mb_HealerJindo
 local HealerTrinkets = mb_healerTrinkets
 local HealLieutenantAQ20 = mb_healLieutenantAQ20
 local HealthDown = mb_healthDown
@@ -214,12 +214,12 @@ local function ShamanHeal()
         return
     end
 
-    if MB_myAssignedHealTarget then
-        if IsAlive(MBID[MB_myAssignedHealTarget]) then
-            Shaman:MTHeals(MB_myAssignedHealTarget)
+    if ConfigState.AssignedHealTarget then
+        if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
+            Shaman:MTHeals(ConfigState.AssignedHealTarget)
             return
         else
-            MB_myAssignedHealTarget = nil
+            ConfigState.AssignedHealTarget = nil
             RunLine("/raid My healtarget died, time to ALT-F4.")
         end
     end
@@ -247,7 +247,7 @@ local function ShamanHeal()
 
         Shaman:Cooldowns()
 
-        if MB_myHealSpell == "Healing Wave" then
+        if ConfigState.HealSpell == "Healing Wave" then
             if MB_myVaelastraszShamanHealing then
                 local activeShaman = Shaman:GetActiveVaelastraszShaman()
 
@@ -268,7 +268,7 @@ local function ShamanHeal()
         return
     end
 
-    if MB_myHealSpell == "Chain Heal" then
+    if ConfigState.HealSpell == "Chain Heal" then
         MBH_CastHeal("Chain Heal", 1, 1)
         return
     end
@@ -311,7 +311,7 @@ function Shaman:MTHeals(assignedTarget)
         HealWaveSpell = "Healing Wave"
     end
 
-    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
+    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Wave", MB_myShamanMainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
         if GetTime() > HealWave.Time and GetTime() < HealWave.Time + 0.5 and HealWave.Interrupt then
             SpellStopCasting()
             HealWave.Interrupt = false
@@ -387,7 +387,7 @@ local function ShamanSingle()
         return
     end
 
-    HealerJindoRotation("Lightning Bolt")
+    HealerJindo("Lightning Bolt")
     ShamanHeal()
 end
 

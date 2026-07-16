@@ -91,7 +91,7 @@ local GetNumPartyOrRaidMembers = mb_GetNumPartyOrRaidMembers
 local GetTarget = mb_getTarget
 local HasBuffNamed = mb_hasBuffNamed
 local HasBuffOrDebuff = mb_hasBuffOrDebuff
-local HealerJindoRotation = mb_healerJindoRotation
+local HealerJindo = mb_HealerJindo
 local HealerTrinkets = mb_healerTrinkets
 local HealLieutenantAQ20 = mb_healLieutenantAQ20
 local HealthDown = mb_healthDown
@@ -251,12 +251,12 @@ local function DruidHeal()
         return
     end
 
-    if MB_myAssignedHealTarget then
-        if IsAlive(MBID[MB_myAssignedHealTarget]) then
-            Druid:MTHeals(MB_myAssignedHealTarget)
+    if ConfigState.AssignedHealTarget then
+        if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
+            Druid:MTHeals(ConfigState.AssignedHealTarget)
             return
         else
-            MB_myAssignedHealTarget = nil
+            ConfigState.AssignedHealTarget = nil
             RunLine("/raid My healtarget died, time to ALT-F4.")
         end
     end
@@ -308,7 +308,7 @@ local function DruidHeal()
     end
 
     if not ImBusy() then
-        if MB_myHealSpell == "Rejuvenation" and ManaDown("player") > 300 then
+        if ConfigState.HealSpell == "Rejuvenation" and ManaDown("player") > 300 then
             SelfBuff("Rejuvenation(Rank 1)")
         end
 
@@ -378,7 +378,7 @@ function Druid:MTHeals(assignedTarget)
         HealTouchSpell = "Healing Touch"
     end
 
-    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
+    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Touch", MB_myDruidMainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
         if GetTime() > HealTouch.Time and GetTime() < HealTouch.Time + 0.5 and HealTouch.Interrupt then
             SpellStopCasting()
             HealTouch.Interrupt = false
@@ -783,7 +783,7 @@ local function DruidSingle()
         end
     end
 
-    HealerJindoRotation("Wrath")
+    HealerJindo("Wrath")
     DruidHeal()
 end
 
@@ -1024,7 +1024,7 @@ local function DruidMulti()
         end
     end
 
-    HealerJindoRotation("Wrath")
+    HealerJindo("Wrath")
     DruidHeal()
 end
 
@@ -1126,12 +1126,12 @@ end
 
 local function DruidAOE()
     if TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy and ImHealer() then
-        if MB_myAssignedHealTarget then
-            if IsAlive(MBID[MB_myAssignedHealTarget]) then
-                Druid:MTHeals(MB_myAssignedHealTarget)
+        if ConfigState.AssignedHealTarget then
+            if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
+                Druid:MTHeals(ConfigState.AssignedHealTarget)
                 return
             else
-                MB_myAssignedHealTarget = nil
+                ConfigState.AssignedHealTarget = nil
                 RunLine("/raid My healtarget died, time to ALT-F4.")
             end
         end

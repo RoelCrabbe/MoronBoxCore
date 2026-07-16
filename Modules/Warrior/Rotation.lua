@@ -18,7 +18,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         ["Sweet Surprise"]    = "Sweet Surprise",
     }
 
-    local function WarriorCancelAuras()
+    local function CancelAuras()
         for itemName, buffName in pairs(RemovedBuffs) do
             if HasBuffOrDebuff(itemName, "player", "buff") then
                 CancelBuff(buffName)
@@ -142,7 +142,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         lastAnnihilatorTime = currentTime
     end
 
-    local function WarriorDPSInfo()
+    local function DPSInfo()
         local btCD = SpellCooldown("Bloodthirst")
         local wwCD = SpellCooldown("Whirlwind")
         local gcdThreshold = 1.35
@@ -278,7 +278,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSSingleRotation(myRage)
-        local btSpellCD, _, canUseHam = WarriorDPSInfo()
+        local btSpellCD, _, canUseHam = DPSInfo()
 
         if InMeleeRange() then
             if IsSpellReady("Bloodthirst") and myRage >= 30 then
@@ -339,7 +339,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSMultiRotation(myRage)
-        local btSpellCD, _, canUseHam = WarriorDPSInfo()
+        local btSpellCD, _, canUseHam = DPSInfo()
 
         if IsExcludedWW() then
             DPSSingleRotation(myRage)
@@ -484,7 +484,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        local playerHP = HealthPct("player")
+        local playerHP = HealthPct()
         local targetHP = HealthPct("target")
 
         if Instance.NAXX() then
@@ -582,7 +582,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 CastSpellByName("Concussion Blow")
             end
 
-            if HealthPct("player") < 0.7 and HasShield() and myRage >= 20 then
+            if HealthPct() < 0.7 and HasShield() and myRage >= 20 then
                 CastSpellByName("Shield Block")
             end
 
@@ -698,7 +698,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 CastSpellByName("Concussion Blow")
             end
 
-            if HealthPct("player") < 0.7 and HasShield() and myRage >= 20 then
+            if HealthPct() < 0.7 and HasShield() and myRage >= 20 then
                 CastSpellByName("Shield Block")
             end
 
@@ -833,7 +833,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            WarriorCancelAuras()
+            CancelAuras()
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then
@@ -883,7 +883,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            WarriorCancelAuras()
+            CancelAuras()
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then
@@ -933,7 +933,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local myRage = UnitMana("player")
 
             GetTarget()
-            WarriorCancelAuras()
+            CancelAuras()
 
             if ConfigState.WarriorBinds == "Fury" and not InCombat() then
                 if FindMyNameInTable(SettingsState.FurysThatCanTank) then

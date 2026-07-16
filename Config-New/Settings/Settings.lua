@@ -16,6 +16,14 @@ MoronBox.Settings.SettingsState = {
     -- [[ SpeedRun ]] --
     SpeedRunEnabled = false,
 
+    -- [[ GTFO ]] --
+    GTFO = {
+        Vaelastrasz = {       -- Vaelastrasz
+            "Suecia",         -- Horde
+            "Alliance Soak 1" -- Alliance
+        },
+    },
+
     -- [[ Warrior ]] --
     Warrior = {
         AnnihilatorActive = true,

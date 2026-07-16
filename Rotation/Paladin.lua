@@ -183,12 +183,12 @@ local function PaladinHeal()
         return
     end
 
-    if MB_myAssignedHealTarget then
-        if IsAlive(MBID[MB_myAssignedHealTarget]) then
-            Paladin:MTHeals(MB_myAssignedHealTarget)
+    if ConfigState.AssignedHealTarget then
+        if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
+            Paladin:MTHeals(ConfigState.AssignedHealTarget)
             return
         else
-            MB_myAssignedHealTarget = nil
+            ConfigState.AssignedHealTarget = nil
             RunLine("/raid My healtarget died, time to ALT-F4.")
         end
     end
@@ -258,7 +258,7 @@ function Paladin:MTHeals(assignedTarget)
         FlashOfLightSpell = "Holy Light(rank 5)"
     end
 
-    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * MB_myMainTankOverhealingPercentage) then
+    if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
         if GetTime() > FlashOfLight.Time and GetTime() < FlashOfLight.Time + 0.5 and FlashOfLight.Interrupt then
             SpellStopCasting()
             FlashOfLight.Interrupt = false
