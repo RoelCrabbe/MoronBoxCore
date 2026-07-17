@@ -1,9 +1,9 @@
 -- [[ Shaman Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Shaman Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myName = UnitName("player")
 local myClass = UnitClass("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
@@ -31,7 +31,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         getSpells().SelfBuff("Berserking")
         getSpells().SelfBuff("Elemental Mastery")
 
-        if EquippedSetCount("The Earthshatter") >= 8 then
+        if getGear().EquippedSetCount("The Earthshatter") >= 8 then
             getSpells().SelfBuff("Lightning Shield")
         end
 
@@ -95,7 +95,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             TargetByName(assignedTarget, 1)
         else
             if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                TargetMyAssignedTankToHeal()
+                getHealing().TargetMyAssignedTankToHeal()
             else
                 local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
@@ -120,9 +120,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         local healWaveSpell = getRaid().TankTarget("Vaelastrasz the Corrupt") and "Healing Wave" or
-            ("Healing Wave(" .. HealingState.Shaman.MainTankHealingRank .. ")")
+            ("Healing Wave(" .. getHealingState().Shaman.MainTankHealingRank .. ")")
 
-        if not getTables().BossNeverInterruptHeal() and getUnit().HealthDown("target") <= (getHealing().GetHealValueFromRank("Healing Wave", HealingState.Shaman.MainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
+        if not getTables().BossNeverInterruptHeal() and getUnit().HealthDown("target") <= (getHealing().GetHealValueFromRank("Healing Wave", getHealingState().Shaman.MainTankHealingRank) * getHealingState().MainTankOverhealingPercentage) then
             if GetTime() > HealWave.Time and GetTime() < HealWave.Time + 0.5 and HealWave.Interrupt then
                 SpellStopCasting()
                 HealWave.Interrupt = false
@@ -163,7 +163,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if getAura().HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not getRaid().TankTarget("Anubisath Defender") then return end
-        if HealLieutenantAQ20() or InstructorRazAddsHeal() then return end
+        if getHealing().HealLieutenantAQ20() or getHealing().InstructorRazAddsHeal() then return end
 
         if getConfigState().AssignedHealTarget then
             if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
@@ -175,7 +175,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        for _, bossName in pairs(HealingState.Shaman.MainTankHealingBossList) do
+        for _, bossName in pairs(getHealingState().Shaman.MainTankHealingBossList) do
             if getRaid().TankTarget(bossName) then
                 MTHeals()
                 return
@@ -234,7 +234,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             getConfigState().PlayerSpecc = "Elemental"
         end
 
-        if PartyIsPoisoned() then
+        if getDispel().PartyIsPoisoned() then
             if getSpells().ImBusy() then
                 SpellStopCasting()
                 return
@@ -246,7 +246,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.NAXX() and getRaid().TankTarget("Heigan the Unclean") then
-            if MeleeDPSInParty() and PartyIsDiseased() then
+            if getCore().MeleeDPSInParty() and getDispel().PartyIsDiseased() then
                 if getSpells().ImBusy() then
                     SpellStopCasting()
                     return
@@ -275,7 +275,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        DropTotems()
+        getBuffs().DropTotems()
 
         if getConfigState().PlayerSpecc == "Elemental" then
             Elemental()
@@ -327,11 +327,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if EquippedSetCount("The Earthshatter") >= 8 then
+            if getGear().EquippedSetCount("The Earthshatter") >= 8 then
                 getSpells().SelfBuff("Lightning Shield")
             end
 
-            if ImHealer() then
+            if getCore().ImHealer() then
                 MBH_CastHeal("Chain Heal", 1, 1)
             end
 
@@ -342,7 +342,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         Single = Single,
         Multi = Single,
         AOE = function()
-            if MobsToAoeTotem() and getSpells().IsSpellReady("Fire Nova Totem") then
+            if getTables().MobsToAoeTotem() and getSpells().IsSpellReady("Fire Nova Totem") then
                 CastSpellByName("Fire Nova Totem")
                 return
             end
@@ -350,7 +350,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             Single()
         end,
         PreCast = function()
-            DropTotems()
+            getBuffs().DropTotems()
         end,
         LoaHeal = function()
             getRaid().GetTarget()
@@ -361,7 +361,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 getConfigState().PlayerSpecc = "Elemental"
             end
 
-            if PartyIsPoisoned() then
+            if getDispel().PartyIsPoisoned() then
                 if getSpells().ImBusy() then
                     SpellStopCasting()
                     return
@@ -392,7 +392,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 end
             end
 
-            DropTotems()
+            getBuffs().DropTotems()
 
             if LOA_Healing() then
                 return

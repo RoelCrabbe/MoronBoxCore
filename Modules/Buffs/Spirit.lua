@@ -45,7 +45,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if not Handlers.IsOwnMessage(arg1) then return end
             getBuffs().DispatchMessage(arg2, arg4, Handlers)
         elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" then
-            getBuffs().ClearTable(SpiritPriests)
+            getApi().ClearTable(SpiritPriests)
         end
     end)
 

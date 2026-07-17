@@ -82,9 +82,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         getAttack().AutoAttack()
 
         if getUnit().InCombat() and UnitMana("player") <= 40 then
-            if getBag().ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(13) then
+            if getBag().GetItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(13) then
                 use(13)
-            elseif getBag().ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(14) then
+            elseif getBag().GetItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(14) then
                 use(14)
             end
         end

@@ -251,7 +251,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if getSpells().IsSpellReady("Recklessness") and getTables().BossIShouldUseRecklessnessOn() then
+        if getSpells().IsSpellReady("Recklessness") and getTables().BossesIShouldUseRecklessnessOn() then
             BigDPSCooldowns(myRage)
         end
 
@@ -634,7 +634,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if getConfigState().OffgetRaid().TankTarget then
+            if getConfigState().OffTankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -643,9 +643,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if getConfigState().OffgetRaid().TankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
-                getConfigState().OffgetRaid().TankTarget = nil
+        if getConfigState().OffTankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffTankTarget and UnitIsDead("target") then
+                getConfigState().OffTankTarget = nil
                 ClearTarget()
             end
         end
@@ -750,7 +750,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if getConfigState().OffgetRaid().TankTarget then
+            if getConfigState().OffTankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -759,9 +759,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if getConfigState().OffgetRaid().TankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
-                getConfigState().OffgetRaid().TankTarget = nil
+        if getConfigState().OffTankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffTankTarget and UnitIsDead("target") then
+                getConfigState().OffTankTarget = nil
                 ClearTarget()
             end
         end

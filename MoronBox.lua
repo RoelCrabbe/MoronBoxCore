@@ -240,25 +240,26 @@ MoronBox:SetScript("OnEvent", function()
         MoronBox:UpdateModules()
 
         MoronBox.QueueFunction(function()
-            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by MoroN.", 1, 1, 1)
+            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by |r|cffC71585MoroN.", 1, 1,
+                1)
             DEFAULT_CHAT_FRAME:AddMessage(
                 "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
 
             UIErrorsFrame:Hide()
 
-            MoronBox.Core.InitializeClasslists()
-            MoronBox.Core.GetMySpecc()
-            MoronBox.Core.Attack.SetAttackButton()
-            MoronBox.Core.Healing.GetHealSpell()
+            getCore().InitializeClasslists()
+            getCore().GetMySpecc()
+            getAttack().SetAttackButton()
+            getHealing().GetHealSpell()
 
             if MB_raidAssist.AutoEquipSet.Active then
-                MoronBox.Core.Gear.EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
+                getGear().EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
             end
         end)
 
         MoronBox.BootUp = nil
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-        MoronBox.Core.InitializeClasslists()
+        getCore().InitializeClasslists()
         MoronBox:UpdateModules()
     end
 end)

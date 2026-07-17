@@ -25,9 +25,19 @@ function MoronBox.Core.Dispel.Decurse()
         end
     end
 
-    if (SKERAM_InFight() or LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()
-            or getRaid().TankTarget("Vaelastrasz the Corrupt") or getRaid().TankTarget("Princess Huhuran")
-            or getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn") or getRaid().TankTarget("Anubisath Guardian")) then
+    if Instance.NAXX() and (LOA_IsAtLoatheb() or GROB_IsAtGrobbulus()) then
+        return false
+    end
+
+    if Instance.AQ40() and (SKERAM_InFight() or getRaid().TankTarget("Princess Huhuran")) then
+        return false
+    end
+
+    if Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") then
+        return false
+    end
+
+    if Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn")) then
         return false
     end
 
@@ -64,7 +74,11 @@ function MoronBox.Core.Dispel.Decurse()
 end
 
 function MoronBox.Core.Dispel.PartyIsPoisoned()
-    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Instance.NAXX() and GROB_IsAtGrobbulus() then
+        return false
+    end
+
+    if Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") then
         return false
     end
 
@@ -89,7 +103,11 @@ function MoronBox.Core.Dispel.PartyIsPoisoned()
 end
 
 function MoronBox.Core.Dispel.RaidIsPoisoned()
-    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Instance.NAXX() and GROB_IsAtGrobbulus() then
+        return false
+    end
+
+    if Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") then
         return false
     end
 
@@ -107,7 +125,11 @@ function MoronBox.Core.Dispel.RaidIsPoisoned()
 end
 
 function MoronBox.Core.Dispel.PlayerIsPoisoned()
-    if getRaid().TankTarget("Princess Huhuran") or GROB_IsAtGrobbulus() then
+    if Instance.NAXX() and GROB_IsAtGrobbulus() then
+        return false
+    end
+
+    if Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") then
         return false
     end
 
@@ -123,6 +145,7 @@ end
 
 function MoronBox.Core.Dispel.PartyIsDiseased()
     local numMembers = GetNumPartyMembers()
+
     for i = 1, numMembers do
         for x = 1, 16 do
             local _, _, debuffType = UnitDebuff("party" .. i, x, 1)

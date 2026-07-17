@@ -100,7 +100,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         elseif getTables().IsFireBoss() then
             if getCore().MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
             if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
-        elseif LOA_IsAtLoatheb() then
+        elseif Instance.NAXX() and LOA_IsAtLoatheb() then
             if getCore().MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
             if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
         end

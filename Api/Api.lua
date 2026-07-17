@@ -10,7 +10,7 @@ end
 
 -- [[ AddonMessages ]] --
 
-local CdAddonMessage = {
+local CdAddonMessageStore = {
     History = {},
     MaxHistory = 10,
 }
@@ -24,7 +24,7 @@ function MoronBox.Api.CdAddonMessage(prefix, message, timer)
     local time = GetTime()
     local messageKey = prefix .. ":" .. (message or "")
 
-    local history = CdAddonMessage.History
+    local history = CdAddonMessageStore.History
     local lenght = table.getn(history)
 
     for i = 1, lenght do
@@ -34,7 +34,7 @@ function MoronBox.Api.CdAddonMessage(prefix, message, timer)
         end
     end
 
-    if lenght >= CdAddonMessage.MaxHistory then
+    if lenght >= CdAddonMessageStore.MaxHistory then
         table.remove(history, 1)
     end
 
@@ -63,7 +63,7 @@ end
 
 -- [[ Messages ]] --
 
-local CdMessage = {
+local CdMessageStore = {
     History = {},
     MaxHistory = 10,
 }
@@ -76,7 +76,7 @@ function MoronBox.Api.CdMessage(message, timer)
     local time = GetTime()
     local messageKey = (message or "")
 
-    local history = CdMessage.History
+    local history = CdMessageStore.History
     local lenght = table.getn(history)
 
     for i = 1, lenght do
@@ -86,7 +86,7 @@ function MoronBox.Api.CdMessage(message, timer)
         end
     end
 
-    if lenght >= CdMessage.MaxHistory then
+    if lenght >= CdMessageStore.MaxHistory then
         table.remove(history, 1)
     end
 
@@ -100,7 +100,7 @@ function MoronBox.Api.CdMessage(message, timer)
     MoronBox.Api.SendChatMessage(message)
 end
 
-local CdPrint = {
+local CdPrintStore = {
     History = {},
     MaxHistory = 10,
 }
@@ -113,7 +113,7 @@ function MoronBox.Api.CdPrint(message, timer)
     local time = GetTime()
     local messageKey = (message or "")
 
-    local history = CdPrint.History
+    local history = CdPrintStore.History
     local lenght = table.getn(history)
 
     for i = 1, lenght do
@@ -123,7 +123,7 @@ function MoronBox.Api.CdPrint(message, timer)
         end
     end
 
-    if lenght >= CdPrint.MaxHistory then
+    if lenght >= CdPrintStore.MaxHistory then
         table.remove(history, 1)
     end
 
@@ -137,7 +137,7 @@ function MoronBox.Api.CdPrint(message, timer)
     print(message)
 end
 
-local CdRaidWarning = {
+local CdRaidWarningStore = {
     History = {},
     MaxHistory = 10,
 }
@@ -159,7 +159,7 @@ function MoronBox.Api.CdRaidWarning(message, timer)
     local time = GetTime()
     local messageKey = (message or "")
 
-    local history = CdRaidWarning.History
+    local history = CdRaidWarningStore.History
     local lenght = table.getn(history)
 
     for i = 1, lenght do
@@ -169,7 +169,7 @@ function MoronBox.Api.CdRaidWarning(message, timer)
         end
     end
 
-    if lenght >= CdRaidWarning.MaxHistory then
+    if lenght >= CdRaidWarningStore.MaxHistory then
         table.remove(history, 1)
     end
 
@@ -183,7 +183,7 @@ function MoronBox.Api.CdRaidWarning(message, timer)
     SendChatMessage(message, "RAID_WARNING")
 end
 
-local CdSay = {
+local CdSayStore = {
     History = {},
     MaxHistory = 10,
 }
@@ -196,7 +196,7 @@ function MoronBox.Api.CdSay(message, timer)
     local time = GetTime()
     local messageKey = (message or "")
 
-    local history = CdSay.History
+    local history = CdSayStore.History
     local lenght = table.getn(history)
 
     for i = 1, lenght do
@@ -206,7 +206,7 @@ function MoronBox.Api.CdSay(message, timer)
         end
     end
 
-    if lenght >= CdSay.MaxHistory then
+    if lenght >= CdSayStore.MaxHistory then
         table.remove(history, 1)
     end
 
