@@ -360,7 +360,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         for i = 1, GetNumRaidMembers() do
             local shieldTarget = "raid" .. i
 
-            if aggrox:GetUnitAggroByUnitId(shieldTarget) and
+            if aggrox and aggrox:GetUnitAggroByUnitId(shieldTarget) and
                 IsValidFriendlyTarget(shieldTarget, "Power Word: Shield") and
                 HealthPct(shieldTarget) <= HealingState.Priest.ShieldAggroedPlayerPercentage and
                 not HasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") and
@@ -387,7 +387,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         for i = 1, GetNumRaidMembers() do
             local renewTarget = "raid" .. i
 
-            if aggrox:GetUnitAggroByUnitId(renewTarget) and
+            if aggrox and aggrox:GetUnitAggroByUnitId(renewTarget) and
                 IsValidFriendlyTarget(renewTarget, "Renew") and
                 HealthPct(renewTarget) <= HealingState.Priest.RenewAggroedPlayerPercentage and
                 not HasBuffNamed("Renew", renewTarget) then

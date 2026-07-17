@@ -202,7 +202,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local HealTouch = { Time = 0, Interrupt = false }
 
-    function MTHeals(assignedTarget)
+    local function MTHeals(assignedTarget)
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
@@ -314,7 +314,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function RegrowthAggroedPlayer()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowthCheck() or UnitMana("player") < 880 or MyClassOrder() ~= 1 then
+        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 or MyClassOrder() ~= 1 then
             return
         end
 
@@ -340,7 +340,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function RegrowthLowRandom()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowthCheck() or UnitMana("player") < 880 then
+        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 then
             return
         end
 

@@ -115,7 +115,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.NAXX() and GLUTH_IsAtGluth() then
-            Hunter:FreezingTrap()
+            FreezingTrap()
         elseif Instance.AQ40() and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return

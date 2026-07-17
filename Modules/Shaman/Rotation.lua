@@ -350,8 +350,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             Single()
         end,
         PreCast = function()
-            PreCastTrinkets()
-            CastSpellByName("Holy Fire")
+            DropTotems()
         end,
         LoaHeal = function()
             GetTarget()

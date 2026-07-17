@@ -1,7 +1,7 @@
--- [[ Warrior Rotation ]] --
+-- [[ Rogue Rotation ]] --
 ---@diagnostic disable: undefined-global
 
-local NAME = "Warrior Rotation"
+local NAME = "Rogue Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
 local myClass = UnitClass("player")
@@ -94,7 +94,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         local aggrox = AceLibrary("Banzai-1.0")
-        if aggrox:GetUnitAggroByUnitId("player") then
+        if aggrox and aggrox:GetUnitAggroByUnitId("player") then
             if HealthPct() < 0.8 and IsSpellReady("Evasion") then
                 CastSpellByName("Evasion")
                 return
@@ -155,16 +155,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     MoronBox:RegisterExpose({
         Specc = function()
-            local _, _, _, _, fury = GetTalentInfo(2, 17)
-            local _, _, _, _, prot = GetTalentInfo(3, 9)
-            local _, _, _, _, deepProt = GetTalentInfo(3, 17)
+            local _, _, _, _, hemo = GetTalentInfo(3, 15)
+            local _, _, _, _, ar = GetTalentInfo(2, 19)
 
-            if fury > 0 and prot > 4 then
-                ConfigState.PlayerSpecc = "Furytank"
-            elseif fury > 0 then
-                ConfigState.PlayerSpecc = "BT"
-            elseif deepProt > 0 then
-                ConfigState.PlayerSpecc = "Prottank"
+            if hemo > 0 then
+                ConfigState.PlayerSpecc = "Hemo"
+            elseif ar > 0 then
+                ConfigState.PlayerSpecc = "AR"
             else
                 ConfigState.PlayerSpecc = nil
             end

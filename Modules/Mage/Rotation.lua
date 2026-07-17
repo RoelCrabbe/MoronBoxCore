@@ -9,7 +9,7 @@ local myClass = UnitClass("player")
 MoronBox:RegisterModule(MODULE_NAME, function()
     local MageCounter = {
         Cycle = function()
-            ConfigState.SheepingMageNr = (ConfigState.SheepingMageNr >= getApi().TableLength(MB_classList["Mage"]))
+            ConfigState.SheepingMageNr = (ConfigState.SheepingMageNr >= TableLength(GeneralState.ClassList["Warlock"]))
                 and 1 or (ConfigState.SheepingMageNr + 1)
         end
     }
@@ -179,7 +179,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     CastOrWand(SettingsState.Mage.SpellToKeepIgniteUp) -- usually Scorch
                 end
             else
-                -- Starter tick is bad â†’ non-starters cast Fireball to start next strong Ignite
+                -- Starter tick is bad non-starters cast Fireball to start next strong Ignite
                 CastOrWand("Fireball")
             end
         end
@@ -258,13 +258,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
-            if ImBusy() then SpellStopCasting() end
+            if ImBusy() then
+                SpellStopCasting()
+            end
+
             AutoWandAttack()
             return true
         end
 
         if TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
-            if ImBusy() then SpellStopCasting() end
+            if ImBusy() then
+                SpellStopCasting()
+            end
+
             SelfBuff("Frost Ward")
             return true
         end
@@ -274,7 +280,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 if HealthPct("target") <= 0.35 then
                     CastSpellByName("Frostbolt(Rank 1)")
                 else
-                    MageFire()
+                    Fire()
                 end
                 return true
             end
@@ -285,7 +291,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.BWL() and CorruptedTotems() and not Dead("target") then
-            if IsSpellReady("Fireblast") then CastSpellByName("Fire Blast") end
+            if IsSpellReady("Fireblast") then
+                CastSpellByName("Fire Blast")
+            end
+
             CastOrWand("Scorch")
             return true
         end
@@ -293,9 +302,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if Instance.MC() then
             if TankTarget("Shazzrah") then
                 if ConfigState.PlayerSpecc == "Fire" and not IsSpellReady("Fireball") then
-                    MageFrost()
+                    Frost()
                 elseif ConfigState.PlayerSpecc == "Frost" and not IsSpellReady("Frostbolt") then
-                    MageFire()
+                    Fire()
                 else
                     return false
                 end

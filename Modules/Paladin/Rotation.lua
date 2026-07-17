@@ -122,27 +122,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         CastSpellByName("Judgement")
     end
 
-    local function SealWisdom()
-        if not IsValidMeleeTarget("target") then
-            return
-        end
-
-        AssistFocus()
-
-        if HasBuffOrDebuff("Judgement of Light", "target", "debuff") then
-            return
-        end
-
-        AutoAttack()
-
-        if not HasBuffOrDebuff("Seal of Wisdom", "player", "buff") then
-            CastSpellByName("Seal of Wisdom")
-            return
-        end
-
-        CastSpellByName("Judgement")
-    end
-
     local FlashOfLight = { Time = 0, Interrupt = false }
 
     local function MTHeals(assignedTarget)
@@ -216,7 +195,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         for i = 1, GetNumRaidMembers() do
             local BOPTarget = "raid" .. i
 
-            if aggrox:GetUnitAggroByUnitId(BOPTarget)
+            if aggrox and aggrox:GetUnitAggroByUnitId(BOPTarget)
                 and not FindInTable(MB_raidTanks, UnitName(BOPTarget))
                 and IsValidFriendlyTarget(BOPTarget, "Blessing of Protection")
                 and HealthPct(BOPTarget) <= blastNSatThisPercentage
