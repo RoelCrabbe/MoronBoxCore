@@ -244,7 +244,7 @@ function MMB:OnEvent()
             end
         elseif arg1 == MB_RAID .. "MB_REMOVEBUFFS" then
             if arg2 == "all" then
-                local tooltip = MMBTooltip
+                local tooltip = MoronBoxTooltip
                 local textleft1 = getglobal(tooltip:GetName() .. "TextLeft1")
                 local text
 

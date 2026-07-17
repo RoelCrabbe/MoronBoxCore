@@ -310,9 +310,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         getDispel().Decurse()
 
         if getTables().StunnableMob() then
-            if not MB_autoBuff.Active then
-                MB_autoBuff.Active = true
-                MB_autoBuff.Time = GetTime() + 1
+            if not getConfigState().PaladinHOJ.Active then
+                getConfigState().PaladinHOJ.Active = true
+                getConfigState().PaladinHOJ.Time = GetTime() + 1
                 PaladinCounter.Cycle()
             end
 

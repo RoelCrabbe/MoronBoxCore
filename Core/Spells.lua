@@ -267,7 +267,7 @@ function MoronBox.Core.Spells.CastOrWand(spell)
         end
     end
 
-    if MB_attackWandSlot then
+    if getAttackState().WandSlot then
         getAttack().AutoWandAttack()
     else
         getAttack().AutoAttack()
@@ -277,19 +277,19 @@ end
 function MoronBox.Core.Spells.CastSpellWithCooldown(spell, cooldown)
     local time = GetTime()
 
-    if not MB_cooldowns[spell] then
+    if not getConfigState().TrackCooldowns[spell] then
         CastSpellByName(spell)
-        MB_cooldowns[spell] = time
+        getConfigState().TrackCooldowns[spell] = time
         return
     end
 
-    if MB_cooldowns[spell] + cooldown > time then
+    if getConfigState().TrackCooldowns[spell] + cooldown > time then
         return
     end
 
-    if MB_cooldowns[spell] + cooldown <= time then
+    if getConfigState().TrackCooldowns[spell] + cooldown <= time then
         CastSpellByName(spell)
-        MB_cooldowns[spell] = nil
+        getConfigState().TrackCooldowns[spell] = nil
     end
 end
 

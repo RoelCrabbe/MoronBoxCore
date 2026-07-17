@@ -71,141 +71,55 @@ function MoronBox.Core.CrowdControl.AssignCrowdControl()
         return
     end
 
-    if IsAltKeyDown() and UnitCreatureType("target") == "Beast" then
+    local function AssignCC(className)
+        local state = getConfigState()
+
         if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-            SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then
-                MB_currentRaidTarget = 1
-            else
-                MB_currentRaidTarget = MB_currentRaidTarget + 1
-            end
+            state:TargetMarkCycle()
+            SetRaidTarget("target", state.CurrentRaidTarget)
         end
 
-        local druids = getCoreState().DruidCasters
-        local num_druids = getApi().TableLength(druids)
+        local list = getCoreState().ClassList[className]
+        local num = getApi().TableLength(list)
 
-        if num_druids > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", druids[MB_currentCC.Druid])
+        if num > 0 then
+            getApi().SendAddonMessage(MB_RAID .. "_CC", list[state.CurrentCC[className]])
 
-            if MB_currentCC.Druid == num_druids then
-                MB_currentCC.Druid = 1
-                getApi().CdMessage("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
-            else
-                MB_currentCC.Druid = MB_currentCC.Druid + 1
+            if state:CycleCC(className, num) then
+                getApi().CdMessage("ALL " .. string.upper(className) .. "S ASSIGNED, STOP ASSIGNING MORE.")
             end
         end
-        return
     end
 
-    if UnitCreatureType("target") == "Demon" or UnitCreatureType("target") == "Elemental" then
-        if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-            SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then
-                MB_currentRaidTarget = 1
-            else
-                MB_currentRaidTarget = MB_currentRaidTarget + 1
-            end
-        end
+    local cType = UnitCreatureType("target")
 
-        local locks = getCoreState().ClassList["Warlock"]
-        local num_locks = getApi().TableLength(locks)
-
-        if num_locks > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", locks[MB_currentCC.Warlock])
-
-            if MB_currentCC.Warlock == num_locks then
-                MB_currentCC.Warlock = 1
-                getApi().CdMessage("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
-            else
-                MB_currentCC.Warlock = MB_currentCC.Warlock + 1
-            end
-        end
-    elseif UnitCreatureType("target") == "Undead" then
-        if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-            SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then
-                MB_currentRaidTarget = 1
-            else
-                MB_currentRaidTarget = MB_currentRaidTarget + 1
-            end
-        end
-
-        local priests = getCoreState().ClassList["Priest"]
-        local num_priests = getApi().TableLength(priests)
-
-        if num_priests > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", priests[MB_currentCC.Priest])
-
-            if MB_currentCC.Priest == num_priests then
-                MB_currentCC.Priest = 1
-                getApi().CdMessage("ALL PRIESTS ASSIGNED, STOP ASSIGNING MORE.")
-            else
-                MB_currentCC.Priest = MB_currentCC.Priest + 1
-            end
-        end
-    elseif UnitCreatureType("target") == "Dragonkin" then
-        if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-            SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then
-                MB_currentRaidTarget = 1
-            else
-                MB_currentRaidTarget = MB_currentRaidTarget + 1
-            end
-        end
-
-        local druids = getCoreState().DruidCasters
-        local num_druids = getApi().TableLength(druids)
-
-        if num_druids > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", druids[MB_currentCC.Druid])
-
-            if MB_currentCC.Druid == num_druids then
-                MB_currentCC.Druid = 1
-                getApi().CdMessage("ALL DRUIDS ASSIGNED, STOP ASSIGNING MORE.")
-            else
-                MB_currentCC.Druid = MB_currentCC.Druid + 1
-            end
-        end
-    elseif nil or UnitCreatureType("target") == "Beast" or UnitCreatureType("target") == "Humanoid" or UnitCreatureType("target") == "Critter" then
-        if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-            SetRaidTarget("target", MB_currentRaidTarget)
-            if MB_currentRaidTarget == 8 then
-                MB_currentRaidTarget = 1
-            else
-                MB_currentRaidTarget = MB_currentRaidTarget + 1
-            end
-        end
-
-        local mages = getCoreState().ClassList["Mage"]
-        local num_mages = getApi().TableLength(mages)
-
-        if num_mages > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", mages[MB_currentCC.Mage])
-
-            if MB_currentCC.Mage == num_mages then
-                MB_currentCC.Mage = 1
-                getApi().CdMessage("ALL MAGES ASSIGNED, STOP ASSIGNING MORE.")
-            else
-                MB_currentCC.Mage = MB_currentCC.Mage + 1
-            end
-        end
+    if IsAltKeyDown() and cType == "Beast" then
+        AssignCC("Druid")
+    elseif cType == "Demon" or cType == "Elemental" then
+        AssignCC("Warlock")
+    elseif cType == "Undead" then
+        AssignCC("Priest")
+    elseif cType == "Dragonkin" then
+        AssignCC("Druid")
+    elseif cType == "Beast" or cType == "Humanoid" or cType == "Critter" or not cType then
+        AssignCC("Mage")
     end
 end
 
 function MoronBox.Core.CrowdControl.CrowdControlFear()
-    if not MB_myFearTarget then
+    if not getConfigState().FearTarget then
         return
     end
 
     for i = 1, 10 do
-        if GetRaidTargetIndex("target") == MB_myFearTarget then
+        if GetRaidTargetIndex("target") == getConfigState().FearTarget then
             if UnitIsDead("target") then
-                MB_myFearTarget = nil
+                getConfigState().FearTarget = nil
                 TargetUnit("playertarget")
                 return
             end
 
-            local fearSpell = MB_myFearSpell[UnitClass("player")]
+            local fearSpell = getConfigState().FearSpell[myClass]
             if UnitName("target") and not getAura().HasBuffOrDebuff(fearSpell, "target", "debuff") then
                 print("CC spell is : " .. fearSpell)
                 getApi().CdMessage("Fearing " .. UnitName("target"))
@@ -225,25 +139,19 @@ function MoronBox.Core.CrowdControl.AssignFear()
     end
 
     if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-        SetRaidTarget("target", MB_currentRaidTarget)
-        if MB_currentRaidTarget == 8 then
-            MB_currentRaidTarget = 1
-        else
-            MB_currentRaidTarget = MB_currentRaidTarget + 1
-        end
+        getConfigState():TargetMarkCycle()
+        SetRaidTarget("target", getConfigState().CurrentRaidTarget)
     end
 
-    local locks = getCoreState().ClassList["Warlock"]
+    local className = "Warlock"
+    local locks = getCoreState().ClassList[className]
     local num_locks = getApi().TableLength(locks)
 
     if num_locks > 0 then
-        getApi().SendAddonMessage(MB_RAID .. "_FEAR", locks[MB_currentFear.Warlock])
+        getApi().SendAddonMessage(MB_RAID .. "_FEAR", locks[getConfigState().CurrentFear[className]])
 
-        if MB_currentFear.Warlock == num_locks then
-            MB_currentFear.Warlock = 1
-            getApi().CdMessage("ALL WARLOCKS ASSIGNED, STOP ASSIGNING MORE.")
-        else
-            MB_currentFear.Warlock = MB_currentFear.Warlock + 1
+        if getConfigState():CycleFear(className, num_locks) then
+            getApi().CdMessage("ALL " .. string.upper(className) .. "S ASSIGNED, STOP ASSIGNING MORE.")
         end
     end
 end
@@ -262,12 +170,8 @@ function MoronBox.Core.CrowdControl.AssignOffTank()
     end
 
     if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-        SetRaidTarget("target", MB_currentRaidTarget)
-        if MB_currentRaidTarget == 8 then
-            MB_currentRaidTarget = 1
-        else
-            MB_currentRaidTarget = MB_currentRaidTarget + 1
-        end
+        getConfigState():TargetMarkCycle()
+        SetRaidTarget("target", getConfigState().CurrentRaidTarget)
     end
 
     local thisOffTank
@@ -291,57 +195,38 @@ function MoronBox.Core.CrowdControl.AssignInterrupt()
     end
 
     if not GetRaidTargetIndex("target") or GetRaidTargetIndex("target") == 0 then
-        SetRaidTarget("target", MB_currentRaidTarget)
-        if MB_currentRaidTarget == 8 then
-            MB_currentRaidTarget = 1
-        else
-            MB_currentRaidTarget = MB_currentRaidTarget + 1
+        getConfigState():TargetMarkCycle()
+        SetRaidTarget("target", getConfigState().CurrentRaidTarget)
+    end
+
+    local function AssignInt(className)
+        local list = getCoreState().ClassList[className]
+        local num = getApi().TableLength(list)
+
+        if num > 0 then
+            getApi().SendAddonMessage(MB_RAID .. "_INT", list[getConfigState().CurrentInterrupt[className]])
+            getConfigState():CycleInterrupt(className, num)
         end
     end
 
-    local shamans = getCoreState().ClassList["Shaman"]
-    local num_shaman = getApi().TableLength(shamans)
+    local hasRogue = getApi().TableLength(getCoreState().ClassList["Rogue"]) > 0
+    local hasShaman = getApi().TableLength(getCoreState().ClassList["Shaman"]) > 0
 
-    local rogues = getCoreState().ClassList["Rogue"]
-    local num_rogues = getApi().TableLength(rogues)
+    if hasRogue then
+        AssignInt("Rogue")
+    end
 
-    local mages = getCoreState().ClassList["Mage"]
-    local num_mages = getApi().TableLength(mages)
+    if hasShaman then
+        AssignInt("Shaman")
+    end
 
-    if (num_rogues + num_shaman + num_mages) == 0 then
+    if not hasRogue and not hasShaman then
+        AssignInt("Mage")
+    end
+
+    if (getApi().TableLength(getCoreState().ClassList["Rogue"]) +
+            getApi().TableLength(getCoreState().ClassList["Shaman"]) +
+            getApi().TableLength(getCoreState().ClassList["Mage"])) == 0 then
         getApi().CdPrint("No interrupters available")
-        return
-    end
-
-    if num_rogues > 0 then
-        getApi().SendAddonMessage(MB_RAID .. "_INT", rogues[MB_currentInterrupt.Rogue])
-
-        if MB_currentInterrupt.Rogue == num_rogues then
-            MB_currentInterrupt.Rogue = 1
-        else
-            MB_currentInterrupt.Rogue = MB_currentInterrupt.Rogue + 1
-        end
-    end
-
-    if num_shaman > 0 then
-        getApi().SendAddonMessage(MB_RAID .. "_INT", shamans[MB_currentInterrupt.Shaman])
-
-        if MB_currentInterrupt.Shaman == num_shaman then
-            MB_currentInterrupt.Shaman = 1
-        else
-            MB_currentInterrupt.Shaman = MB_currentInterrupt.Shaman + 1
-        end
-    end
-
-    if num_shaman == 0 and num_rogues == 0 then
-        if num_mages > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_INT", mages[MB_currentInterrupt.Mage])
-
-            if MB_currentInterrupt.Mage == num_mages then
-                MB_currentInterrupt.Mage = 1
-            else
-                MB_currentInterrupt.Mage = MB_currentInterrupt.Mage + 1
-            end
-        end
     end
 end

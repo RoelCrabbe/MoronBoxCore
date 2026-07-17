@@ -54,12 +54,10 @@ function MoronBox.Core.Gear.FuryGear()
 end
 
 function MoronBox.Core.Gear.EvoGear()
-    MB_evoGear = true
     getGear().EquipRackSet("EVO")
 end
 
 function MoronBox.Core.Gear.MageGear()
-    MB_evoGear = false
     getGear().EquipRackSet("DPS")
 end
 

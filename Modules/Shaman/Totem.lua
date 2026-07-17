@@ -197,11 +197,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             CastTotem(ChooseAirTotem())
 
-            if not MB_cooldowns["Tremor Totem"] then
+            if not getConfigState().TrackCooldowns["Tremor Totem"] then
                 CastTotem(ChooseEarthTotem())
             end
 
-            if not MB_cooldowns["Poison Cleansing Totem"] then
+            if not getConfigState().TrackCooldowns["Poison Cleansing Totem"] then
                 CastTotem(ChooseWaterTotem())
             end
 

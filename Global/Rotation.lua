@@ -1,100 +1,10 @@
 --[####################################################################################################]--
---[################################### Global Values for Rotation #####################################]--
---[####################################################################################################]--
-
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitLevel = UnitLevel
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitCanAttack = UnitCanAttack
-local UnitIsFriend = UnitIsFriend
-local UnitIsEnemy = UnitIsEnemy
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
-local UnitCreatureType = UnitCreatureType
-local UnitClassification = UnitClassification
-
--- Buff/Debuff Functions
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
-
--- Spell Functions
-local CastSpellByName = CastSpellByName
-local GetSpellCooldown = GetSpellCooldown
-local IsCurrentAction = IsCurrentAction
-
--- Target Functions
-local TargetUnit = TargetUnit
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-local AssistUnit = AssistUnit
-
--- Party/Raid Functions
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-local IsRaidLeader = IsRaidLeader
-
--- Player Position/Info Functions
-local GetRealZoneText = GetRealZoneText
-local GetSubZoneText = GetSubZoneText
-
--- Addon Communication (if supported on your server)
-local SendAddonMessage = SendAddonMessage
-
--- Misc Utility Functions
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
-
---[####################################################################################################]--
 --[####################################################################################################]--
 --[####################################################################################################]--
 
----@class MMB: Button
-MMB = CreateFrame("Button", "MMB", UIParent)
-
----@class MMBTooltip: GameTooltip
-MMBTooltip = CreateFrame("GameTooltip", "MMBTooltip", UIParent, "GameTooltipTemplate")
-
----@class MBx: Frame
-MBx = CreateFrame("Frame")
-MBx.ACE = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0")
-MBx.ACE.ItemBonus = AceLibrary("ItemBonusLib-1.0")
-MBx.ACE.Banzai = AceLibrary("Banzai-1.0")
-MBx.ACE.HealComm = AceLibrary("HealComm-1.0")
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--
-
-MB_mySpeccList = {}
-MB_mySingleList = {}
-MB_myMultiList = {}
-MB_myAOEList = {}
-MB_mySetupList = {}
-MB_myPreCastList = {}
 MB_myLoathebList = {}
 
-Instance = {
+Instance         = {
     NAXX        = function() return GetRealZoneText() == "Naxxramas" end,
     AQ40        = function() return GetRealZoneText() == "Ahn\'Qiraj" end,
     AQ20        = function() return GetRealZoneText() == "Ruins of Ahn\'Qiraj" end,
@@ -110,7 +20,7 @@ Instance = {
     end
 }
 
-Faction = {
+Faction          = {
     IsHorde = function() return UnitFactionGroup("player") == "Horde" end
 }
 
@@ -118,87 +28,7 @@ Faction = {
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-MBID = {}
-MB_toonsInGroup = {}
-MB_offTanks = {}
-MB_raidTanks = {}
-MB_noneDruidTanks = {}
-MB_groupID = {}
-MB_classList = {
-    Warrior = {},
-    Mage = {},
-    Shaman = {},
-    Paladin = {},
-    Priest = {},
-    Rogue = {},
-    Druid = {},
-    Hunter = {},
-    Warlock = {}
-}
 
-for i = 1, 8 do
-    MB_toonsInGroup[i] = {}
-end
-
-MB_raidLeader       = nil
-
----@type string|nil
-MB_myHealSpell      = nil
-MB_attackSlot       = nil
-MB_attackRangedSlot = nil
-MB_attackWandSlot   = nil
-
-
----@type boolean
-MB_evoGear              = false
-MB_cooldowns            = {}
-
----@type boolean
-MB_druidTankInParty     = false
----@type boolean
-MB_warriorTankInParty   = false
-
-MB_myInterruptTarget    = nil
-MB_myOTTarget           = nil
-
----@type string|nil
-MB_myAssignedHealTarget = nil
-
-MB_currentCC            = { Mage = 1, Warlock = 1, Priest = 1, Druid = 1 }
-MB_currentInterrupt     = { Rogue = 1, Mage = 1, Shaman = 1 }
-MB_currentFear          = { Warlock = 1 }
-MB_currentRaidTarget    = 1
-MB_Ot_Index             = 1
-
-
-
-MB_myFearSpell        = {
-    Warlock = "Fear"
-}
-
-MB_raidTargetNames    = {
-    [8] = "Skull",
-    [7] = "Cross",
-    [6] = "Square",
-    [5] = "Moon",
-    [4] = "Triangle",
-    [3] = "Diamond",
-    [2] = "Circle",
-    [1] = "Star"
-}
-
----@type boolean|nil
-MB_isCasting          = nil
-
----@type boolean|nil
-MB_isChanneling       = nil
-
----@type boolean|nil
-MB_isCastingMyCCSpell = nil
-
-
-MB_buffingCounterWarlock                               = 1
-MB_buffingCounterDruid                                 = 1
 MB_buffingCounterMage                                  = 1
 MB_buffingCounterPriest                                = 1
 MB_buffingCounterPaladin                               = 1
@@ -217,5 +47,4 @@ MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange = { Active = false, Time 
 MB_razorgoreNewTargetBecauseTargetIsBehind             = { Active = false, Time = 0 }
 MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time = 0 }
 MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
-MB_autoBuff                                            = { Active = false, Time = 0 }
 MB_autoBuyReagents                                     = { Active = false, Time = 0 }
