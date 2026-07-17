@@ -1,5 +1,4 @@
 -- [[ Rogue Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Rogue Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
@@ -24,7 +23,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function PoisonMainHand()
-        if not HaveInBags("Instant Poison VI") then
+        if not getBag().HaveInBags("Instant Poison VI") then
+            return
+        end
+
+        local _, _, _, hasEnchantOff = GetWeaponEnchantInfo()
+
+        if not hasEnchantOff then
+            UseItemByName("Instant Poison VI")
+            PickupInventoryItem(17)
+            ClearCursor()
+        end
+    end
+
+    local function PoisonOffhand()
+        if not getBag().HaveInBags("Instant Poison VI") then
             return
         end
 
@@ -38,98 +51,98 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        if IsSpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+        if getSpells().IsSpellReady("Blade Flurry") and getAura().HasBuffOrDebuff("Slice and Dice", "player", "buff") then
             CastSpellByName("Blade Flurry")
         end
 
-        SelfBuff("Berserking")
-        SelfBuff("Blood Fury")
+        getSpells().SelfBuff("Berserking")
+        getSpells().SelfBuff("Blood Fury")
 
-        if IsSpellReady("Adrenaline Rush") then
+        if getSpells().IsSpellReady("Adrenaline Rush") then
             CastSpellByName("Adrenaline Rush")
         end
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if ConfigState.UseCooldowns.Active then
+        if getConfigState().UseCooldowns.Active then
             Cooldowns()
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if InCombat() and UnitMana("player") <= 40 then
-            if ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(13) then
+        if getUnit().InCombat() and UnitMana("player") <= 40 then
+            if getBag().ItemNameOfEquippedSlot(13) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(13) then
                 use(13)
-            elseif ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not TrinketOnCD(14) then
+            elseif getBag().ItemNameOfEquippedSlot(14) == "Renataki\'s Charm of Trickery" and not getBag().TrinketOnCD(14) then
                 use(14)
             end
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
             if UnitMana("player") >= 25 then
-                if ConfigState.InterruptTarget then
-                    GetMyInterruptTarget()
+                if getConfigState().InterruptTarget then
+                    getRaid().GetMyInterruptTarget()
                 end
 
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
-                CastSpellByName(ConfigState.InterruptSpell[myClass])
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
+                CastSpellByName(getConfigState().InterruptSpell[myClass])
+                getApi().CdPrint("Interrupting!")
+                getConfigState().DoInterrupt.Active = false
                 return
             end
         end
 
         local aggrox = AceLibrary("Banzai-1.0")
         if aggrox and aggrox:GetUnitAggroByUnitId("player") then
-            if HealthPct() < 0.8 and IsSpellReady("Evasion") then
+            if getUnit().HealthPct() < 0.8 and getSpells().IsSpellReady("Evasion") then
                 CastSpellByName("Evasion")
                 return
-            elseif HealthPct() < 0.45 and IsSpellReady("Vanish") then
+            elseif getUnit().HealthPct() < 0.45 and getSpells().IsSpellReady("Vanish") then
                 CastSpellByName("Vanish")
                 return
             end
         end
 
-        if not InMeleeRange() then
+        if not getUnit().InMeleeRange() then
             return
         end
 
         local cp = GetComboPoints("target")
-        if IsSpellReady("Kidney Shot") and cp >= 3 and StunnableMob() then
+        if getSpells().IsSpellReady("Kidney Shot") and cp >= 3 and getTables().StunnableMob() then
             CastSpellByName("Kidney Shot")
         end
 
-        if IsSpellReady("Blade Flurry") and HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+        if getSpells().IsSpellReady("Blade Flurry") and getAura().HasBuffOrDebuff("Slice and Dice", "player", "buff") then
             CastSpellByName("Blade Flurry")
         end
 
-        if (DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff"))
-            and (InMeleeRange() or TankTarget("Ragnaros")) then
+        if (getAura().GetSunderAmount() == 5 or getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff"))
+            and (getUnit().InMeleeRange() or getRaid().TankTarget("Ragnaros")) then
             if Instance.IsWorldBoss() then
                 Cooldowns()
             end
 
-            MeleeTrinkets()
+            getBag().MeleeTrinkets()
         end
 
         local hasImprovedEA = ImprovedExpose()
-        if not HasBuffOrDebuff("Slice and Dice", "player", "buff") then
+        if not getAura().HasBuffOrDebuff("Slice and Dice", "player", "buff") then
             if hasImprovedEA then
-                if cp == 2 and HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+                if cp == 2 and getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                     CastSpellByName("Slice and Dice")
                 end
             elseif cp >= 1 then
@@ -145,7 +158,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if ConfigState.PlayerSpecc == "Hemo" then
+        if getConfigState().PlayerSpecc == "Hemo" then
             CastSpellByName("Hemorrhage")
             return
         end
@@ -159,11 +172,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, ar = GetTalentInfo(2, 19)
 
             if hemo > 0 then
-                ConfigState.PlayerSpecc = "Hemo"
+                getConfigState().PlayerSpecc = "Hemo"
             elseif ar > 0 then
-                ConfigState.PlayerSpecc = "AR"
+                getConfigState().PlayerSpecc = "AR"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()

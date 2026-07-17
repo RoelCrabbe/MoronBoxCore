@@ -436,3 +436,61 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
     end
     return false
 end
+
+function MoronBox.Core.Healing.HealLieutenantAQ20()
+    if not UnitInRaid("player") or MB_lieutenantAndorovIsNotHealable.Active then
+        return false
+    end
+
+    if Instance.AQ20() then
+        TargetByName("Lieutenant General Andorov")
+
+        if UnitName("target") == "Lieutenant General Andorov" then
+            local spellToCast
+
+            if myClass == "Shaman" then
+                spellToCast = "Healing Wave(rank 7)"
+            elseif myClass == "Priest" then
+                spellToCast = "Heal"
+            elseif myClass == "Druid" then
+                spellToCast = "Healing Touch(rank 3)"
+            elseif myClass == "Paladin" then
+                spellToCast = "Flash of Light"
+            end
+
+            if getUnit().IsValidFriendlyTarget("target", spellToCast) and getUnit().HealthPct("target") <= 0.4 then
+                CastSpellByName(spellToCast)
+                return true
+            end
+        else
+            TargetLastTarget()
+        end
+    end
+    return false
+end
+
+function MoronBox.Core.Healing.TargetMyAssignedTankToHeal()
+    if getApi().FindMyNameInTable(MB_myThreatPWSoakerHealerList) then
+        TargetByName(MB_myThreatPWSoaker)
+        return
+    end
+
+    if getApi().FindMyNameInTable(MB_myFirstPWSoakerHealerList) then
+        TargetByName(MB_myFirstPWSoaker)
+        return
+    end
+
+    if getApi().FindMyNameInTable(MB_mySecondPWSoakerHealerList) then
+        TargetByName(MB_mySecondPWSoaker)
+        return
+    end
+
+    if getApi().FindMyNameInTable(MB_myThirdPWSoakerHealerList) then
+        TargetByName(MB_myThirdPWSoaker)
+        return
+    end
+
+    if not MB_myAssignedHealTarget then
+        MB_myAssignedHealTarget = MB_raidLeader
+    end
+end

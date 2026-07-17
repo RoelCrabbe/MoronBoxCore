@@ -1,13 +1,14 @@
 -- [[ Warrior Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Warrior Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myName = UnitName("player")
 local myClass = UnitClass("player")
+local myRace = UnitRace("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
-    local RemovedBuffs = {
+    local RemoveBuffs = {
         ["Arcane Intellect"]  = "Arcane Intellect",
         ["Arcane Brilliance"] = "Arcane Brilliance",
         ["Divine Spirit"]     = "Divine Spirit",
@@ -72,27 +73,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function UseSpeedRunPotsWhenPossible(potion)
-        if not SettingsState.SpeedRunEnabled then
+        if not getSettingsState().SpeedRunEnabled then
             return
         end
 
-        PotionsWhenPossible(potion)
+        getCons().PotionsWhenPossible(potion)
     end
 
     -- Not used
     local function UseSpeedRunJujusWhenPossible(potion)
-        if not SettingsState.SpeedRunEnabled then
+        if not getSettingsState().SpeedRunEnabled then
             return
         end
 
-        JujuWhenPossible(potion)
+        getCons().JujuWhenPossible(potion)
     end
 
     local lastAnnihilatorTime = 0
     local EQUIP_THROTTLE = 1.5
 
     local function Annihilator()
-        if not SettingsState.Warrior.AnnihilatorActive or TableLength(SettingsState.Warrior.AnnihilatorWeavers) == 0 then
+        if not getSettingsState().Warrior.AnnihilatorActive or getApi().TableLength(getSettingsState().Warrior.AnnihilatorWeavers) == 0 then
             return
         end
 
@@ -102,7 +103,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         local weaverData = nil
-        for _, name in pairs(SettingsState.Warrior.AnnihilatorWeavers) do
+        for _, name in pairs(getSettingsState().Warrior.AnnihilatorWeavers) do
             if myName == name then
                 weaverData = name
                 break
@@ -114,15 +115,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         local mh, oh
-        if Instance.IsWorldBoss() and GetArmorShatterAmount() < 3 then
-            mh, oh = GetWeaverWeapon(weaverData, "BMH"), GetWeaverWeapon(weaverData, "BOH")
+        if Instance.IsWorldBoss() and getAura().GetArmorShatterAmount() < 3 then
+            mh, oh = getGear().GetWeaverWeapon(weaverData, "BMH"), getGear().GetWeaverWeapon(weaverData, "BOH")
         else
-            mh, oh = GetWeaverWeapon(weaverData, "NMH"), GetWeaverWeapon(weaverData, "NOH")
+            mh, oh = getGear().GetWeaverWeapon(weaverData, "NMH"), getGear().GetWeaverWeapon(weaverData, "NOH")
         end
 
         local function performSwap(slot, targetName)
             if not targetName then return end
-            local currentName = GetItemNameOfEquippedSlot(slot)
+            local currentName = getBag().GetItemNameOfEquippedSlot(slot)
             if currentName ~= targetName then
                 RunLine("/equip " .. string.gsub(targetName, ",", "%%,"))
             end
@@ -135,19 +136,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSInfo()
-        local btCD = SpellCooldown("Bloodthirst")
-        local wwCD = SpellCooldown("Whirlwind")
+        local btCD = getSpells().SpellCooldown("Bloodthirst")
+        local wwCD = getSpells().SpellCooldown("Whirlwind")
         local gcdThreshold = 1.35
         local canUseHam = (btCD > gcdThreshold) and (wwCD > gcdThreshold)
         return btCD, wwCD, canUseHam
     end
 
     local function CanUseCooldowns()
-        if not InCombat() or ImBusy() then
+        if not getUnit().InCombat() or getSpells().ImBusy() then
             return false
         end
 
-        return InMeleeRange() or TankTarget("Ragnaros")
+        return getUnit().InMeleeRange() or getRaid().TankTarget("Ragnaros")
     end
 
     local function BattleShout(myRage)
@@ -161,7 +162,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Sunder(myRage)
-        if MobsNoSunders() then
+        if getTables().MobsNoSunders() then
             return
         end
 
@@ -169,7 +170,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if HasBuffOrDebuff("Expose Armor", "target", "debuff") or GetSunderAmount() >= 5 then
+        if getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") or getAura().GetSunderAmount() >= 5 then
             return
         end
 
@@ -182,15 +183,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local sealOfTheDawn = "Seal of the Dawn"
 
     local function Execute(myRage)
-        if HealthPct("target") >= 0.20 then
+        if getUnit().HealthPct("target") >= 0.20 then
             return
         end
 
         local base, pos, neg = UnitAttackPower("player")
         local apTotal = base + pos + neg
 
-        local slot13 = GetItemNameOfEquippedSlot(13)
-        local slot14 = GetItemNameOfEquippedSlot(14)
+        local slot13 = getBag().GetItemNameOfEquippedSlot(13)
+        local slot14 = getBag().GetItemNameOfEquippedSlot(14)
 
         local targetType = UnitCreatureType("target")
         if targetType == "Undead" or targetType == "Demon" then
@@ -209,7 +210,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         if myRage >= impExeCost and (impExeValue >= btDamage or myRage >= 30) then
             CastSpellByName("Execute")
-        elseif IsSpellReady("Bloodthirst") and myRage >= 30 and btDamage > impExeValue then
+        elseif getSpells().IsSpellReady("Bloodthirst") and myRage >= 30 and btDamage > impExeValue then
             CastSpellByName("Bloodthirst")
         end
     end
@@ -219,21 +220,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if IsSpellReady("Death Wish") and myRage >= 10 then
-            SelfBuff("Death Wish")
+        if getSpells().IsSpellReady("Death Wish") and myRage >= 10 then
+            getSpells().SelfBuff("Death Wish")
         end
 
-        if Instance.MC() and TankTarget("Baron Geddon") then
+        if Instance.MC() and getRaid().TankTarget("Baron Geddon") then
             UseSpeedRunPotsWhenPossible("Frozen Rune")
         end
 
-        if HasBuffOrDebuff("Death Wish", "player", "debuff") then
+        if getAura().HasBuffOrDebuff("Death Wish", "player", "debuff") then
             local raceSpell = myRace == "Orc" and "Blood Fury" or "Berserking"
-            SelfBuff(raceSpell)
+            getSpells().SelfBuff(raceSpell)
             UseSpeedRunPotsWhenPossible("Mighty Rage Potion")
         end
 
-        MeleeTrinkets()
+        getBag().MeleeTrinkets()
     end
 
     local function BigDPSCooldowns(myRage)
@@ -241,7 +242,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        SelfBuff("Recklessness")
+        getSpells().SelfBuff("Recklessness")
         DPSCooldowns(myRage)
     end
 
@@ -250,14 +251,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if IsSpellReady("Recklessness") and BossIShouldUseRecklessnessOn() then
+        if getSpells().IsSpellReady("Recklessness") and getTables().BossIShouldUseRecklessnessOn() then
             BigDPSCooldowns(myRage)
         end
 
         if UnitInRaid("player") and GetNumRaidMembers() > 5 then
             local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
 
-            if GetSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if getAura().GetSunderAmount() == 5 or getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                 if Instance.IsWorldBoss() then
                     DPSCooldowns(myRage)
                 elseif UnitHealth("target") > hpThreshold then
@@ -272,13 +273,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function DPSSingleRotation(myRage)
         local btSpellCD, _, canUseHam = DPSInfo()
 
-        if InMeleeRange() then
-            if IsSpellReady("Bloodthirst") and myRage >= 30 then
+        if getUnit().InMeleeRange() then
+            if getSpells().IsSpellReady("Bloodthirst") and myRage >= 30 then
                 CastSpellByName("Bloodthirst")
             end
 
-            if IsSpellReady("Whirlwind") and myRage >= 25 then
-                if btSpellCD > 0.33 and not IsExcludedWW() then
+            if getSpells().IsSpellReady("Whirlwind") and myRage >= 25 then
+                if btSpellCD > 0.33 and not getTables().IsExcludedWW() then
                     CastSpellByName("Whirlwind")
                 end
             end
@@ -294,8 +295,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSSingle(myRage)
-        if not WarriorIsBerserker() then
-            WarriorSetBerserker()
+        if not getUnit().WarriorIsBerserker() then
+            getUnit().WarriorSetBerserker()
             return
         end
 
@@ -303,22 +304,22 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
         Annihilator()
 
-        if IsSpellReady("Bloodrage") and myRage < 20 then
+        if getSpells().IsSpellReady("Bloodrage") and myRage < 20 then
             CastSpellByName("Bloodrage")
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
             if myRage >= 10 then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
-                CastSpellByName(ConfigState.InterruptSpell[myClass])
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
+                CastSpellByName(getConfigState().InterruptSpell[myClass])
+                getApi().CdPrint("Interrupting!")
+                getConfigState().DoInterrupt.Active = false
                 return
             end
         end
@@ -333,12 +334,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function DPSMultiRotation(myRage)
         local btSpellCD, _, canUseHam = DPSInfo()
 
-        if IsExcludedWW() then
+        if getTables().IsExcludedWW() then
             DPSSingleRotation(myRage)
             return
         end
 
-        if InMeleeRange() and IsSpellReady("Whirlwind") and myRage >= 25 then
+        if getUnit().InMeleeRange() and getSpells().IsSpellReady("Whirlwind") and myRage >= 25 then
             CastSpellByName("Whirlwind")
         end
 
@@ -350,7 +351,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             CastSpellByName("Cleave")
         end
 
-        if InMeleeRange() and IsSpellReady("Bloodthirst") and myRage >= 30 then
+        if getUnit().InMeleeRange() and getSpells().IsSpellReady("Bloodthirst") and myRage >= 30 then
             if btSpellCD > 0.33 then
                 CastSpellByName("Bloodthirst")
             end
@@ -358,8 +359,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function DPSMulti(myRage)
-        if not WarriorIsBerserker() then
-            WarriorSetBerserker()
+        if not getUnit().WarriorIsBerserker() then
+            getUnit().WarriorSetBerserker()
             return
         end
 
@@ -367,22 +368,22 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
         Annihilator()
 
-        if IsSpellReady("Bloodrage") and myRage < 20 then
+        if getSpells().IsSpellReady("Bloodrage") and myRage < 20 then
             CastSpellByName("Bloodrage")
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
             if myRage >= 10 then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
-                CastSpellByName(ConfigState.InterruptSpell[myClass])
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
+                CastSpellByName(getConfigState().InterruptSpell[myClass])
+                getApi().CdPrint("Interrupting!")
+                getConfigState().DoInterrupt.Active = false
                 return
             end
         end
@@ -397,42 +398,42 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function Taunt()
         local myRage = UnitMana("player")
 
-        if Instance.MC() and TankTarget("Magmadar") then
+        if Instance.MC() and getRaid().TankTarget("Magmadar") then
             return
         end
 
-        if IsSpellReady("Taunt") then
-            WarriorSetDefensive()
+        if getSpells().IsSpellReady("Taunt") then
+            getUnit().WarriorSetDefensive()
             CastSpellByName("Taunt")
             return
         end
 
-        if ImFocus() then
+        if getRaid().ImFocus() then
             return
         end
 
-        if ConfigState.PlayerSpecc ~= "Prottank" then
+        if getConfigState().PlayerSpecc ~= "Prottank" then
             return
         end
 
-        if IsSpellReady("Mocking Blow") and myRage >= 10 then
-            if WarriorIsBattle() then
+        if getSpells().IsSpellReady("Mocking Blow") and myRage >= 10 then
+            if getUnit().WarriorIsBattle() then
                 CastSpellByName("Mocking Blow")
             else
-                WarriorSetBattle()
+                getUnit().WarriorSetBattle()
             end
         end
     end
 
     local function Disarm(myRage)
         local tName = UnitName("target")
-        local tHealthPct = HealthPct("target")
+        local tHealthPct = getUnit().HealthPct("target")
 
-        if not IsSpellReady("Disarm") then
+        if not getSpells().IsSpellReady("Disarm") then
             return
         end
 
-        if HasBuffOrDebuff("Disarm", "target", "debuff") then
+        if getAura().HasBuffOrDebuff("Disarm", "target", "debuff") then
             return
         end
 
@@ -454,21 +455,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if ImFocus() and not ImpDemo() then
+        if getRaid().ImFocus() and not ImpDemo() then
             return
         end
 
-        if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then
+        if not getAura().HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") and myRage >= 20 then
             CastSpellByName("Demoralizing Shout")
         end
     end
 
     local function BigTANKCooldowns()
         if HasShield() then
-            SelfBuff("Shield Wall")
+            getSpells().SelfBuff("Shield Wall")
         end
 
-        SelfBuff("Last Stand")
+        getSpells().SelfBuff("Last Stand")
     end
 
     local function TANKSurvival()
@@ -476,45 +477,45 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        local playerHP = HealthPct()
-        local targetHP = HealthPct("target")
+        local playerHP = getUnit().HealthPct()
+        local targetHP = getUnit().HealthPct("target")
 
         if Instance.NAXX() then
             if LOA_IsAtLoatheb() and MB_myLoathebBoxStrategy then
                 if targetHP <= 0.08 then
                     BigTANKCooldowns()
                 elseif targetHP <= 0.12 then
-                    SelfBuff("Last Stand")
+                    getSpells().SelfBuff("Last Stand")
                 end
-                TakeJujuWhenPossible("Juju Escape")
-            elseif TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+                getCons().JujuWhenPossible("Juju Escape")
+            elseif getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 if targetHP <= 0.05 then BigTANKCooldowns() end
-                TakeJujuWhenPossible("Juju Escape")
-                PotionsWhenPossible("Greater Stoneshield Potion")
+                getCons().JujuWhenPossible("Juju Escape")
+                getCons().PotionsWhenPossible("Greater Stoneshield Potion")
             end
         elseif Instance.BWL() then
-            if TankTarget("Vaelastrasz the Corrupt") and HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+            if getRaid().TankTarget("Vaelastrasz the Corrupt") and getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 BigTANKCooldowns()
-            elseif TankTarget("Firemaw") then
+            elseif getRaid().TankTarget("Firemaw") then
                 if targetHP <= 0.15 and playerHP <= 0.3 then BigTANKCooldowns() end
-                TakeJujuWhenPossible("Juju Ember")
-            elseif TankTarget("Chromaggus") and targetHP <= 0.07 and playerHP <= 0.3 then
+                getCons().JujuWhenPossible("Juju Ember")
+            elseif getRaid().TankTarget("Chromaggus") and targetHP <= 0.07 and playerHP <= 0.3 then
                 BigTANKCooldowns()
             end
-        elseif Instance.AQ40() and TankTarget("Princess Huhuran") and MB_myHuhuranBoxStrategy then
+        elseif Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") and MB_myHuhuranBoxStrategy then
             if targetHP <= MB_myHuhuranTankDefensivePercentage then BigTANKCooldowns() end
-        elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
+        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
             if targetHP <= MB_myOssirianTankDefensivePercentage and playerHP <= 0.3 then
                 BigTANKCooldowns()
             end
         elseif playerHP <= 0.2 then
-            SelfBuff("Last Stand")
+            getSpells().SelfBuff("Last Stand")
         end
 
         if playerHP <= 0.25 then
-            if not TrinketOnCD(13) and GetItemNameOfEquippedSlot(13) == "Lifegiving Gem" then
+            if not getBag().TrinketOnCD(13) and getBag().GetItemNameOfEquippedSlot(13) == "Lifegiving Gem" then
                 use(13)
-            elseif not TrinketOnCD(14) and GetItemNameOfEquippedSlot(14) == "Lifegiving Gem" then
+            elseif not getBag().TrinketOnCD(14) and getBag().GetItemNameOfEquippedSlot(14) == "Lifegiving Gem" then
                 use(14)
             end
         end
@@ -525,20 +526,20 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if IsSpellReady("Death Wish") and myRage >= 10 and SettingsState.SpeedRunEnabled then
-            SelfBuff("Death Wish")
+        if getSpells().IsSpellReady("Death Wish") and myRage >= 10 and getSettingsState().SpeedRunEnabled then
+            getSpells().SelfBuff("Death Wish")
         end
 
-        if Instance.MC() and TankTarget("Baron Geddon") then
+        if Instance.MC() and getRaid().TankTarget("Baron Geddon") then
             UseSpeedRunPotsWhenPossible("Frozen Rune")
         end
 
-        if HasBuffOrDebuff("Death Wish", "player", "debuff") then
-            SelfBuff("Berserking")
+        if getAura().HasBuffOrDebuff("Death Wish", "player", "debuff") then
+            getSpells().SelfBuff("Berserking")
             UseSpeedRunPotsWhenPossible("Greater Stoneshield Potion")
         end
 
-        MeleeTrinkets()
+        getBag().MeleeTrinkets()
     end
 
     local function UseTANKCooldowns(myRage)
@@ -549,7 +550,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if UnitInRaid("player") and GetNumRaidMembers() > 5 then
             local hpThreshold = (GetNumRaidMembers() <= 20) and 25000 or 100000
 
-            if GetSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if getAura().GetSunderAmount() == 5 or getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                 if Instance.IsWorldBoss() then
                     TANKCooldowns(myRage)
                 elseif UnitHealth("target") > hpThreshold then
@@ -563,27 +564,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function TANKSingleRotation(myRage)
         local tName = UnitName("target")
-        local sRage = ImFocus() and 54 or 46
+        local sRage = getRaid().ImFocus() and 54 or 46
 
-        if InMeleeRange() then
-            if IsSpellReady("Revenge") and myRage >= 5 then
+        if getUnit().InMeleeRange() then
+            if getSpells().IsSpellReady("Revenge") and myRage >= 5 then
                 CastSpellByName("Revenge")
             end
 
-            if IsSpellReady("Concussion Blow") and StunnableMob() and myRage >= 15 then
+            if getSpells().IsSpellReady("Concussion Blow") and getTables().getTables().StunnableMob() and myRage >= 15 then
                 CastSpellByName("Concussion Blow")
             end
 
-            if HealthPct() < 0.7 and HasShield() and myRage >= 20 then
+            if getUnit().HealthPct() < 0.7 and HasShield() and myRage >= 20 then
                 CastSpellByName("Shield Block")
             end
 
-            if ConfigState.PlayerSpecc == "Prottank" then
-                if IsSpellReady("Shield Slam") and myRage >= 20 and HasShield() then
+            if getConfigState().PlayerSpecc == "Prottank" then
+                if getSpells().IsSpellReady("Shield Slam") and myRage >= 20 and HasShield() then
                     CastSpellByName("Shield Slam")
                 end
-            elseif ConfigState.PlayerSpecc == "Furytank" then
-                if IsSpellReady("Bloodthirst") and myRage >= 30 then
+            elseif getConfigState().PlayerSpecc == "Furytank" then
+                if getSpells().IsSpellReady("Bloodthirst") and myRage >= 30 then
                     CastSpellByName("Bloodthirst")
                 end
             end
@@ -592,14 +593,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             DemoShout(myRage)
         end
 
-        if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
-            if not IsSpellReady("Bloodthirst") and myRage >= 24 then
+        if getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if not getSpells().IsSpellReady("Bloodthirst") and myRage >= 24 then
                 CastSpellByName("Heroic Strike")
             elseif myRage >= 42 then
                 CastSpellByName("Heroic Strike")
             end
         else
-            if tName ~= "Deathknight Understudy" and myRage >= sRage and GetSunderAmount() == 5 then
+            if tName ~= "Deathknight Understudy" and myRage >= sRage and getAura().GetSunderAmount() == 5 then
                 CastSpellByName("Sunder Armor")
             elseif myRage >= 42 then
                 CastSpellByName("Heroic Strike")
@@ -608,18 +609,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function TankSingle(myRage)
-        if FindInTable(GeneralState.RaidTanks, myName) then
-            if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        if getApi().FindInTable(getCoreState().RaidTanks, myName) then
+            if getAura().HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
                 CancelBuff("Greater Blessing of Salvation")
-            elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            elseif getAura().HasBuffOrDebuff("Dampen Magic", "player", "buff") then
                 CancelBuff("Dampen Magic")
             end
         end
 
         TANKSurvival()
-        OffTank()
+        getRaid().OffTank()
 
-        if UnitName("target") and CrowdControlledMob() and myName ~= ConfigState.RaidLeader then
+        if UnitName("target") and getUnit().CrowdControlledMob() and myName ~= getConfigState().RaidLeader then
             ClearTarget()
             return
         end
@@ -630,10 +631,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         local shouldTaunt = tName ~= ""
             and tOfTarget ~= "" and tOfTarget ~= "Unknown"
             and UnitIsEnemy("player", "target")
-            and not FindInTable(GeneralState.RaidTanks, tOfTarget)
+            and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if ConfigState.OffTankTarget then
+            if getConfigState().OffgetRaid().TankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -642,33 +643,33 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if ConfigState.OffTankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == ConfigState.OffTankTarget and UnitIsDead("target") then
-                ConfigState.OffTankTarget = nil
+        if getConfigState().OffgetRaid().TankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
+                getConfigState().OffgetRaid().TankTarget = nil
                 ClearTarget()
             end
         end
 
-        if not WarriorIsDefensive() then
-            WarriorSetDefensive()
+        if not getUnit().WarriorIsDefensive() then
+            getUnit().WarriorSetDefensive()
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if IsSpellReady("Bloodrage") and myRage < 15 then
+        if getSpells().IsSpellReady("Bloodrage") and myRage < 15 then
             CastSpellByName("Bloodrage")
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady("Shield Bash") and HasShield() then
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady("Shield Bash") and HasShield() then
             if myRage >= 10 then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
                 CastSpellByName("Shield Bash")
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
+                getApi().CdPrint("Interrupting!")
+                getConfigState().DoInterrupt.Active = false
             end
         end
 
@@ -679,27 +680,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function TANKMultiRotation(myRage)
         local tName = UnitName("target")
-        local sRage = ImFocus() and 54 or 46
+        local sRage = getRaid().ImFocus() and 54 or 46
 
-        if InMeleeRange() then
-            if IsSpellReady("Revenge") and myRage >= 5 then
+        if getUnit().InMeleeRange() then
+            if getSpells().IsSpellReady("Revenge") and myRage >= 5 then
                 CastSpellByName("Revenge")
             end
 
-            if IsSpellReady("Concussion Blow") and StunnableMob() and myRage >= 15 then
+            if getSpells().IsSpellReady("Concussion Blow") and getTables().getTables().StunnableMob() and myRage >= 15 then
                 CastSpellByName("Concussion Blow")
             end
 
-            if HealthPct() < 0.7 and HasShield() and myRage >= 20 then
+            if getUnit().HealthPct() < 0.7 and HasShield() and myRage >= 20 then
                 CastSpellByName("Shield Block")
             end
 
-            if ConfigState.PlayerSpecc == "Prottank" then
-                if IsSpellReady("Shield Slam") and myRage >= 20 and HasShield() then
+            if getConfigState().PlayerSpecc == "Prottank" then
+                if getSpells().IsSpellReady("Shield Slam") and myRage >= 20 and HasShield() then
                     CastSpellByName("Shield Slam")
                 end
-            elseif ConfigState.PlayerSpecc == "Furytank" then
-                if IsSpellReady("Bloodthirst") and myRage >= 30 then
+            elseif getConfigState().PlayerSpecc == "Furytank" then
+                if getSpells().IsSpellReady("Bloodthirst") and myRage >= 30 then
                     CastSpellByName("Bloodthirst")
                 end
             end
@@ -708,14 +709,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             DemoShout(myRage)
         end
 
-        if HasBuffOrDebuff("Expose Armor", "target", "debuff") then
-            if not IsSpellReady("Bloodthirst") and myRage >= 28 then
+        if getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if not getSpells().IsSpellReady("Bloodthirst") and myRage >= 28 then
                 CastSpellByName("Cleave")
             elseif myRage >= 45 then
                 CastSpellByName("Cleave")
             end
         else
-            if tName ~= "Deathknight Understudy" and myRage >= sRage and GetSunderAmount() == 5 then
+            if tName ~= "Deathknight Understudy" and myRage >= sRage and getAura().GetSunderAmount() == 5 then
                 CastSpellByName("Sunder Armor")
             elseif myRage >= 25 then
                 CastSpellByName("Cleave")
@@ -724,18 +725,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function TankMulti(myRage)
-        if FindInTable(GeneralState.RaidTanks, myName) then
-            if HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        if getApi().FindInTable(getCoreState().RaidTanks, myName) then
+            if getAura().HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
                 CancelBuff("Greater Blessing of Salvation")
-            elseif HasBuffOrDebuff("Dampen Magic", "player", "buff") then
+            elseif getAura().HasBuffOrDebuff("Dampen Magic", "player", "buff") then
                 CancelBuff("Dampen Magic")
             end
         end
 
         TANKSurvival()
-        OffTank()
+        getRaid().OffTank()
 
-        if UnitName("target") and CrowdControlledMob() and myName ~= ConfigState.RaidLeader then
+        if UnitName("target") and getUnit().CrowdControlledMob() and myName ~= getConfigState().RaidLeader then
             ClearTarget()
             return
         end
@@ -746,10 +747,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         local shouldTaunt = tName ~= ""
             and tOfTarget ~= "" and tOfTarget ~= "Unknown"
             and UnitIsEnemy("player", "target")
-            and not FindInTable(GeneralState.RaidTanks, tOfTarget)
+            and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if ConfigState.OffTankTarget then
+            if getConfigState().OffgetRaid().TankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -758,46 +759,46 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if ConfigState.OffTankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == ConfigState.OffTankTarget and UnitIsDead("target") then
-                ConfigState.OffTankTarget = nil
+        if getConfigState().OffgetRaid().TankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
+                getConfigState().OffgetRaid().TankTarget = nil
                 ClearTarget()
             end
         end
 
-        if not WarriorIsDefensive() then
-            WarriorSetDefensive()
+        if not getUnit().WarriorIsDefensive() then
+            getUnit().WarriorSetDefensive()
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if IsSpellReady("Bloodrage") and myRage < 15 then
+        if getSpells().IsSpellReady("Bloodrage") and myRage < 15 then
             CastSpellByName("Bloodrage")
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady("Shield Bash") and HasShield() then
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady("Shield Bash") and HasShield() then
             if myRage >= 10 then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
                 CastSpellByName("Shield Bash")
-                CdPrint("Interrupting!")
-                ConfigState.DoInterrupt.Active = false
+                getApi().CdPrint("Interrupting!")
+                getConfigState().DoInterrupt.Active = false
             end
         end
 
         BattleShout(myRage)
         UseTANKCooldowns(myRage)
 
-        if Instance.NAXX() and IsAtNoth() then
+        if Instance.NAXX() and getRaid().IsAtNoth() then
             TANKSingleRotation(myRage)
             return
-        elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
             TANKSingleRotation(myRage)
             return
-        elseif Instance.ONY() and TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+        elseif Instance.ONY() and getRaid().TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
             TANKSingleRotation(myRage)
             return
         end
@@ -812,60 +813,60 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, deepProt = GetTalentInfo(3, 17)
 
             if fury > 0 and prot > 4 then
-                ConfigState.PlayerSpecc = "Furytank"
+                getConfigState().PlayerSpecc = "Furytank"
             elseif fury > 0 then
-                ConfigState.PlayerSpecc = "BT"
+                getConfigState().PlayerSpecc = "BT"
             elseif deepProt > 0 then
-                ConfigState.PlayerSpecc = "Prottank"
+                getConfigState().PlayerSpecc = "Prottank"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Single = function()
             local myRage = UnitMana("player")
 
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getAura().CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
 
-            if ConfigState.WarriorBinds == "Fury" and not InCombat() then
-                if FindMyNameInTable(SettingsState.FurysThatCanTank) then
-                    FuryGear()
-                    ConfigState.WarriorBinds = nil
+            if getConfigState().WarriorBinds == "Fury" and not getUnit().InCombat() then
+                if getApi().FindMyNameInTable(getSettingsState().FurysThatCanTank) then
+                    getGear().FuryGear()
+                    getConfigState().WarriorBinds = nil
                 end
             end
 
-            if not InCombat("target") then
+            if not getUnit().InCombat("target") then
                 return
             end
 
-            if InMeleeRange() then
+            if getUnit().InMeleeRange() then
                 if Instance.AQ40() then
-                    NaturePotsOnHuhuran()
+                    getCons().NaturePotsOnHuhuran()
                 end
 
-                if MobsToAutoBreakFear() then
-                    if IsSpellReady("Death Wish") and myRage >= 10 then
-                        SelfBuff("Death Wish")
+                if getTables().MobsToAutoBreakFear() then
+                    if getSpells().IsSpellReady("Death Wish") and myRage >= 10 then
+                        getSpells().SelfBuff("Death Wish")
                     end
                 end
             end
 
-            if (ConfigState.PlayerSpecc == "Prottank" or ConfigState.PlayerSpecc == "Furytank") then
-                if ConfigState.UseCooldowns.Active then
+            if (getConfigState().PlayerSpecc == "Prottank" or getConfigState().PlayerSpecc == "Furytank") then
+                if getConfigState().UseCooldowns.Active then
                     TANKCooldowns(myRage)
                 end
 
                 if Instance.AQ40() then
-                    AnubisathAlert()
+                    getRaid().AnubisathAlert()
                 end
 
                 TankSingle(myRage)
                 return
             end
 
-            if ConfigState.UseBigCooldowns.Active then
+            if getConfigState().UseBigCooldowns.Active then
                 BigDPSCooldowns(myRage)
-            elseif ConfigState.UseCooldowns.Active then
+            elseif getConfigState().UseCooldowns.Active then
                 DPSCooldowns(myRage)
             end
 
@@ -874,48 +875,48 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         Multi = function()
             local myRage = UnitMana("player")
 
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if ConfigState.WarriorBinds == "Fury" and not InCombat() then
-                if FindMyNameInTable(SettingsState.FurysThatCanTank) then
-                    FuryGear()
-                    ConfigState.WarriorBinds = nil
+            if getConfigState().WarriorBinds == "Fury" and not getUnit().InCombat() then
+                if getApi().FindMyNameInTable(getSettingsState().FurysThatCanTank) then
+                    getGear().FuryGear()
+                    getConfigState().WarriorBinds = nil
                 end
             end
 
-            if not InCombat("target") then
+            if not getUnit().InCombat("target") then
                 return
             end
 
-            if InMeleeRange() then
+            if getUnit().InMeleeRange() then
                 if Instance.AQ40() then
-                    NaturePotsOnHuhuran()
+                    getCons().NaturePotsOnHuhuran()
                 end
 
-                if MobsToAutoBreakFear() then
-                    if IsSpellReady("Death Wish") and myRage >= 10 then
-                        SelfBuff("Death Wish")
+                if getTables().MobsToAutoBreakFear() then
+                    if getSpells().IsSpellReady("Death Wish") and myRage >= 10 then
+                        getSpells().SelfBuff("Death Wish")
                     end
                 end
             end
 
-            if (ConfigState.PlayerSpecc == "Prottank" or ConfigState.PlayerSpecc == "Furytank") then
-                if ConfigState.UseCooldowns.Active then
+            if (getConfigState().PlayerSpecc == "Prottank" or getConfigState().PlayerSpecc == "Furytank") then
+                if getConfigState().UseCooldowns.Active then
                     TANKCooldowns(myRage)
                 end
 
                 if Instance.AQ40() then
-                    AnubisathAlert()
+                    getRaid().AnubisathAlert()
                 end
 
                 TankMulti(myRage)
                 return
             end
 
-            if ConfigState.UseBigCooldowns.Active then
+            if getConfigState().UseBigCooldowns.Active then
                 BigDPSCooldowns(myRage)
-            elseif ConfigState.UseCooldowns.Active then
+            elseif getConfigState().UseCooldowns.Active then
                 DPSCooldowns(myRage)
             end
 
@@ -924,48 +925,48 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         AOE = function()
             local myRage = UnitMana("player")
 
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if ConfigState.WarriorBinds == "Fury" and not InCombat() then
-                if FindMyNameInTable(SettingsState.FurysThatCanTank) then
-                    FuryGear()
-                    ConfigState.WarriorBinds = nil
+            if getConfigState().WarriorBinds == "Fury" and not getUnit().InCombat() then
+                if getApi().FindMyNameInTable(getSettingsState().FurysThatCanTank) then
+                    getGear().FuryGear()
+                    getConfigState().WarriorBinds = nil
                 end
             end
 
-            if not InCombat("target") then
+            if not getUnit().InCombat("target") then
                 return
             end
 
-            if InMeleeRange() then
+            if getUnit().InMeleeRange() then
                 if Instance.AQ40() then
-                    NaturePotsOnHuhuran()
+                    getCons().NaturePotsOnHuhuran()
                 end
 
-                if MobsToAutoBreakFear() then
-                    if IsSpellReady("Death Wish") and myRage >= 10 then
-                        SelfBuff("Death Wish")
+                if getTables().MobsToAutoBreakFear() then
+                    if getSpells().IsSpellReady("Death Wish") and myRage >= 10 then
+                        getSpells().SelfBuff("Death Wish")
                     end
                 end
             end
 
-            if (ConfigState.PlayerSpecc == "Prottank" or ConfigState.PlayerSpecc == "Furytank") then
-                if ConfigState.UseCooldowns.Active then
+            if (getConfigState().PlayerSpecc == "Prottank" or getConfigState().PlayerSpecc == "Furytank") then
+                if getConfigState().UseCooldowns.Active then
                     TANKCooldowns(myRage)
                 end
 
                 if Instance.AQ40() then
-                    AnubisathAlert()
+                    getRaid().AnubisathAlert()
                 end
 
                 TankSingle(myRage)
                 return
             end
 
-            if ConfigState.UseBigCooldowns.Active then
+            if getConfigState().UseBigCooldowns.Active then
                 BigDPSCooldowns(myRage)
-            elseif ConfigState.UseCooldowns.Active then
+            elseif getConfigState().UseCooldowns.Active then
                 DPSCooldowns(myRage)
             end
 

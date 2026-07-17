@@ -1,5 +1,4 @@
 -- [[ Hunter Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Hunter Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
@@ -19,30 +18,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     }
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        SelfBuff("Berserking")
+        getSpells().SelfBuff("Berserking")
 
-        if not InMeleeRange() then
-            SelfBuff("Rapid Fire")
+        if not getUnit().InMeleeRange() then
+            getSpells().SelfBuff("Rapid Fire")
         end
 
-        SelfBuff("Combustion")
-        SelfBuff("Presence of Mind")
-
-        MeleeTrinkets()
+        getBag().MeleeTrinkets()
     end
 
     local function ExplosiveTrap()
-        if not IsSpellReady("Explosive Trap") then
+        if not getSpells().IsSpellReady("Explosive Trap") then
             return
         end
 
-        if InCombat() and not ConfigState.HunterFeign.Active then
-            ConfigState.HunterFeign.Active = true
-            ConfigState.HunterFeign.Time = GetTime() + 0.2
+        if getUnit().InCombat() and not getConfigState().HunterFeign.Active then
+            getConfigState().HunterFeign.Active = true
+            getConfigState().HunterFeign.Time = GetTime() + 0.2
             CastSpellByName("Feign Death")
         else
             CastSpellByName("Explosive Trap")
@@ -50,16 +46,16 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function FreezingTrap()
-        if not IsSpellReady("Frost Trap") then
+        if not getSpells().IsSpellReady("Frost Trap") then
             return
         end
 
         PetPassiveMode()
         PetFollow()
 
-        if InCombat() and not ConfigState.HunterFeign.Active then
-            ConfigState.HunterFeign.Active = true
-            ConfigState.HunterFeign.Time = GetTime() + 0.2
+        if getUnit().InCombat() and not getConfigState().HunterFeign.Active then
+            getConfigState().HunterFeign.Active = true
+            getConfigState().HunterFeign.Time = GetTime() + 0.2
             CastSpellByName("Feign Death")
         else
             CastSpellByName("Frost Trap")
@@ -67,25 +63,25 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function BossSpecificDPS()
-        if UseTranquilizingShot() and IsSpellReady("Tranquilizing Shot") then
+        if getTables().UseTranquilizingShot() and getSpells().IsSpellReady("Tranquilizing Shot") then
             CastSpellByName("Tranquilizing Shot")
         end
 
-        if not HasBuffOrDebuff("Hunter\'s Mark", "target", "debuff") then
+        if not getAura().HasBuffOrDebuff("Hunter\'s Mark", "target", "debuff") then
             CastSpellByName("Hunter\'s Mark")
         end
 
         if Instance.AQ20() then
-            if TankTarget("Ossirian the Unscarred") then
-                if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
-                    CoolDownCast("Serpent Sting", 15)
+            if getRaid().TankTarget("Ossirian the Unscarred") then
+                if getAura().HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
+                    getSpells().CoolDownCast("Serpent Sting", 15)
                     return true
-                elseif HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
+                elseif getAura().HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
                     CastSpellByName("Arcane Shot")
                     return true
                 end
-            elseif TankTarget("Moam") then
-                CoolDownCast("Viper Sting", 8)
+            elseif getRaid().TankTarget("Moam") then
+                getSpells().CoolDownCast("Viper Sting", 8)
             end
         end
 
@@ -93,12 +89,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not ConfigState.PlayerSpecc then
-            CdMessage("My specc is fucked. Defaulting to Marksmanship.")
-            ConfigState.PlayerSpecc = "Marksmanship"
+        if not getConfigState().PlayerSpecc then
+            getApi().CdMessage("My specc is fucked. Defaulting to Marksmanship.")
+            getConfigState().PlayerSpecc = "Marksmanship"
         end
 
         if IsControlKeyDown() then
@@ -106,80 +102,80 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        SelfBuff("Trueshot Aura")
+        getSpells().SelfBuff("Trueshot Aura")
 
-        if TankTarget("Princess Huhuran") then
-            SelfBuff("Aspect of the Wild")
+        if getRaid().TankTarget("Princess Huhuran") then
+            getSpells().SelfBuff("Aspect of the Wild")
         else
-            SelfBuff("Aspect of the Hawk")
+            getSpells().SelfBuff("Aspect of the Hawk")
         end
 
         if Instance.NAXX() and GLUTH_IsAtGluth() then
             FreezingTrap()
-        elseif Instance.AQ40() and HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+        elseif Instance.AQ40() and getAura().HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
-        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then
-            if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
+        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and getRaid().IsAtNefarianPhase() then
+            if getAura().HasBuffOrDebuff("Shadow Command", "target", "debuff") then
                 ClearTarget()
                 return
             end
-        elseif Instance.ZG() and TankTarget("Hakkar") then
-            if HasBuffOrDebuff("Mind Control", "target", "debuff") then
+        elseif Instance.ZG() and getRaid().TankTarget("Hakkar") then
+            if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
                 ClearTarget()
                 return
             end
         end
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
-            TakeManaPotionAndRunes()
+        if getUnit().InCombat() then
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
 
-        if InMeleeRange() then
-            if not IsFireImmune() then
+        if getUnit().InMeleeRange() then
+            if not getTables().IsFireImmune() then
                 ExplosiveTrap()
             end
 
-            AutoAttack()
+            getAttack().AutoAttack()
 
             CastSpellByName("Raptor Strike")
             CastSpellByName("Mongoose Bite")
             return
         end
 
-        AutoRangedAttack()
+        getAttack().AutoRangedAttack()
 
         if BossSpecificDPS() then
             return
         end
 
-        if ImBusy() then
+        if getSpells().ImBusy() then
             return
         end
 
-        if not ConfigState.HunterFeign.Active then
+        if not getConfigState().HunterFeign.Active then
             local aggrox = AceLibrary("Banzai-1.0")
 
-            if aggrox:GetUnitAggroByUnitId("player") and IsSpellReady("Feign Death") then
-                ConfigState.HunterFeign.Active = true
-                ConfigState.HunterFeign.Time = GetTime() + 0.2
+            if aggrox:GetUnitAggroByUnitId("player") and getSpells().IsSpellReady("Feign Death") then
+                getConfigState().HunterFeign.Active = true
+                getConfigState().HunterFeign.Time = GetTime() + 0.2
                 CastSpellByName("Feign Death")
             end
         end
 
-        if HealthPct("target") > 0.1 and IsSpellReady("Aimed Shot") then
+        if getUnit().HealthPct("target") > 0.1 and getSpells().IsSpellReady("Aimed Shot") then
             CastSpellByName("Aimed Shot")
         end
 
-        if HealthPct("target") < 0.95 and IsSpellReady("Multi-Shot") then
+        if getUnit().HealthPct("target") < 0.95 and getSpells().IsSpellReady("Multi-Shot") then
             CastSpellByName("Multi-Shot")
         end
     end
@@ -191,18 +187,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, bm = GetTalentInfo(1, 13)
 
             if mm > 0 then
-                ConfigState.PlayerSpecc = "Marksmanship"
+                getConfigState().PlayerSpecc = "Marksmanship"
             elseif survival > 0 then
-                ConfigState.PlayerSpecc = "Survival"
+                getConfigState().PlayerSpecc = "Survival"
             elseif bm > 0 then
-                ConfigState.PlayerSpecc = "BeastMastery"
+                getConfigState().PlayerSpecc = "BeastMastery"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()
-            SelfBuff("Trueshot Aura")
-            SelfBuff("Aspect of the Hawk")
+            getSpells().SelfBuff("Trueshot Aura")
+            getSpells().SelfBuff("Aspect of the Hawk")
 
             CastSpellByName("Dismiss Pet")
         end,
@@ -210,7 +206,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         Multi = Single,
         AOE = Single,
         PreCast = function()
-            PreCastMeleeTrinkets()
+            getBag().PreCastMeleeTrinkets()
             CastSpellByName("Aimed Shot")
         end
     })

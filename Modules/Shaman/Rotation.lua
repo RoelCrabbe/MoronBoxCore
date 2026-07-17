@@ -16,7 +16,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(MB_myVaelastraszShamans) do
             local id = MBID[name]
-            if id and not Dead(id) then
+            if id and not getUnit().Dead(id) then
                 return name
             end
         end
@@ -24,19 +24,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        SelfBuff("Berserking")
-        SelfBuff("Elemental Mastery")
+        getSpells().SelfBuff("Berserking")
+        getSpells().SelfBuff("Elemental Mastery")
 
         if EquippedSetCount("The Earthshatter") >= 8 then
-            SelfBuff("Lightning Shield")
+            getSpells().SelfBuff("Lightning Shield")
         end
 
-        HealerTrinkets()
-        CasterTrinkets()
+        getBag().HealerTrinkets()
+        getBag().CasterTrinkets()
     end
 
     local function BossSpecificDPS()
@@ -46,14 +46,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        if HasBuffNamed("Shadow and Frost Reflect", "target") or
-            HasBuffOrDebuff("Magic Reflection", "target", "buff") or
-            (TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target")) then
-            if ImBusy() then
+        if getAura().HasBuffNamed("Shadow and Frost Reflect", "target") or
+            getAura().HasBuffOrDebuff("Magic Reflection", "target", "buff") or
+            (getRaid().TankTarget("Azuregos") and getAura().HasBuffNamed("Magic Shield", "target")) then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            AutoAttack()
+            getAttack().AutoAttack()
             return true
         end
 
@@ -61,14 +61,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Elemental()
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
-            TakeManaPotionAndRunes()
+        if getUnit().InCombat() then
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
@@ -77,14 +77,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if ImBusy() then
+        if getSpells().ImBusy() then
             return
         end
 
-        if IsSpellReady("Chain Lightning") then
-            CastOrWand("Chain Lightning")
+        if getSpells().IsSpellReady("Chain Lightning") then
+            getSpells().CastOrWand("Chain Lightning")
         else
-            CastOrWand("Lightning Bolt")
+            getSpells().CastOrWand("Lightning Bolt")
         end
     end
 
@@ -94,10 +94,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
-            if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 TargetMyAssignedTankToHeal()
             else
-                local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+                local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
                     MBH_CastHeal("Healing Wave", 3)
                 else
@@ -106,23 +106,23 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if IsSpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
-            if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        if getSpells().IsSpellReady("Nature\'s Swiftness") and getUnit().HealthPct("target") <= 0.15 then
+            if not getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
                 SpellStopCasting()
             end
 
-            SelfBuff("Nature\'s Swiftness")
+            getSpells().SelfBuff("Nature\'s Swiftness")
         end
 
-        if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
             CastSpellByName("Healing Wave")
             return
         end
 
-        local healWaveSpell = TankTarget("Vaelastrasz the Corrupt") and "Healing Wave" or
+        local healWaveSpell = getRaid().TankTarget("Vaelastrasz the Corrupt") and "Healing Wave" or
             ("Healing Wave(" .. HealingState.Shaman.MainTankHealingRank .. ")")
 
-        if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Wave", HealingState.Shaman.MainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
+        if not getTables().BossNeverInterruptHeal() and getUnit().HealthDown("target") <= (getHealing().GetHealValueFromRank("Healing Wave", HealingState.Shaman.MainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
             if GetTime() > HealWave.Time and GetTime() < HealWave.Time + 0.5 and HealWave.Interrupt then
                 SpellStopCasting()
                 HealWave.Interrupt = false
@@ -130,7 +130,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if not ImBusy() then
+        if not getSpells().ImBusy() then
             CastSpellByName(healWaveSpell)
             HealWave.Time = GetTime() + 1
             HealWave.Interrupt = true
@@ -138,66 +138,66 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Heal()
-        if NatureSwiftnessLowAggroedPlayer() then
+        if getHealing().NatureSwiftnessLowAggroedPlayer() then
             return
         end
 
-        if InCombat() then
-            if IsSpellReady("Mana Tide Totem")
-                and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
-                local _, partyManaDown = PartyMana()
-                local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
-                local myManaDown = ManaDown()
+        if getUnit().InCombat() then
+            if getSpells().IsSpellReady("Mana Tide Totem")
+                and not getAura().HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
+                local _, partyManaDown = getUnit().PartyMana()
+                local avgManaDown = partyManaDown / getCore().NumOfCasterHealerInParty()
+                local myManaDown = getUnit().ManaDown()
 
                 if (avgManaDown > 1500 and myManaDown > 1050) or (myManaDown > 1500) then
                     CastSpellByName("Mana Tide Totem")
-                    CoolDownCast("Mana Tide Totem", 13)
+                    getSpells().CoolDownCast("Mana Tide Totem", 13)
                 end
             end
 
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
 
-        if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then return end
+        if getAura().HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not getRaid().TankTarget("Anubisath Defender") then return end
         if HealLieutenantAQ20() or InstructorRazAddsHeal() then return end
 
-        if ConfigState.AssignedHealTarget then
-            if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
-                MTHeals(ConfigState.AssignedHealTarget)
+        if getConfigState().AssignedHealTarget then
+            if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+                MTHeals(getConfigState().AssignedHealTarget)
                 return
             else
-                ConfigState.AssignedHealTarget = nil
-                CdMessage("My healtarget died, time to ALT-F4.")
+                getConfigState().AssignedHealTarget = nil
+                getApi().CdMessage("My healtarget died, time to ALT-F4.")
             end
         end
 
         for _, bossName in pairs(HealingState.Shaman.MainTankHealingBossList) do
-            if TankTarget(bossName) then
+            if getRaid().TankTarget(bossName) then
                 MTHeals()
                 return
             end
         end
 
-        if Instance.AQ40() and TankTarget("Princess Huhuran") then
-            if TankTargetHealth() <= 0.32 then
+        if Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") then
+            if getRaid().TankTargetHealth() <= 0.32 then
                 MBH_CastHeal("Chain Heal", 2, 3)
             else
                 MBH_CastHeal("Healing Wave", 3, 5)
             end
             return
-        elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-            if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+            if getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 MBH_CastHeal("Chain Heal", 3, 3)
                 return
             end
 
             Cooldowns()
 
-            if ConfigState.HealSpell == "Healing Wave" then
+            if getConfigState().HealSpell == "Healing Wave" then
                 if MB_myVaelastraszShamanHealing then
                     local activeShaman = GetActiveVaelastraszHealer()
 
@@ -213,12 +213,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             MBH_CastHeal("Chain Heal", 3, 3)
             return
-        elseif Instance.MC() and TankTarget("Baron Geddon") then
+        elseif Instance.MC() and getRaid().TankTarget("Baron Geddon") then
             MBH_CastHeal("Chain Heal", 3, 3)
             return
         end
 
-        if ConfigState.HealSpell == "Chain Heal" then
+        if getConfigState().HealSpell == "Chain Heal" then
             MBH_CastHeal("Chain Heal", 1, 1)
         else
             MBH_CastHeal("Healing Wave", 3)
@@ -226,83 +226,83 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not ConfigState.PlayerSpecc then
-            CdMessage("My specc is fucked. Defaulting to Elemental.")
-            ConfigState.PlayerSpecc = "Elemental"
+        if not getConfigState().PlayerSpecc then
+            getApi().CdMessage("My specc is fucked. Defaulting to Elemental.")
+            getConfigState().PlayerSpecc = "Elemental"
         end
 
         if PartyIsPoisoned() then
-            if ImBusy() then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
                 return
             end
 
             CastSpellByName("Poison Cleansing Totem")
-            CoolDownCast("Poison Cleansing Totem", 6)
+            getSpells().CoolDownCast("Poison Cleansing Totem", 6)
             return
         end
 
-        if Instance.NAXX() and TankTarget("Heigan the Unclean") then
+        if Instance.NAXX() and getRaid().TankTarget("Heigan the Unclean") then
             if MeleeDPSInParty() and PartyIsDiseased() then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                     return
                 end
 
                 CastSpellByName("Disease Cleansing Totem")
-                CoolDownCast("Disease Cleansing Totem", 6)
+                getSpells().CoolDownCast("Disease Cleansing Totem", 6)
                 return
             end
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
-            if ConfigState.InterruptTarget then
-                GetMyInterruptTarget()
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
+            if getConfigState().InterruptTarget then
+                getRaid().GetMyInterruptTarget()
             end
 
-            if ImBusy() then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            CastSpellByName(ConfigState.InterruptSpell[myClass] .. "(Rank 1)")
-            CdPrint("Interrupting!")
-            ConfigState.DoInterrupt.Active = false
+            CastSpellByName(getConfigState().InterruptSpell[myClass] .. "(Rank 1)")
+            getApi().CdPrint("Interrupting!")
+            getConfigState().DoInterrupt.Active = false
             return
         end
 
         DropTotems()
 
-        if ConfigState.PlayerSpecc == "Elemental" then
+        if getConfigState().PlayerSpecc == "Elemental" then
             Elemental()
             return
         end
 
-        HealerJindo("Lightning Bolt")
+        getRotation().HealerJindo("Lightning Bolt")
         Heal()
     end
 
     local function LOA_Attack()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        GetTarget()
+        getRaid().GetTarget()
 
-        if ManaPct() < 0.17 then
+        if getUnit().ManaPct() < 0.17 then
             return
         end
 
-        if IsSpellReady("Lightning Bolt") then
-            CoolDownCast("Lightning Bolt", 6)
+        if getSpells().IsSpellReady("Lightning Bolt") then
+            getSpells().CoolDownCast("Lightning Bolt", 6)
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
     end
 
     MoronBox:RegisterExpose({
@@ -313,36 +313,36 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, eleMastery = GetTalentInfo(1, 14)
 
             if ns > 0 and manaTide > 0 then
-                ConfigState.PlayerSpecc = "Deep Resto"
+                getConfigState().PlayerSpecc = "Deep Resto"
             elseif ns > 0 and enhTotems > 1 then
-                ConfigState.PlayerSpecc = "Totem Resto"
+                getConfigState().PlayerSpecc = "Totem Resto"
             elseif eleMastery > 0 then
-                ConfigState.PlayerSpecc = "Elemental"
+                getConfigState().PlayerSpecc = "Elemental"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()
-            if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+            if UnitMana("player") < 3060 and getAura().HasBuffNamed("Drink", "player") then
                 return
             end
 
             if EquippedSetCount("The Earthshatter") >= 8 then
-                SelfBuff("Lightning Shield")
+                getSpells().SelfBuff("Lightning Shield")
             end
 
             if ImHealer() then
                 MBH_CastHeal("Chain Heal", 1, 1)
             end
 
-            if not InCombat() and ManaPct() < 0.20 and not HasBuffNamed("Drink", "player") then
-                SmartDrink()
+            if not getUnit().InCombat() and getUnit().ManaPct() < 0.20 and not getAura().HasBuffNamed("Drink", "player") then
+                getWater().SmartDrink()
             end
         end,
         Single = Single,
         Multi = Single,
         AOE = function()
-            if MobsToAoeTotem() and IsSpellReady("Fire Nova Totem") then
+            if MobsToAoeTotem() and getSpells().IsSpellReady("Fire Nova Totem") then
                 CastSpellByName("Fire Nova Totem")
                 return
             end
@@ -353,41 +353,41 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             DropTotems()
         end,
         LoaHeal = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Elemental.")
-                ConfigState.PlayerSpecc = "Elemental"
+            if not getConfigState().PlayerSpecc then
+                getApi().CdMessage("My specc is fucked. Defaulting to Elemental.")
+                getConfigState().PlayerSpecc = "Elemental"
             end
 
             if PartyIsPoisoned() then
-                if ImBusy() then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                     return
                 end
 
                 CastSpellByName("Poison Cleansing Totem")
-                CoolDownCast("Poison Cleansing Totem", 6)
+                getSpells().CoolDownCast("Poison Cleansing Totem", 6)
                 return
             end
 
-            if InCombat() then
-                if IsSpellReady("Mana Tide Totem")
-                    and not HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
-                    local _, partyManaDown = PartyMana()
-                    local avgManaDown = partyManaDown / NumOfCasterHealerInParty()
-                    local myManaDown = ManaDown()
+            if getUnit().InCombat() then
+                if getSpells().IsSpellReady("Mana Tide Totem")
+                    and not getAura().HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
+                    local _, partyManaDown = getUnit().PartyMana()
+                    local avgManaDown = partyManaDown / getCore().NumOfCasterHealerInParty()
+                    local myManaDown = getUnit().ManaDown()
 
                     if (avgManaDown > 1500 and myManaDown > 1050) or (myManaDown > 1500) then
                         CastSpellByName("Mana Tide Totem")
-                        CoolDownCast("Mana Tide Totem", 13)
+                        getSpells().CoolDownCast("Mana Tide Totem", 13)
                     end
                 end
 
-                TakeManaPotionAndRunes()
+                getCons().TakeManaPotionAndRunes()
 
-                if ManaDown() > 600 then
+                if getUnit().ManaDown() > 600 then
                     Cooldowns()
                 end
             end

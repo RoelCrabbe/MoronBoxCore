@@ -1,5 +1,4 @@
 -- [[ Warlock Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Warlock Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
@@ -9,8 +8,8 @@ local myClass = UnitClass("player")
 MoronBox:RegisterModule(MODULE_NAME, function()
     local WarlockCounter = {
         Cycle = function()
-            ConfigState.SheepingWarlockNr = (ConfigState.SheepingWarlockNr >= TableLength(GeneralState.ClassList["Warlock"]))
-                and 1 or (ConfigState.SheepingWarlockNr + 1)
+            getConfigState().SheepingWarlockNr = (getConfigState().SheepingWarlockNr >= getApi().TableLength(getCoreState().ClassList["Warlock"]))
+                and 1 or (getConfigState().SheepingWarlockNr + 1)
         end
     }
 
@@ -27,29 +26,29 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function ShadowBoltWhoring()
-        if ImBusy() or not UnitExists("target") then
+        if getSpells().ImBusy() or not UnitExists("target") then
             return
         end
 
-        local sb = DebuffImpShadowBoltAmount()
-        local sw = DebuffShadowWeavingAmount()
+        local sb = getAura().GetImprovedShadowBoltAmount()
+        local sw = getAura().GetShadowWeavingAmount()
         local isBuffed = (sw == 5 and sb >= 4)
 
         if isBuffed then
-            CasterTrinkets()
+            getBag().CasterTrinkets()
         end
 
-        if isBuffed and NumShards() > 12 and IsSpellReady("Shadowburn") then
+        if isBuffed and getBag().NumShards() > 12 and getSpells().IsSpellReady("Shadowburn") then
             CastSpellByName("Shadowburn")
         end
 
-        CastOrWand("Shadow Bolt")
+        getSpells().CastOrWand("Shadow Bolt")
     end
 
     local function SaveShardShadowburn(shardsToSave)
         local minShards = shardsToSave or 0
 
-        if not IsSpellReady("Shadowburn") or NumShards() <= minShards then
+        if not getSpells().IsSpellReady("Shadowburn") or getBag().NumShards() <= minShards then
             return
         end
 
@@ -57,29 +56,29 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        SelfBuff("Berserking")
-        HealerTrinkets()
-        CasterTrinkets()
+        getSpells().SelfBuff("Berserking")
+        getBag().HealerTrinkets()
+        getBag().CasterTrinkets()
     end
 
     local function HealthStone()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        if HealthPct() > 0.15 then
+        if getUnit().HealthPct() > 0.15 then
             return
         end
 
-        if not HaveInBags("Major Healthstone") then
+        if not getBag().HaveInBags("Major Healthstone") then
             return
         end
 
-        if IsItemInBagCoolDown("Major Healthstone") then
+        if getBag().IsItemInBagCoolDown("Major Healthstone") then
             return
         end
 
@@ -88,44 +87,44 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function SumPetAndSac()
-        if HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
             return
         end
 
-        if UnitCreatureFamily("pet") == "Succubus" and IsSpellKnown("Demonic Sacrifice") then
+        if UnitCreatureFamily("pet") == "Succubus" and getSpells().IsSpellKnown("Demonic Sacrifice") then
             CastSpellByName("Demonic Sacrifice")
             return
         end
 
-        if NumShards() == 0 then
+        if getBag().NumShards() == 0 then
             return
         end
 
-        if IsSpellKnown("Summon Succubus") and IsSpellKnown("Fel Domination") and IsSpellReady("Fel Domination") then
+        if getSpells().IsSpellKnown("Summon Succubus") and getSpells().IsSpellKnown("Fel Domination") and getSpells().IsSpellReady("Fel Domination") then
             CastSpellByName("Fel Domination")
             return
         end
 
-        if IsSpellKnown("Summon Succubus") then
+        if getSpells().IsSpellKnown("Summon Succubus") then
             CastSpellByName("Summon Succubus")
         end
     end
 
     local function TapWhileMoving()
-        if HealthPct() < 0.40 or UnitMana("player") == UnitManaMax("player") then
+        if getUnit().HealthPct() < 0.40 or UnitMana("player") == UnitManaMax("player") then
             return
         end
 
-        if ManaPct() < 0.80 and HealthPct() > 0.55 then
+        if getUnit().ManaPct() < 0.80 and getUnit().HealthPct() > 0.55 then
             CastSpellByName("Life Tap")
         end
     end
 
     local function CreateHealthStone()
-        if NumShards() < 2
-            or GetAllContainerFreeSlots() < 1
-            or InCombat()
-            or HaveInBags("Major Healthstone") then
+        if getBag().NumShards() < 2
+            or getBag().GetAllContainerFreeSlots() < 1
+            or getUnit().InCombat()
+            or getBag().HaveInBags("Major Healthstone") then
             return
         end
 
@@ -133,11 +132,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function CreateSoulStone()
-        local spellId = GetSpellNumber("Create Soulstone.*Major")
+        local spellId = getSpells().GetSpellNumber("Create Soulstone.*Major")
 
         if not spellId
-            or NumShards() < 1
-            or HaveInBags("Major Soulstone") then
+            or getBag().NumShards() < 1
+            or getBag().HaveInBags("Major Soulstone") then
             return
         end
 
@@ -163,16 +162,16 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return SKERAM_WarlockDebuff()
         end
 
-        if Instance.BWL() and IsAtRazorgore() and IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
-            local myOrder = MyClassAlphabeticalOrder()
+        if Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            local myOrder = getCore().MyClassAlphabeticalOrder()
             local tankMap = { MB_myRazorgoreRightTank, MB_myRazorgoreLeftTank }
-            local tankName = tankMap[myOrder] and ReturnPlayerInRaidFromTable(tankMap[myOrder])
+            local tankName = tankMap[myOrder] and getApi().ReturnPlayerInRaidFromTable(tankMap[myOrder])
 
-            if tankName and TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
-                local tankId = GeneralState.MBID[tankName]
-                local tankTargetID = tankId .. "target"
+            if tankName and getRaid().TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
+                local tankId = getCoreState().MBID[tankName]
+                local tankTargetId = tankId .. "target"
 
-                if not HasBuffOrDebuff("Curse of Recklessness", tankTargetID, "debuff") then
+                if not getAura().HasBuffOrDebuff("Curse of Recklessness", tankTargetId, "debuff") then
                     AssistUnit(tankId)
                     CastSpellByName("Curse of Recklessness")
                     TargetLastTarget()
@@ -182,14 +181,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return false
         end
 
-        local casters = NumberOfClassInRaid("Mage") + NumberOfClassInRaid("Warlock")
-        local melees = NumberOfClassInRaid("Warrior") + NumberOfClassInRaid("Rogue") + NumberOfClassInRaid("Hunter")
+        local casters = getCore().NumberOfClassInRaid("Mage") + getCore().NumberOfClassInRaid("Warlock")
+        local melees = getCore().NumberOfClassInRaid("Warrior") + getCore().NumberOfClassInRaid("Rogue") +
+            getCore().NumberOfClassInRaid("Hunter")
 
         local curseList = (casters > melees) and CURSE_PRIO_CASTER or CURSE_PRIO_MELEE
-        local myOrder = MyClassAlphabeticalOrder()
+        local myOrder = getCore().MyClassAlphabeticalOrder()
         local assignedCurse = curseList[myOrder]
 
-        if assignedCurse and not HasBuffOrDebuff(assignedCurse, "target", "debuff") then
+        if assignedCurse and not getAura().HasBuffOrDebuff(assignedCurse, "target", "debuff") then
             CastSpellByName(assignedCurse)
             return true
         end
@@ -198,37 +198,37 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function SoulStone()
-        if HasBuffNamed("Drink", "player") or ImBusy() then
+        if getAura().HasBuffNamed("Drink", "player") or getSpells().ImBusy() then
             return
         end
 
         CreateSoulStone()
 
-        if IsItemInBagCoolDown("Major Soulstone") then
+        if getBag().IsItemInBagCoolDown("Major Soulstone") then
             return
         end
 
-        if not ConfigState.AutoSoulStone.Active then
-            ConfigState.AutoSoulStone.Active = true
-            ConfigState.AutoSoulStone.Time = GetTime() + 6
+        if not getConfigState().AutoSoulStone.Active then
+            getConfigState().AutoSoulStone.Active = true
+            getConfigState().AutoSoulStone.Time = GetTime() + 6
             WarlockCounter.Cycle()
         end
 
-        if SomeoneInRaidBuffedWith("Soulstone") or MyClassAlphabeticalOrder() ~= ConfigState.SheepingWarlockNr then
+        if getAura().SomeoneInRaidBuffedWith("Soulstone") or getCore().MyClassAlphabeticalOrder() ~= getConfigState().SheepingWarlockNr then
             return
         end
 
         local targetClasses = { "Priest", "Shaman" }
         for _, class in ipairs(targetClasses) do
-            local classList = GeneralState.ClassList[class]
+            local classList = getCoreState().ClassList[class]
 
             if classList then
-                for i = 1, TableLength(classList) do
+                for i = 1, getApi().TableLength(classList) do
                     local name = classList[i]
-                    local id = GeneralState.MBID[name]
+                    local id = getCoreState().MBID[name]
 
-                    if id and not HasBuffOrDebuff("Soulstone", id, "buff") then
-                        CdMessage("Soulstoning " .. GetColors(name))
+                    if id and not getAura().HasBuffOrDebuff("Soulstone", id, "buff") then
+                        getApi().getApi().CdMessage("Soulstoning " .. getApi().GetColors(name))
                         TargetUnit(id)
                         UseItemByName("Major Soulstone")
                         ClearCursor()
@@ -251,54 +251,54 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        if not HasBuffNamed("Shadow and Frost Reflect", "target") and Curses() then
+        if not getAura().HasBuffNamed("Shadow and Frost Reflect", "target") and Curses() then
             return true
         end
 
-        if not HasBuffOrDebuff("Shadow Ward", "player", "buff") and IsSpellReady("Shadow Ward") then
-            if MobsToShadowWard() or DebuffsToShadowWard() then
-                SelfBuff("Shadow Ward")
+        if not getAura().HasBuffOrDebuff("Shadow Ward", "player", "buff") and getSpells().IsSpellReady("Shadow Ward") then
+            if getTables().MobsToShadowWard() or getTables().DebuffsToShadowWard() then
+                getSpells().SelfBuff("Shadow Ward")
                 return true
             end
         end
 
-        if HasBuffNamed("Shadow and Frost Reflect", "target") then
-            if IsSpellReady("Soul Fire") and NumShards() > 10 then
-                CastOrWand("Soul Fire")
+        if getAura().HasBuffNamed("Shadow and Frost Reflect", "target") then
+            if getSpells().IsSpellReady("Soul Fire") and getBag().NumShards() > 10 then
+                getSpells().CastOrWand("Soul Fire")
             end
 
-            CastOrWand("Immolate")
+            getSpells().CastOrWand("Immolate")
             return true
-        elseif HasBuffOrDebuff("Magic Reflection", "target", "buff") then
-            if ImBusy() then
+        elseif getAura().HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            AutoWandAttack()
+            getAttack().AutoWandAttack()
             return true
         end
 
-        if TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
-            if ImBusy() then
+        if getRaid().TankTarget("Azuregos") and getAura().HasBuffNamed("Magic Shield", "target") then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            SelfBuff("Frost Ward")
+            getSpells().SelfBuff("Frost Ward")
             return true
         end
 
         if Instance.AQ40() then
-            if tName == "Emperor Vek'lor" and FindMyNameInTable(MB_myTwinsWarlockTank) then
-                SelfBuff("Shadow Ward")
+            if tName == "Emperor Vek'lor" and getApi().FindMyNameInTable(MB_myTwinsWarlockTank) then
+                getSpells().SelfBuff("Shadow Ward")
                 SaveShardShadowburn(3)
 
-                if HealthPct() < 0.25 and IsSpellReady("Death Coil") then
+                if getUnit().HealthPct() < 0.25 and getSpells().IsSpellReady("Death Coil") then
                     CastSpellByName("Death Coil")
                 end
 
                 CastSpellByName("Searing Pain")
                 return true
-            elseif tName == "Obsidian Eradicator" and ManaPct("target") > 0.7 and not ImBusy() then
+            elseif tName == "Obsidian Eradicator" and getUnit().ManaPct("target") > 0.7 and not getSpells().ImBusy() then
                 CastSpellByName("Drain Mana")
                 return true
             end
@@ -308,56 +308,56 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if Instance.BWL() and CorruptedTotems() and not Dead("target") then
+        if Instance.BWL() and getTables().getTables().CorruptedTotems() and not getUnit().Dead("target") then
             SaveShardShadowburn(12)
-            CastOrWand("Searing Pain")
+            getSpells().CastOrWand("Searing Pain")
             return true
         end
 
-        if Instance.MC() and TankTarget("Shazzrah") then
-            if not IsSpellReady("Shadow Bolt") then
-                CastOrWand("Immolate")
+        if Instance.MC() and getRaid().TankTarget("Shazzrah") then
+            if not getSpells().IsSpellReady("Shadow Bolt") then
+                getSpells().CastOrWand("Immolate")
                 return true
             end
         end
 
-        if Instance.ONY() and TankTarget("Onyxia") and ConfigState.IsMoving.Active then
-            CoolDownCast("Corruption", 18)
+        if Instance.ONY() and getRaid().TankTarget("Onyxia") and getConfigState().IsMoving.Active then
+            getSpells().CoolDownCast("Corruption", 18)
 
-            if TankTargetHealth() <= 0.65 and TankTargetHealth() >= 0.4 then
+            if getRaid().TankTargetHealth() <= 0.65 and getRaid().TankTargetHealth() >= 0.4 then
                 SaveShardShadowburn(12)
             end
         end
 
         if Instance.ZG() then
-            if HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do" and not Dead("target") then
+            if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do" and not getUnit().Dead("target") then
                 SaveShardShadowburn(12)
-                CastOrWand("Searing Pain")
+                getSpells().CastOrWand("Searing Pain")
                 return true
             end
 
-            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not Dead("target") then
+            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().Dead("target") then
                 SaveShardShadowburn(12)
-                CastOrWand("Searing Pain")
+                getSpells().CastOrWand("Searing Pain")
                 return true
             end
         end
 
         if Instance.AQ20() then
-            if TankTarget("Moam") and ManaPct("target") > 0.75 and not ImBusy() then
+            if getRaid().TankTarget("Moam") and getUnit().ManaPct("target") > 0.75 and not getSpells().ImBusy() then
                 CastSpellByName("Drain Mana")
             end
 
-            if TankTarget("Ossirian the Unscarred") then
-                if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
-                    if IsSpellReady("Soul Fire") and NumShards() > 10 then
-                        CastOrWand("Soul Fire")
+            if getRaid().TankTarget("Ossirian the Unscarred") then
+                if getAura().HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
+                    if getSpells().IsSpellReady("Soul Fire") and getBag().NumShards() > 10 then
+                        getSpells().CastOrWand("Soul Fire")
                     end
 
-                    CastOrWand("Immolate")
+                    getSpells().CastOrWand("Immolate")
                     return true
-                elseif HasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
-                    CastOrWand("Shadow Bolt")
+                elseif getAura().HasBuffOrDebuff("Shadow Weakness", "target", "debuff") then
+                    getSpells().CastOrWand("Shadow Bolt")
                     return true
                 end
             end
@@ -367,65 +367,65 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not ConfigState.PlayerSpecc then
-            CdMessage("My specc is fucked. Defaulting to Corruption.")
-            ConfigState.PlayerSpecc = "Corruption"
+        if not getConfigState().PlayerSpecc then
+            getApi().getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
+            getConfigState().PlayerSpecc = "Corruption"
         end
 
-        if CastCrowdControl() then
+        if getCrowdControl().CastCrowdControl() then
             return
         end
 
-        if ManaPct() < 0.40 and HealthPct() > 0.75 then
+        if getUnit().ManaPct() < 0.40 and getUnit().HealthPct() > 0.75 then
             CastSpellByName("Life Tap")
             return
         end
 
-        if HasBuffOrDebuff("Hellfire", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Hellfire", "player", "buff") then
             CastSpellByName("Life Tap(Rank 1)")
             return
         end
 
         if UnitName("target") then
-            if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
-                and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                if CastCrowdControl() then
+            if getConfigState().CrowdControlTarget and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget
+                and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
+                if getCrowdControl().CastCrowdControl() then
                     return
                 end
             end
 
-            if CrowdControlledMob() then
-                GetTarget()
+            if getUnit().CrowdControlledMob() then
+                getRaid().GetTarget()
             end
         end
 
         if Instance.AQ40() then
-            if HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+            if getAura().HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
                 ClearTarget()
                 return
             end
         end
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
+        if getUnit().InCombat() then
             HealthStone()
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if IsSpellKnown("Demonic Sacrifice") and not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
+            if getSpells().IsSpellKnown("Demonic Sacrifice") and not getAura().HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
                 SumPetAndSac()
             end
 
-            if ConfigState.IsMoving.Active then
+            if getConfigState().IsMoving.Active then
                 TapWhileMoving()
             end
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
@@ -434,19 +434,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if not Instance.IsWorldBoss() and HealthPct("target") < 0.2 and NumShards() < 60
-            and GetAllContainerFreeSlots() >= 10 and not ImBusy() then
+        if not Instance.IsWorldBoss() and getUnit().HealthPct("target") < 0.2 and getBag().NumShards() < 60
+            and getBag().GetAllContainerFreeSlots() >= 10 and not getSpells().ImBusy() then
             CastSpellByName("Drain Soul(Rank 1)")
             return
         end
 
-        if ConfigState.PlayerSpecc == "Shadowburn" and SettingsState.Warlock.ShouldBeWhores then
+        if getConfigState().PlayerSpecc == "Shadowburn" and getSettingsState().Warlock.ShouldBeWhores then
             ShadowBoltWhoring()
         else
-            CastOrWand("Shadow Bolt")
+            getSpells().CastOrWand("Shadow Bolt")
 
-            if not IsSpellReady("Shadow Bolt") then
-                CastOrWand("Searing Pain")
+            if not getSpells().IsSpellReady("Shadow Bolt") then
+                getSpells().CastOrWand("Searing Pain")
             end
         end
     end
@@ -458,34 +458,34 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, corruption = GetTalentInfo(1, 11)
 
             if shadowBurn > 0 and ruin > 0 then
-                ConfigState.PlayerSpecc = "Shadowburn"
+                getConfigState().PlayerSpecc = "Shadowburn"
             elseif corruption > 0 then
-                ConfigState.PlayerSpecc = "Corruption"
+                getConfigState().PlayerSpecc = "Corruption"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()
-            if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+            if UnitMana("player") < 3060 and getAura().HasBuffNamed("Drink", "player") then
                 return
             end
 
             if IsAltKeyDown() then
-                if not ConfigState.AutoSoulStone.Active then
-                    ConfigState.AutoSoulStone.Active = true
-                    ConfigState.AutoSoulStone.Time = GetTime() + 3
+                if not getConfigState().AutoSoulStone.Active then
+                    getConfigState().AutoSoulStone.Active = true
+                    getConfigState().AutoSoulStone.Time = GetTime() + 3
                     WarlockCounter.Cycle()
                 end
 
-                if MyClassAlphabeticalOrder() == ConfigState.SheepingWarlockNr then
+                if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingWarlockNr then
                     SoulStone()
                 end
             end
 
-            SelfBuff("Demon Armor")
+            getSpells().SelfBuff("Demon Armor")
 
-            if IsSpellKnown("Demonic Sacrifice") then
-                if not HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
+            if getSpells().IsSpellKnown("Demonic Sacrifice") then
+                if not getAura().HasBuffOrDebuff("Touch of Shadow", "player", "buff") then
                     SumPetAndSac()
                 end
             else
@@ -496,41 +496,41 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             CreateHealthStone()
 
-            if not InCombat() and ManaPct() < 0.20 and not HasBuffNamed("Drink", "player") then
-                SmartDrink()
+            if not getUnit().InCombat() and getUnit().ManaPct() < 0.20 and not getAura().HasBuffNamed("Drink", "player") then
+                getWater().SmartDrink()
             end
         end,
         Single = Single,
         Multi = Single,
         AOE = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Corruption.")
-                ConfigState.PlayerSpecc = "Corruption"
+            if not getConfigState().PlayerSpecc then
+                getApi().getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
+                getConfigState().PlayerSpecc = "Corruption"
             end
 
-            if UnitMana("player") < 1250 and not ImBusy() then
+            if UnitMana("player") < 1250 and not getSpells().ImBusy() then
                 CastSpellByName("Life Tap")
                 return
             end
 
-            if InCombat() then
+            if getUnit().InCombat() then
                 HealthStone()
-                TakeManaPotionAndRunes()
+                getCons().TakeManaPotionAndRunes()
 
-                if ManaDown() > 600 then
+                if getUnit().ManaDown() > 600 then
                     Cooldowns()
                 end
             end
 
-            if not HasBuffOrDebuff("Hellfire", "player", "buff") then
+            if not getAura().HasBuffOrDebuff("Hellfire", "player", "buff") then
                 CastSpellByName("Hellfire")
             end
         end,
         PreCast = function()
-            PreCastTrinkets()
+            getBag().PreCastTrinkets()
             CastSpellByName("Shadow Bolt")
         end
     })

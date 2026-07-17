@@ -1,15 +1,16 @@
 -- [[ Paladin Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Paladin Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myName = UnitName("player")
 local myClass = UnitClass("player")
+local myRace = UnitRace("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local PaladinCounter = {
         Cycle = function()
-            MB_buffingCounterPaladin = (MB_buffingCounterPaladin >= TableLength(MB_classList["Paladin"]))
+            MB_buffingCounterPaladin = (MB_buffingCounterPaladin >= getApi().TableLength(MB_classList["Paladin"]))
                 and 1 or (MB_buffingCounterPaladin + 1)
         end
     }
@@ -23,7 +24,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(MB_myVaelastraszPaladins) do
             local id = MBID[name]
-            if id and not Dead(id) then
+            if id and not getUnit().Dead(id) then
                 return name
             end
         end
@@ -31,58 +32,58 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        if not TankTarget("Viscidus") then
-            if ManaPct() <= MB_paladinDivineFavorPercentage then
-                SelfBuff("Divine Favor")
+        if not getRaid().TankTarget("Viscidus") then
+            if getUnit().ManaPct() <= getHealingState().Paladin.DivineFavorPercentage then
+                getSpells().SelfBuff("Divine Favor")
             end
         end
 
-        CasterTrinkets()
-        HealerTrinkets()
+        getBag().CasterTrinkets()
+        getBag().HealerTrinkets()
     end
 
     local function ChooseAura()
-        if TankTarget("Lord Kazzak") then
-            SelfBuff("Shadow Resistance Aura")
+        if getRaid().TankTarget("Lord Kazzak") then
+            getSpells().SelfBuff("Shadow Resistance Aura")
             return
         end
 
-        if TankTarget("Sapphiron") or TankTarget("Azuregos") then
-            SelfBuff("Frost Resistance Aura")
+        if getRaid().TankTarget("Sapphiron") or getRaid().TankTarget("Azuregos") then
+            getSpells().SelfBuff("Frost Resistance Aura")
             return
         end
 
-        local groupOrder = MyGroupClassOrder()
+        local groupOrder = getCore().MyGroupClassOrder()
         if groupOrder == 1 then
-            if IsFireBoss() then
-                SelfBuff("Fire Resistance Aura")
+            if getTables().IsFireBoss() then
+                getSpells().SelfBuff("Fire Resistance Aura")
                 return
             end
 
-            if MB_druidTankInParty or MB_warriorTankInParty or NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-                SelfBuff("Devotion Aura")
+            if MB_druidTankInParty or MB_warriorTankInParty or getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+                getSpells().SelfBuff("Devotion Aura")
                 return
             end
 
-            SelfBuff("Concentration Aura")
+            getSpells().SelfBuff("Concentration Aura")
         elseif groupOrder == 2 then
-            SelfBuff("Concentration Aura")
+            getSpells().SelfBuff("Concentration Aura")
         elseif groupOrder == 3 then
-            SelfBuff("Retribution Aura")
+            getSpells().SelfBuff("Retribution Aura")
         end
     end
 
     local function BlessMyAssignedBlessing()
-        if TankTarget("Garr") or TankTarget("Firesworn") or TankTarget("Maexxna") then
+        if getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn") or getRaid().TankTarget("Maexxna") then
             return
         end
 
-        if not HaveInBags("Symbol of Kings") then
-            CdMessage("Out of Symbol of Kings")
+        if not getBag().HaveInBags("Symbol of Kings") then
+            getApi().CdMessage("Out of Symbol of Kings")
             return
         end
 
@@ -95,26 +96,26 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             [6] = "Greater Blessing of Wisdom"
         }
 
-        local assignedBlessing = blessings[MyClassAlphabeticalOrder()]
+        local assignedBlessing = blessings[getCore().MyClassAlphabeticalOrder()]
         if assignedBlessing then
-            MultiBuffBlessing(assignedBlessing)
+            getAura().MultiBuffBlessing(assignedBlessing)
         end
     end
 
     local function SealLight()
-        if not IsValidMeleeTarget("target") then
+        if not getUnit().IsValidMeleeTarget("target") then
             return
         end
 
-        AssistFocus()
+        getRaid().AssistFocus()
 
-        if HasBuffOrDebuff("Judgement of Light", "target", "debuff") then
+        if getAura().HasBuffOrDebuff("Judgement of Light", "target", "debuff") then
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if not HasBuffOrDebuff("Seal of Light", "player", "buff") then
+        if not getAura().HasBuffOrDebuff("Seal of Light", "player", "buff") then
             CastSpellByName("Seal of Light")
             return
         end
@@ -128,10 +129,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
-            if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                TargetMyAssignedTankToHeal()
+            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+                getHealing().TargetMyAssignedTankToHeal()
             else
-                local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+                local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
                     MBH_CastHeal("Flash of Light", 5, 6)
                 else
@@ -140,18 +141,18 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if InCombat() and ManaPct() < 0.95 then
-            SelfBuff("Divine Favor")
+        if getUnit().InCombat() and getUnit().ManaPct() < 0.95 then
+            getSpells().SelfBuff("Divine Favor")
         end
 
-        local flashOfLightSpell = "Flash of Light(" .. MB_myPaladinMainTankHealingRank .. ")"
-        if TankTarget("Vaelastrasz the Corrupt") then
+        local flashOfLightSpell = "Flash of Light(" .. getHealingState().Paladin.MainTankHealingRank .. ")"
+        if getRaid().TankTarget("Vaelastrasz the Corrupt") then
             flashOfLightSpell = "Holy Light"
-        elseif TankTarget("Ossirian the Unscarred") then
+        elseif getRaid().TankTarget("Ossirian the Unscarred") then
             flashOfLightSpell = "Holy Light(rank 5)"
         end
 
-        if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Flash of Light", MB_myPaladinMainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
+        if not getTables().BossNeverInterruptHeal() and getUnit().HealthDown("target") <= (getHealing().GetHealValueFromRank("Flash of Light", getHealingState().Paladin.MainTankHealingRank) * getHealingState().MainTankOverhealingPercentage) then
             if GetTime() > FlashOfLight.Time and GetTime() < FlashOfLight.Time + 0.5 and FlashOfLight.Interrupt then
                 SpellStopCasting()
                 FlashOfLight.Interrupt = false
@@ -159,7 +160,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if not ImBusy() then
+        if not getSpells().ImBusy() then
             CastSpellByName(flashOfLightSpell)
             FlashOfLight.Time = GetTime() + 0.25
             FlashOfLight.Interrupt = true
@@ -169,13 +170,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function BOPLowRandom()
         if GLUTH_IsAtGluth()
             or not UnitInRaid("player")
-            or not InCombat()
-            or ImBusy()
-            or not IsSpellReady("Blessing of Protection") then
+            or not getUnit().InCombat()
+            or getSpells().ImBusy()
+            or not getSpells().IsSpellReady("Blessing of Protection") then
             return false
         end
 
-        local classOrder = MyClassOrder()
+        local classOrder = getCore().MyClassOrder()
         local blastNSatThisPercentage = 0.3
 
         if classOrder == 1 then
@@ -196,19 +197,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local BOPTarget = "raid" .. i
 
             if aggrox and aggrox:GetUnitAggroByUnitId(BOPTarget)
-                and not FindInTable(MB_raidTanks, UnitName(BOPTarget))
-                and IsValidFriendlyTarget(BOPTarget, "Blessing of Protection")
-                and HealthPct(BOPTarget) <= blastNSatThisPercentage
-                and not HasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then
+                and not getApi().FindInTable(MB_raidTanks, UnitName(BOPTarget))
+                and getUnit().IsValidFriendlyTarget(BOPTarget, "Blessing of Protection")
+                and getUnit().HealthPct(BOPTarget) <= blastNSatThisPercentage
+                and not getAura().HasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then
                 if UnitIsFriend("player", BOPTarget) then
                     ClearTarget()
                 end
 
                 CastSpellByName("Blessing of Protection", nil)
-                CdMessage("I BOP'd " ..
-                    GetColors(UnitName(BOPTarget)) ..
+                getApi().CdMessage("I BOP'd " ..
+                    getApi().GetColors(UnitName(BOPTarget)) ..
                     " at " ..
-                    string.sub(HealthPct(BOPTarget), 3, 4) ..
+                    string.sub(getUnit().HealthPct(BOPTarget), 3, 4) ..
                     "% - " .. UnitHealth(BOPTarget) .. "/" .. UnitHealthMax(BOPTarget) .. " HP.")
 
                 SpellTargetUnit(BOPTarget)
@@ -225,50 +226,50 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if InCombat() then
+        if getUnit().InCombat() then
             --            MB_mySetupList["Paladin"]()
 
-            if HealthPct() < 0.2 then
-                SelfBuff("Divine Shield")
+            if getUnit().HealthPct() < 0.2 then
+                getSpells().SelfBuff("Divine Shield")
                 return
             end
 
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
 
-        if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
+        if getAura().HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not getRaid().TankTarget("Anubisath Defender") then
             return
         end
 
-        if HealLieutenantAQ20() or InstructorRazAddsHeal() then
+        if getHealing().HealLieutenantAQ20() or getHealing().InstructorRazAddsHeal() then
             return
         end
 
-        if ConfigState.AssignedHealTarget then
-            if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
-                MTHeals(ConfigState.AssignedHealTarget)
+        if getConfigState().AssignedHealTarget then
+            if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+                MTHeals(getConfigState().AssignedHealTarget)
                 return
             else
-                ConfigState.AssignedHealTarget = nil
-                RunLine("/raid My healtarget died, time to ALT-F4.")
+                getConfigState().AssignedHealTarget = nil
+                getApi().CdMessage("My healtarget died, time to ALT-F4.")
             end
         end
 
-        for _, BossName in pairs(MB_myPaladinMainTankHealingBossList) do
-            if TankTarget(BossName) then
+        for _, bossName in pairs(getHealingState().Paladin.MainTankHealingBossList) do
+            if getRaid().TankTarget(bossName) then
                 MTHeals()
                 return
             end
         end
 
-        if Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
-            if HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+        if Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+            if getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 MBH_CastHeal("Flash of Light", 6, 6)
                 return
             end
@@ -288,7 +289,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if HasBuffOrDebuff("Blinding Light", "player", "buff") or HasBuffOrDebuff("Divine Favor", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Blinding Light", "player", "buff") or getAura().HasBuffOrDebuff("Divine Favor", "player", "buff") then
             MBH_CastHeal("Holy Light")
             return
         end
@@ -297,27 +298,27 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if Instance.NAXX() and RaidIsPoisoned() and ImBusy() then
-            if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
+        if Instance.NAXX() and getDispel().RaidIsPoisoned() and getSpells().ImBusy() then
+            if getRaid().TankTarget("Venom Stalker") or getRaid().TankTarget("Necro Stalker") then
                 SpellStopCasting()
             end
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if StunnableMob() then
+        if getTables().StunnableMob() then
             if not MB_autoBuff.Active then
                 MB_autoBuff.Active = true
                 MB_autoBuff.Time = GetTime() + 1
                 PaladinCounter.Cycle()
             end
 
-            if MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
-                if IsSpellReady("Hammer of Justice") then
-                    AssistFocus()
+            if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
+                if getSpells().IsSpellReady("Hammer of Justice") then
+                    getRaid().AssistFocus()
                     CastSpellByName("Hammer of Justice")
                 end
             end
@@ -329,15 +330,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     MoronBox:RegisterExpose({
         Setup = function()
-            if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+            if UnitMana("player") < 3060 and getAura().HasBuffNamed("Drink", "player") then
                 return
             end
 
             BlessMyAssignedBlessing()
             ChooseAura()
 
-            if not InCombat() and ManaPct() < 0.20 and not HasBuffNamed("Drink", "player") then
-                SmartDrink()
+            if not getUnit().InCombat() and getUnit().ManaPct() < 0.20 and not getAura().HasBuffNamed("Drink", "player") then
+                getWater().SmartDrink()
             end
         end,
         Single = Single,

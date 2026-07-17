@@ -1,20 +1,20 @@
 -- [[ Mage Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Mage Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myName = UnitName("player")
 local myClass = UnitClass("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local MageCounter = {
         Cycle = function()
-            ConfigState.SheepingMageNr = (ConfigState.SheepingMageNr >= TableLength(GeneralState.ClassList["Warlock"]))
-                and 1 or (ConfigState.SheepingMageNr + 1)
+            getConfigState().SheepingMageNr = (getConfigState().SheepingMageNr >= getApi().TableLength(getCoreState().ClassList["Warlock"]))
+                and 1 or (getConfigState().SheepingMageNr + 1)
         end
     }
 
-    local RemovedBuffs = {
+    local RemoveBuffs = {
         ["Battle Shout"]     = "Battle Shout",
         ["Fengus' Ferocity"] = "Fengus' Ferocity",
         ["Polished Armor"]   = "Polished Armor",
@@ -27,54 +27,54 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function ConjureManaGems()
-        if ImBusy() or InCombat() then
+        if getSpells().ImBusy() or getUnit().InCombat() then
             return
         end
 
-        if GetAllContainerFreeSlots() == 0 then
-            CdMessage("My bags are full, can\'t conjure more stuff", 60)
+        if getBag().GetAllContainerFreeSlots() == 0 then
+            getApi().CdMessage("My bags are full, can\'t conjure more stuff", 60)
             return
         end
 
-        if not HaveInBags("Mana Ruby") then
+        if not getBag().HaveInBags("Mana Ruby") then
             CastSpellByName("Conjure Mana Ruby")
         end
 
-        if not HaveInBags("Mana Citrine") then
+        if not getBag().HaveInBags("Mana Citrine") then
             CastSpellByName("Conjure Mana Citrine")
         end
 
-        if not HaveInBags("Mana Jade") then
+        if not getBag().HaveInBags("Mana Jade") then
             CastSpellByName("Conjure Mana Jade")
         end
 
-        if not HaveInBags("Mana Agate") then
+        if not getBag().HaveInBags("Mana Agate") then
             CastSpellByName("Conjure Mana Agate")
         end
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        SelfBuff("Presence of Mind")
-        SelfBuff("Berserking")
+        getSpells().SelfBuff("Presence of Mind")
+        getSpells().SelfBuff("Berserking")
 
-        if not HasBuffOrDebuff("Power Infusion", "player", "buff") then
-            SelfBuff("Arcane Power")
+        if not getAura().HasBuffOrDebuff("Power Infusion", "player", "buff") then
+            getSpells().SelfBuff("Arcane Power")
         end
 
-        RequestPowerInfusion()
+        getBuffs().RequestPowerInfusion()
 
-        HealerTrinkets()
-        CasterTrinkets()
+        getBag().HealerTrinkets()
+        getBag().CasterTrinkets()
     end
 
     local CooldownScenarios = {
         ["ONY"] = {
-            Encounter = function() return TankTarget("Onyxia") end,
-            Conditions = function() return TankTargetHealth() <= 0.65 and ManaDown() > 600 end
+            Encounter = function() return getRaid().TankTarget("Onyxia") end,
+            Conditions = function() return getRaid().TankTargetHealth() <= 0.65 and getUnit().ManaDown() > 600 end
         },
     }
 
@@ -95,7 +95,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if GetScorchAmount() == 5 then
+        if getAura().GetScorchAmount() == 5 then
             Cooldowns()
         end
     end
@@ -105,7 +105,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if ManaDown() > 600 then
+        if getUnit().ManaDown() > 600 then
             Cooldowns()
         end
     end
@@ -118,19 +118,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     }
 
     local function UseManaGems()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
         local isBossOrHighLvl = Instance.IsWorldBoss() or UnitLevel("target") >= 63
-        local isLowMana = ManaPct("player") < 0.3
+        local isLowMana = getUnit().ManaPct("player") < 0.3
 
         if not (isBossOrHighLvl or isLowMana) then
             return
         end
 
         for _, gem in ipairs(ManaGems) do
-            if HaveInBags(gem.name) and ManaDown() >= gem.threshold then
+            if getBag().HaveInBags(gem.name) and getUnit().ManaDown() >= gem.threshold then
                 UseItemByName(gem.name)
                 return true
             end
@@ -140,88 +140,88 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Fire()
-        local igTick = tonumber(ConfigState.Ignite.Amount)
+        local igTick = tonumber(getConfigState().Ignite.Amount)
 
         -- No active Ignite: starter just starts it
-        if not ConfigState.Ignite.Active then
+        if not getConfigState().Ignite.Active then
             UseFireCooldowns()
-            CastOrWand("Fireball")
+            getSpells().CastOrWand("Fireball")
             return
         end
 
         -- Starter logic
-        if ConfigState.Ignite.Starter == myName then
+        if getConfigState().Ignite.Starter == myName then
             -- Good Ignite tick
-            if igTick > SettingsState.Mage.StarterIgniteTick then
-                SelfBuff("Combustion") -- pop Combustion once at start
+            if igTick > getSettingsState().Mage.StarterIgniteTick then
+                getSpells().SelfBuff("Combustion") -- pop Combustion once at start
 
                 -- Fire Blast if allowed, in melee, and ready
-                if SettingsState.Mage.AllowFireBlastDuringIgnite and InMeleeRange() and IsSpellReady("Fire Blast") then
+                if getSettingsState().Mage.AllowFireBlastDuringIgnite and getUnit().InMeleeRange() and getSpells().IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end
 
                 -- Main spell to keep Ignite rolling
-                CastOrWand("Fireball")
+                getSpells().CastOrWand("Fireball")
             else
                 -- Bad tick handling
-                if SettingsState.Mage.AllowIgniteToDropWhenBadTick then
-                    CastOrWand("Frostbolt")
+                if getSettingsState().Mage.AllowIgniteToDropWhenBadTick then
+                    getSpells().CastOrWand("Frostbolt")
                 else
-                    CastOrWand("Fireball")
+                    getSpells().CastOrWand("Fireball")
                 end
             end
 
             -- Non-starter logic
         else
             -- Starter has good Ignite tick
-            if igTick > SettingsState.Mage.StarterIgniteTick then
-                if HasBuffOrDebuff("Ignite", "target", "debuff") then
-                    CastOrWand(SettingsState.Mage.SpellToKeepIgniteUp) -- usually Scorch
+            if igTick > getSettingsState().Mage.StarterIgniteTick then
+                if getAura().HasBuffOrDebuff("Ignite", "target", "debuff") then
+                    getSpells().CastOrWand(getSettingsState().Mage.SpellToKeepIgniteUp) -- usually Scorch
                 end
             else
                 -- Starter tick is bad non-starters cast Fireball to start next strong Ignite
-                CastOrWand("Fireball")
+                getSpells().CastOrWand("Fireball")
             end
         end
     end
 
     local function Frost()
-        local winterChill = GetWintersChillAmount()
+        local winterChill = getAura().GetWintersChillAmount()
 
         -- Combat cooldowns
-        if InCombat() then
+        if getUnit().InCombat() then
             UseFrostCooldowns()
 
             -- Ice Block if low health (except Grobbulus)
-            if IsSpellReady("Ice Block") and HealthPct() <= 0.22 and not GROB_IsAtGrobbulus() then
-                SelfBuff("Ice Block")
+            if getSpells().IsSpellReady("Ice Block") and getUnit().HealthPct() <= 0.22 and not GROB_IsAtGrobbulus() then
+                getSpells().SelfBuff("Ice Block")
                 return
             end
 
             -- Cancel Ice Block safely
-            if HasBuffOrDebuff("Ice Block", "player", "buff") and HealthPct() >= 0.70 then
+            if getAura().HasBuffOrDebuff("Ice Block", "player", "buff") and getUnit().HealthPct() >= 0.70 then
                 CancelBuff("Ice Block")
                 return
             end
 
             -- Ice Barrier
-            if IsSpellReady("Ice Barrier") and HealthPct() >= 0.65 and not HasBuffOrDebuff("Ice Barrier", "player", "buff") then
-                SelfBuff("Ice Barrier")
+            if getSpells().IsSpellReady("Ice Barrier") and getUnit().HealthPct() >= 0.65 and not getAura().HasBuffOrDebuff("Ice Barrier", "player", "buff") then
+                getSpells().SelfBuff("Ice Barrier")
                 return
             end
         end
 
         -- Winter's Chill opener
         if Instance.IsWorldBoss() and WinterChill() and winterChill < 2 then
-            CastSpellByName(SettingsState.Mage.SpellToKeepWintersChillUp)
+            CastSpellByName(getSettingsState().Mage.SpellToKeepWintersChillUp)
             return
         end
 
         -- Frostbolt rotation (Fireball as backup if GCD)
-        if IsSpellReady("Frostbolt") then
-            CastOrWand("Frostbolt")
+        if getSpells().IsSpellReady("Frostbolt") then
+            getSpells().CastOrWand("Frostbolt")
         else
-            CastOrWand("Fireball")
+            getSpells().CastOrWand("Fireball")
         end
     end
 
@@ -232,52 +232,52 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        if MobsToDetectMagic() and not HasBuffOrDebuff("Detect Magic", "target", "debuff") then
-            if not HasBuffOrDebuff("Detect Magic", "player", "debuff") then
+        if getTables().MobsToDetectMagic() and not getAura().HasBuffOrDebuff("Detect Magic", "target", "debuff") then
+            if not getAura().HasBuffOrDebuff("Detect Magic", "player", "debuff") then
                 CastSpellByName("Detect Magic")
                 return true
             end
         end
 
-        if MobsToFireWard() and not HasBuffOrDebuff("Fire Ward", "player", "buff") then
-            SelfBuff("Fire Ward")
+        if getTables().MobsToFireWard() and not getAura().HasBuffOrDebuff("Fire Ward", "player", "buff") then
+            getSpells().SelfBuff("Fire Ward")
             return true
         end
 
-        if (Instance.AQ40() or Instance.AQ20()) and MobsToDetectMagic() then
-            if not HasBuffOrDebuff("Detect Magic", "target", "debuff") then
+        if (Instance.AQ40() or Instance.AQ20()) and getTables().MobsToDetectMagic() then
+            if not getAura().HasBuffOrDebuff("Detect Magic", "target", "debuff") then
                 Frost()
                 return true
-            elseif HasBuffNamed("Fire and Arcane Reflect", "target") and not HasBuffOrDebuff("Immolate", "target", "debuff") then
+            elseif getAura().HasBuffNamed("Fire and Arcane Reflect", "target") and not getAura().HasBuffOrDebuff("Immolate", "target", "debuff") then
                 Frost()
                 return true
-            elseif HasBuffNamed("Shadow and Frost Reflect", "target") and HasBuffOrDebuff("Immolate", "target", "debuff") then
+            elseif getAura().HasBuffNamed("Shadow and Frost Reflect", "target") and getAura().HasBuffOrDebuff("Immolate", "target", "debuff") then
                 Fire()
                 return true
             end
         end
 
-        if HasBuffOrDebuff("Magic Reflection", "target", "buff") then
-            if ImBusy() then
+        if getAura().HasBuffOrDebuff("Magic Reflection", "target", "buff") then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            AutoWandAttack()
+            getAttack().AutoWandAttack()
             return true
         end
 
-        if TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target") then
-            if ImBusy() then
+        if getRaid().TankTarget("Azuregos") and getAura().HasBuffNamed("Magic Shield", "target") then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            SelfBuff("Frost Ward")
+            getSpells().SelfBuff("Frost Ward")
             return true
         end
 
         if Instance.AQ40() then
-            if TankTarget("Viscidus") then
-                if HealthPct("target") <= 0.35 then
+            if getRaid().TankTarget("Viscidus") then
+                if getUnit().HealthPct("target") <= 0.35 then
                     CastSpellByName("Frostbolt(Rank 1)")
                 else
                     Fire()
@@ -285,69 +285,69 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            if FANKRISS_MageDPS(Mage) then
+            if FANKRISS_MageDPS() then
                 return true
             end
         end
 
-        if Instance.BWL() and CorruptedTotems() and not Dead("target") then
-            if IsSpellReady("Fireblast") then
+        if Instance.BWL() and getTables().CorruptedTotems() and not getUnit().Dead("target") then
+            if getSpells().IsSpellReady("Fireblast") then
                 CastSpellByName("Fire Blast")
             end
 
-            CastOrWand("Scorch")
+            getSpells().CastOrWand("Scorch")
             return true
         end
 
         if Instance.MC() then
-            if TankTarget("Shazzrah") then
-                if ConfigState.PlayerSpecc == "Fire" and not IsSpellReady("Fireball") then
+            if getRaid().TankTarget("Shazzrah") then
+                if getConfigState().PlayerSpecc == "Fire" and not getSpells().IsSpellReady("Fireball") then
                     Frost()
-                elseif ConfigState.PlayerSpecc == "Frost" and not IsSpellReady("Frostbolt") then
+                elseif getConfigState().PlayerSpecc == "Frost" and not getSpells().IsSpellReady("Frostbolt") then
                     Fire()
                 else
                     return false
                 end
                 return true
             end
-            if tName == "Lava Spawn" and InMeleeRange() then
-                if IsSpellReady("Cone of Cold") then
-                    CastOrWand("Cone of Cold")
+            if tName == "Lava Spawn" and getUnit().InMeleeRange() then
+                if getSpells().IsSpellReady("Cone of Cold") then
+                    getSpells().CastOrWand("Cone of Cold")
                     return true
                 end
             end
         end
 
         if Instance.ZG() then
-            if HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do"
-                and not Dead("target") then
-                if IsSpellReady("Fire Blast") then
+            if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do"
+                and not getUnit().Dead("target") then
+                if getSpells().IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end
 
-                CastOrWand("Scorch")
+                getSpells().CastOrWand("Scorch")
                 return true
             end
 
-            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not Dead("target") then
-                if IsSpellReady("Fire Blast") then
+            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().Dead("target") then
+                if getSpells().IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end
 
-                CastOrWand("Scorch")
+                getSpells().CastOrWand("Scorch")
                 return true
             end
         end
 
-        if Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
-            if HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
+        if Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") then
+            if getAura().HasBuffOrDebuff("Fire Weakness", "target", "debuff") then
                 Fire()
                 return true
-            elseif HasBuffOrDebuff("Frost Weakness", "target", "debuff") then
+            elseif getAura().HasBuffOrDebuff("Frost Weakness", "target", "debuff") then
                 Frost()
                 return true
-            elseif HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
-                CastOrWand("Arcane Missiles")
+            elseif getAura().HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
+                getSpells().CastOrWand("Arcane Missiles")
                 return true
             end
         end
@@ -356,99 +356,99 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Single()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not ConfigState.PlayerSpecc then
-            CdMessage("My specc is fucked. Defaulting to Frost.")
-            ConfigState.PlayerSpecc = "Frost"
+        if not getConfigState().PlayerSpecc then
+            getApi().CdMessage("My specc is fucked. Defaulting to Frost.")
+            getConfigState().PlayerSpecc = "Frost"
         end
 
-        if CastCrowdControl() or HasBuffOrDebuff("Evocation", "player", "buff") then
+        if getCrowdControl().CastCrowdControl() or getAura().HasBuffOrDebuff("Evocation", "player", "buff") then
             return
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if TankTarget("Ossirian the Unscarred") then
+        if getRaid().TankTarget("Ossirian the Unscarred") then
             return
         end
 
         if UnitName("target") then
-            if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget
-                and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                if CastCrowdControl() then
+            if getConfigState().CrowdControlTarget and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget
+                and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
+                if getCrowdControl().CastCrowdControl() then
                     return
                 end
             end
 
-            if CrowdControlledMob() then
-                GetTarget()
+            if getUnit().CrowdControlledMob() then
+                getRaid().GetTarget()
             end
         end
 
         if Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
-            if SKERAM_CastCrowdControl() then
+            if SKERAM_CrowdControl() then
                 return
             end
-        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and IsAtNefarianPhase() then
-            if HasBuffOrDebuff("Shadow Command", "target", "debuff") then
+        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and getRaid().IsAtNefarianPhase() then
+            if getAura().HasBuffOrDebuff("Shadow Command", "target", "debuff") then
                 ClearTarget()
                 return
             end
 
-            if not ConfigState.AutoToggleCC.Active then
-                ConfigState.AutoToggleCC.Active = true
-                ConfigState.AutoToggleCC.Time = GetTime() + 3
+            if not getConfigState().AutoToggleCC.Active then
+                getConfigState().AutoToggleCC.Active = true
+                getConfigState().AutoToggleCC.Time = GetTime() + 3
                 MageCounter.Cycle()
             end
 
-            if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
-                CrowdControlMCedRaidMemberNefarian()
+            if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
+                getRaid().CrowdControlMCedRaidMemberNefarian()
             end
-        elseif Instance.ZG() and TankTarget("Hakkar") then
-            if HasBuffOrDebuff("Mind Control", "target", "debuff") then
+        elseif Instance.ZG() and getRaid().TankTarget("Hakkar") then
+            if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
                 ClearTarget()
                 return
             end
 
-            if not ConfigState.AutoToggleCC.Active then
-                ConfigState.AutoToggleCC.Active = true
-                ConfigState.AutoToggleCC.Time = GetTime() + 10
+            if not getConfigState().AutoToggleCC.Active then
+                getConfigState().AutoToggleCC.Active = true
+                getConfigState().AutoToggleCC.Time = GetTime() + 10
                 MageCounter.Cycle()
             end
 
-            if MyClassAlphabeticalOrder() == ConfigState.SheepingMageNr then
-                CrowdControlMCedRaidMemberHakkar()
+            if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
+                getRaid().CrowdControlMCedRaidMemberHakkar()
             end
         end
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
+        if getUnit().InCombat() then
             UseManaGems()
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaPct() <= 0.1 and IsSpellReady("Evocation") then
+            if getUnit().ManaPct() <= 0.1 and getSpells().IsSpellReady("Evocation") then
                 CastSpellByName("Evocation")
                 return
             end
         end
 
-        if ConfigState.DoInterrupt.Active and IsSpellReady(ConfigState.InterruptSpell[myClass]) then
-            if ConfigState.InterruptTarget then
-                GetMyInterruptTarget()
+        if getConfigState().DoInterrupt.Active and getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
+            if getConfigState().InterruptTarget then
+                getRaid().GetMyInterruptTarget()
             end
 
-            if ImBusy() then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            CastSpellByName(ConfigState.InterruptSpell[myClass])
-            CdPrint("Interrupting!")
-            ConfigState.DoInterrupt.Active = false
+            CastSpellByName(getConfigState().InterruptSpell[myClass])
+            getApi().CdPrint("Interrupting!")
+            getConfigState().DoInterrupt.Active = false
             return
         end
 
@@ -456,16 +456,16 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if ConfigState.PlayerSpecc == "Fire" then
-            if IsFireImmune() then
-                CastOrWand("Frostbolt")
+        if getConfigState().PlayerSpecc == "Fire" then
+            if getTables().IsFireImmune() then
+                getSpells().CastOrWand("Frostbolt")
                 return
             end
 
             Fire()
-        elseif ConfigState.PlayerSpecc == "Frost" then
-            if IsFrostImmune() then
-                CastOrWand("Fireball")
+        elseif getConfigState().PlayerSpecc == "Frost" then
+            if getTables().IsFrostImmune() then
+                getSpells().CastOrWand("Fireball")
                 return
             end
 
@@ -482,19 +482,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, iceBarrier = GetTalentInfo(3, 8)
 
             if frostCap > 0 or (arcaneCap > 0 and iceBarrier > 1) then
-                ConfigState.PlayerSpecc = "Frost"
+                getConfigState().PlayerSpecc = "Frost"
             elseif fireCap > 0 or (arcaneCap > 0 and pyroBlast > 0) then
-                ConfigState.PlayerSpecc = "Fire"
+                getConfigState().PlayerSpecc = "Fire"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()
-            if HasBuffOrDebuff("Evocation", "player", "buff") then
+            if getAura().HasBuffOrDebuff("Evocation", "player", "buff") then
                 return
             end
 
-            if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+            if UnitMana("player") < 3060 and getAura().HasBuffNamed("Drink", "player") then
                 return
             end
 
@@ -503,53 +503,53 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if MageWater() > 60 or ConfigState.IsMoving.Active then
-                ProcessIntellect()
-                ProcessAmplifyMagic()
-                RequestDampenMagic()
+            if getWater().MageWater() > 60 or getConfigState().IsMoving.Active then
+                getBuffs().ProcessIntellect()
+                getBuffs().ProcessAmplifyMagic()
+                getBuffs().RequestDampenMagic()
             else
-                MakeWater()
+                getWater().MakeWater()
             end
 
-            SelfBuff("Mage Armor")
+            getSpells().SelfBuff("Mage Armor")
             ConjureManaGems()
 
-            if not InCombat() and ManaPct("player") < 0.20 and not HasBuffNamed("Drink", "player") then
-                SmartDrink()
+            if not getUnit().InCombat() and getUnit().ManaPct("player") < 0.20 and not getAura().HasBuffNamed("Drink", "player") then
+                getWater().SmartDrink()
             end
         end,
         Single = Single,
         Multi = Single,
         AOE = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Frost.")
-                ConfigState.PlayerSpecc = "Frost"
+            if not getConfigState().PlayerSpecc then
+                getApi().CdMessage("My specc is fucked. Defaulting to Frost.")
+                getConfigState().PlayerSpecc = "Frost"
             end
 
-            if HasBuffOrDebuff("Evocation", "player", "buff") then
+            if getAura().HasBuffOrDebuff("Evocation", "player", "buff") then
                 return
             end
 
-            Decurse()
+            getDispel().Decurse()
 
-            if TankTarget("Ossirian the Unscarred") then
+            if getRaid().TankTarget("Ossirian the Unscarred") then
                 return
             end
 
-            if InCombat() then
+            if getUnit().InCombat() then
                 UseManaGems()
 
-                TakeManaPotionAndRunes()
+                getCons().TakeManaPotionAndRunes()
 
-                if ManaDown() > 600 then
+                if getUnit().ManaDown() > 600 then
                     Cooldowns()
                 end
             end
 
-            if ManaPct("player") < 0.2 and not HasBuffOrDebuff("Clearcasting", "player", "buff") then
+            if getUnit().ManaPct("player") < 0.2 and not getAura().HasBuffOrDebuff("Clearcasting", "player", "buff") then
                 CastSpellByName("Arcane Explosion(Rank 1)")
                 return
             end
@@ -557,37 +557,37 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if Instance.BWL() and GetSubZoneText() == "Halls of Strife" then
                 CastSpellByName("Arcane Explosion(Rank 3)")
                 return
-            elseif Instance.NAXX() and TankTarget("Maexxna") then
+            elseif Instance.NAXX() and getRaid().TankTarget("Maexxna") then
                 CastSpellByName("Arcane Explosion(Rank 3)")
                 return
             end
 
-            if InMeleeRange() then
-                if ConfigState.PlayerSpecc == "Fire" then
-                    if IsFireImmune() then
+            if getUnit().InMeleeRange() then
+                if getConfigState().PlayerSpecc == "Fire" then
+                    if getTables().IsFireImmune() then
                         return
                     end
 
-                    if IsSpellReady("Blast Wave") then
+                    if getSpells().IsSpellReady("Blast Wave") then
                         CastSpellByName("Blast Wave")
                     end
-                elseif ConfigState.PlayerSpecc == "Frost" then
-                    if IsFrostImmune() then
+                elseif getConfigState().PlayerSpecc == "Frost" then
+                    if getTables().IsFrostImmune() then
                         return
                     end
 
-                    if IsSpellReady("Ice Block") and HealthPct() <= 0.22 and not GROB_IsAtGrobbulus() then
-                        SelfBuff("Ice Block")
+                    if getSpells().IsSpellReady("Ice Block") and getUnit().HealthPct() <= 0.22 and not GROB_IsAtGrobbulus() then
+                        getSpells().SelfBuff("Ice Block")
                         return
                     end
 
-                    if HasBuffOrDebuff("Ice Block", "player", "buff") and HealthPct() >= 0.70 then
+                    if getAura().HasBuffOrDebuff("Ice Block", "player", "buff") and getUnit().HealthPct() >= 0.70 then
                         CancelBuff("Ice Block")
                         return
                     end
 
-                    if IsSpellReady("Ice Barrier") and HealthPct() >= 0.65 then
-                        SelfBuff("Ice Barrier")
+                    if getSpells().IsSpellReady("Ice Barrier") and getUnit().HealthPct() >= 0.65 then
+                        getSpells().SelfBuff("Ice Barrier")
                         return
                     end
                 end
@@ -596,16 +596,16 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             CastSpellByName("Arcane Explosion")
         end,
         PreCast = function()
-            PreCastTrinkets()
+            getBag().PreCastTrinkets()
 
-            if ConfigState.PlayerSpecc == "Fire" then
-                if IsFireImmune() then
+            if getConfigState().PlayerSpecc == "Fire" then
+                if getTables().IsFireImmune() then
                     CastSpellByName("Frostbolt")
                 else
                     CastSpellByName("Fireball")
                 end
-            elseif ConfigState.PlayerSpecc == "Frost" then
-                if IsFrostImmune() then
+            elseif getConfigState().PlayerSpecc == "Frost" then
+                if getTables().IsFrostImmune() then
                     CastSpellByName("Fireball")
                 else
                     CastSpellByName("Frostbolt")

@@ -1,5 +1,4 @@
 -- [[ Fortitude Buffing ]] --
----@diagnostic disable: undefined-global
 
 -- The buff key used to look up spell/aura data (BUFF_AURA_NAMES, BUFF_CAST_SPELLS).
 local BUFF_KEY = "FearWard"
@@ -22,9 +21,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local ClaimedQueue = {}
     local PriorityOverrides = {}
 
-    FearWard = Register(MODULE_NAME)
+    FearWard = getBuffs().Register(MODULE_NAME)
 
-    local Handlers = CreateHandlers({
+    local Handlers = getBuffs().CreateHandlers({
         AddonPrefix = MODULE_NAME,
         BuffKey = BUFF_KEY,
         Queue = Queue,
@@ -34,14 +33,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     FearWard:SetScript("OnEvent", function()
         if event ~= "CHAT_MSG_ADDON" then return end
         if not Handlers.IsOwnMessage(arg1) then return end
-        DispatchMessage(arg2, arg4, Handlers)
+        getBuffs().DispatchMessage(arg2, arg4, Handlers)
     end)
 
     MoronBox:RegisterExpose({
         -- Overrides the priority for a specific fight, preventing accidental duplicates.
         OverridePriority = function(fightName, fn)
             if PriorityOverrides[fightName] then
-                WarnMsg("Priority override already exists for: " .. fightName)
+                getDebugger().WarnMsg("Priority override already exists for: " .. fightName)
                 return
             end
 
@@ -50,20 +49,20 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         -- Broadcasts a request for this buff if not already active.
         Request = function()
-            if HasActiveBuff(BUFF_KEY) then
+            if getBuffs().HasActiveBuff(BUFF_KEY) then
                 return
             end
 
-            local group = GetGroupNumber()
-            local member = GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
+            local group = getBuffs().GetGroupNumber()
+            local member = getBuffs().GetClassMemberForGroup(CLASS_MODULE, group, RACE_MODULE,
                 FEARWARD_MANA_COST)
 
             if not member then
-                WarnMsg("No " .. CLASS_MODULE .. " found")
+                getDebugger().WarnMsg("No " .. CLASS_MODULE .. " found")
                 return
             end
 
-            local prio = GetCustomPriority(PriorityOverrides,
+            local prio = getBuffs().GetCustomPriority(PriorityOverrides,
                 {
                     ["Rogue"] = "HIGH",
                     ["Mage"] = "MEDIUM",
@@ -76,24 +75,24 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         -- Handles the solo cast, then the queue: casts on the next valid target
         -- or notifies the group if that target is already buffed.
         Process = function()
-            if not HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
+            if not getBuffs().HasBuffPremissions(BUFF_KEY, CLASS_MODULE) then
                 return false
             end
 
-            local spellName = GetBuffSpell(BUFF_KEY)
-            local soloResult = SoloBuff(BUFF_KEY, spellName)
+            local spellName = getBuffs().GetBuffSpell(BUFF_KEY)
+            local soloResult = getBuffs().SoloBuff(BUFF_KEY, spellName)
 
             if soloResult ~= nil then
                 return soloResult
             end
 
-            local targetUnitId, groupNum = GetNextTarget(Queue)
+            local targetUnitId, groupNum = getBuffs().GetNextTarget(Queue)
 
             if not targetUnitId then
                 return false
             end
 
-            if IsValidFriendlyTarget(targetUnitId, spellName) and not HasBuffOrDebuff(spellName, targetUnitId, "buff") then
+            if getUnit().IsValidFriendlyTarget(targetUnitId, spellName) and not getAura().HasBuffOrDebuff(spellName, targetUnitId, "buff") then
                 if UnitIsFriend("player", targetUnitId) then
                     ClearTarget()
                 end
@@ -110,9 +109,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     })
 end, function()
     -- Load condition: only active for the required class, or when someone of that class is present.
-    return UnLoad(CLASS_MODULE, RACE_MODULE)
+    return getBuffs().UnLoad(CLASS_MODULE, RACE_MODULE)
 end, function()
-    Unregister(MODULE_NAME)
+    getBuffs().Unregister(MODULE_NAME)
 end)
 
 -- [[ Macro Entry Points ]] --

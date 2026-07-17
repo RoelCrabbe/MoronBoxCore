@@ -1,5 +1,4 @@
 -- [[ Shaman Drop Totem ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Shaman Totems"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
@@ -9,125 +8,125 @@ local myClass = UnitClass("player")
 MoronBox:RegisterModule(MODULE_NAME, function()
     local function ChooseAirTotem()
         if Instance.NAXX() then
-            if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                if IsInGroup(MB_myFirstPWSoaker) or IsInGroup(MB_mySecondPWSoaker) or IsInGroup(MB_myThirdPWSoaker) then
-                    if MyGroupClassOrder() == 1 then return "Grace of Air Totem" end
-                    if MyGroupClassOrder() == 2 then return "Windfury Totem" end
+            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+                if getUnit().IsInGroup(MB_myFirstPWSoaker) or getUnit().IsInGroup(MB_mySecondPWSoaker) or getUnit().IsInGroup(MB_myThirdPWSoaker) then
+                    if getCore().MyGroupClassOrder() == 1 then return "Grace of Air Totem" end
+                    if getCore().MyGroupClassOrder() == 2 then return "Windfury Totem" end
                 end
             end
-        elseif Instance.AQ40() and TankTarget("Princess Huhuran") and TankTargetHealth() <= 0.4 then
-            if MyGroupClassOrder() == 1 then return "Nature Resistance Totem" end
+        elseif Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") and getRaid().TankTargetHealth() <= 0.4 then
+            if getCore().MyGroupClassOrder() == 1 then return "Nature Resistance Totem" end
 
             if MB_druidTankInParty or MB_warriorTankInParty then
-                if MyGroupClassOrder() == 2 then return "Windfury Totem" end
-                if MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
-            elseif NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-                if MyGroupClassOrder() == 2 then return "Windfury Totem" end
-                if MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
-            elseif NumberOfClassInParty("Mage") > 0 or NumberOfClassInParty("Warlock") > 0 then
-                if MyGroupClassOrder() == 2 then return "Tranquil Air Totem" end
-                if MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Windfury Totem" end
+                if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
+            elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+                if getCore().MyGroupClassOrder() == 2 then return "Windfury Totem" end
+                if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
+            elseif getCore().NumberOfClassInParty("Mage") > 0 or getCore().NumberOfClassInParty("Warlock") > 0 then
+                if getCore().MyGroupClassOrder() == 2 then return "Tranquil Air Totem" end
+                if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
             end
-        elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
-            if IsInGroup(MB_myOssirianMainTank) then
-                if MyGroupClassOrder() == 1 then return "Grounding Totem" end
-                if MyGroupClassOrder() == 2 then return "Grounding Totem" end
-                if MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
-                if MyGroupClassOrder() == 4 then return "Windfury Totem" end
+        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
+            if getUnit().IsInGroup(MB_myOssirianMainTank) then
+                if getCore().MyGroupClassOrder() == 1 then return "Grounding Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Grounding Totem" end
+                if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
+                if getCore().MyGroupClassOrder() == 4 then return "Windfury Totem" end
             end
         end
 
-        if IsNatureBoss() then
-            if MyGroupClassOrder() == 2 then return "Nature Resistance Totem" end
+        if getTables().IsNatureBoss() then
+            if getCore().MyGroupClassOrder() == 2 then return "Nature Resistance Totem" end
         end
 
         if MB_druidTankInParty or MB_warriorTankInParty then
-            if MyGroupClassOrder() == 1 then return "Windfury Totem" end
-            if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
-        elseif NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-            if MyGroupClassOrder() == 1 then return "Windfury Totem" end
-            if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
-        elseif NumberOfClassInParty("Mage") > 0 or NumberOfClassInParty("Warlock") > 0 then
-            if MyGroupClassOrder() == 1 then return "Tranquil Air Totem" end
-            if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
+            if getCore().MyGroupClassOrder() == 1 then return "Windfury Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
+        elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+            if getCore().MyGroupClassOrder() == 1 then return "Windfury Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
+        elseif getCore().NumberOfClassInParty("Mage") > 0 or getCore().NumberOfClassInParty("Warlock") > 0 then
+            if getCore().MyGroupClassOrder() == 1 then return "Tranquil Air Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
         end
 
-        if MyGroupClassOrder() == 1 then return "Tranquil Air Totem" end
-        if MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
+        if getCore().MyGroupClassOrder() == 1 then return "Tranquil Air Totem" end
+        if getCore().MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
     end
 
     local function ChooseEarthTotem()
-        if Instance.ONY() and TankTarget("Onyxia") and TankTargetHealth() >= 0.4 then
+        if Instance.ONY() and getRaid().TankTarget("Onyxia") and getRaid().TankTargetHealth() >= 0.4 then
             if MB_druidTankInParty or MB_warriorTankInParty then
-                if MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
-                if MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
-            elseif NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-                if MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
-                if MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
-            elseif NumberOfClassInParty("Mage") > 0 or NumberOfClassInParty("Warlock") > 0 then
-                if MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
-                if MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+                if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
+            elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+                if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
+            elseif getCore().NumberOfClassInParty("Mage") > 0 or getCore().NumberOfClassInParty("Warlock") > 0 then
+                if getCore().MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
             end
         end
 
-        if IsTremorBoss() then
-            if MyGroupClassOrder() == 1 then return "Tremor Totem" end
+        if getTables().IsTremorBoss() then
+            if getCore().MyGroupClassOrder() == 1 then return "Tremor Totem" end
         end
 
         if MB_druidTankInParty or MB_warriorTankInParty then
-            if MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
-            if MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
-        elseif NumberOfClassInParty("Warrior") > 0 or NumberOfClassInParty("Rogue") > 0 then
-            if MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
-            if MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
-        elseif NumberOfClassInParty("Mage") > 0 or NumberOfClassInParty("Warlock") > 0 then
-            if MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
-            if MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+            if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
+        elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+            if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
+        elseif getCore().NumberOfClassInParty("Mage") > 0 or getCore().NumberOfClassInParty("Warlock") > 0 then
+            if getCore().MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
         end
 
-        if MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
-        if MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
+        if getCore().MyGroupClassOrder() == 1 then return "Stoneskin Totem" end
+        if getCore().MyGroupClassOrder() == 2 then return "Strength of Earth Totem" end
     end
 
     local function ChooseWaterTotem()
-        if IsPoisonBoss() then
+        if getTables().IsPoisonBoss() then
             if Instance.AQ40() then
-                if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
-                if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
-            elseif Instance.BWL() and TankTarget("Chromaggus") then
-                if MyGroupClassOrder() == 1 then return "Poison Cleansing Totem" end
-                if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
+                if getCore().MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
+            elseif Instance.BWL() and getRaid().TankTarget("Chromaggus") then
+                if getCore().MyGroupClassOrder() == 1 then return "Poison Cleansing Totem" end
+                if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
             end
-        elseif IsFireBoss() then
-            if MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
-            if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
+        elseif getTables().IsFireBoss() then
+            if getCore().MyGroupClassOrder() == 1 then return "Fire Resistance Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
         elseif LOA_IsAtLoatheb() then
-            if MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
-            if MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
+            if getCore().MyGroupClassOrder() == 1 then return "Healing Stream Totem" end
+            if getCore().MyGroupClassOrder() == 2 then return "Mana Spring Totem" end
         end
 
-        if MyGroupClassOrder() == 1 then return "Mana Spring Totem" end
-        if MyGroupClassOrder() == 2 then return "Healing Stream Totem" end
+        if getCore().MyGroupClassOrder() == 1 then return "Mana Spring Totem" end
+        if getCore().MyGroupClassOrder() == 2 then return "Healing Stream Totem" end
     end
 
     local function ChooseFireTotem()
-        if MyGroupClassOrder() == 1 then return "Frost Resistance Totem" end
+        if getCore().MyGroupClassOrder() == 1 then return "Frost Resistance Totem" end
     end
 
     local function CastTotem(totem)
-        if MobsNoTotems() then
+        if getTables().MobsNoTotems() then
             return
         end
 
-        if HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Mana Tide Totem", "player", "buff") then
             return
         end
 
-        if (totem == "Fire Nova Totem" or totem == "Magma Totem") and not (InMeleeRange() or InCombat()) then
+        if (totem == "Fire Nova Totem" or totem == "Magma Totem") and not (getUnit().InMeleeRange() or getUnit().InCombat()) then
             return
         end
 
-        if totem and string.find(totem, "Searing Totem") and not InCombat() then
+        if totem and string.find(totem, "Searing Totem") and not getUnit().InCombat() then
             return
         end
 
@@ -160,10 +159,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             }
         }
 
-        if FindInTable(TotemTypes.noBuff, totem) then
-            CastSpellWithCooldown(totem, 15)
+        if getApi().FindInTable(TotemTypes.noBuff, totem) then
+            getSpells().CastSpellWithCooldown(totem, 15)
         else
-            if totem and not HasBuffOrDebuff(totem, "player", "buff") then
+            if totem and not getAura().HasBuffOrDebuff(totem, "player", "buff") then
                 CastSpellByName(totem)
             end
         end
@@ -172,13 +171,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     MoronBox:RegisterExpose({
         DropTotems = function()
             if IsShiftKeyDown() then
-                if not HasBuffOrDebuff("Grounding Totem", "player", "buff") then
+                if not getAura().HasBuffOrDebuff("Grounding Totem", "player", "buff") then
                     CastSpellByName("Grounding Totem")
                 end
-                if not HasBuffOrDebuff("Stoneskin Totem", "player", "buff") then
+                if not getAura().HasBuffOrDebuff("Stoneskin Totem", "player", "buff") then
                     CastSpellByName("Stoneskin Totem")
                 end
-                if not HasBuffOrDebuff("Healing Stream Totem", "player", "buff") then
+                if not getAura().HasBuffOrDebuff("Healing Stream Totem", "player", "buff") then
                     CastSpellByName("Healing Stream Totem")
                 end
                 return
@@ -188,11 +187,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if GetSubZoneText() == "Halls of Strife" and not (TankTarget("Broodlord Lashlayer") or TankTarget("Firemaw")) then
+            if GetSubZoneText() == "Halls of Strife" and not (getRaid().TankTarget("Broodlord Lashlayer") or getRaid().TankTarget("Firemaw")) then
                 return
             end
 
-            if GeneralState.ClassList[ConfigState.RaidLeader] and not UnitName(GeneralState.ClassList[ConfigState.RaidLeader] .. "target") then
+            if getCoreState().ClassList[getConfigState().RaidLeader] and not UnitName(getCoreState().ClassList[getConfigState().RaidLeader] .. "target") then
                 return
             end
 
@@ -206,7 +205,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 CastTotem(ChooseWaterTotem())
             end
 
-            if TankTarget("Sapphiron") or TankTarget("Azuregos") then
+            if getRaid().TankTarget("Sapphiron") or getRaid().TankTarget("Azuregos") then
                 CastTotem(ChooseFireTotem())
             end
         end

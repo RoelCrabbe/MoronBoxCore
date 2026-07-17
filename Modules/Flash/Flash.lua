@@ -42,7 +42,7 @@ local function FlashFrameFlashHandler()
 
     local leaderID = getCoreState().MBID[getConfigState().RaidLeader]
     if leaderID and UnitName(leaderID .. "targettarget") == myName and UnitIsEnemy("target", "player") then
-        if getApi().FindInTable(MB_tankList, myName) then
+        if getApi().getApi().FindInTable(MB_tankList, myName) then
             for _, tex in ipairs({ t1, t2, t3, t4 }) do
                 tex:SetTexture(1.0, 1.0, 1.0, 0.4)
             end

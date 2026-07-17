@@ -1,9 +1,9 @@
 -- [[ Druid Rotation ]] --
----@diagnostic disable: undefined-global
 
 local NAME = "Druid Rotation"
 local MODULE_NAME = "MODULE_" .. string.upper(string.gsub(NAME, " ", "_"))
 
+local myName = UnitName("player")
 local myClass = UnitClass("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
@@ -22,7 +22,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(MB_myVaelastraszDruids) do
             local id = MBID[name]
-            if id and not Dead(id) then
+            if id and not getUnit().Dead(id) then
                 return name
             end
         end
@@ -30,45 +30,45 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Taunt()
-        if Instance.MC() and TankTarget("Magmadar") then
+        if Instance.MC() and getRaid().TankTarget("Magmadar") then
             return
         end
 
-        if IsSpellReady("Growl") then
+        if getSpells().IsSpellReady("Growl") then
             CastSpellByName("Growl")
             return
         end
 
-        if UnitName("target") and InCombat("target") then
-            if IsSpellReady("Faerie Fire (Feral)()") then
+        if UnitName("target") and getUnit().InCombat("target") then
+            if getSpells().IsSpellReady("Faerie Fire (Feral)()") then
                 CastSpellByName("Faerie Fire (Feral)()")
             end
         end
     end
 
     local function Cooldowns()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        if ConfigState.PlayerSpecc == "Feral" then
-            MeleeTrinkets()
+        if getConfigState().PlayerSpecc == "Feral" then
+            getBag().MeleeTrinkets()
             return
         end
 
-        HealerTrinkets()
-        CasterTrinkets()
+        getBag().HealerTrinkets()
+        getBag().CasterTrinkets()
     end
 
     local function Innervate()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not IsSpellReady("Innervate") then
+        if getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) or not getSpells().IsSpellReady("Innervate") then
             return
         end
 
-        for _, innerTarget in ipairs(HealingState.Druid.InnervateHealerList) do
+        for _, innerTarget in ipairs(getHealingState().Druid.InnervateHealerList) do
             local unitID = MBID[innerTarget]
 
-            if IsValidFriendlyTarget(unitID, "Innervate") and HealthPct(unitID) <= 0.5 and not HasBuffNamed("Innervate", unitID) and IsSpellReady("Innervate") then
+            if getUnit().IsValidFriendlyTarget(unitID, "Innervate") and getUnit().HealthPct(unitID) <= 0.5 and not getAura().HasBuffNamed("Innervate", unitID) and getSpells().IsSpellReady("Innervate") then
                 if UnitIsFriend("player", unitID) then
                     ClearTarget()
                 end
@@ -88,26 +88,26 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if GetSubZoneText() ~= "Dragonmaw Garrison" or not IsAtRazorgorePhase() or not MB_myRazorgoreBoxStrategy then
+            if not getRaid().IsAtRazorgore() or not getRaid().IsAtRazorgorePhase() or not MB_myRazorgoreBoxStrategy then
                 return
             end
 
             local tanks = {
-                Right = ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank),
-                Left = ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+                Right = getApi().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank),
+                Left = getApi().ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
             }
 
             for _, tank in pairs(tanks) do
                 local targetUnit = MBID[tank] .. "target"
-                if TargetFromSpecificPlayer("Death Talon Dragonspawn", tank) and UnitCanAttack("player", targetUnit) and
-                    not (HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff") or HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
+                if getRaid().TargetFromSpecificPlayer("Death Talon Dragonspawn", tank) and UnitCanAttack("player", targetUnit) and
+                    not (getAura().HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff") or getAura().HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
                     AssistUnit(MBID[tank])
                     CastSpellByName("Faerie Fire")
                     TargetLastTarget()
                 end
             end
         else
-            local focusTarget = ConfigState.RaidLeader and MBID[ConfigState.RaidLeader] or
+            local focusTarget = getConfigState().RaidLeader and MBID[getConfigState().RaidLeader] or
                 (MB_raidInviter and MBID[MB_raidInviter] or nil)
 
             if not focusTarget then
@@ -116,7 +116,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             local targetUnit = focusTarget .. "target"
             if UnitCanAttack("player", targetUnit) and
-                not (HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff") or HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
+                not (getAura().HasBuffOrDebuff("Faerie Fire", targetUnit, "debuff") or getAura().HasBuffOrDebuff("Faerie Fire (Feral)", targetUnit, "debuff")) then
                 AssistUnit(focusTarget)
                 CastSpellByName("Faerie Fire")
                 TargetLastTarget()
@@ -131,34 +131,34 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        if HasBuffNamed("Shadow and Frost Reflect", "target") or
-            HasBuffOrDebuff("Magic Reflection", "target", "buff") or
-            (TankTarget("Azuregos") and HasBuffNamed("Magic Shield", "target")) then
-            if ImBusy() then
+        if getAura().HasBuffNamed("Shadow and Frost Reflect", "target") or
+            getAura().HasBuffOrDebuff("Magic Reflection", "target", "buff") or
+            (getRaid().TankTarget("Azuregos") and getAura().HasBuffNamed("Magic Shield", "target")) then
+            if getSpells().ImBusy() then
                 SpellStopCasting()
             end
 
-            AutoAttack()
+            getAttack().AutoAttack()
             return true
         end
 
         if Instance.AQ40() then
             SARTURA_DruidDPS()
         elseif Instance.ZG() then
-            if HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
-                if target == "Shade of Jin'do" and not Dead("target") then
-                    CastOrWand("Wrath")
+            if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
+                if target == "Shade of Jin'do" and not getUnit().Dead("target") then
+                    getSpells().CastOrWand("Wrath")
                     return true
                 end
             end
 
-            if (target == "Powerful Healing Ward" or target == "Brain Wash Totem") and not Dead("target") then
-                CastOrWand("Wrath")
+            if (target == "Powerful Healing Ward" or target == "Brain Wash Totem") and not getUnit().Dead("target") then
+                getSpells().CastOrWand("Wrath")
                 return true
             end
-        elseif Instance.AQ20() and TankTarget("Ossirian the Unscarred") then
-            if HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
-                CastOrWand("Wrath")
+        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") then
+            if getAura().HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
+                getSpells().CastOrWand("Wrath")
                 return true
             end
         end
@@ -167,24 +167,24 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Balance()
-        if not IsBoomForm() then
-            SelfBuff("Moonkin Form")
-            CancelDruidShapeShift()
+        if not getUnit().IsBoomForm() then
+            getSpells().SelfBuff("Moonkin Form")
+            getUnit().CancelDruidShapeShift()
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
+        if getUnit().InCombat() then
             HealerDebuffs()
             Innervate()
 
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
@@ -193,11 +193,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if ImBusy() then
+        if getSpells().ImBusy() then
             return
         end
 
-        CastOrWand("Starfire")
+        getSpells().CastOrWand("Starfire")
     end
 
     local HealTouch = { Time = 0, Interrupt = false }
@@ -206,10 +206,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
-            if TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                TargetMyAssignedTankToHeal()
+            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+                getHealing().TargetMyAssignedTankToHeal()
             else
-                local tankTarget = UnitName(MBID[TankName()] .. "targettarget")
+                local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
                     MBH_CastHeal("Healing Touch")
                 else
@@ -218,23 +218,23 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if IsSpellReady("Nature\'s Swiftness") and HealthPct("target") <= 0.15 then
-            if not HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        if getSpells().IsSpellReady("Nature\'s Swiftness") and getUnit().HealthPct("target") <= 0.15 then
+            if not getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
                 SpellStopCasting()
             end
 
-            SelfBuff("Nature\'s Swiftness")
+            getSpells().SelfBuff("Nature\'s Swiftness")
         end
 
-        if HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
+        if getAura().HasBuffOrDebuff("Nature\'s Swiftness", "player", "buff") then
             CastSpellByName("Healing Touch")
             return
         end
 
-        local healTouchSpell = TankTarget("Vaelastrasz the Corrupt") and "Healing Touch" or
-            ("Healing Touch(" .. HealingState.Druid.MainTankHealingRank .. ")")
+        local healTouchSpell = getRaid().TankTarget("Vaelastrasz the Corrupt") and "Healing Touch" or
+            ("Healing Touch(" .. getHealingState().Druid.MainTankHealingRank .. ")")
 
-        if not BossNeverInterruptHeal() and HealthDown("target") <= (GetHealValueFromRank("Healing Touch", HealingState.Druid.MainTankHealingRank) * HealingState.MainTankOverhealingPercentage) then
+        if not getTables().BossNeverInterruptHeal() and getUnit().HealthDown("target") <= (getHealing().GetHealValueFromRank("Healing Touch", getHealingState().Druid.MainTankHealingRank) * getHealingState().MainTankOverhealingPercentage) then
             if GetTime() > HealTouch.Time and GetTime() < HealTouch.Time + 0.5 and HealTouch.Interrupt then
                 SpellStopCasting()
                 HealTouch.Interrupt = false
@@ -242,7 +242,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if not ImBusy() then
+        if not getSpells().ImBusy() then
             CastSpellByName(healTouchSpell)
             HealTouch.Time = GetTime() + 1
             HealTouch.Interrupt = true
@@ -250,12 +250,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function MaxRejuvAggroedPlayer()
-        if not MBID[ConfigState.RaidLeader] or ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) then
+        if not MBID[getConfigState().RaidLeader] or getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) then
             return
         end
 
-        local rejuvTarget = MBID[ConfigState.RaidLeader] .. "targettarget"
-        if not IsValidFriendlyTarget(rejuvTarget, "Rejuvenation") or HealthPct(rejuvTarget) > 0.95 or HasBuffNamed("Rejuvenation", rejuvTarget) then
+        local rejuvTarget = MBID[getConfigState().RaidLeader] .. "targettarget"
+        if not getUnit().IsValidFriendlyTarget(rejuvTarget, "Rejuvenation") or getUnit().HealthPct(rejuvTarget) > 0.95 or getAura().HasBuffNamed("Rejuvenation", rejuvTarget) then
             return
         end
 
@@ -269,12 +269,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function MaxRegrowthAggroedPlayer()
-        if not MBID[ConfigState.RaidLeader] or ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) then
+        if not MBID[getConfigState().RaidLeader] or getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) then
             return
         end
 
-        local regroTarget = MBID[ConfigState.RaidLeader] .. "targettarget"
-        if not IsValidFriendlyTarget(regroTarget, "Regrowth") or HealthPct(regroTarget) > 0.95 or HasBuffNamed("Regrowth", regroTarget) then
+        local regroTarget = MBID[getConfigState().RaidLeader] .. "targettarget"
+        if not getUnit().IsValidFriendlyTarget(regroTarget, "Regrowth") or getUnit().HealthPct(regroTarget) > 0.95 or getAura().HasBuffNamed("Regrowth", regroTarget) then
             return
         end
 
@@ -288,7 +288,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function RejuvAggroedPlayer()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) then
+        if getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) then
             return
         end
 
@@ -298,14 +298,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local rejuvTarget = "raid" .. i
 
             if aggrox:GetUnitAggroByUnitId(rejuvTarget) and
-                IsValidFriendlyTarget(rejuvTarget, "Rejuvenation") and
-                HealthPct(rejuvTarget) <= HealingState.Druid.RejuvenationAggroedPlayerPercentage and
-                not HasBuffNamed("Rejuvenation", rejuvTarget) then
+                getUnit().IsValidFriendlyTarget(rejuvTarget, "Rejuvenation") and
+                getUnit().HealthPct(rejuvTarget) <= getHealingState().Druid.RejuvenationAggroedPlayerPercentage and
+                not getAura().HasBuffNamed("Rejuvenation", rejuvTarget) then
                 if UnitIsFriend("player", rejuvTarget) then
                     ClearTarget()
                 end
 
-                CastSpellByName("Rejuvenation(" .. HealingState.Druid.RejuvenationAggroedPlayerRank .. ")")
+                CastSpellByName("Rejuvenation(" .. getHealingState().Druid.RejuvenationAggroedPlayerRank .. ")")
                 SpellTargetUnit(rejuvTarget)
                 SpellStopTargeting()
                 return
@@ -314,7 +314,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function RegrowthAggroedPlayer()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 or MyClassOrder() ~= 1 then
+        if getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 or getCore().MyClassOrder() ~= 1 then
             return
         end
 
@@ -324,14 +324,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local regroTarget = "raid" .. i
 
             if aggrox:GetUnitAggroByUnitId(regroTarget) and
-                IsValidFriendlyTarget(regroTarget, "Regrowth") and
-                HealthPct(regroTarget) <= HealingState.Druid.SwiftmendRegrowthAggroedPlayerPercentage and
-                not HasBuffNamed("Regrowth", regroTarget) then
+                getUnit().IsValidFriendlyTarget(regroTarget, "Regrowth") and
+                getUnit().HealthPct(regroTarget) <= getHealingState().Druid.SwiftmendRegrowthAggroedPlayerPercentage and
+                not getAura().HasBuffNamed("Regrowth", regroTarget) then
                 if UnitIsFriend("player", regroTarget) then
                     ClearTarget()
                 end
 
-                CastSpellByName("Regrowth(" .. HealingState.Druid.SwiftmendRegrowthAggroedPlayerRank .. ")")
+                CastSpellByName("Regrowth(" .. getHealingState().Druid.SwiftmendRegrowthAggroedPlayerRank .. ")")
                 SpellTargetUnit(regroTarget)
                 SpellStopTargeting()
                 return
@@ -340,7 +340,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function RegrowthLowRandom()
-        if ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 then
+        if getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) or not ImprovedRegrowth() or UnitMana("player") < 880 then
             return
         end
 
@@ -350,7 +350,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         for i = 1, numMembers do
             local unitID = prefix .. i
-            if HealthPct(unitID) < HealingState.Druid.SwiftmendRegrowthLowRandomPercentage and IsValidFriendlyTarget(unitID, "Regrowth") then
+            if getUnit().HealthPct(unitID) < getHealingState().Druid.SwiftmendRegrowthLowRandomPercentage and getUnit().IsValidFriendlyTarget(unitID, "Regrowth") then
                 if UnitIsFriend("player", unitID) then
                     ClearTarget()
                 end
@@ -364,12 +364,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function AbolishAggroedPlayer()
-        if not MBID[ConfigState.RaidLeader] or ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) then
+        if not MBID[getConfigState().RaidLeader] or getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) then
             return
         end
 
-        local targetUnit = MBID[ConfigState.RaidLeader] .. "targettarget"
-        if not IsValidFriendlyTarget(targetUnit, "Abolish Poison") or HealthPct(targetUnit) > 0.95 or HasBuffNamed("Abolish Poison", targetUnit) then
+        local targetUnit = MBID[getConfigState().RaidLeader] .. "targettarget"
+        if not getUnit().IsValidFriendlyTarget(targetUnit, "Abolish Poison") or getUnit().HealthPct(targetUnit) > 0.95 or getAura().HasBuffNamed("Abolish Poison", targetUnit) then
             return
         end
 
@@ -383,11 +383,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function SwiftmendOnRandomRaidMember(spell, percentage)
-        if not UnitInRaid("player") or ImBusy() or (Instance.MC() and (TankTarget("Garr") or TankTarget("Firesworn"))) then
+        if not UnitInRaid("player") or getSpells().ImBusy() or (Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn"))) then
             return
         end
 
-        local n = GetNumPartyOrRaidMembers()
+        local n = getUnit().GetNumPartyOrRaidMembers()
         local offset = math.random(n) - 1
 
         for i = 1, n do
@@ -397,10 +397,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             local raidUnit = "raid" .. j
-            if HealthPct(raidUnit) < percentage and
-                InCombat(raidUnit) and
-                IsValidFriendlyTarget(raidUnit, spell) and
-                (HasBuffNamed("Rejuvenation", raidUnit) or HasBuffNamed("Regrowth", raidUnit)) then
+            if getUnit().HealthPct(raidUnit) < percentage and
+                getUnit().InCombat(raidUnit) and
+                getUnit().IsValidFriendlyTarget(raidUnit, spell) and
+                (getAura().HasBuffNamed("Rejuvenation", raidUnit) or getAura().HasBuffNamed("Regrowth", raidUnit)) then
                 if UnitIsFriend("player", raidUnit) then
                     ClearTarget()
                 end
@@ -414,72 +414,73 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Heal()
-        if NatureSwiftnessLowAggroedPlayer() then
+        if getHealing().NatureSwiftnessLowAggroedPlayer() then
             return
         end
 
-        Decurse()
+        getDispel().Decurse()
 
-        if InCombat() then
+        if getUnit().InCombat() then
             HealerDebuffs()
             Innervate()
-            TakeManaPotionAndRunes()
+            getCons().TakeManaPotionAndRunes()
 
-            if ManaDown() > 600 then
+            if getUnit().ManaDown() > 600 then
                 Cooldowns()
             end
         end
 
-        if HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not TankTarget("Anubisath Defender") then
+        if getAura().HasBuffOrDebuff("Curse of Tongues", "player", "debuff") and not getRaid().TankTarget("Anubisath Defender") then
             return
         end
 
-        if Instance.MC() and TankTarget("Shazzrah") then
+        if Instance.MC() and getRaid().TankTarget("Shazzrah") then
             return
         end
 
-        if HealLieutenantAQ20() or InstructorRazAddsHeal() then
+        if getHealing().HealLieutenantAQ20() or getHealing().InstructorRazAddsHeal() then
             return
         end
 
-        if ConfigState.AssignedHealTarget then
-            if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
-                MTHeals(ConfigState.AssignedHealTarget)
+        if getConfigState().AssignedHealTarget then
+            if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+                MTHeals(getConfigState().AssignedHealTarget)
                 return
             else
-                ConfigState.AssignedHealTarget = nil
-                RunLine("/raid My healtarget died, time to ALT-F4.")
+                getConfigState().AssignedHealTarget = nil
+                getApi().CdMessage("My healtarget died, time to ALT-F4.")
             end
         end
 
-        for _, bossName in pairs(MB_myDruidMainTankHealingBossList) do
-            if TankTarget(bossName) then
+        for _, bossName in pairs(getHealingState().Druid.MainTankHealingBossList) do
+            if getRaid().TankTarget(bossName) then
                 MTHeals()
                 return
             end
         end
 
-        if ConfigState.IsMoving.Active then
-            if Instance.ONY() and TankTarget("Onyxia") then
-                CoolDownCast("Moonfire", 12)
+        if getConfigState().IsMoving.Active then
+            if Instance.ONY() and getRaid().TankTarget("Onyxia") then
+                getSpells().CoolDownCast("Moonfire", 12)
             end
 
-            CastSpellOnRandomRaidMember("Rejuvenation", HealingState.Druid.RejuvenationLowRandomMovingRank,
-                HealingState.Druid.RejuvenationLowRandomMovingPercentage)
+            getHealing().CastSpellOnRandomRaidMember("Rejuvenation",
+                getHealingState().Druid.RejuvenationLowRandomMovingRank,
+                getHealingState().Druid.RejuvenationLowRandomMovingPercentage)
         end
 
-        if Instance.AQ40() and TankTarget("Princess Huhuran") then
-            if MyGroupClassOrder() == 1 and TankTargetHealth() <= 0.32 then
+        if Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") then
+            if getCore().MyGroupClassOrder() == 1 and getRaid().TankTargetHealth() <= 0.32 then
                 MTHeals()
                 return
             end
 
             MBH_CastHeal("Healing Touch")
             return
-        elseif Instance.BWL() and TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
             Cooldowns()
 
-            if MB_myVaelastraszDruidHealing and not HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+            if MB_myVaelastraszDruidHealing and not getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 local activeDruid = GetActiveVaelastraszHealer()
 
                 if myName == activeDruid then
@@ -488,37 +489,39 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 end
             end
 
-            if IsSpellReady("Swiftmend") and (swiftmendRaidThrottleTimer == nil or GetTime() - swiftmendRaidThrottleTimer > 1.5) then
+            if getSpells().IsSpellReady("Swiftmend") and (swiftmendRaidThrottleTimer == nil or GetTime() - swiftmendRaidThrottleTimer > 1.5) then
                 swiftmendRaidThrottleTimer = GetTime()
                 SwiftmendOnRandomRaidMember("Swiftmend", 0.5)
             end
 
-            SelfBuff("Rejuvenation")
+            getSpells().SelfBuff("Rejuvenation")
             MBH_CastHeal("Regrowth", 9, 9)
             return
         end
 
-        if not ImBusy() then
-            if ConfigState.HealSpell == "Rejuvenation" and ManaDown() > 300 then
-                SelfBuff("Rejuvenation(Rank 1)")
+        if not getSpells().ImBusy() then
+            if getConfigState().HealSpell == "Rejuvenation" and getUnit().ManaDown() > 300 then
+                getSpells().SelfBuff("Rejuvenation(Rank 1)")
             end
 
             RejuvAggroedPlayer()
 
-            if IsSpellKnown("Swiftmend") then
-                if IsSpellReady("Swiftmend") then
-                    SwiftmendOnRandomRaidMember("Swiftmend", HealingState.Druid.SwiftmendAtPercentage)
+            if getSpells().IsSpellKnown("Swiftmend") then
+                if getSpells().IsSpellReady("Swiftmend") then
+                    SwiftmendOnRandomRaidMember("Swiftmend", getHealingState().Druid.SwiftmendAtPercentage)
                 end
 
                 if (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then
                     rejuvenationRaidThrottleTimer = GetTime()
-                    CastSpellOnRandomRaidMember("Rejuvenation", HealingState.Druid.SwiftmendRejuvenationLowRandomRank,
-                        HealingState.Druid.SwiftmendRejuvenationLowRandomPercentage)
+                    getHealing().CastSpellOnRandomRaidMember("Rejuvenation",
+                        getHealingState().Druid.SwiftmendRejuvenationLowRandomRank,
+                        getHealingState().Druid.SwiftmendRejuvenationLowRandomPercentage)
                 end
             elseif (rejuvenationRaidThrottleTimer == nil or GetTime() - rejuvenationRaidThrottleTimer > 1.5) then
                 rejuvenationRaidThrottleTimer = GetTime()
-                CastSpellOnRandomRaidMember("Rejuvenation", HealingState.Druid.RejuvenationLowRandomRank,
-                    HealingState.Druid.RejuvenationLowRandomPercentage)
+                getHealing().CastSpellOnRandomRaidMember("Rejuvenation",
+                    getHealingState().Druid.RejuvenationLowRandomRank,
+                    getHealingState().Druid.RejuvenationLowRandomPercentage)
             end
 
             RegrowthAggroedPlayer()
@@ -533,38 +536,38 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function TankSingle()
-        if FindInTable(GeneralState.RaidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        if getApi().FindInTable(getCoreState().RaidTanks, myName) and getAura().HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
             CancelBuff("Greater Blessing of Salvation")
         end
 
-        if not IsBearForm() then
-            SelfBuff("Dire Bear Form")
-            CancelDruidShapeShift()
+        if not getUnit().IsBearForm() then
+            getSpells().SelfBuff("Dire Bear Form")
+            getUnit().CancelDruidShapeShift()
             return
         end
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
-            if HealthPct() < 0.3 and IsSpellReady("Frenzied Regeneration") then
+        if getUnit().InCombat() then
+            if getUnit().HealthPct() < 0.3 and getSpells().IsSpellReady("Frenzied Regeneration") then
                 CastSpellByName("Frenzied Regeneration")
             end
 
-            if InMeleeRange() then
-                if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if getUnit().InMeleeRange() then
+                if getAura().GetSunderAmount() == 5 or getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                     Cooldowns()
                 end
 
-                if IsSpellReady("Bash") and StunnableMob() then
+                if getSpells().IsSpellReady("Bash") and getTables().StunnableMob() then
                     CastSpellByName("Bash")
                 end
 
-                if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
+                if not getAura().HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
                     local targetName = UnitName("target")
                     if targetName ~= "Emperor Vek'nilash" and targetName ~= "Emperor Vek'lor" then
-                        if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
+                        if not getAura().HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
                             CastSpellByName("Demoralizing Roar")
                         end
                     end
@@ -572,7 +575,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        OffTank()
+        getRaid().OffTank()
 
         local tOfTarget = UnitName("targettarget") or ""
         local tName = UnitName("target") or ""
@@ -580,10 +583,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         local shouldTaunt = tName ~= ""
             and tOfTarget ~= "" and tOfTarget ~= "Unknown"
             and UnitIsEnemy("player", "target")
-            and not FindInTable(GeneralState.RaidTanks, tOfTarget)
+            and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if ConfigState.OffTankTarget then
+            if getConfigState().OffgetRaid().TankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -592,20 +595,20 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if ConfigState.OffTankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == ConfigState.OffTankTarget and UnitIsDead("target") then
-                ConfigState.OffTankTarget = nil
+        if getConfigState().OffgetRaid().TankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
+                getConfigState().OffgetRaid().TankTarget = nil
                 ClearTarget()
             end
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff") and not HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
+        if not getAura().HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff") and not getAura().HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
             CastSpellByName("Faerie Fire (Feral)()")
         end
 
-        if IsSpellReady("Enrage") and UnitMana("player") <= 15 then
+        if getSpells().IsSpellReady("Enrage") and UnitMana("player") <= 15 then
             CastSpellByName("Enrage")
         end
 
@@ -619,38 +622,38 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function TankMulti()
-        if FindInTable(GeneralState.RaidTanks, myName) and HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
+        if getApi().FindInTable(getCoreState().RaidTanks, myName) and getAura().HasBuffOrDebuff("Greater Blessing of Salvation", "player", "buff") then
             CancelBuff("Greater Blessing of Salvation")
         end
 
-        if not IsBearForm() then
-            SelfBuff("Dire Bear Form")
-            CancelDruidShapeShift()
+        if not getUnit().IsBearForm() then
+            getSpells().SelfBuff("Dire Bear Form")
+            getUnit().CancelDruidShapeShift()
             return
         end
 
-        if not InCombat("target") then
+        if not getUnit().InCombat("target") then
             return
         end
 
-        if InCombat() then
-            if HealthPct() < 0.3 and IsSpellReady("Frenzied Regeneration") then
+        if getUnit().InCombat() then
+            if getUnit().HealthPct() < 0.3 and getSpells().IsSpellReady("Frenzied Regeneration") then
                 CastSpellByName("Frenzied Regeneration")
             end
 
-            if InMeleeRange() then
-                if DebuffSunderAmount() == 5 or HasBuffOrDebuff("Expose Armor", "target", "debuff") then
+            if getUnit().InMeleeRange() then
+                if getAura().GetSunderAmount() == 5 or getAura().HasBuffOrDebuff("Expose Armor", "target", "debuff") then
                     Cooldowns()
                 end
 
-                if IsSpellReady("Bash") and StunnableMob() then
+                if getSpells().IsSpellReady("Bash") and getTables().StunnableMob() then
                     CastSpellByName("Bash")
                 end
 
-                if not HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
+                if not getAura().HasBuffOrDebuff("Demoralizing Shout", "target", "debuff") then
                     local targetName = UnitName("target")
                     if targetName ~= "Emperor Vek'nilash" and targetName ~= "Emperor Vek'lor" then
-                        if not HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
+                        if not getAura().HasBuffOrDebuff("Demoralizing Roar", "target", "debuff") and UnitMana("player") >= 20 then
                             CastSpellByName("Demoralizing Roar")
                         end
                     end
@@ -658,7 +661,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        OffTank()
+        getRaid().OffTank()
 
         local tOfTarget = UnitName("targettarget") or ""
         local tName = UnitName("target") or ""
@@ -666,10 +669,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         local shouldTaunt = tName ~= ""
             and tOfTarget ~= "" and tOfTarget ~= "Unknown"
             and UnitIsEnemy("player", "target")
-            and not FindInTable(GeneralState.RaidTanks, tOfTarget)
+            and not getApi().FindInTable(getCoreState().RaidTanks, tOfTarget)
 
         if shouldTaunt then
-            if ConfigState.OffTankTarget then
+            if getConfigState().OffgetRaid().TankTarget then
                 if tOfTarget ~= myName then
                     Taunt()
                 end
@@ -678,21 +681,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if ConfigState.OffTankTarget then
-            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == ConfigState.OffTankTarget and UnitIsDead("target") then
-                ConfigState.OffTankTarget = nil
+        if getConfigState().OffgetRaid().TankTarget then
+            if UnitExists("target") and GetRaidTargetIndex("target") and GetRaidTargetIndex("target") == getConfigState().OffgetRaid().TankTarget and UnitIsDead("target") then
+                getConfigState().OffgetRaid().TankTarget = nil
                 ClearTarget()
             end
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
 
-        if not HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff")
-            and not HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
+        if not getAura().HasBuffOrDebuff("Faerie Fire (Feral)", "target", "debuff")
+            and not getAura().HasBuffOrDebuff("Faerie Fire", "target", "debuff") then
             CastSpellByName("Faerie Fire (Feral)()")
         end
 
-        if IsSpellReady("Enrage") and UnitMana("player") <= 15 then
+        if getSpells().IsSpellReady("Enrage") and UnitMana("player") <= 15 then
             CastSpellByName("Enrage")
         end
 
@@ -706,81 +709,81 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function Multi()
-        GetTarget()
-        CancelAuraSet(RemoveBuffs)
+        getRaid().GetTarget()
+        getAura().CancelAuraSet(RemoveBuffs)
 
-        if not ConfigState.PlayerSpecc then
-            CdMessage("My specc is fucked. Defaulting to Resto.")
-            ConfigState.PlayerSpecc = "Resto"
+        if not getConfigState().PlayerSpecc then
+            getApi().CdMessage("My specc is fucked. Defaulting to Resto.")
+            getConfigState().PlayerSpecc = "Resto"
         end
 
-        if ConfigState.PlayerSpecc == "Feral" then
+        if getConfigState().PlayerSpecc == "Feral" then
             if Instance.AQ40() then
-                AnubisathAlert()
+                getRaid().AnubisathAlert()
             end
 
             TankMulti()
             return
         end
 
-        if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget then
+        if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget then
             CastSpellByName("Hibernate(Rank 1)")
             return
         end
 
-        if CastCrowdControl() then
+        if getCrowdControl().CastCrowdControl() then
             return
         end
 
         if UnitName("target") then
-            if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                if CastCrowdControl() then
+            if getConfigState().CrowdControlTarget and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
+                if getCrowdControl().CastCrowdControl() then
                     return
                 end
             end
 
-            if CrowdControlledMob() then
-                GetTarget()
+            if getUnit().CrowdControlledMob() then
+                getRaid().GetTarget()
             end
         end
 
-        if ConfigState.PlayerSpecc == "Balance" then
+        if getConfigState().PlayerSpecc == "Balance" then
             Balance()
             return
         end
 
         if Instance.NAXX() and not Faction.IsHorde() then
-            if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
-                if ImBusy() then
+            if getRaid().TankTarget("Venom Stalker") or getRaid().TankTarget("Necro Stalker") then
+                if getSpells().ImBusy() then
                     SpellStopCasting()
                 end
 
-                MeleeBuff("Abolish Poison")
+                getSpells().MeleeBuff("Abolish Poison")
                 return
             end
         end
 
-        HealerJindo("Wrath")
+        getRotation().HealerJindo("Wrath")
         Heal()
     end
 
     local function LOA_Attack()
-        if ImBusy() or not InCombat() then
+        if getSpells().ImBusy() or not getUnit().InCombat() then
             return
         end
 
-        GetTarget()
+        getRaid().GetTarget()
 
-        if ManaPct() < 0.13 then
+        if getUnit().ManaPct() < 0.13 then
             return
         end
 
-        if IsSpellReady("Starfire") then
-            CoolDownCast("Starfire", 6)
+        if getSpells().IsSpellReady("Starfire") then
+            getSpells().CoolDownCast("Starfire", 6)
             return
         end
 
-        AutoAttack()
+        getAttack().AutoAttack()
     end
 
     MoronBox:RegisterExpose({
@@ -791,110 +794,110 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local _, _, _, _, improvedRejuv = GetTalentInfo(3, 3)
 
             if balance > 0 then
-                ConfigState.PlayerSpecc = "Balance"
+                getConfigState().PlayerSpecc = "Balance"
             elseif feral > 0 then
-                ConfigState.PlayerSpecc = "Feral"
+                getConfigState().PlayerSpecc = "Feral"
             elseif swiftmend > 0 then
-                ConfigState.PlayerSpecc = "Swiftmend"
+                getConfigState().PlayerSpecc = "Swiftmend"
             elseif improvedRejuv > 4 then
-                ConfigState.PlayerSpecc = "Resto"
+                getConfigState().PlayerSpecc = "Resto"
             else
-                ConfigState.PlayerSpecc = nil
+                getConfigState().PlayerSpecc = nil
             end
         end,
         Setup = function()
-            if IsDruidShapeShifted() and not InCombat() then
-                CancelDruidShapeShift()
+            if getUnit().IsDruidShapeShifted() and not getUnit().InCombat() then
+                getUnit().CancelDruidShapeShift()
             end
 
-            if UnitMana("player") < 3060 and HasBuffNamed("Drink", "player") then
+            if UnitMana("player") < 3060 and getAura().HasBuffNamed("Drink", "player") then
                 return
             end
 
-            ProcessMarkOfTheWild()
+            getBuffs().ProcessMarkOfTheWild()
 
-            if not SettingsState.SpeedRunEnabled then
-                TankBuff("Thorns")
+            if not getSettingsState().SpeedRunEnabled then
+                getSpells().TankBuff("Thorns")
             end
 
-            SelfBuff("Omen of Clarity")
+            getSpells().SelfBuff("Omen of Clarity")
 
-            if not InCombat() and ManaPct() < 0.20 and not HasBuffNamed("Drink", "player") then
-                SmartDrink()
+            if not getUnit().InCombat() and getUnit().ManaPct() < 0.20 and not getAura().HasBuffNamed("Drink", "player") then
+                getWater().SmartDrink()
             end
         end,
         Single = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
-            if not ConfigState.PlayerSpecc then
-                CdMessage("My specc is fucked. Defaulting to Resto.")
-                ConfigState.PlayerSpecc = "Resto"
+            if not getConfigState().PlayerSpecc then
+                getApi().CdMessage("My specc is fucked. Defaulting to Resto.")
+                getConfigState().PlayerSpecc = "Resto"
             end
 
-            if ConfigState.PlayerSpecc == "Feral" then
+            if getConfigState().PlayerSpecc == "Feral" then
                 if Instance.AQ40() then
-                    AnubisathAlert()
+                    getRaid().AnubisathAlert()
                 end
 
                 TankSingle()
                 return
             end
 
-            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget then
+            if UnitName("target") == "Death Talon Wyrmkin" and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget then
                 CastSpellByName("Hibernate(Rank 1)")
                 return
             end
 
-            if CastCrowdControl() then
+            if getCrowdControl().CastCrowdControl() then
                 return
             end
 
             if UnitName("target") then
-                if ConfigState.CrowdControlTarget and GetRaidTargetIndex("target") == ConfigState.CrowdControlTarget and not HasBuffOrDebuff(ConfigState.CrowdControlSpell[myClass], "target", "debuff") then
-                    if CastCrowdControl() then
+                if getConfigState().CrowdControlTarget and GetRaidTargetIndex("target") == getConfigState().CrowdControlTarget and not getAura().HasBuffOrDebuff(getConfigState().CrowdControlSpell[myClass], "target", "debuff") then
+                    if getCrowdControl().CastCrowdControl() then
                         return
                     end
                 end
 
-                if CrowdControlledMob() then
-                    GetTarget()
+                if getUnit().CrowdControlledMob() then
+                    getRaid().GetTarget()
                 end
             end
 
-            if ConfigState.PlayerSpecc == "Balance" then
+            if getConfigState().PlayerSpecc == "Balance" then
                 Balance()
                 return
             end
 
             if Instance.NAXX() and not Faction.IsHorde() then
-                if TankTarget("Venom Stalker") or TankTarget("Necro Stalker") then
-                    if ImBusy() then
+                if getRaid().TankTarget("Venom Stalker") or getRaid().TankTarget("Necro Stalker") then
+                    if getSpells().ImBusy() then
                         SpellStopCasting()
                     end
 
-                    MeleeBuff("Abolish Poison")
+                    getSpells().MeleeBuff("Abolish Poison")
                     return
                 end
             end
 
-            HealerJindo("Wrath")
+            getRotation().HealerJindo("Wrath")
             Heal()
         end,
         Multi = Multi,
         AOE = function()
-            if TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
-                if ConfigState.AssignedHealTarget then
-                    if IsAlive(MBID[ConfigState.AssignedHealTarget]) then
-                        MTHeals(ConfigState.AssignedHealTarget)
+            if getRaid().TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
+                if getConfigState().AssignedHealTarget then
+                    if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+                        MTHeals(getConfigState().AssignedHealTarget)
                         return
                     else
-                        ConfigState.AssignedHealTarget = nil
-                        RunLine("/raid My healtarget died, time to ALT-F4.")
+                        getConfigState().AssignedHealTarget = nil
+                        getApi().CdMessage("My healtarget died, time to ALT-F4.")
                     end
                 end
 
-                if FindMyNameInTable(MB_myMaexxnaDruidHealer) then
+                if getApi().FindMyNameInTable(MB_myMaexxnaDruidHealer) then
                     MaxRejuvAggroedPlayer()
                     AbolishAggroedPlayer()
                     MaxRegrowthAggroedPlayer()
@@ -905,25 +908,25 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             Multi()
         end,
         PreCast = function()
-            if ConfigState.PlayerSpecc == "Feral" then
+            if getConfigState().PlayerSpecc == "Feral" then
                 return
             end
 
-            PreCastTrinkets()
+            getBag().PreCastTrinkets()
             CastSpellByName("Starfire")
         end,
         LoaHeal = function()
-            GetTarget()
-            CancelAuraSet(RemoveBuffs)
+            getRaid().GetTarget()
+            getAura().CancelAuraSet(RemoveBuffs)
 
 
-            if InCombat() then
+            if getUnit().InCombat() then
                 HealerDebuffs()
                 Innervate()
 
-                TakeManaPotionAndRunes()
+                getCons().TakeManaPotionAndRunes()
 
-                if ManaDown() > 600 then
+                if getUnit().ManaDown() > 600 then
                     Cooldowns()
                 end
             end

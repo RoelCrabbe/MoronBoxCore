@@ -414,10 +414,6 @@ local function SpecialHealAndTankClass()
         if getTables().UseTranquilizingShot() and getSpells().IsSpellReady("Tranquilizing Shot") then
             CastSpellByName("Tranquilizing Shot")
         end
-
-        if GLUTH_IsAtGluth() then
-            FreezingTrap()
-        end
     end
 
     if myClass == "Mage" then
