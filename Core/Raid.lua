@@ -19,7 +19,7 @@ end
 
 function MoronBox.Core.Raid.AssistFocus()
     local raidInviter = getSettingsState().RaidInviter
-    if not getRaid().ImFocus() and myName ~= raidInviter then
+    if not getConfigState().RaidLeader and myName ~= raidInviter then
         AssistByName(raidInviter)
         RunLine("/w " .. raidInviter .. " Press setFOCUS!")
         return false
@@ -374,13 +374,13 @@ end
 -- [[ Off Tanking ]] --
 
 function MoronBox.Core.Raid.OffTank()
-    if not MB_myOTTarget then
+    if not getConfigState().OffTankTarget then
         return
     end
 
-    if UnitExists("target") and GetRaidTargetIndex("target") == MB_myOTTarget then
+    if UnitExists("target") and GetRaidTargetIndex("target") == getConfigState().OffTankTarget then
         if getUnit().IsDead("target") then
-            MB_myOTTarget = nil
+            getConfigState().OffTankTarget = nil
             TargetUnit("playertarget")
             return
         end
@@ -390,7 +390,7 @@ function MoronBox.Core.Raid.OffTank()
     end
 
     for i = 1, 6 do
-        if UnitExists("target") and GetRaidTargetIndex("target") == MB_myOTTarget
+        if UnitExists("target") and GetRaidTargetIndex("target") == getConfigState().OffTankTarget
             and not getUnit().IsDead("target") and not getUnit().InCombat("target") then
             return
         end
@@ -1248,7 +1248,7 @@ function MoronBox.Core.Raid.GetTarget()
         end
     end
 
-    if MB_myOTTarget then
+    if getConfigState().OffTankTarget then
         return
     end
 
@@ -1322,12 +1322,12 @@ function MoronBox.Core.Raid.GetTarget()
         end
     end
 
-    if getCore().ImTank() and not MB_myOTTarget then
+    if getCore().ImTank() and not getConfigState().OffTankTarget then
         getRaid().GetTargetNotOnTank()
         return
     end
 
-    if not MB_myOTTarget then
+    if not getConfigState().OffTankTarget then
         getRaid().AssistFocus()
     end
 end

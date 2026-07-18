@@ -766,7 +766,7 @@ function MoronBox.Core.Rotation.MeleeFollow()
             FollowRaidLeader()
         end
 
-        if getCore().ImTank() and not MB_myOTTarget
+        if getCore().ImTank() and not getConfigState().OffTankTarget
             and not (getRaid().TankTarget("Instructor Razuvious") or getRaid().TankTarget("Razorgore the Untamed")
                 or getRaid().TankTarget("Chromaggus") or getRaid().IsAtTwinsEmps()) then
             FollowRaidLeader()
@@ -960,7 +960,7 @@ function MoronBox.Core.Rotation.TankShoot()
         return
     end
 
-    if MB_myOTTarget or getRaid().ImFocus() then
+    if getConfigState().OffTankTarget or getRaid().ImFocus() then
         CastSpellByName("Shoot " .. rangedWep)
     end
 end

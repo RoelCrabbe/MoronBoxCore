@@ -11,6 +11,48 @@ end
 
 -- [[ Buff & Debuff ]] --
 
+function MoronBox.Core.Aura.HasWeaponBuff(oBuff, unit)
+    local buff = strlower(oBuff)
+    local targetUnit = unit or "player"
+    local tooltip = MoronBoxTooltip
+
+    local textObjects = {}
+    for i = 1, 32 do
+        textObjects[i] = getglobal(tooltip:GetName() .. "TextLeft" .. i)
+    end
+
+    local function ScanWeapon(slotId, duration, count)
+        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+        tooltip:SetInventoryItem(targetUnit, slotId)
+
+        for i = 1, 32 do
+            local text = textObjects[i]:GetText()
+            if not text then break end
+
+            if string.find(string.lower(text), buff, 1, true) then
+                tooltip:Hide()
+                return text, (duration / 1000), count
+            end
+        end
+        tooltip:Hide()
+        return nil
+    end
+
+    local my, me, mc, oy, oe, oc = GetWeaponEnchantInfo()
+
+    if my then
+        local found, dur, count = ScanWeapon(16, me, mc)
+        if found then return found, dur, count end
+    end
+
+    if oy then
+        local found, dur, count = ScanWeapon(17, oe, oc)
+        if found then return found, dur, count end
+    end
+
+    return nil
+end
+
 function MoronBox.Core.Aura.HasBuffNamed(oBuff, unit)
     local buff = string.lower(oBuff)
     local targetUnit = unit or "player"
@@ -52,6 +94,17 @@ function MoronBox.Core.Aura.HasBuffNamed(oBuff, unit)
 end
 
 function MoronBox.Core.Aura.HasBuffOrDebuff(spell, unit, buffOrDebuff)
+    local TotemSpells = {
+        ["Windfury"] = true,
+        ["Windfury Totem 3"] = true,
+        ["Windfury Weapon"] = true,
+        ["Windfury Totem"] = true
+    }
+
+    if TotemSpells[spell] then
+        return getAura().HasWeaponBuff(spell, unit)
+    end
+
     local texture = BuffData[spell]
 
     if not texture then

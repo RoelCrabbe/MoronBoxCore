@@ -12,16 +12,16 @@ end
 -- [[ Unit ]] --
 
 function MoronBox.Unit.GetTankName()
-    if not MB_raidLeader then
+    if not getConfigState().RaidLeader then
         return nil
     end
 
-    local focusId = getCoreState().MBID[MB_raidLeader]
+    local focusId = getCoreState().MBID[getConfigState().RaidLeader]
 
     if focusId then
         return UnitName(focusId)
     else
-        TargetByName(MB_raidLeader, 1)
+        TargetByName(getConfigState().RaidLeader, 1)
         return "target"
     end
 end

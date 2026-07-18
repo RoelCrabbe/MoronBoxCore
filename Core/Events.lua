@@ -317,14 +317,14 @@ EventFrame:SetScript("OnEvent", function()
         local currentTime = GetTime()
 
         if arg1 == getRaidId() and arg2 == "MB_FOCUSME" and arg4 ~= myName then
-            MB_raidLeader = arg4
-            print("I\'m Focusing " .. MB_raidLeader)
+            getConfigState().RaidLeader = arg4
+            print("I\'m Focusing " .. getConfigState().RaidLeader)
         elseif arg1 == getRaidId() .. "_FTAR" then
             local focus = string.gsub(arg2, " .*", "")
             local focus_caller = string.gsub(arg2, "^%S- ", "")
 
             print("I\'m Focusing " .. focus .. " Previous tar: " .. focus_caller)
-            MB_raidLeader = focus
+            getConfigState().RaidLeader = focus
         elseif arg1 == getRaidId() .. "_flyTaxi" and arg4 ~= myName then
             AutoFlyFollow.Time = currentTime + 30
             AutoFlyFollow.Node = arg2
@@ -383,7 +383,7 @@ EventFrame:SetScript("OnEvent", function()
                 local api = getApi()
                 local state = getConfigState()
 
-                AssistUnit(getCoreState().MBID[MB_raidLeader])
+                AssistUnit(getCoreState().MBID[getConfigState().RaidLeader])
 
                 if not UnitName("target") then
                     api.CdMessage("Im unable to be assigned to this target.")
@@ -406,7 +406,7 @@ EventFrame:SetScript("OnEvent", function()
                 local api = getApi()
                 local state = getConfigState()
 
-                AssistUnit(getCoreState().MBID[MB_raidLeader])
+                AssistUnit(getCoreState().MBID[getConfigState().RaidLeader])
 
                 if not UnitName("target") then
                     api.CdMessage("Im unable to be assigned to this target.")
@@ -429,7 +429,7 @@ EventFrame:SetScript("OnEvent", function()
                 local api = getApi()
                 local state = getConfigState()
 
-                AssistUnit(getCoreState().MBID[MB_raidLeader])
+                AssistUnit(getCoreState().MBID[getConfigState().RaidLeader])
 
                 if not UnitName("target") then
                     api.CdMessage("Im unable to be assigned to this target.")
@@ -452,7 +452,7 @@ EventFrame:SetScript("OnEvent", function()
                 local api = getApi()
                 local state = getConfigState()
 
-                AssistUnit(getCoreState().MBID[MB_raidLeader])
+                AssistUnit(getCoreState().MBID[getConfigState().RaidLeader])
 
                 if not UnitName("target") then
                     api.CdMessage("Im unable to be assigned to this target.")

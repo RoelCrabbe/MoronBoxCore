@@ -213,7 +213,7 @@ function SHAZZRAH_DispellDebuff()
         return false
     end
 
-    local focId = getCoreState().MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focId then
         return false
     end

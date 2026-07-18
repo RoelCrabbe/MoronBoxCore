@@ -496,6 +496,6 @@ function MoronBox.Core.Healing.TargetMyAssignedTankToHeal()
     end
 
     if not getConfigState().AssignedHealTarget then
-        getConfigState().AssignedHealTarget = MB_raidLeader
+        getConfigState().AssignedHealTarget = getConfigState().RaidLeader
     end
 end

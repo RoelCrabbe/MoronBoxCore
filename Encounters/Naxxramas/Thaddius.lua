@@ -553,8 +553,8 @@ function THAD_TargetingPreFocus()
         end
         return true
     elseif THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) and MB_raidLeader ~= myName then
-            MB_raidLeader = myName
+        if (myName == MB_myFeugenMainTank or myName == MB_myStalaggMainTank) and getConfigState().RaidLeader ~= myName then
+            getConfigState().RaidLeader = myName
         end
 
         if not ImFocus() then

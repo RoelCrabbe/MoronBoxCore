@@ -185,7 +185,7 @@ local function TankHasMortalWound(targetId)
 end
 
 local function AnnounceMortalWound()
-    local focId = getCoreState().MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focId then
         return
     end
@@ -321,8 +321,8 @@ function FANKRISS_TargetingPreFocus()
     if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
         local myFankrissOFFTANK = ReturnPlayerInRaidFromTable(MB_myFankrissOFFTANKS)
 
-        if (myName == myFankrissOFFTANK) and MB_raidLeader ~= myName then
-            MB_raidLeader = myName
+        if (myName == myFankrissOFFTANK) and getConfigState().RaidLeader ~= myName then
+            getConfigState().RaidLeader = myName
         end
 
         if not ImFocus() then
