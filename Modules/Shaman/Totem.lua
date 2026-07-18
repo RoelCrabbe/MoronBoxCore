@@ -17,7 +17,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         elseif Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") and getRaid().TankTargetHealth() <= 0.4 then
             if getCore().MyGroupClassOrder() == 1 then return "Nature Resistance Totem" end
 
-            if MB_druidTankInParty or MB_warriorTankInParty then
+            if getCoreState().DruidTankInParty or getCoreState().WarriorTankInParty then
                 if getCore().MyGroupClassOrder() == 2 then return "Windfury Totem" end
                 if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
             elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
@@ -40,7 +40,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if getCore().MyGroupClassOrder() == 2 then return "Nature Resistance Totem" end
         end
 
-        if MB_druidTankInParty or MB_warriorTankInParty then
+        if getCoreState().DruidTankInParty or getCoreState().WarriorTankInParty then
             if getCore().MyGroupClassOrder() == 1 then return "Windfury Totem" end
             if getCore().MyGroupClassOrder() == 2 then return "Grace of Air Totem" end
         elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
@@ -57,7 +57,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function ChooseEarthTotem()
         if Instance.ONY() and getRaid().TankTarget("Onyxia") and getRaid().TankTargetHealth() >= 0.4 then
-            if MB_druidTankInParty or MB_warriorTankInParty then
+            if getCoreState().DruidTankInParty or getCoreState().WarriorTankInParty then
                 if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
                 if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
             elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
@@ -73,7 +73,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if getCore().MyGroupClassOrder() == 1 then return "Tremor Totem" end
         end
 
-        if MB_druidTankInParty or MB_warriorTankInParty then
+        if getCoreState().DruidTankInParty or getCoreState().WarriorTankInParty then
             if getCore().MyGroupClassOrder() == 1 then return "Strength of Earth Totem" end
             if getCore().MyGroupClassOrder() == 2 then return "Stoneskin Totem" end
         elseif getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then

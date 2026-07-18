@@ -290,14 +290,14 @@ function GROB_GetOUT()
         UseNaturePotsOnGrobbulus()
 
         local firstFollow, secondFollow = MB_myGrobbulusRaidFollowers[1], MB_myGrobbulusRaidFollowers[2]
-        local firstFollowId, secondFollowId = MBID[firstFollow], MBID[secondFollow]
+        local firstFollowId, secondFollowId = getCoreState().MBID[firstFollow], getCoreState().MBID[secondFollow]
 
         if not firstFollowId or not secondFollowId then
             CdRaidWarning(">> You Don't Have Enough Follow Targets! <<")
             return false
         end
 
-        local decurseId = MBID[MB_myGrobbulusCleanser]
+        local decurseId = getCoreState().MBID[MB_myGrobbulusCleanser]
         if not decurseId then
             CdRaidWarning(">> You Don't Have Decurse Follow! <<")
             return false
@@ -307,15 +307,15 @@ function GROB_GetOUT()
             local assigned = MB_myGrobbulusCleanseHealers[myName]
 
             if assigned ~= nil then
-                MB_myAssignedHealTarget = assigned
+                getConfigState().AssignedHealTarget = assigned
             else
                 local targetId = GetTargetWithInjection()
                 if targetId then
                     local name = UnitName(targetId)
-                    MB_myAssignedHealTarget = name
+                    getConfigState().AssignedHealTarget = name
                     CdMessage(">> Healing " .. name .. "! <<", 60)
                 else
-                    MB_myAssignedHealTarget = nil
+                    getConfigState().AssignedHealTarget = nil
                 end
             end
         end

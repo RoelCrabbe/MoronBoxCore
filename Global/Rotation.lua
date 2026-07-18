@@ -29,22 +29,6 @@ Faction          = {
 --[####################################################################################################]--
 
 
-MB_buffingCounterMage                                  = 1
-MB_buffingCounterPriest                                = 1
-MB_buffingCounterPaladin                               = 1
-
-MB_DMFWeek                                             = { Active = false, Time = 0 }
-MB_MCEnter                                             = { Active = false, Time = 0 }
-MB_teleportMan                                         = { Active = false, Time = 0 }
-MB_worldBuffMan                                        = { Active = false, Time = 0 }
-MB_summonRag                                           = { Active = false, Time = 0 }
-
----@type boolean|nil
-MB_tradeOpen                                           = nil
-MB_tradeOpenOnUpdate                                   = { Active = false, Time = 0 }
-
-MB_razorgoreNewTargetBecauseTargetIsBehindOrOutOfRange = { Active = false, Time = 0 }
-MB_razorgoreNewTargetBecauseTargetIsBehind             = { Active = false, Time = 0 }
-MB_lieutenantAndorovIsNotHealable                      = { Active = false, Time = 0 }
-MB_targetWrongWayOrTooFar                              = { Active = false, Time = 0 }
-MB_autoBuyReagents                                     = { Active = false, Time = 0 }
+MB_buffingCounterMage    = 1
+MB_buffingCounterPriest  = 1
+MB_buffingCounterPaladin = 1

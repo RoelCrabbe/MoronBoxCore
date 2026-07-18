@@ -185,7 +185,7 @@ local function TankHasMortalWound(targetId)
 end
 
 local function AnnounceMortalWound()
-    local focId = MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[MB_raidLeader]
     if not focId then
         return
     end

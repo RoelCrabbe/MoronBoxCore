@@ -338,8 +338,6 @@ function MoronBox.Core.Cons.BuyReagentsAndConsumables()
             end
         end
     end
-
-    MB_autoBuyReagents.Active = false
 end
 
 -- [[ Mana Potions ]] --

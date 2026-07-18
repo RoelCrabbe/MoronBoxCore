@@ -6,6 +6,8 @@ MoronBox:RegisterEvent("ADDON_LOADED")
 MoronBox:RegisterEvent("RAID_ROSTER_UPDATE")
 MoronBox:RegisterEvent("PARTY_MEMBERS_CHANGED")
 MoronBox:RegisterEvent("PLAYER_ENTERING_WORLD")
+MoronBox:RegisterEvent("PLAYER_LOGIN")
+MoronBox:RegisterEvent("UNIT_INVENTORY_CHANGED")
 
 ---@class MoronBoxTooltip: GameTooltip
 MoronBoxTooltip = CreateFrame("GameTooltip", "MoronBoxTooltip", UIParent, "GameTooltipTemplate")
@@ -247,10 +249,10 @@ MoronBox:SetScript("OnEvent", function()
 
             UIErrorsFrame:Hide()
 
-            getCore().InitializeClasslists()
             getCore().GetMySpecc()
-            getAttack().SetAttackButton()
             getHealing().GetHealSpell()
+            getAttack().SetAttackButton()
+            getCore().InitializeClasslists()
 
             if MB_raidAssist.AutoEquipSet.Active then
                 getGear().EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
@@ -258,6 +260,11 @@ MoronBox:SetScript("OnEvent", function()
         end)
 
         MoronBox.BootUp = nil
+    elseif event == "PLAYER_LOGIN" then
+        getCore().GetMySpecc()
+        getCore().InitializeClasslists()
+    elseif event == "UNIT_INVENTORY_CHANGED" and getCore().ImHealer() then
+        getHealing().GetHealSpell()
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
         getCore().InitializeClasslists()
         MoronBox:UpdateModules()

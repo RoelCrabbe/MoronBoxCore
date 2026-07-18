@@ -20,7 +20,7 @@ function MoronBox.Core.Dispel.Decurse()
             return false
         end
     elseif Instance.BWL() then
-        if getRaid().TankTarget("Chromaggus") and MB_myAssignedHealTarget then
+        if getRaid().TankTarget("Chromaggus") and getConfigState().AssignedHealTarget then
             return false
         end
     end

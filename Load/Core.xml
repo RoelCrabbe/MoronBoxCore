@@ -15,4 +15,5 @@
     <Include file="..\Core\Rotation.lua" />
     <Include file="..\Core\Report.lua" />
     <Include file="..\Core\Slash.lua" />
+    <Include file="..\Core\Events.lua" />
 </Ui>

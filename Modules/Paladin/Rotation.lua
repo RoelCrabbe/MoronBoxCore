@@ -10,7 +10,7 @@ local myRace = UnitRace("player")
 MoronBox:RegisterModule(MODULE_NAME, function()
     local PaladinCounter = {
         Cycle = function()
-            MB_buffingCounterPaladin = (MB_buffingCounterPaladin >= getApi().TableLength(MB_classList["Paladin"]))
+            MB_buffingCounterPaladin = (MB_buffingCounterPaladin >= getApi().TableLength(getCoreState().ClassList["Paladin"]))
                 and 1 or (MB_buffingCounterPaladin + 1)
         end
     }
@@ -23,7 +23,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(MB_myVaelastraszPaladins) do
-            local id = MBID[name]
+            local id = getCoreState().MBID[name]
             if id and not getUnit().Dead(id) then
                 return name
             end
@@ -64,7 +64,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if MB_druidTankInParty or MB_warriorTankInParty or getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
+            if getCoreState().DruidTankInParty or getCoreState().WarriorTankInParty or getCore().NumberOfClassInParty("Warrior") > 0 or getCore().NumberOfClassInParty("Rogue") > 0 then
                 getSpells().SelfBuff("Devotion Aura")
                 return
             end
@@ -132,7 +132,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 getHealing().TargetMyAssignedTankToHeal()
             else
-                local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
+                local tankTarget = UnitName(getCoreState().MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
                     MBH_CastHeal("Flash of Light", 5, 6)
                 else
@@ -197,7 +197,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local BOPTarget = "raid" .. i
 
             if aggrox and aggrox:GetUnitAggroByUnitId(BOPTarget)
-                and not getApi().FindInTable(MB_raidTanks, UnitName(BOPTarget))
+                and not getApi().FindInTable(getCoreState().RaidTanks, UnitName(BOPTarget))
                 and getUnit().IsValidFriendlyTarget(BOPTarget, "Blessing of Protection")
                 and getUnit().HealthPct(BOPTarget) <= blastNSatThisPercentage
                 and not getAura().HasBuffOrDebuff("Forbearance", BOPTarget, "debuff") then
@@ -252,7 +252,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if getConfigState().AssignedHealTarget then
-            if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+            if getUnit().IsAlive(getCoreState().MBID[getConfigState().AssignedHealTarget]) then
                 MTHeals(getConfigState().AssignedHealTarget)
                 return
             else

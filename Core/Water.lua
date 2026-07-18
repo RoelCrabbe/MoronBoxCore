@@ -3,8 +3,6 @@
 MoronBox.Core.Water = MoronBox.Core.Water or {}
 
 local myClass = UnitClass("player")
-local myName = UnitName("player")
-local myRace = UnitRace("player")
 
 function getWater()
     return MoronBox.Core.Water
@@ -128,26 +126,27 @@ function MoronBox.Core.Water.SmartDrink()
         return
     end
 
-    if myClass == "Mage" and MB_tradeOpen then
-        if MoronBox.Core.Macro.MageWater() > 20 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
+    if myClass == "Mage" and getConfigState().TradeOpen then
+        if getWater().MageWater() > 20 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
             return
         end
 
-        if MoronBox.Core.Macro.MageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
+        if getWater().MageWater() < 21 and GetTradePlayerItemLink(1) and string.find(GetTradePlayerItemLink(1), "Conjured.*Water") then
             getApi().CdPrint("Not enough water to trade!")
             CancelTrade()
             return
         end
     end
 
-    if myClass ~= "Mage" and not MB_tradeOpen then
+    if myClass ~= "Mage" and not getConfigState().TradeOpen then
         local waterMage = getCore().GetRandomMageInGroup()
         if waterMage then
-            if MoronBox.Core.Macro.MageWater() < 1 and getUnit().IsManaUser() then
-                if getUnit().IsAlive(MBID[waterMage]) and getUnit().InTradeRange(MBID[waterMage]) then
+            if getWater().MageWater() < 1 and getUnit().IsManaUser() then
+                local mageId = getCoreState().MBID[waterMage]
+                if getUnit().IsAlive(mageId) and getUnit().InTradeRange(mageId) then
                     TargetByName(waterMage, 1)
 
-                    if not MB_tradeOpen then
+                    if not getConfigState().TradeOpen then
                         InitiateTrade("target")
                     end
                 end
@@ -155,9 +154,9 @@ function MoronBox.Core.Water.SmartDrink()
         end
     end
 
-    if myClass == "Mage" and MB_tradeOpen then
-        local count = MoronBox.Core.Macro.MageWater()
-        if count > 21 and MoronBox.Core.Macro.PickUpWater() then
+    if myClass == "Mage" and getConfigState().TradeOpen then
+        local count = getWater().MageWater()
+        if count > 21 and getWater().PickUpWater() then
             getApi().CdPrint("Trading Water")
             ClickTradeButton(1)
             return
@@ -172,7 +171,7 @@ function MoronBox.Core.Water.SmartDrink()
         getGear().MageGear()
     end
 
-    local _, myBest = MoronBox.Core.Macro.MageWater()
+    local _, myBest = getWater().MageWater()
     if not getAura().HasBuffNamed("Drink", "player") and myBest then
         if getUnit().IsManaUser() and getUnit().ManaDown() > 0 then
             getBag().UseFromBags(myBest)

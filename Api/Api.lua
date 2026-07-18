@@ -100,6 +100,18 @@ function MoronBox.Api.CdMessage(message, timer)
     MoronBox.Api.SendChatMessage(message)
 end
 
+--- Abstraction for sending messages based on group status.
+--- @param message string: The payload to be sent.
+function MoronBox.Api.SendChatMessage(message)
+    if UnitInRaid("player") then
+        SendChatMessage(message, "RAID")
+    elseif GetNumPartyMembers() > 0 then
+        SendChatMessage(message, "PARTY")
+    else
+        -- How do we send a message? If not in raid nor party
+    end
+end
+
 local CdPrintStore = {
     History = {},
     MaxHistory = 10,
@@ -218,18 +230,6 @@ function MoronBox.Api.CdSay(message, timer)
     )
 
     SendChatMessage(message, "SAY")
-end
-
---- Abstraction for sending messages based on group status.
---- @param message string: The payload to be sent.
-function MoronBox.Api.SendChatMessage(message)
-    if UnitInRaid("player") then
-        SendChatMessage(message, "RAID")
-    elseif GetNumPartyMembers() > 0 then
-        SendChatMessage(message, "PARTY")
-    else
-        -- How do we send a message? If not in raid nor party
-    end
 end
 
 -- [[ String Extentions ]] --

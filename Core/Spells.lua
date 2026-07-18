@@ -9,6 +9,45 @@ MoronBox.Core.Spells.SpellState = {
 local IsCasting = false
 local IsChanneling = false
 
+local SpellsToInt = {
+    -- Basic Damage Spells
+    "Frostbolt",
+    "Shadow Bolt",
+    "Mind Flay",  -- PW trash
+    "Mind Blast", -- AQ40, Mindslayers
+    "Holy Fire",
+    "Drain Life", -- Spider ZG
+
+    -- Healing Spells
+    "Greater Heal",
+    "Great Heal", -- Tiger heal
+    "Heal",
+    "Healing Wave",
+    "Dark Mending", -- Flamewalker Priest
+
+    -- Crowd Control
+    "Banish",
+    "Polymorph",
+
+    -- Debuffs
+    "Cripple",
+
+    -- Instance-Specific Spells
+    "Healing Circle",   -- Suppression Room
+    "Flamestrike",      -- Suppression Room
+    "Demon Portal",     -- Blackwing Warlock
+    "Rain of Fire",     -- Blackwing Warlock
+    "Arcane Explosion", -- Razorgore First Phase
+    "Fireball",         -- Razorgore First Phase
+
+    -- AoE Spells
+    "Fireball Volley", -- Packs behind Vaelastrasz
+    "Shadow Bolt Volley",
+    "Frostbolt Volley",
+    "Venom Spit", -- Snake AOE
+}
+
+local myName = UnitName("player")
 local myClass = UnitClass("player")
 
 function getSpells()
@@ -20,6 +59,10 @@ function getSpellsState()
 end
 
 -- [[ Spells ]] --
+
+function MoronBox.Core.Spells.ImBusy()
+    return IsCasting or IsChanneling
+end
 
 function MoronBox.Core.Spells.IsSpellReady(spellName, rank)
     if not getSpells().IsSpellKnown(spellName, rank) then
@@ -303,7 +346,7 @@ end
 
 local function AttemptBuff(unitList, spell)
     for _, unitName in pairs(unitList) do
-        local unitID = MoronBox.Core.State.MBID[unitName]
+        local unitID = getCoreState().MBID[unitName]
         if getUnit().IsValidFriendlyTarget(unitID, spell) and not getAura().HasBuffOrDebuff(spell, unitID, "buff") then
             CastSpellByName(spell, nil)
             SpellTargetUnit(unitID)
@@ -432,12 +475,23 @@ end
 local SpellsFrame = CreateFrame("Frame")
 
 local SPELL_EVENTS = {
+    -- Spell Casting
     "SPELLCAST_START",
     "SPELLCAST_INTERRUPTED",
     "SPELLCAST_STOP",
     "SPELLCAST_FAILED",
     "SPELLCAST_CHANNEL_START",
     "SPELLCAST_CHANNEL_STOP",
+    -- Target Casting
+    "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF",
+    "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE",
+    "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE",
+    "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF",
+    -- Ignite
+    "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE",
+    "PLAYER_TARGET_CHANGED",
+    "UNIT_AURA",
+    "UNIT_HEALTH"
 }
 
 do
@@ -460,9 +514,66 @@ SpellsFrame:SetScript("OnEvent", function()
         IsChanneling = true
     elseif event == "SPELLCAST_CHANNEL_STOP" then
         IsChanneling = false
+    elseif event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF" or
+        event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
+        event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
+        event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" then
+        local _, _, caster, spell = string.find(arg1, "(.*) begins to cast (.*).")
+
+        if caster == UnitName("target") then
+            for _, badSpell in pairs(SpellsToInt) do
+                if spell == badSpell then
+                    if getSpells().IsSpellReady(getConfigState().InterruptSpell[myClass]) then
+                        if myClass == "Priest" and not getSpells().IsSpellKnown("Silence") then
+                            return
+                        end
+
+                        getConfigState().DoInterrupt.Active = true
+                        getConfigState().DoInterrupt.Time = GetTime() + 3
+                    end
+                end
+            end
+        end
+    elseif event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE" and myClass == "Mage" then
+        local _, _, target, tickAmount, igniter = string.find(arg1, "(.+) suffers (.+) Fire damage from (.+) Ignite.")
+
+        if target == UnitName("target") then
+            getConfigState().Ignite.Active = true
+            getConfigState().Ignite.Starter = (igniter == "your") and myName or igniter
+            getConfigState().Ignite.Amount = tickAmount
+            getConfigState().Ignite.Stacks = getAura().GetIgniteAmount()
+        end
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        if myClass == "Warlock" then
+            getConfigState().TrackCooldowns["Corruption"] = nil
+        end
+
+        if myClass == "Mage" then
+            getConfigState().Ignite.Active = nil
+            getConfigState().Ignite.Starter = nil
+            getConfigState().Ignite.Amount = 0
+            getConfigState().Ignite.Stacks = 0
+        end
+    elseif event == "UNIT_AURA" and arg1 == "target" and myClass == "Mage" then
+        local igniteStack = getAura().GetIgniteAmount()
+
+        if igniteStack == 0 then
+            getConfigState().Ignite.Active = nil
+            getConfigState().Ignite.Starter = nil
+            getConfigState().Ignite.Amount = 0
+            getConfigState().Ignite.Stacks = 0
+        elseif igniteStack > getConfigState().Ignite.Stacks then
+            getConfigState().Ignite.Active = true
+            getConfigState().Ignite.Stacks = igniteStack
+        end
+    elseif event == "UNIT_HEALTH" and arg1 == "target" and UnitHealth("target") == 0 then
+        getConfigState().DoInterrupt.Active = false
+
+        if myClass == "Mage" then
+            getConfigState().Ignite.Active = nil
+            getConfigState().Ignite.Starter = nil
+            getConfigState().Ignite.Amount = 0
+            getConfigState().Ignite.Stacks = 0
+        end
     end
 end)
-
-function MoronBox.Core.Spells.ImBusy()
-    return IsCasting or IsChanneling
-end

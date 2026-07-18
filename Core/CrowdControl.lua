@@ -176,16 +176,16 @@ function MoronBox.Core.CrowdControl.AssignOffTank()
 
     local thisOffTank
     if IsShiftKeyDown() then
-        local temp = getApi().DecrementIndex(MB_Ot_Index, num_tanks)
+        local temp = getApi().DecrementIndex(getConfigState().OffTankIndex, num_tanks)
         thisOffTank = tanks[temp]
     else
-        thisOffTank = tanks[MB_Ot_Index]
+        thisOffTank = tanks[getConfigState().OffTankIndex]
     end
 
     getApi().SendAddonMessage(MB_RAID .. "_OT", thisOffTank)
 
     if not IsShiftKeyDown() then
-        MB_Ot_Index = getApi().IncrementIndex(MB_Ot_Index, num_tanks)
+        getConfigState().OffTankIndex = getApi().IncrementIndex(getConfigState().OffTankIndex, num_tanks)
     end
 end
 

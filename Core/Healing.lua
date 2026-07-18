@@ -382,10 +382,11 @@ function MoronBox.Core.Healing.PowerShieldTanks()
     end
 
     local i = 1
-    for _, tank in ipairs(MB_raidTanks) do
-        if getUnit().IsAlive(MBID[tank]) then
+    for _, tank in ipairs(getCoreState().RaidTanks) do
+        local tankId = getCoreState().MBID[tank]
+        if getUnit().IsAlive(tankId) then
             if getCore().MyClassOrder() == i then
-                TargetUnit(MBID[tank])
+                TargetUnit(tankId)
                 CastSpellByName("Power Word: Shield")
                 return
             end
@@ -401,7 +402,7 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
     end
 
     if getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(getHealingState().InstructorRazuviousAddHealer) then
-        TargetUnit(MBID[getConfigState().RaidLeader] .. "targettarget")
+        TargetUnit(getCoreState().MBID[getConfigState().RaidLeader] .. "targettarget")
 
         if UnitName("target") == "Deathknight Understudy" then
             local allowedOverHeal, spellToCast
@@ -438,7 +439,7 @@ function MoronBox.Core.Healing.InstructorRazAddsHeal()
 end
 
 function MoronBox.Core.Healing.HealLieutenantAQ20()
-    if not UnitInRaid("player") or MB_lieutenantAndorovIsNotHealable.Active then
+    if not UnitInRaid("player") or getConfigState().LieutenantAndorovIsNotHealable.Active then
         return false
     end
 
@@ -490,7 +491,7 @@ function MoronBox.Core.Healing.TargetMyAssignedTankToHeal()
         return
     end
 
-    if not MB_myAssignedHealTarget then
-        MB_myAssignedHealTarget = MB_raidLeader
+    if not getConfigState().AssignedHealTarget then
+        getConfigState().AssignedHealTarget = MB_raidLeader
     end
 end

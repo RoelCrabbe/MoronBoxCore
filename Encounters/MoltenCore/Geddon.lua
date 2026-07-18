@@ -132,7 +132,7 @@ end
 function GEDDON:OnReset()
     GeddonEncounter.Active = false
     MB_myGeddonHealers = {}
-    MB_myAssignedHealTarget = nil
+    getConfigState().AssignedHealTarget = nil
 
     self:CancelScheduledEvent("GetGeddonHealers")
     self:CancelScheduledEvent("GeddonHealerAssignments")
@@ -193,7 +193,7 @@ local function AssignHealersToTanks()
         return false
     end
 
-    MB_myAssignedHealTarget = nil
+    getConfigState().AssignedHealTarget = nil
 
     local myPosition = nil
     for i = 1, TableLength(MB_myGeddonHealers) do
@@ -213,14 +213,14 @@ local function AssignHealersToTanks()
     end
 
     local tankName = TankName()
-    local tankUnit = MBID[tankName]
+    local tankUnit = getCoreState().MBID[tankName]
     local tankToHeal = tankUnit and UnitName(tankUnit .. "targettarget")
 
     if not tankToHeal then
         return false
     end
 
-    MB_myAssignedHealTarget = tankToHeal
+    getConfigState().AssignedHealTarget = tankToHeal
     return false
 end
 

@@ -422,7 +422,7 @@ function MoronBox.Core.Raid.GetTargetNotOnTank()
 
     -- Initial validation
     if UnitIsEnemy("target", "player") and getUnit().InCombat("target")
-        and not getApi().FindInTable(MB_raidTanks, targetTarget) then
+        and not getApi().FindInTable(getCoreState().RaidTanks, targetTarget) then
         return
     end
 
@@ -433,7 +433,7 @@ function MoronBox.Core.Raid.GetTargetNotOnTank()
         end
 
         if UnitIsEnemy("target", "player") and getUnit().InCombat("target")
-            and not getApi().FindInTable(MB_raidTanks, targetTarget) then
+            and not getApi().FindInTable(getCoreState().RaidTanks, targetTarget) then
             return
         end
 
@@ -582,7 +582,7 @@ end
 local function CastPolymorph(unitId)
     TargetUnit(unitId)
 
-    if not MB_isCastingMyCCSpell then
+    if not getSpellsState().IsCastingMyCCSpell then
         SpellStopCasting()
     end
 
@@ -756,9 +756,9 @@ local function HandleBWLTargetingPreFocus()
             MB_targetNearestDistanceChanged = true
         end
 
-        if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+        if getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active then
             TargetNearestEnemy()
-            MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+            getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active = false
             return true
         end
 
@@ -825,9 +825,9 @@ local function HandleNAXXTargetingPostFocus()
             getRaid().GetTargetNotOnTank()
             return true
         elseif getCore().ImMeleeDPS() then
-            if MB_targetWrongWayOrTooFar.Active then
+            if getConfigState().TargetWrongWayOrTooFar.Active then
                 TargetNearestEnemy()
-                MB_targetWrongWayOrTooFar.Active = false
+                getConfigState().TargetWrongWayOrTooFar.Active = false
                 return true
             end
 
@@ -916,9 +916,9 @@ local function HandleBWLTargetingPostFocus()
                 MB_targetNearestDistanceChanged = true
             end
 
-            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+            if getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active then
                 TargetNearestEnemy()
-                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active = false
                 return true
             end
 
@@ -934,9 +934,9 @@ local function HandleBWLTargetingPostFocus()
                 MB_targetNearestDistanceChanged = true
             end
 
-            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+            if getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active then
                 TargetNearestEnemy()
-                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active = false
                 return true
             end
 
@@ -960,9 +960,9 @@ local function HandleBWLTargetingPostFocus()
 
             return true
         elseif getCore().ImRangedDPS() then
-            if MB_razorgoreNewTargetBecauseTargetIsBehind.Active then
+            if getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active then
                 TargetNearestEnemy()
-                MB_razorgoreNewTargetBecauseTargetIsBehind.Active = false
+                getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active = false
                 return true
             end
 
@@ -1063,9 +1063,9 @@ local function HandleONYTargetingPostFocus()
         getRaid().GetTargetNotOnTank()
         return true
     elseif getCore().ImMeleeDPS() then
-        if MB_targetWrongWayOrTooFar.Active then
+        if getConfigState().TargetWrongWayOrTooFar.Active then
             TargetNearestEnemy()
-            MB_targetWrongWayOrTooFar.Active = false
+            getConfigState().TargetWrongWayOrTooFar.Active = false
             return true
         end
 

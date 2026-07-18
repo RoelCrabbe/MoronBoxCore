@@ -64,30 +64,6 @@ local function ChangeSpecc(specc)
     end
 end
 
-local function AssignHealerToName(assignments)
-    local _, _, healerName, assignedTarget = string.find(assignments, "(%a+)%s*(%a+)")
-
-    if getRaid().ImFocus() then
-        if (assignedTarget == "Reset" or assignedTarget == "reset") then
-            getApi().CdMessage("Unassigned " .. healerName .. " from healing a specific player.")
-            return
-        end
-
-        getApi().CdMessage("Assigned " .. healerName .. " to heal " .. assignedTarget .. ".")
-    end
-
-    if myName == healerName then
-        if (assignedTarget == "Reset" or assignedTarget == "reset") then
-            getDebugger().InfoMsg("Unassigned myself to focusheal " .. MB_myAssignedHealTarget .. ".")
-            MB_myAssignedHealTarget = nil
-            return
-        end
-
-        MB_myAssignedHealTarget = assignedTarget
-        getDebugger().InfoMsg("Assigning myself to focusheal " .. MB_myAssignedHealTarget .. ".")
-    end
-end
-
 -- [[ Slash Commands ]] --
 
 SLASH_INIT1 = "/init"
@@ -199,10 +175,6 @@ end
 
 SlashCmdList["DISBAND"] = function()
     getUnit().DisbandRaid()
-end
-
-SlashCmdList["USEBAGITEM"] = function(item)
-    getApi().SendAddonMessage(MB_RAID .. "MB_USEBAGITEM", item)
 end
 
 SlashCmdList["GEAR"] = function(itemSet)

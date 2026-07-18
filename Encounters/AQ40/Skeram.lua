@@ -397,7 +397,7 @@ function SKERAM_WarlockDebuff()
     local tankName = ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
 
     if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
-        local tankId = MBID[tankName]
+        local tankId = getCoreState().MBID[tankName]
         local targetID = tankId .. "target"
 
         if tankId and not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
@@ -422,14 +422,14 @@ end
 
 local PriestCounter = {
     Cycle = function()
-        MB_buffingCounterPriest = (MB_buffingCounterPriest >= TableLength(MB_classList["Priest"]))
+        MB_buffingCounterPriest = (MB_buffingCounterPriest >= getApi().TableLength(getCoreState().ClassList["Priest"]))
             and 1 or (MB_buffingCounterPriest + 1)
     end
 }
 
 local MageCounter = {
     Cycle = function()
-        MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
+        MB_buffingCounterMage = (MB_buffingCounterMage >= getApi().TableLength(getCoreState().ClassList["Mage"]))
             and 1 or (MB_buffingCounterMage + 1)
     end
 }

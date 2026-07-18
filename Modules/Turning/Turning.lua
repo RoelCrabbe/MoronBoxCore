@@ -31,7 +31,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        if getUnit().InRange(MBID[getConfigState().RaidLeader]) then
+        if getUnit().InRange(getCoreState().MBID[getConfigState().RaidLeader]) then
             FollowByName(getConfigState().RaidLeader, 1)
             SavedBinding.Time = now + delay
             SetBinding("2", "MOVEBACKWARD")
@@ -46,7 +46,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if (event == "UI_ERROR_MESSAGE") then
             if (arg1 == "Target needs to be in front of you") then
                 HandleFollow(1.5)
-            elseif (arg1 == "Can't do that while moving" and getUnit().InRange(MBID[getConfigState().RaidLeader])) then
+            elseif (arg1 == "Can't do that while moving" and getUnit().InRange(getCoreState().MBID[getConfigState().RaidLeader])) then
                 if not SavedBinding.Active and (now > SavedBinding.Time) and (now < SavedBinding.Time + 0.5) then
                     HandleFollow(0.75)
                 end

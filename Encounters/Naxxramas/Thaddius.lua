@@ -233,7 +233,7 @@ local function GetClosestMainTankForSide()
         return false
     end
 
-    local closestTankId = MBID[data.tank]
+    local closestTankId = getCoreState().MBID[data.tank]
     if not closestTankId then
         CdRaidWarning(">> You Don't Have Enough Side Tanks! <<")
         return false
@@ -243,7 +243,7 @@ local function GetClosestMainTankForSide()
         return closestTankId
     end
 
-    local offTankId = MBID[data.off]
+    local offTankId = getCoreState().MBID[data.off]
     if offTankId and UnitInRange(offTankId) then
         CdAddonMessage(MB_RAID .. "THADDIUS_TRANSITION", data.off)
         return offTankId
@@ -262,8 +262,8 @@ local function CheckThaddiusHealersSlowFall()
     end
 
     if MyNameInTable(healerList) then
-        if myName == MB_myThaddiusMainPriest and not MB_myAssignedHealTarget then
-            MB_myAssignedHealTarget = MB_myThaddiusMainTank
+        if myName == MB_myThaddiusMainPriest and not getConfigState().AssignedHealTarget then
+            getConfigState().AssignedHealTarget = MB_myThaddiusMainTank
         end
 
         for i, healerName in pairs(healerList) do
@@ -347,8 +347,8 @@ local function CheckClosestHealerDebuff()
         return
     end
 
-    local mainTankId = MBID[MB_myThaddiusMainTank]
-    local mainTankHealerId = MBID[MB_myThaddiusMainPriest]
+    local mainTankId = getCoreState().MBID[MB_myThaddiusMainTank]
+    local mainTankHealerId = getCoreState().MBID[MB_myThaddiusMainPriest]
     if not mainTankId or not mainTankHealerId then
         return
     end
@@ -504,7 +504,7 @@ local function GetPlatformBossHealthPct(mobName)
 
     local lowestHp = nil
     for _, playerName in ipairs(members) do
-        local playerId = MBID[playerName]
+        local playerId = getCoreState().MBID[playerName]
         if playerId and TargetFromSpecificPlayer(mobName, playerName) then
             local hp = HealthPct(playerId .. "target")
             if not lowestHp or hp < lowestHp then
@@ -645,7 +645,7 @@ end
 
 function THAD_IsFollowThaddiusHealers()
     if THAD_IsAtThaddiusP1() and MB_myThaddiusBoxStrategy then
-        local closestTankId = MBID[MB_myThaddiusMainTank]
+        local closestTankId = getCoreState().MBID[MB_myThaddiusMainTank]
         if closestTankId and MyNameInTable(MB_myThaddiusHEALERS) then
             FollowUnit(closestTankId)
             return true
@@ -662,7 +662,7 @@ local function ApplyFaerieFireIfNeeded(tankKey, healerList)
         return false
     end
 
-    local tankId = MBID[tankKey]
+    local tankId = getCoreState().MBID[tankKey]
     if not tankId then
         return false
     end

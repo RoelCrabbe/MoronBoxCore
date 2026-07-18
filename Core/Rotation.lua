@@ -4,7 +4,6 @@ MoronBox.Core.Rotation = MoronBox.Core.Rotation or {}
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
-local myRace = UnitRace("player")
 
 local PlayerMounts = {
     "Reins of the Winterspring Frostsaber",
@@ -36,7 +35,7 @@ local PlayerMounts = {
 
 local MageCounter = {
     Cycle = function()
-        getConfigState().SheepingMageNr = (getConfigState().SheepingMageNr >= getApi().TableLength(MB_classList["Mage"]))
+        getConfigState().SheepingMageNr = (getConfigState().SheepingMageNr >= getApi().TableLength(getCoreState().ClassList["Mage"]))
             and 1 or (getConfigState().SheepingMageNr + 1)
     end
 }
@@ -201,7 +200,7 @@ end
 -- [[ Single ]] --
 
 function MoronBox.Core.Rotation.Single()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -231,7 +230,7 @@ end
 -- [[ Multi ]] --
 
 function MoronBox.Core.Rotation.Multi()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -261,7 +260,7 @@ end
 -- [[ AOE ]] --
 
 function MoronBox.Core.Rotation.AOE()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -291,7 +290,7 @@ end
 -- [[ Setup ]] --
 
 function MoronBox.Core.Rotation.Setup()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -346,7 +345,7 @@ end
 -- [[ PreCast ]] --
 
 function MoronBox.Core.Rotation.PreCast()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -399,7 +398,7 @@ local function InterruptingHealAndTank()
             CastSpellByName(getConfigState().InterruptSpell[myClass])
         end
     elseif myClass == "Mage" then
-        if not MB_isCastingMyCCSpell then
+        if not getSpellsState().IsCastingMyCCSpell then
             SpellStopCasting()
         end
 
@@ -484,7 +483,7 @@ local function SpecialHealAndTankSituation()
 end
 
 function MoronBox.Core.Rotation.HealAndTank()
-    if not getConfigState().RaidLeader and getApi().TableLength(MBID) > 1 then
+    if not getConfigState().RaidLeader and getApi().TableLength(getCoreState().MBID) > 1 then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -601,7 +600,7 @@ end
 -- [[ COOLDOWNS ]] --
 
 function MoronBox.Core.Rotation.Cooldowns()
-    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(getCoreState().MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -636,7 +635,7 @@ function MoronBox.Core.Rotation.Cooldowns()
 end
 
 function MoronBox.Core.Rotation.UseManualRecklessness()
-    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(getCoreState().MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -929,7 +928,7 @@ end
 -- [[ Tank Shoot or Taunt ]] --
 
 function MoronBox.Core.Rotation.TankShoot()
-    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(getCoreState().MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 
@@ -965,7 +964,7 @@ function MoronBox.Core.Rotation.TankShoot()
 end
 
 function MoronBox.Core.Rotation.ManualTaunt()
-    if not getConfigState().RaidLeader and (getApi().TableLength(MBID) > 1) then
+    if not getConfigState().RaidLeader and (getApi().TableLength(getCoreState().MBID) > 1) then
         getApi().CdPrint("WARNING: You have not chosen a raid leader")
     end
 

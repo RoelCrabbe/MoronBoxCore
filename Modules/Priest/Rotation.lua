@@ -37,7 +37,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(MB_myVaelastraszPriests) do
-            local id = MBID[name]
+            local id = getCoreState().MBID[name]
             if id and not getUnit().Dead(id) then
                 return name
             end
@@ -190,7 +190,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return false
         end
 
-        local leaderId = MBID[leader]
+        local leaderId = getCoreState().MBID[leader]
         local targetUnit = leaderId .. "target"
 
         local needsStacking = getAura().GetShadowWeavingAmount() < 5
@@ -252,7 +252,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
                 getHealing().TargetMyAssignedTankToHeal()
             else
-                local tankTarget = UnitName(MBID[getUnit().GetTankName()] .. "targettarget")
+                local tankTarget = UnitName(getCoreState().MBID[getUnit().GetTankName()] .. "targettarget")
                 if not tankTarget then
                     MBH_CastHeal("Greater Heal", 1, 1)
                 else
@@ -297,8 +297,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function MaxShieldAggroedPlayer()
-        local leader = getConfigState().RaidLeader
-        if not leader or not MBID[leader] or getSpells().ImBusy() then
+        local leaderId = getCoreState().MBID[getConfigState().RaidLeader]
+        if not leaderId or getSpells().ImBusy() then
             return
         end
 
@@ -306,8 +306,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        local shieldTarget = MBID[leader] .. "targettarget"
-
+        local shieldTarget = leaderId .. "targettarget"
         if not getUnit().IsValidFriendlyTarget(shieldTarget, "Power Word: Shield") or
             getUnit().HealthPct(shieldTarget) > 0.95 or
             getAura().HasBuffOrDebuff("Weakened Soul", shieldTarget, "debuff") or
@@ -325,8 +324,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function MaxRenewAggroedPlayer()
-        local leader = getConfigState().RaidLeader
-        if not leader or not MBID[leader] or getSpells().ImBusy() then
+        local leaderId = getCoreState().MBID[getConfigState().RaidLeader]
+        if not leaderId or getSpells().ImBusy() then
             return
         end
 
@@ -334,8 +333,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return
         end
 
-        local renewTarget = MBID[leader] .. "targettarget"
-
+        local renewTarget = leaderId .. "targettarget"
         if not getUnit().IsValidFriendlyTarget(renewTarget, "Renew") or
             getUnit().HealthPct(renewTarget) > 0.95 or
             getAura().HasBuffNamed("Renew", renewTarget) then
@@ -410,7 +408,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         local targetName = getApi().ReturnPlayerInRaidFromTable(getSettingsState().GTFO.Vaelastrasz)
-        local targetID = MBID[targetName]
+        local targetID = getCoreState().MBID[targetName]
 
         if not targetID or not getUnit().IsAlive(targetID) or
             getAura().HasBuffOrDebuff("Weakened Soul", targetID, "debuff") or
@@ -426,8 +424,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function Heal()
         if getUnit().InCombat() then
             if Instance.MC() and (getRaid().TankTarget("Garr") or getRaid().TankTarget("Firesworn")) and getConfigState().RaidLeader and getCore().MyClassOrder() == 1 then
-                if getAura().HasBuffOrDebuff("Magma Shackles", MBID[getConfigState().RaidLeader], "debuff") then
-                    TargetUnit(MBID[getConfigState().RaidLeader])
+                local leaderId = getCoreState().MBID[getConfigState().RaidLeader]
+
+                if getAura().HasBuffOrDebuff("Magma Shackles", leaderId, "debuff") then
+                    TargetUnit(leaderId)
                     CastSpellByName("Dispel Magic")
                     TargetLastTarget()
                 end
@@ -457,7 +457,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if getHealing().HealLieutenantAQ20() or getHealing().InstructorRazAddsHeal() then return end
 
         if getConfigState().AssignedHealTarget then
-            if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+            if getUnit().IsAlive(getCoreState().MBID[getConfigState().AssignedHealTarget]) then
                 MTHeals(getConfigState().AssignedHealTarget)
                 return
             else
@@ -667,7 +667,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         AOE = function()
             if getRaid().TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
                 if getConfigState().AssignedHealTarget then
-                    if getUnit().IsAlive(MBID[getConfigState().AssignedHealTarget]) then
+                    if getUnit().IsAlive(getCoreState().MBID[getConfigState().AssignedHealTarget]) then
                         MTHeals(getConfigState().AssignedHealTarget)
                         return
                     else

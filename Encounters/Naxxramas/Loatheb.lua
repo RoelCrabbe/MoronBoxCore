@@ -178,7 +178,7 @@ local function FindNextCleanHealer(startingIndex)
 
         local healerName = MB_myLoathebHealers[testIndex]
         if healerName then
-            local healerId = MBID[healerName]
+            local healerId = getCoreState().MBID[healerName]
             if healerId and IsAlive(healerId) then
                 local hasCorruptedMind = HasBuffOrDebuff("Corrupted Mind", healerId, "debuff")
                 if not hasCorruptedMind then
@@ -197,8 +197,8 @@ end
 
 local function CheckClassOrder(healerList, fallbackList)
     for i = 1, TableLength(healerList) - 1 do
-        if UnitClass(MBID[healerList[i]]) == "Priest"
-            and UnitClass(MBID[healerList[i + 1]]) == "Priest" then
+        if UnitClass(getCoreState().MBID[healerList[i]]) == "Priest"
+            and UnitClass(getCoreState().MBID[healerList[i + 1]]) == "Priest" then
             return fallbackList, false
         end
     end
@@ -214,7 +214,7 @@ local function InitializeHealerRotation()
     table.sort(MB_myLoathebHealers)
 
     for _, healer in ipairs(MB_myLoathebHealers) do
-        if MBID[healer] and not seen[healer] then
+        if getCoreState().MBID[healer] and not seen[healer] then
             table.insert(sorted, healer)
             seen[healer] = true
         end
@@ -224,7 +224,7 @@ local function InitializeHealerRotation()
     table.sort(sorted)
 
     for _, healer in ipairs(sorted) do
-        local healerId = MBID[healer]
+        local healerId = getCoreState().MBID[healer]
         if healerId then
             if UnitClass(healerId) == "Priest" then
                 table.insert(priests, healer)
@@ -317,7 +317,7 @@ local function ShouldBroadcast()
         return false
     end
 
-    local myRaidId = MBID[myName]
+    local myRaidId = getCoreState().MBID[myName]
     if not myRaidId then
         return false
     end
@@ -436,7 +436,7 @@ function LOA_Healing()
         return false
     end
 
-    local mainTankId = MBID[MB_myLoathebMainTank]
+    local mainTankId = getCoreState().MBID[MB_myLoathebMainTank]
     if not mainTankId then
         return false
     end

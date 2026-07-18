@@ -134,7 +134,7 @@ end
 function GARR:OnReset()
     GarrEncounter.Active = false
     MB_myGarrHealers = {}
-    MB_myAssignedHealTarget = nil
+    getConfigState().AssignedHealTarget = nil
 
     self:CancelScheduledEvent("GetGarrHealers")
     self:CancelScheduledEvent("GarrHealerAssignments")
@@ -186,7 +186,7 @@ local function AssignHealersToTanks()
         return false
     end
 
-    MB_myAssignedHealTarget = nil
+    getConfigState().AssignedHealTarget = nil
 
     local myPosition = nil
     for i = 1, TableLength(MB_myGarrHealers) do
@@ -208,7 +208,7 @@ local function AssignHealersToTanks()
         for h = 1, healersNeeded do
             healerIndex = healerIndex + 1
             if healerIndex == myPosition then
-                MB_myAssignedHealTarget = tankName
+                getConfigState().AssignedHealTarget = tankName
                 CdPrint(">> Assigned to heal: " .. tankName .. " <<")
                 return true
             end
