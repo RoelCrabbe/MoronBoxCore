@@ -228,7 +228,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     local id = getCoreState().MBID[name]
 
                     if id and not getAura().HasBuffOrDebuff("Soulstone", id, "buff") then
-                        getApi().getApi().CdMessage("Soulstoning " .. getApi().GetColors(name))
+                        getApi().CdMessage("Soulstoning " .. getApi().GetColors(name))
                         TargetUnit(id)
                         UseItemByName("Major Soulstone")
                         ClearCursor()
@@ -322,7 +322,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.ONY() and getRaid().TankTarget("Onyxia") and getConfigState().IsMoving.Active then
-            getSpells().CoolDownCast("Corruption", 18)
+            getSpells().CastSpellWithCooldown("Corruption", 18)
 
             if getRaid().TankTargetHealth() <= 0.65 and getRaid().TankTargetHealth() >= 0.4 then
                 SaveShardShadowburn(12)
@@ -371,7 +371,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         getAura().CancelAuraSet(RemoveBuffs)
 
         if not getConfigState().PlayerSpecc then
-            getApi().getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
+            getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
             getConfigState().PlayerSpecc = "Corruption"
         end
 
@@ -507,7 +507,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             getAura().CancelAuraSet(RemoveBuffs)
 
             if not getConfigState().PlayerSpecc then
-                getApi().getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
+                getApi().CdMessage("My specc is fucked. Defaulting to Corruption.")
                 getConfigState().PlayerSpecc = "Corruption"
             end
 

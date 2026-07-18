@@ -113,7 +113,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         for i = 1, GetNumPartyMembers() do
             local unit = "party" .. i
-            if not getUnit().Dead(unit) and getUnit().In28yardRange(unit) then
+            if not getUnit().Dead(unit) and getUnit().In28YardRange(unit) then
                 local guysHurt = UnitHealthMax(unit) - UnitHealth(unit)
                 if guysHurt > hurt then
                     numHurt = numHurt + 1
@@ -174,11 +174,11 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if Instance.AQ40() then
             SARTURA_PriestDPS()
         elseif Instance.MC() then
-            getSpells().CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
+            getSpells().CastSpellWithCooldown("Shadow Word: Pain(Rank 1)", 24)
         elseif Instance.ONY() and getRaid().TankTarget("Onyxia") then
-            getSpells().CoolDownCast("Shadow Word: Pain", 24)
+            getSpells().CastSpellWithCooldown("Shadow Word: Pain", 24)
         elseif not UnitInRaid("player") and getAura().GetShadowWeavingAmount() > 5 then
-            getSpells().CoolDownCast("Shadow Word: Pain", 24)
+            getSpells().CastSpellWithCooldown("Shadow Word: Pain", 24)
         end
 
         return false
@@ -204,7 +204,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return true
         end
 
-        getSpells().CoolDownCast("Shadow Word: Pain(Rank 1)", 24)
+        getSpells().CastSpellWithCooldown("Shadow Word: Pain(Rank 1)", 24)
         return false
     end
 
@@ -624,7 +624,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if getSpells().IsSpellReady("Smite") then
-            getSpells().CoolDownCast("Smite", 8)
+            getSpells().CastSpellWithCooldown("Smite", 8)
         end
 
         getAttack().AutoWandAttack()

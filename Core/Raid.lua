@@ -597,7 +597,7 @@ function MoronBox.Core.Raid.CrowdControlMCedRaidMember(debuffName, message)
 
     for i = 1, GetNumRaidMembers() do
         local unitId = "raid" .. i
-        if UnitName(unitId) and getUnit().IsAlive(unitId) and getUnit().In28yardRange(unitId) then
+        if UnitName(unitId) and getUnit().IsAlive(unitId) and getUnit().In28YardRange(unitId) then
             if getAura().HasBuffOrDebuff(debuffName, unitId, "debuff")
                 and not getAura().HasBuffOrDebuff("Polymorph", unitId, "debuff") then
                 CastPolymorph(unitId)

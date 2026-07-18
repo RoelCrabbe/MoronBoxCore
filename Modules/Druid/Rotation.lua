@@ -473,7 +473,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         if getConfigState().IsMoving.Active then
             if Instance.ONY() and getRaid().TankTarget("Onyxia") then
-                getSpells().CoolDownCast("Moonfire", 12)
+                getSpells().CastSpellWithCooldown("Moonfire", 12)
             end
 
             getHealing().CastSpellOnRandomRaidMember("Rejuvenation",
@@ -791,7 +791,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if getSpells().IsSpellReady("Starfire") then
-            getSpells().CoolDownCast("Starfire", 6)
+            getSpells().CastSpellWithCooldown("Starfire", 6)
             return
         end
 

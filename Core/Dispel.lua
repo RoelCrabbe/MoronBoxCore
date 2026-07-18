@@ -56,7 +56,7 @@ function MoronBox.Core.Dispel.Decurse()
             for j = 1, 16 do
                 local _, _, debuffType = UnitDebuff(unit, j, 1)
 
-                if debuffType and getUnit().In28yardRange(unit) then
+                if debuffType and getUnit().In28YardRange(unit) then
                     local canCure = (debuffType == "Curse" and MBD.Session.Spells.Curse.Can_Cure_Curse) or
                         (debuffType == "Magic" and (MBD.Session.Spells.Magic.Can_Cure_Magic or MBD.Session.Spells.Magic.Can_Cure_Enemy_Magic)) or
                         (debuffType == "Poison" and MBD.Session.Spells.Poison.Can_Cure_Poison) or

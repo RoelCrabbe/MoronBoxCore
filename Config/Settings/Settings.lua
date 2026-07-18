@@ -20,8 +20,8 @@ MoronBox.Settings.SettingsState = {
     AllianceRaidInviter = "Sceto",
 
     -- [[ SpeedRun ]] --
-    SpeedRunEnabled = false,
-    SteroidWorlBuffs = false,
+    SpeedRunEnabled = true,
+    SteroidWorlBuffs = true,
 
     -- [[ GTFO ]] --
     GTFO = {                  -- If you get Baron bomb or Vaelastrasz bomb, follow this person.

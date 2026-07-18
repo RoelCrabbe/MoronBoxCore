@@ -74,14 +74,14 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if Instance.AQ20() then
             if getRaid().TankTarget("Ossirian the Unscarred") then
                 if getAura().HasBuffOrDebuff("Nature Weakness", "target", "debuff") then
-                    getSpells().CoolDownCast("Serpent Sting", 15)
+                    getSpells().CastSpellWithCooldown("Serpent Sting", 15)
                     return true
                 elseif getAura().HasBuffOrDebuff("Arcane Weakness", "target", "debuff") then
                     CastSpellByName("Arcane Shot")
                     return true
                 end
             elseif getRaid().TankTarget("Moam") then
-                getSpells().CoolDownCast("Viper Sting", 8)
+                getSpells().CastSpellWithCooldown("Viper Sting", 8)
             end
         end
 

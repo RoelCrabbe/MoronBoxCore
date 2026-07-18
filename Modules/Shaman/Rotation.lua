@@ -151,7 +151,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
                 if (avgManaDown > 1500 and myManaDown > 1050) or (myManaDown > 1500) then
                     CastSpellByName("Mana Tide Totem")
-                    getSpells().CoolDownCast("Mana Tide Totem", 13)
+                    getSpells().CastSpellWithCooldown("Mana Tide Totem", 13)
                 end
             end
 
@@ -241,7 +241,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             CastSpellByName("Poison Cleansing Totem")
-            getSpells().CoolDownCast("Poison Cleansing Totem", 6)
+            getSpells().CastSpellWithCooldown("Poison Cleansing Totem", 6)
             return
         end
 
@@ -253,7 +253,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 end
 
                 CastSpellByName("Disease Cleansing Totem")
-                getSpells().CoolDownCast("Disease Cleansing Totem", 6)
+                getSpells().CastSpellWithCooldown("Disease Cleansing Totem", 6)
                 return
             end
         end
@@ -298,7 +298,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if getSpells().IsSpellReady("Lightning Bolt") then
-            getSpells().CoolDownCast("Lightning Bolt", 6)
+            getSpells().CastSpellWithCooldown("Lightning Bolt", 6)
             return
         end
 
@@ -368,7 +368,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 end
 
                 CastSpellByName("Poison Cleansing Totem")
-                getSpells().CoolDownCast("Poison Cleansing Totem", 6)
+                getSpells().CastSpellWithCooldown("Poison Cleansing Totem", 6)
                 return
             end
 
@@ -381,7 +381,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
                     if (avgManaDown > 1500 and myManaDown > 1050) or (myManaDown > 1500) then
                         CastSpellByName("Mana Tide Totem")
-                        getSpells().CoolDownCast("Mana Tide Totem", 13)
+                        getSpells().CastSpellWithCooldown("Mana Tide Totem", 13)
                     end
                 end
 
