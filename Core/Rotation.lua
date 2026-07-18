@@ -74,7 +74,9 @@ end
 
 function MoronBox.Core.Rotation.RequestInviteSummon()
     if IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() then
-        if MB_raidInviter == myName then
+        local raidInviter = getSettingsState().RaidInviter
+
+        if raidInviter == myName then
             SetLootMethod("freeforall")
 
             if GetNumPartyMembers() > 0 and not UnitInRaid("player") then
@@ -83,10 +85,10 @@ function MoronBox.Core.Rotation.RequestInviteSummon()
             return
         end
 
-        if MB_raidInviter then
-            if not (getUnit().IsInRaid(MB_raidInviter) or getUnit().IsInGroup(MB_raidInviter)) then
+        if raidInviter then
+            if not (getUnit().IsInRaid(raidInviter) or getUnit().IsInGroup(raidInviter)) then
                 getUnit().DisbandRaid()
-                SendChatMessage(MB_inviteMessage, "WHISPER", nil, MB_raidInviter)
+                SendChatMessage(getSettingsState().InviteMessage, "WHISPER", nil, raidInviter)
             end
         end
         return
@@ -115,10 +117,10 @@ function MoronBox.Core.Rotation.SetFocus()
     if IsShiftKeyDown() then
         local targetLeader = UnitName("target")
         getConfigState().RaidLeader = targetLeader
-        getApi().SendAddonMessage(MB_RAID .. "_FTAR", getConfigState().RaidLeader .. " " .. myName)
+        getApi().SendAddonMessage(getRaidId() .. "_FTAR", getConfigState().RaidLeader .. " " .. myName)
     else
         getConfigState().RaidLeader = myName
-        getApi().SendAddonMessage(MB_RAID, "MB_FOCUSME")
+        getApi().SendAddonMessage(getRaidId(), "MB_FOCUSME")
     end
 end
 
@@ -126,13 +128,13 @@ end
 
 local function SpecialRotation()
     if Instance.NAXX() and getAura().HasBuffNamed("Mind Control", "player") and myClass == "Priest" then
-        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
-            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(getEncountersState().Razuvious.MindControlPriests) and getEncountersState().Razuvious.Active) or
+            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(getEncountersState().Faerlina.MindControlPriests) and getEncountersState().Faerlina.Active) then
             getSpells().GetMCActions()
             return true
         end
     elseif Instance.BWL() and not getRaid().TankTarget("Razorgore the Untamed") then
-        if getRaid().IsAtRazorgore() and myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreORBtank) then
+        if getRaid().IsAtRazorgore() and myName == getUnit().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.ORBtank) then
             getSpells().OrbControlling()
             return true
         end
@@ -472,8 +474,8 @@ local function SpecialHealAndTankSituation()
             end
         end
     elseif Instance.NAXX() and myClass == "Priest" then
-        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(MB_myRazuviousPriest) and MB_myRazuviousBoxStrategy) or
-            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(MB_myFaerlinaPriest) and MB_myFaerlinaBoxStrategy) then
+        if (getRaid().TankTarget("Instructor Razuvious") and getApi().FindMyNameInTable(getEncountersState().Razuvious.MindControlPriests) and getEncountersState().Razuvious.Active) or
+            (getRaid().TankTarget("Grand Widow Faerlina") and getApi().FindMyNameInTable(getEncountersState().Faerlina.MindControlPriests) and getEncountersState().Faerlina.Active) then
             getSpells().GetMCActions()
             return true
         end
@@ -593,7 +595,7 @@ function MoronBox.Core.Rotation.ClearRaidTarget()
         return
     end
 
-    getApi().SendAddonMessage(MB_RAID .. "CLR_TARG", myName)
+    getApi().SendAddonMessage(getRaidId() .. "CLR_TARG", myName)
     SetRaidTarget("target", 0)
 end
 
@@ -628,9 +630,9 @@ function MoronBox.Core.Rotation.Cooldowns()
             end
         end
 
-        getApi().SendAddonMessage(MB_RAID, "MB_USECOOLDOWNS")
+        getApi().SendAddonMessage(getRaidId(), "MB_USECOOLDOWNS")
     else
-        getApi().SendAddonMessage(MB_RAID, "MB_USECOOLDOWNS")
+        getApi().SendAddonMessage(getRaidId(), "MB_USECOOLDOWNS")
     end
 end
 
@@ -667,9 +669,9 @@ function MoronBox.Core.Rotation.UseManualRecklessness()
             end
         end
 
-        getApi().SendAddonMessage(MB_RAID, "MB_USERECKLESSNESS")
+        getApi().SendAddonMessage(getRaidId(), "MB_USERECKLESSNESS")
     else
-        getApi().SendAddonMessage(MB_RAID, "MB_USERECKLESSNESS")
+        getApi().SendAddonMessage(getRaidId(), "MB_USERECKLESSNESS")
     end
 end
 
@@ -678,9 +680,9 @@ end
 local function SpecialFollowing()
     if Instance.AQ40() and getAura().HasBuffOrDebuff("Plague", "player", "debuff") and getRaid().TankTarget("Anubisath Defender") then
         return true
-    elseif Instance.MC() and getRaid().TankTarget("Baron Geddon") and getApi().FindMyNameInTable(MB_raidAssist.GTFO.Baron) then
+    elseif Instance.MC() and getRaid().TankTarget("Baron Geddon") and getApi().FindMyNameInTable(getSettingsState().GTFO.Baron) then
         return true
-    elseif Instance.ONY() and getRaid().TankTarget("Onyxia") and myName == MB_myOnyxiaMainTank then
+    elseif Instance.ONY() and getRaid().TankTarget("Onyxia") and myName == getEncountersState().Onyxia.MainTank then
         return true
     end
 
@@ -743,19 +745,19 @@ function MoronBox.Core.Rotation.MeleeFollow()
         if SKERAM_IsFollowSkeram() then
             return
         end
-    elseif Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
-        if myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank) or myName == getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank) then
+    elseif Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and getEncountersState().Razorgore.Active then
+        if myName == getUnit().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.LeftMainTank) or myName == getUnit().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.RightMainTank) then
             return
         end
 
-        if getApi().FindMyNameInTable(MB_myRazorgoreLeftDPSERS) then
-            local leftTank = getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+        if getApi().FindMyNameInTable(getEncountersState().Razorgore.LeftSideDPSERS) then
+            local leftTank = getUnit().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.LeftMainTank)
             if leftTank then FollowByName(leftTank, 1) end
             return
         end
 
-        if getApi().FindMyNameInTable(MB_myRazorgoreRightDPSERS) then
-            local rightTank = getUnit().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank)
+        if getApi().FindMyNameInTable(getEncountersState().Razorgore.RightSideDPSERS) then
+            local rightTank = getUnit().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.RightMainTank)
             if rightTank then FollowByName(rightTank, 1) end
             return
         end

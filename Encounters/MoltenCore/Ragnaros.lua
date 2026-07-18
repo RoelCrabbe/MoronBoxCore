@@ -168,7 +168,7 @@ local function RAGNAROS_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "RAGNAROS", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "RAGNAROS", "ENGAGE", 30)
         RagnarosEncounter.Active = true
         return true
     end
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function RAGNAROS:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "RAGNAROS" then
+    if arg1 == getRaidId() .. "RAGNAROS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Ragnaros! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function RAGNAROS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Ragnaros dies") and RagnarosEncounter.Active then
-        CdAddonMessage(MB_RAID .. "RAGNAROS", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "RAGNAROS", "DISENGAGE", 30)
     end
 end
 

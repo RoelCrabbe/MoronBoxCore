@@ -14,7 +14,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     }
 
     local function GetActiveVaelastraszHealer()
-        for _, name in ipairs(MB_myVaelastraszShamans) do
+        for _, name in ipairs(getEncountersState().Vaelastrasz.ShamanHealers) do
             local id = getCoreState().MBID[name]
             if id and not getUnit().Dead(id) then
                 return name
@@ -94,7 +94,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
-            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            if getRaid().TankTarget("Patchwerk") and getEncountersState().Patchwerk.Active then
                 getHealing().TargetMyAssignedTankToHeal()
             else
                 local tankTarget = UnitName(getCoreState().MBID[getUnit().GetTankName()] .. "targettarget")
@@ -189,7 +189,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 MBH_CastHeal("Healing Wave", 3, 5)
             end
             return
-        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and getEncountersState().Vaelastrasz.Active then
             if getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 MBH_CastHeal("Chain Heal", 3, 3)
                 return
@@ -198,7 +198,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             Cooldowns()
 
             if getConfigState().HealSpell == "Healing Wave" then
-                if MB_myVaelastraszShamanHealing then
+                if getEncountersState().Vaelastrasz.ShamanHealing then
                     local activeShaman = GetActiveVaelastraszHealer()
 
                     if myName == activeShaman then

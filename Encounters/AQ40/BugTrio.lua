@@ -213,7 +213,7 @@ local function BUGTRIO_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "BUGTRIO", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "BUGTRIO", "ENGAGE", 30)
         BugTrioEncounter.Active = true
         return true
     end
@@ -226,7 +226,7 @@ end
 --[####################################################################################################]--
 
 function BUGTRIO:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "BUGTRIO" then
+    if arg1 == getRaidId() .. "BUGTRIO" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Bug Trio! <<")
             self:OnEnable()
@@ -239,7 +239,7 @@ end
 
 function BUGTRIO:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Vem dies") and BugTrioEncounter.Active then
-        CdAddonMessage(MB_RAID .. "BUGTRIO", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "BUGTRIO", "DISENGAGE", 30)
     end
 end
 

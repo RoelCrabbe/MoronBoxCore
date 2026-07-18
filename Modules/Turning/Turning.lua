@@ -68,7 +68,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end)
 end, function()
     -- Load condition: only active when its enabled and we are a ranged DPS.
-    return MB_raidAssist.AutoTurnToTarget and getCore().ImRangedDPS()
+    return getSettingsState().AutoTurnToTarget and getCore().ImRangedDPS()
 end, function()
     getBuffs().Unregister(MODULE_NAME)
 end)

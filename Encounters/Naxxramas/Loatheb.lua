@@ -331,9 +331,9 @@ local function BroadcastHealer()
 
     if nextIndex and nextHealerName then
         local message = "NEXT:" .. nextIndex .. ":" .. nextHealerName
-        CdAddonMessage(MB_RAID .. "LOATHEB_HEAL", message)
+        CdAddonMessage(getRaidId() .. "LOATHEB_HEAL", message)
     else
-        CdAddonMessage(MB_RAID .. "LOATHEB_HEAL", "ALL_DEBUFFED")
+        CdAddonMessage(getRaidId() .. "LOATHEB_HEAL", "ALL_DEBUFFED")
     end
 end
 
@@ -379,7 +379,7 @@ function LOA_IsAtLoatheb()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "LOATHEB", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "LOATHEB", "ENGAGE", 30)
         LOA_ACTIVE = true
         return true
     end
@@ -393,19 +393,19 @@ end
 
 function LOA:OnEvent()
     if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID .. "LOATHEB_HEAL") then
+        if (arg1 == getRaidId() .. "LOATHEB_HEAL") then
             local _, _, newIndex, healerName = string.find(arg2, "NEXT:(%d+):(.+)")
             MB_myLoathebHealerIndex = tonumber(newIndex)
             CdRaidWarning(">> " .. healerName .. " <<")
-        elseif (arg1 == MB_RAID .. "LOATHEB_EMERGENCY") then
+        elseif (arg1 == getRaidId() .. "LOATHEB_EMERGENCY") then
             if (arg2 == "ALL_DEBUFFED") then
                 CdRaidWarning(">> All Healers Debuffed! Use Cooldowns on TANK! <<")
             end
-        elseif (arg1 == MB_RAID .. "LOATHEB_IGNITE") then
+        elseif (arg1 == getRaidId() .. "LOATHEB_IGNITE") then
             if (arg2 == "REFRESH") then
                 CdRaidWarning(">> Refresh Fungal Bloom on MAGES! <<")
             end
-        elseif (arg1 == MB_RAID .. "LOATHEB") then
+        elseif (arg1 == getRaidId() .. "LOATHEB") then
             if (arg2 == "ENGAGE") then
                 InitializeHealerRotation()
                 LOA_ACTIVE = true
@@ -507,7 +507,7 @@ function LOA_Rotation()
         elseif TankTargetHealth() <= MB_myLoathebDPSThreshold then
             if myClass == "Mage" and MyClassAlphabeticalOrder() == 1 then
                 if not HasBuffOrDebuff("Fungal Bloom", "player", "debuff") and NumberOfClassInRaid("Mage") < 4 then
-                    CdAddonMessage(MB_RAID .. "LOATHEB_IGNITE", "REFRESH")
+                    CdAddonMessage(getRaidId() .. "LOATHEB_IGNITE", "REFRESH")
                 end
             end
 

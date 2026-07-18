@@ -20,7 +20,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     end
 
     local function GetActiveVaelastraszHealer()
-        for _, name in ipairs(MB_myVaelastraszDruids) do
+        for _, name in ipairs(getEncountersState().Vaelastrasz.DruidHealers) do
             local id = getCoreState().MBID[name]
             if id and not getUnit().Dead(id) then
                 return name
@@ -88,13 +88,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if not getRaid().IsAtRazorgore() or not getRaid().IsAtRazorgorePhase() or not MB_myRazorgoreBoxStrategy then
+            if not getRaid().IsAtRazorgore() or not getRaid().IsAtRazorgorePhase() or not getEncountersState().Razorgore.Active then
                 return
             end
 
             local tanks = {
-                Right = getApi().ReturnPlayerInRaidFromTable(MB_myRazorgoreRightTank),
-                Left = getApi().ReturnPlayerInRaidFromTable(MB_myRazorgoreLeftTank)
+                Right = getApi().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.RightMainTank),
+                Left = getApi().ReturnPlayerInRaidFromTable(getEncountersState().Razorgore.LeftMainTank)
             }
 
             for _, tank in pairs(tanks) do
@@ -110,8 +110,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         else
             local state = getConfigState()
             local core = getCoreState()
+            local setting = getSettingsState()
 
-            local leaderName = state.RaidLeader or MB_raidInviter
+            local leaderName = state.RaidLeader or setting.RaidInviter
             local focusTarget = nil
 
             if leaderName and core.MBID[leaderName] then
@@ -214,7 +215,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if assignedTarget then
             TargetByName(assignedTarget, 1)
         else
-            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            if getRaid().TankTarget("Patchwerk") and getEncountersState().Patchwerk.Active then
                 getHealing().TargetMyAssignedTankToHeal()
             else
                 local tankTarget = UnitName(getCoreState().MBID[getUnit().GetTankName()] .. "targettarget")
@@ -488,10 +489,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             MBH_CastHeal("Healing Touch")
             return
-        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and getEncountersState().Vaelastrasz.Active then
             Cooldowns()
 
-            if MB_myVaelastraszDruidHealing and not getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
+            if getEncountersState().Vaelastrasz.DruidHealing and not getAura().HasBuffOrDebuff("Burning Adrenaline", "player", "debuff") then
                 local activeDruid = GetActiveVaelastraszHealer()
 
                 if myName == activeDruid then
@@ -897,7 +898,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end,
         Multi = Multi,
         AOE = function()
-            if getRaid().TankTarget("Maexxna") and MB_myMaexxnaBoxStrategy then
+            if getRaid().TankTarget("Maexxna") and getEncountersState().Maexxna.Active then
                 if getConfigState().AssignedHealTarget then
                     if getUnit().IsAlive(getCoreState().MBID[getConfigState().AssignedHealTarget]) then
                         MTHeals(getConfigState().AssignedHealTarget)
@@ -908,7 +909,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     end
                 end
 
-                if getApi().FindMyNameInTable(MB_myMaexxnaDruidHealer) then
+                if getApi().FindMyNameInTable(getEncountersState().Maexxna.DruidHealers) then
                     MaxRejuvAggroedPlayer()
                     AbolishAggroedPlayer()
                     MaxRegrowthAggroedPlayer()

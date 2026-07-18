@@ -162,9 +162,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             return SKERAM_WarlockDebuff()
         end
 
-        if Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+        if Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and getEncountersState().Razorgore.Active then
             local myOrder = getCore().MyClassAlphabeticalOrder()
-            local tankMap = { MB_myRazorgoreRightTank, MB_myRazorgoreLeftTank }
+            local tankMap = { getEncountersState().Razorgore.RightMainTank, getEncountersState().Razorgore.LeftMainTank }
             local tankName = tankMap[myOrder] and getApi().ReturnPlayerInRaidFromTable(tankMap[myOrder])
 
             if tankName and getRaid().TargetFromSpecificPlayer("Death Talon Dragonspawn", tankName) then
@@ -288,7 +288,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.AQ40() then
-            if tName == "Emperor Vek'lor" and getApi().FindMyNameInTable(MB_myTwinsWarlockTank) then
+            if tName == "Emperor Vek'lor" and getEncountersState().TwinEmps.Active and getApi().FindMyNameInTable(getEncountersState().TwinEmps.WarlockTanks) then
                 getSpells().SelfBuff("Shadow Ward")
                 SaveShardShadowburn(3)
 

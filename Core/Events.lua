@@ -54,7 +54,7 @@ local myClass               = UnitClass("player")
 
 -- [[ Core Hooking Logic ]] --
 local function Wrapped_TakeTaxiNode(index)
-    getApi().SendAddonMessage(MB_RAID .. "_flyTaxi", TaxiNodeName(index))
+    getApi().SendAddonMessage(getRaidId() .. "_flyTaxi", TaxiNodeName(index))
     Original_TakeTaxiNode(index)
 end
 
@@ -66,7 +66,7 @@ local function TaxiUpdate()
         return
     end
 
-    if MB_raidAssist.FollowTheLeaderTaxi and AutoFlyFollow.Time > time then
+    if AutoFlyFollow.Time > time then
         for i = 1, NumTaxiNodes() do
             if TaxiNodeName(i) == AutoFlyFollow.Node then
                 Original_TakeTaxiNode(i)
@@ -106,6 +106,44 @@ local function AssignHealerToName(assignments)
     end
 end
 
+local function TankList(encounter)
+    -- DO NOT PUT OTHER / GUEST TANKS ON HERE, ADD THEM in MB_extraTanks!!
+    -- /tanklist <encounter> will trigger this function and run a preset list
+
+    if not encounter or encounter == "" then
+        print("Usage: /tanklist <encounter>")
+        return
+    end
+
+    local faction = UnitFactionGroup("player")
+    local presets = {
+        Horde = {
+            NRML    = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" },
+            NAXX    = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo", "Crymeariver", "Jokamok" },
+            HEIGAN  = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" },
+            DEFAULT = { "Moron", "Suecia", "Ajlano", "Almisael", "Rows", "Sabo" }
+        },
+        Alliance = {
+            NRML    = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },
+            NAXX    = { "Deadgods", "Drudish", "Gupy", "Bellamaya", "Akileys", "Bestguy" },
+            HEIGAN  = { "Deadgods", "Drudish", "Gupy", "Bellamaya" },
+            DEFAULT = { "Deadgods", "Drudish", "Gupy", "Bellamaya" }
+        }
+    }
+
+    local tanks = presets[faction] and presets[faction][encounter] or presets[faction] and presets[faction].DEFAULT or {}
+    getSettingsState().TankList = tanks
+
+    if IsRaidLeader() then
+        getApi().CdMessage(encounter .. " Tanklist loaded.")
+        for i, tank in ipairs(getSettingsState().TankList) do
+            getApi().CdMessage(getApi().GetColors(getConfigState().RaidTargetNames[i]) .. " => " .. tank .. ".")
+        end
+    end
+
+    getCore().InitializeClasslists()
+end
+
 -- [[ Main Events ]] --
 
 local EventFrame = CreateFrame("Frame")
@@ -137,10 +175,14 @@ end
 
 EventFrame:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
+        if not Faction.IsHorde() then
+            getSettingsState().RaidInviter = getSettingsState().AllianceRaidInviter
+        end
+
         TakeTaxiNode = Wrapped_TakeTaxiNode
     elseif event == "TAXIMAP_OPENED" then
         TaxiUpdate()
-    elseif event == "CHAT_MSG_WHISPER" and arg1 == MB_inviteMessage then
+    elseif event == "CHAT_MSG_WHISPER" and arg1 == getSettingsState().InviteMessage then
         InviteByName(arg2)
     elseif event == "PARTY_INVITE_REQUEST" then
         AcceptGroup()
@@ -256,7 +298,7 @@ EventFrame:SetScript("OnEvent", function()
                 getConfigState().IsMoving.Time = GetTime() + 1
             end
         elseif arg1 == "Target needs to be in front of you" then
-            if Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and MB_myRazorgoreBoxStrategy then
+            if Instance.BWL() and getRaid().IsAtRazorgore() and getRaid().IsAtRazorgorePhase() and getEncountersState().Razorgore.Active then
                 getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Active = true
                 getConfigState().RazorgoreNewTargetBecauseTargetIsBehind.Time = GetTime() + 3
             end
@@ -274,30 +316,30 @@ EventFrame:SetScript("OnEvent", function()
     elseif event == "CHAT_MSG_ADDON" then
         local currentTime = GetTime()
 
-        if arg1 == MB_RAID and arg2 == "MB_FOCUSME" and arg4 ~= myName then
+        if arg1 == getRaidId() and arg2 == "MB_FOCUSME" and arg4 ~= myName then
             MB_raidLeader = arg4
             print("I\'m Focusing " .. MB_raidLeader)
-        elseif arg1 == MB_RAID .. "_FTAR" then
+        elseif arg1 == getRaidId() .. "_FTAR" then
             local focus = string.gsub(arg2, " .*", "")
             local focus_caller = string.gsub(arg2, "^%S- ", "")
 
             print("I\'m Focusing " .. focus .. " Previous tar: " .. focus_caller)
             MB_raidLeader = focus
-        elseif arg1 == MB_RAID .. "_flyTaxi" and arg4 ~= myName then
+        elseif arg1 == getRaidId() .. "_flyTaxi" and arg4 ~= myName then
             AutoFlyFollow.Time = currentTime + 30
             AutoFlyFollow.Node = arg2
             TaxiUpdate()
-        elseif arg1 == MB_RAID and arg2 == "MB_USECOOLDOWNS" then
+        elseif arg1 == getRaidId() and arg2 == "MB_USECOOLDOWNS" then
             if getUnit().InCombat() and not getConfigState().UseCooldowns.Active then
                 getConfigState().UseCooldowns.Active = true
                 getConfigState().UseCooldowns.Time = currentTime + 5
             end
-        elseif arg1 == MB_RAID and arg2 == "MB_USERECKLESSNESS" then
+        elseif arg1 == getRaidId() and arg2 == "MB_USERECKLESSNESS" then
             if getUnit().InCombat() and not getConfigState().UseBigCooldowns.Active then
                 getConfigState().UseBigCooldowns.Active = true
                 getConfigState().UseBigCooldowns.Time = currentTime + 5
             end
-        elseif arg1 == MB_RAID .. "MB_REMOVEBUFFS" then
+        elseif arg1 == getRaidId() .. "MB_REMOVEBUFFS" then
             if arg2 == "all" then
                 local textleft1 = getglobal(MoronBoxTooltip:GetName() .. "TextLeft1")
                 local text
@@ -317,7 +359,7 @@ EventFrame:SetScript("OnEvent", function()
             elseif arg2 and getAura().HasBuffOrDebuff(arg2, "player", "buff") then
                 CancelBuff(arg2)
             end
-        elseif arg1 == MB_RAID .. "MB_REMOVEBLESS" then
+        elseif arg1 == getRaidId() .. "MB_REMOVEBLESS" then
             if arg2 == "all" then
                 local greaterBlessings = {
                     "Greater Blessing of Salvation",
@@ -336,7 +378,7 @@ EventFrame:SetScript("OnEvent", function()
             elseif arg2 and getAura().HasBuffOrDebuff(arg2, "player", "buff") then
                 CancelBuff(arg2)
             end
-        elseif arg1 == MB_RAID .. "_INT" then
+        elseif arg1 == getRaidId() .. "_INT" then
             if arg2 == myName then
                 local api = getApi()
                 local state = getConfigState()
@@ -359,7 +401,7 @@ EventFrame:SetScript("OnEvent", function()
                     end
                 end
             end
-        elseif arg1 == MB_RAID .. "_CC" then
+        elseif arg1 == getRaidId() .. "_CC" then
             if arg2 == myName then
                 local api = getApi()
                 local state = getConfigState()
@@ -382,7 +424,7 @@ EventFrame:SetScript("OnEvent", function()
                     end
                 end
             end
-        elseif arg1 == MB_RAID .. "_FEAR" then
+        elseif arg1 == getRaidId() .. "_FEAR" then
             if arg2 == myName then
                 local api = getApi()
                 local state = getConfigState()
@@ -405,7 +447,7 @@ EventFrame:SetScript("OnEvent", function()
                     end
                 end
             end
-        elseif arg1 == MB_RAID .. "_OT" then
+        elseif arg1 == getRaidId() .. "_OT" then
             if arg2 == myName then
                 local api = getApi()
                 local state = getConfigState()
@@ -426,13 +468,13 @@ EventFrame:SetScript("OnEvent", function()
                             api.GetColors(myName) .. " will be tanking " .. api.GetColors(targetName))
                         state.OffTankTarget = targetIndex
 
-                        if api.FindMyNameInTable(MB_furysThatCanTank) then
+                        if api.FindMyNameInTable(getSettingsState().FurysThatCanTank) then
                             getGear().TankGear()
                         end
                     end
                 end
             end
-        elseif arg1 == MB_RAID .. "CLR_TARG" then
+        elseif arg1 == getRaidId() .. "CLR_TARG" then
             local api = getApi()
             local state = getConfigState()
 
@@ -463,14 +505,14 @@ EventFrame:SetScript("OnEvent", function()
                     api.SendChatMessage("I, " ..
                         api.GetColors(myName) .. " stopped tanking " .. api.GetColors(targetName))
                     state.OffTankTarget = nil
-                    if api.FindMyNameInTable(MB_furysThatCanTank) then
+                    if api.FindMyNameInTable(getSettingsState().FurysThatCanTank) then
                         getGear().FuryGear()
                     end
                 end
             end
-        elseif arg1 == MB_RAID .. "MB_ASSIGNHEALER" then
+        elseif arg1 == getRaidId() .. "MB_ASSIGNHEALER" then
             AssignHealerToName(arg2)
-        elseif arg1 == MB_RAID and arg2 == "MB_NEFCLOAK" then
+        elseif arg1 == getRaidId() and arg2 == "MB_NEFCLOAK" then
             if getBag().GetItemNameOfEquippedSlot(15) == "Onyxia Scale Cloak" then
                 return
             end
@@ -481,15 +523,15 @@ EventFrame:SetScript("OnEvent", function()
             end
 
             UseItemByName("Onyxia Scale Cloak")
-        elseif arg1 == MB_RAID .. "MB_TANKLIST" then
-            mb_tankList(string.upper(arg2))
-        elseif arg1 == MB_RAID .. "MB_GEAR" then
+        elseif arg1 == getRaidId() .. "MB_TANKLIST" then
+            TankList(string.upper(arg2))
+        elseif arg1 == getRaidId() .. "MB_GEAR" then
             getGear().EquipRackSet(string.upper(arg2))
-        elseif arg1 == MB_RAID and arg2 == "MB_REPORTMANAPOTS" then
+        elseif arg1 == getRaidId() and arg2 == "MB_REPORTMANAPOTS" then
             getReport().Manapots()
-        elseif arg1 == MB_RAID and arg2 == "MB_REPORTSHARDS" then
+        elseif arg1 == getRaidId() and arg2 == "MB_REPORTSHARDS" then
             getReport().Shards()
-        elseif arg1 == MB_RAID and arg2 == "MB_REPORTRUNES" then
+        elseif arg1 == getRaidId() and arg2 == "MB_REPORTRUNES" then
             getReport().Runes()
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
@@ -528,7 +570,7 @@ EventFrame:SetScript("OnEvent", function()
         end
 
         if getConfigState().WarriorBinds == "Fury" and getCore().ImMeleeDPS() then
-            if getApi().FindMyNameInTable(MB_furysThatCanTank) then
+            if getApi().FindMyNameInTable(getSettingsState().FurysThatCanTank) then
                 getGear().FuryGear()
             end
         end
@@ -603,7 +645,7 @@ EventFrame:SetScript("OnUpdate", function()
         TalkToWorldBuffMan.Active = false
         local option1, _, option2 = GetGossipOptions()
 
-        if MB_myGigaWorldBuffsStrategy then
+        if getSettingsState().SteroidWorlBuffs then
             if option2 == "Steroid WorldBuffs" then
                 SelectGossipOption(2)
             end

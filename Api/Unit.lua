@@ -196,7 +196,7 @@ function MoronBox.Unit.IsNotValidTankableTarget()
 end
 
 function MoronBox.Unit.CanHelpfulSpellBeCastOn(spell, unitId)
-    if MB_raidAssist.Use40yardHealingRangeOnInstants then
+    if getSettingsState().Use40yardHealingRangeOnInstants then
         local oldTarget = UnitName("target")
         if oldTarget then
             ClearTarget()

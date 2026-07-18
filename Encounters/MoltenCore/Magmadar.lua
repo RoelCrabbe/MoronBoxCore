@@ -201,7 +201,7 @@ local function MAGMADAR_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "MAGMADAR", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "MAGMADAR", "ENGAGE", 30)
         MagmadarEncounter.Active = true
         return true
     end
@@ -214,7 +214,7 @@ end
 --[####################################################################################################]--
 
 function MAGMADAR:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "MAGMADAR" then
+    if arg1 == getRaidId() .. "MAGMADAR" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Magmadar! <<")
             self:OnEnable()
@@ -227,7 +227,7 @@ end
 
 function MAGMADAR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Magmadar dies") and MagmadarEncounter.Active then
-        CdAddonMessage(MB_RAID .. "MAGMADAR", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "MAGMADAR", "DISENGAGE", 30)
     end
 end
 

@@ -234,7 +234,7 @@ local function SKERAM_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "SKERAM", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SKERAM", "ENGAGE", 30)
         SkeramEncounter.Active = true
         return true
     end
@@ -256,12 +256,12 @@ end
 
 local function CheckIfRealDeath()
     if SkeramEncounter.Active and not InCombat() then
-        CdAddonMessage(MB_RAID .. "SKERAM", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SKERAM", "DISENGAGE", 30)
     end
 end
 
 function SKERAM:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "SKERAM" then
+    if arg1 == getRaidId() .. "SKERAM" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Skeram! <<")
             self:OnEnable()

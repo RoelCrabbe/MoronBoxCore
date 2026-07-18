@@ -488,7 +488,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     getSpells().SelfBuff("Last Stand")
                 end
                 getCons().JujuWhenPossible("Juju Escape")
-            elseif getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
+            elseif getRaid().TankTarget("Patchwerk") and getEncountersState().Patchwerk.Active then
                 if targetHP <= 0.05 then BigTANKCooldowns() end
                 getCons().JujuWhenPossible("Juju Escape")
                 getCons().PotionsWhenPossible("Greater Stoneshield Potion")
@@ -502,10 +502,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             elseif getRaid().TankTarget("Chromaggus") and targetHP <= 0.07 and playerHP <= 0.3 then
                 BigTANKCooldowns()
             end
-        elseif Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") and MB_myHuhuranBoxStrategy then
-            if targetHP <= MB_myHuhuranTankDefensivePercentage then BigTANKCooldowns() end
-        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
-            if targetHP <= MB_myOssirianTankDefensivePercentage and playerHP <= 0.3 then
+        elseif Instance.AQ40() and getRaid().TankTarget("Princess Huhuran") and getEncountersState().Huhuran.Active then
+            if targetHP <= getEncountersState().Huhuran.TankDefensivePercentage then BigTANKCooldowns() end
+        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and getEncountersState().Ossirian.Active then
+            if targetHP <= getEncountersState().Ossirian.TankDefensivePercentage and playerHP <= 0.3 then
                 BigTANKCooldowns()
             end
         elseif playerHP <= 0.2 then
@@ -795,10 +795,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         if Instance.NAXX() and getRaid().IsAtNoth() then
             TANKSingleRotation(myRage)
             return
-        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and MB_myVaelastraszBoxStrategy then
+        elseif Instance.BWL() and getRaid().TankTarget("Vaelastrasz the Corrupt") and getEncountersState().Vaelastrasz.Active then
             TANKSingleRotation(myRage)
             return
-        elseif Instance.ONY() and getRaid().TankTarget("Onyxia") and MB_myOnyxiaBoxStrategy then
+        elseif Instance.ONY() and getRaid().TankTarget("Onyxia") and getEncountersState().Onyxia.Active then
             TANKSingleRotation(myRage)
             return
         end

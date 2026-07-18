@@ -210,7 +210,7 @@ function MoronBox.Core.Healing.GetHealSpell()
             getConfigState().HealSpell = "Chain Heal"
             return true
         else
-            if MB_raidAssist.Shaman.DefaultToHealingWave then
+            if getSettingsState().Shaman.DefaultToHealingWave then
                 getConfigState().HealSpell = "Healing Wave"
                 return true
             else
@@ -235,6 +235,10 @@ function MoronBox.Core.Healing.GetHealSpell()
 end
 
 function MoronBox.Core.Healing.NatureSwiftnessLowAggroedPlayer()
+    if not getSettingsState().Shaman.NSLowHealthAggroedPlayers then
+        return false
+    end
+
     if not UnitInRaid("player") then
         return false
     end
@@ -471,23 +475,23 @@ function MoronBox.Core.Healing.HealLieutenantAQ20()
 end
 
 function MoronBox.Core.Healing.TargetMyAssignedTankToHeal()
-    if getApi().FindMyNameInTable(MB_myThreatPWSoakerHealerList) then
-        TargetByName(MB_myThreatPWSoaker)
+    if getApi().FindMyNameInTable(getEncountersState().Patchwerk.ThreatSoakerHealerList) then
+        TargetByName(getEncountersState().Patchwerk.ThreatSoaker)
         return
     end
 
-    if getApi().FindMyNameInTable(MB_myFirstPWSoakerHealerList) then
-        TargetByName(MB_myFirstPWSoaker)
+    if getApi().FindMyNameInTable(getEncountersState().Patchwerk.FirstSoakerHealerList) then
+        TargetByName(getEncountersState().Patchwerk.FirstSoaker)
         return
     end
 
-    if getApi().FindMyNameInTable(MB_mySecondPWSoakerHealerList) then
-        TargetByName(MB_mySecondPWSoaker)
+    if getApi().FindMyNameInTable(getEncountersState().Patchwerk.SecondSoakerHealerList) then
+        TargetByName(getEncountersState().Patchwerk.SecondSoaker)
         return
     end
 
-    if getApi().FindMyNameInTable(MB_myThirdPWSoakerHealerList) then
-        TargetByName(MB_myThirdPWSoaker)
+    if getApi().FindMyNameInTable(getEncountersState().Patchwerk.ThirdSoakerHealerList) then
+        TargetByName(getEncountersState().Patchwerk.ThirdSoaker)
         return
     end
 

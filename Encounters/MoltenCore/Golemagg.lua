@@ -168,7 +168,7 @@ local function GOLEMAGG_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GOLEMAGG", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GOLEMAGG", "ENGAGE", 30)
         GolemaggEncounter.Active = true
         return true
     end
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function GOLEMAGG:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "GOLEMAGG" then
+    if arg1 == getRaidId() .. "GOLEMAGG" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Golemagg! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function GOLEMAGG:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Golemagg the Incinerator dies") and GolemaggEncounter.Active then
-        CdAddonMessage(MB_RAID .. "GOLEMAGG", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GOLEMAGG", "DISENGAGE", 30)
     end
 end
 

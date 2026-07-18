@@ -159,7 +159,7 @@ local function GetHealersOnGarr()
         return true
     end
 
-    CdAddonMessage(MB_RAID .. "GARR", "HEALERS", 30)
+    CdAddonMessage(getRaidId() .. "GARR", "HEALERS", 30)
     return true
 end
 
@@ -239,7 +239,7 @@ local function GARR_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GARR", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GARR", "ENGAGE", 30)
         GarrEncounter.Active = true
         return true
     end
@@ -252,7 +252,7 @@ end
 --[####################################################################################################]--
 
 function GARR:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "GARR" then
+    if arg1 == getRaidId() .. "GARR" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Garr! <<")
             self:OnEnable()
@@ -271,7 +271,7 @@ end
 
 function GARR:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Garr dies") and GarrEncounter.Active then
-        CdAddonMessage(MB_RAID .. "GARR", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GARR", "DISENGAGE", 30)
     end
 end
 

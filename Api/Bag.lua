@@ -160,7 +160,7 @@ end
 local HasAnAtieshEquipped = nil
 
 function MoronBox.Bag.ReEquipAtieshIfNoAtieshBuff()
-    if (myClass == "Warrior" or myClass == "Rogue" or (myClass == "Druid" and MB_raidAssist.Druid.PrioritizePriestsAtieshBuff)) then
+    if (myClass == "Warrior" or myClass == "Rogue" or (myClass == "Druid" and getSettingsState().Priest.PrioritizePriestsAtieshBuff)) then
         return
     end
 

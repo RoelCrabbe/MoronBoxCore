@@ -428,7 +428,7 @@ function MoronBox.Core.Cons.PotionsWhenPossible(potion)
 end
 
 function MoronBox.Core.Cons.FirePotsOnFaerlina()
-    if not MB_myFaerlinaFirePotStrategy then
+    if not getEncountersState().Faerlina.FirePots then
         return
     end
 
@@ -444,7 +444,7 @@ function MoronBox.Core.Cons.FirePotsOnFaerlina()
 end
 
 function MoronBox.Core.Cons.FirePotsOnVaelastrasz()
-    if not MB_myVaelastraszFirePotStrategy then
+    if not getEncountersState().Vaelastrasz.FirePots then
         return
     end
 
@@ -460,7 +460,7 @@ function MoronBox.Core.Cons.FirePotsOnVaelastrasz()
 end
 
 function MoronBox.Core.Cons.NaturePotsOnHuhuran()
-    if not MB_myHuhuranNaturePotStrategy then
+    if not getEncountersState().Huhuran.NaturePots then
         return
     end
 
@@ -561,7 +561,7 @@ local function HealerSpeedRunPots()
 end
 
 function MoronBox.Core.Cons.SpeedRunPots()
-    if not MB_mySpeedRunStrategy then
+    if not getSettingsState().SpeedRunEnabled then
         return
     end
 
@@ -585,7 +585,7 @@ end
 -- [[ Lip & Fap ]] --
 
 function MoronBox.Core.Cons.UseLIP()
-    if not MB_mySpeedRunStrategy then
+    if not getSettingsState().SpeedRunEnabled then
         return
     end
 
@@ -608,7 +608,7 @@ function MoronBox.Core.Cons.UseLIP()
 end
 
 function MoronBox.Core.Cons.UseFAP()
-    if not MB_mySpeedRunStrategy then
+    if not getSettingsState().SpeedRunEnabled then
         return
     end
 

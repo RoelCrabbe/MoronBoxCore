@@ -138,35 +138,35 @@ SlashCmdList["MBLOGOUT"] = function()
 end
 
 SlashCmdList["TANKLIST"] = function(list)
-    getApi().SendAddonMessage(MB_RAID .. "MB_TANKLIST", list)
+    getApi().SendAddonMessage(getRaidId() .. "MB_TANKLIST", list)
 end
 
 SlashCmdList["REPORTMANAPOTS"] = function()
-    getApi().SendAddonMessage(MB_RAID, "MB_REPORTMANAPOTS")
+    getApi().SendAddonMessage(getRaidId(), "MB_REPORTMANAPOTS")
 end
 
 SlashCmdList["REPORTSHARDS"] = function()
-    getApi().SendAddonMessage(MB_RAID, "MB_REPORTSHARDS")
+    getApi().SendAddonMessage(getRaidId(), "MB_REPORTSHARDS")
 end
 
 SlashCmdList["REPORTRUNES"] = function()
-    getApi().SendAddonMessage(MB_RAID, "MB_REPORTRUNES")
+    getApi().SendAddonMessage(getRaidId(), "MB_REPORTRUNES")
 end
 
 SlashCmdList["NEFCLOAK"] = function(item)
-    getApi().SendAddonMessage(MB_RAID, "MB_NEFCLOAK")
+    getApi().SendAddonMessage(getRaidId(), "MB_NEFCLOAK")
 end
 
 SlashCmdList["REMOVEBUFFS"] = function(buff)
-    getApi().SendAddonMessage(MB_RAID .. "MB_REMOVEBUFFS", buff)
+    getApi().SendAddonMessage(getRaidId() .. "MB_REMOVEBUFFS", buff)
 end
 
 SlashCmdList["REMOVEBLESS"] = function(buff)
-    getApi().SendAddonMessage(MB_RAID .. "MB_REMOVEBLESS", buff)
+    getApi().SendAddonMessage(getRaidId() .. "MB_REMOVEBLESS", buff)
 end
 
 SlashCmdList["AQBOOKS"] = function()
-    getApi().SendAddonMessage(MB_RAID, "MB_AQBOOKS")
+    getApi().SendAddonMessage(getRaidId(), "MB_AQBOOKS")
 end
 
 SlashCmdList["INIT"] = function()
@@ -178,9 +178,9 @@ SlashCmdList["DISBAND"] = function()
 end
 
 SlashCmdList["GEAR"] = function(itemSet)
-    getApi().SendAddonMessage(MB_RAID .. "MB_GEAR", itemSet)
+    getApi().SendAddonMessage(getRaidId() .. "MB_GEAR", itemSet)
 end
 
 SlashCmdList["ASSIGNHEALER"] = function(names)
-    getApi().SendAddonMessage(MB_RAID .. "MB_ASSIGNHEALER", names)
+    getApi().SendAddonMessage(getRaidId() .. "MB_ASSIGNHEALER", names)
 end

@@ -171,7 +171,7 @@ local function SHAZZRAH_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "SHAZZRAH", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SHAZZRAH", "ENGAGE", 30)
         ShazzrahEncounter.Active = true
         return true
     end
@@ -242,7 +242,7 @@ end
 --[####################################################################################################]--
 
 function SHAZZRAH:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "SHAZZRAH" then
+    if arg1 == getRaidId() .. "SHAZZRAH" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Shazzrah! <<")
             self:OnEnable()
@@ -255,7 +255,7 @@ end
 
 function SHAZZRAH:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Shazzrah dies") and ShazzrahEncounter.Active then
-        CdAddonMessage(MB_RAID .. "SHAZZRAH", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SHAZZRAH", "DISENGAGE", 30)
     end
 end
 

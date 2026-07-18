@@ -83,7 +83,7 @@ function MoronBox.Core.CrowdControl.AssignCrowdControl()
         local num = getApi().TableLength(list)
 
         if num > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_CC", list[state.CurrentCC[className]])
+            getApi().SendAddonMessage(getRaidId() .. "_CC", list[state.CurrentCC[className]])
 
             if state:CycleCC(className, num) then
                 getApi().CdMessage("ALL " .. string.upper(className) .. "S ASSIGNED, STOP ASSIGNING MORE.")
@@ -148,7 +148,7 @@ function MoronBox.Core.CrowdControl.AssignFear()
     local num_locks = getApi().TableLength(locks)
 
     if num_locks > 0 then
-        getApi().SendAddonMessage(MB_RAID .. "_FEAR", locks[getConfigState().CurrentFear[className]])
+        getApi().SendAddonMessage(getRaidId() .. "_FEAR", locks[getConfigState().CurrentFear[className]])
 
         if getConfigState():CycleFear(className, num_locks) then
             getApi().CdMessage("ALL " .. string.upper(className) .. "S ASSIGNED, STOP ASSIGNING MORE.")
@@ -182,7 +182,7 @@ function MoronBox.Core.CrowdControl.AssignOffTank()
         thisOffTank = tanks[getConfigState().OffTankIndex]
     end
 
-    getApi().SendAddonMessage(MB_RAID .. "_OT", thisOffTank)
+    getApi().SendAddonMessage(getRaidId() .. "_OT", thisOffTank)
 
     if not IsShiftKeyDown() then
         getConfigState().OffTankIndex = getApi().IncrementIndex(getConfigState().OffTankIndex, num_tanks)
@@ -204,7 +204,7 @@ function MoronBox.Core.CrowdControl.AssignInterrupt()
         local num = getApi().TableLength(list)
 
         if num > 0 then
-            getApi().SendAddonMessage(MB_RAID .. "_INT", list[getConfigState().CurrentInterrupt[className]])
+            getApi().SendAddonMessage(getRaidId() .. "_INT", list[getConfigState().CurrentInterrupt[className]])
             getConfigState():CycleInterrupt(className, num)
         end
     end

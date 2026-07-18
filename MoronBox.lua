@@ -29,7 +29,9 @@ MoronBox.Registry = {}          -- Holds the public API tables ("Exposed APIs")
 MoronBox.ModuleNames = {}       -- Holds the list of strings ("Keys")
 
 MoronBox.Settings = {}          -- Custom Config | Tables
-MoronBox.Config = {}            -- Config | Tables
+MoronBox.Config = {}            -- Config
+MoronBox.Config.Tables = {}     -- Tables
+MoronBox.Encounters = {}        -- Encouter config
 
 MoronBox.Debugger = {}          -- Debugger
 MoronBox.Api = {}               -- Extra functions
@@ -254,8 +256,8 @@ MoronBox:SetScript("OnEvent", function()
             getAttack().SetAttackButton()
             getCore().InitializeClasslists()
 
-            if MB_raidAssist.AutoEquipSet.Active then
-                getGear().EquipRackSet(MB_raidAssist.AutoEquipSet.Set)
+            if getSettingsState().AutoEquipSet.Active then
+                getGear().EquipRackSet(getSettingsState().AutoEquipSet.Set)
             end
         end)
 

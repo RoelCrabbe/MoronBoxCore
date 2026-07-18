@@ -162,7 +162,7 @@ local function GetHealersOnGeddon()
         return true
     end
 
-    CdAddonMessage(MB_RAID .. "GEDDON", "HEALERS", 30)
+    CdAddonMessage(getRaidId() .. "GEDDON", "HEALERS", 30)
     return true
 end
 
@@ -245,7 +245,7 @@ local function GEDDON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GEDDON", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GEDDON", "ENGAGE", 30)
         GeddonEncounter.Active = true
         return true
     end
@@ -258,7 +258,7 @@ end
 --[####################################################################################################]--
 
 function GEDDON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "GEDDON" then
+    if arg1 == getRaidId() .. "GEDDON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Geddon! <<")
             self:OnEnable()
@@ -277,7 +277,7 @@ end
 
 function GEDDON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Baron Geddon dies") and GeddonEncounter.Active then
-        CdAddonMessage(MB_RAID .. "GEDDON", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GEDDON", "DISENGAGE", 30)
     end
 end
 

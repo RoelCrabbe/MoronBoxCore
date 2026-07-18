@@ -168,7 +168,7 @@ local function SULFURON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "SULFURON", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SULFURON", "ENGAGE", 30)
         SulfuronEncounter.Active = true
         return true
     end
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function SULFURON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "SULFURON" then
+    if arg1 == getRaidId() .. "SULFURON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Sulfuron! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function SULFURON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Sulfuron Harbinger dies") and SulfuronEncounter.Active then
-        CdAddonMessage(MB_RAID .. "SULFURON", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SULFURON", "DISENGAGE", 30)
     end
 end
 

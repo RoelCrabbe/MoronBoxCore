@@ -186,7 +186,7 @@ local function GEHENNAS_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GEHENNAS", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GEHENNAS", "ENGAGE", 30)
         GehennasEncounter.Active = true
         return true
     end
@@ -199,7 +199,7 @@ end
 --[####################################################################################################]--
 
 function GEHENNAS:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "GEHENNAS" then
+    if arg1 == getRaidId() .. "GEHENNAS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Gehennas! <<")
             self:OnEnable()
@@ -212,7 +212,7 @@ end
 
 function GEHENNAS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Gehennas dies") and GehennasEncounter.Active then
-        CdAddonMessage(MB_RAID .. "GEHENNAS", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GEHENNAS", "DISENGAGE", 30)
     end
 end
 

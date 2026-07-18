@@ -8,8 +8,8 @@ local myClass = UnitClass("player")
 MoronBox:RegisterModule(MODULE_NAME, function()
     local function ChooseAirTotem()
         if Instance.NAXX() then
-            if getRaid().TankTarget("Patchwerk") and MB_myPatchwerkBoxStrategy then
-                if getUnit().IsInGroup(MB_myFirstPWSoaker) or getUnit().IsInGroup(MB_mySecondPWSoaker) or getUnit().IsInGroup(MB_myThirdPWSoaker) then
+            if getRaid().TankTarget("Patchwerk") and getEncountersState().Patchwerk.Active then
+                if getUnit().IsInGroup(getEncountersState().Patchwerk.FirstSoaker) or getUnit().IsInGroup(getEncountersState().Patchwerk.SecondSoaker) or getUnit().IsInGroup(getEncountersState().Patchwerk.ThirdSoaker) then
                     if getCore().MyGroupClassOrder() == 1 then return "Grace of Air Totem" end
                     if getCore().MyGroupClassOrder() == 2 then return "Windfury Totem" end
                 end
@@ -27,8 +27,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 if getCore().MyGroupClassOrder() == 2 then return "Tranquil Air Totem" end
                 if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end
             end
-        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and MB_myOssirianBoxStrategy then
-            if getUnit().IsInGroup(MB_myOssirianMainTank) then
+        elseif Instance.AQ20() and getRaid().TankTarget("Ossirian the Unscarred") and getEncountersState().Ossirian.Active then
+            if getUnit().IsInGroup(getEncountersState().Ossirian.MainTank) then
                 if getCore().MyGroupClassOrder() == 1 then return "Grounding Totem" end
                 if getCore().MyGroupClassOrder() == 2 then return "Grounding Totem" end
                 if getCore().MyGroupClassOrder() == 3 then return "Grace of Air Totem" end

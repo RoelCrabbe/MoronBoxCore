@@ -202,7 +202,7 @@ local function LUCIFRON_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "LUCIFRON", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "LUCIFRON", "ENGAGE", 30)
         LucifronEncounter.Active = true
         return true
     end
@@ -215,7 +215,7 @@ end
 --[####################################################################################################]--
 
 function LUCIFRON:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "LUCIFRON" then
+    if arg1 == getRaidId() .. "LUCIFRON" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Lucifron! <<")
             self:OnEnable()
@@ -228,7 +228,7 @@ end
 
 function LUCIFRON:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Lucifron dies") and LucifronEncounter.Active then
-        CdAddonMessage(MB_RAID .. "LUCIFRON", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "LUCIFRON", "DISENGAGE", 30)
     end
 end
 

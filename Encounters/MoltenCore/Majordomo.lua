@@ -178,7 +178,7 @@ local function MAJORDOMO_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "MAJORDOMO", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "MAJORDOMO", "ENGAGE", 30)
         MajordomoEncounter.Active = true
         return true
     end
@@ -191,7 +191,7 @@ end
 --[####################################################################################################]--
 
 function MAJORDOMO:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "MAJORDOMO" then
+    if arg1 == getRaidId() .. "MAJORDOMO" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Majordomo! <<")
             self:OnEnable()
@@ -204,7 +204,7 @@ end
 
 function MAJORDOMO:CHAT_MSG_MONSTER_YELL()
     if string.find(arg1, "I go now to summon the lord whose house this is") and MajordomoEncounter.Active then
-        CdAddonMessage(MB_RAID .. "MAJORDOMO", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "MAJORDOMO", "DISENGAGE", 30)
     end
 end
 

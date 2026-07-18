@@ -189,7 +189,7 @@ function GROB_IsAtGrobbulus()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GROBBULUS", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GROBBULUS", "ENGAGE", 30)
         GROB_ACTIVE = true
         return true
     end
@@ -203,11 +203,11 @@ end
 
 function GROB:OnEvent()
     if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID .. "GROBBULUS_EMERGENCY") then
+        if (arg1 == getRaidId() .. "GROBBULUS_EMERGENCY") then
             if (arg2 == "PRIEST_OOR") then
                 CdRaidWarning(">> Priest Out of Range! <<")
             end
-        elseif (arg1 == MB_RAID .. "GROBBULUS") then
+        elseif (arg1 == getRaidId() .. "GROBBULUS") then
             if (arg2 == "ENGAGE") then
                 GROB_ACTIVE = true
             end
@@ -249,7 +249,7 @@ function GROB_Decurse()
     end
 
     if not UnitInRange(targetId) then
-        CdAddonMessage(MB_RAID .. "GROBBULUS_EMERGENCY", "PRIEST_OOR")
+        CdAddonMessage(getRaidId() .. "GROBBULUS_EMERGENCY", "PRIEST_OOR")
         return false
     end
 

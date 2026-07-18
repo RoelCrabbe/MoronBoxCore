@@ -101,7 +101,7 @@ function MoronBox.Core.InitializeClasslists()
     end
 
     -- [[ Tank Lists ]] --
-    for _, tank in ipairs(MB_tankList) do
+    for _, tank in ipairs(getSettingsState().TankList) do
         local tankId = getCoreState().MBID[tank]
         if tankId then
             local tankClass = UnitClass(tankId)

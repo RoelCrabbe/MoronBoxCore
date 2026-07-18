@@ -245,11 +245,11 @@ local function GetClosestMainTankForSide()
 
     local offTankId = getCoreState().MBID[data.off]
     if offTankId and UnitInRange(offTankId) then
-        CdAddonMessage(MB_RAID .. "THADDIUS_TRANSITION", data.off)
+        CdAddonMessage(getRaidId() .. "THADDIUS_TRANSITION", data.off)
         return offTankId
     end
 
-    CdAddonMessage(MB_RAID .. "THADDIUS_EMERGENCY", data.side)
+    CdAddonMessage(getRaidId() .. "THADDIUS_EMERGENCY", data.side)
     return false
 end
 
@@ -272,7 +272,7 @@ local function CheckThaddiusHealersSlowFall()
             end
         end
 
-        CdAddonMessage(MB_RAID .. "THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
+        CdAddonMessage(getRaidId() .. "THADDIUS_HEALERS_SLOWFALL", "ALL_READY", 500)
         return true
     end
 end
@@ -396,7 +396,7 @@ function THAD_IsAtThaddiusP1()
     end
 
     if inP1 then
-        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "THADDIUS_PHASE1", "ENGAGE", 30)
         THAD_PHASE_1_ACTIVE = true
         return true
     end
@@ -430,7 +430,7 @@ function THAD_IsAtThaddiusP2()
     end
 
     if inP2 then
-        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "THADDIUS_PHASE2", "ENGAGE", 30)
         THAD_PHASE_2_ACTIVE = true
         return true
     end
@@ -444,15 +444,15 @@ end
 
 function THAD:OnEvent()
     if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID .. "THADDIUS_EMERGENCY") then
+        if (arg1 == getRaidId() .. "THADDIUS_EMERGENCY") then
             CdRaidWarning(">> " .. arg2 .. " Side Tank Emergency! <<")
-        elseif (arg1 == MB_RAID .. "THADDIUS_TRANSITION") then
+        elseif (arg1 == getRaidId() .. "THADDIUS_TRANSITION") then
             CdRaidWarning(">> " .. arg2 .. " Is Follow Tank! <<")
-        elseif (arg1 == MB_RAID .. "THADDIUS_HEALERS_SLOWFALL") then
+        elseif (arg1 == getRaidId() .. "THADDIUS_HEALERS_SLOWFALL") then
             if (arg2 == "ALL_READY") then
                 CdRaidWarning(">> All Thaddius Healers Have Slow Fall! <<")
             end
-        elseif (arg1 == MB_RAID .. "THADDIUS_PHASE1") then
+        elseif (arg1 == getRaidId() .. "THADDIUS_PHASE1") then
             if (arg2 == "ENGAGE") then
                 CdRaidWarning(">> Thaddius Phase 1! <<")
                 THAD_PHASE_1_ACTIVE = true
@@ -463,7 +463,7 @@ function THAD:OnEvent()
                 CdRaidWarning(">> NUKE PLATFORM <<")
                 THAD_EnablePolaritySystem()
             end
-        elseif (arg1 == MB_RAID .. "THADDIUS_PHASE2") then
+        elseif (arg1 == getRaidId() .. "THADDIUS_PHASE2") then
             if (arg2 == "ENGAGE") then
                 CdRaidWarning(">> Thaddius Phase 2 - Position Casters! <<")
                 THAD_PHASE_1_ACTIVE = false
@@ -534,9 +534,9 @@ local function CheckPlatformPhase(tName)
     end
 
     if tName == assignment.self and HealthPct("target") <= 0.1 then
-        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
+        CdAddonMessage(getRaidId() .. "THADDIUS_PHASE1", "NUKE_PLATFORM", 30)
     elseif tName == assignment.other and HealthPct("target") <= 0.1 then
-        CdAddonMessage(MB_RAID .. "THADDIUS_PHASE1", "AWAIT_NUKE", 30)
+        CdAddonMessage(getRaidId() .. "THADDIUS_PHASE1", "AWAIT_NUKE", 30)
     end
 end
 
@@ -779,7 +779,7 @@ local function ApplySecondaryBind()
             -- Change keybinds, to move away.
             PolarityState.Position = "AWAY"
             SetBinding("SHIFT-W", NEGATIVE_KEYBINDS[platform])
-            CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
+            CdAddonMessage(getRaidId() .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not returning, reset keybinds
             -- ALso includes if we are already away, reset keybinds
@@ -791,7 +791,7 @@ local function ApplySecondaryBind()
             -- Change keybinds, to return.
             PolarityState.Position = "RETURNING"
             SetBinding("SHIFT-W", POSITIVE_KEYBINDS[platform])
-            CdAddonMessage(MB_RAID .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
+            CdAddonMessage(getRaidId() .. "THADDIUS_PHASE2", "POLARITY_MOVE", 10)
         else
             -- Only when we ARE not away, reset keybinds
             -- ALso includes if we are already returning, reset keybinds

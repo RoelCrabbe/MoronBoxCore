@@ -399,7 +399,7 @@ function MoronBox.Core.Buffs.CreateHandlers(buffConfig)
 
     -- Generates a standardized addon communication prefix.
     handlers.GetPrefix = function(name)
-        return MB_RAID .. "_" .. name .. "_" .. buffConfig.AddonPrefix
+        return getRaidId() .. "_" .. name .. "_" .. buffConfig.AddonPrefix
     end
 
     -- Sends an addon message using the predefined cooldown API.
