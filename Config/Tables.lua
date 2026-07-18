@@ -21,7 +21,7 @@ end
 -- [[ Boss Mechanics ]] --
 
 -- Recklessness Usage Thresholds
-local RecklessnessTargetsSet = {
+local RecklessnessTargetsSet      = {
     ["Patchwerk"] = 0.19,
     ["Maexxna"] = 0.19,
     ["Loatheb"] = 0.19,
@@ -37,7 +37,7 @@ local RecklessnessTargetsSet = {
 }
 
 -- Bandage Usage by Class
-local BandageBossesForWarlock = {
+local BandageBossesForWarlock     = {
     ["Patchwerk"] = true,
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
@@ -45,7 +45,7 @@ local BandageBossesForWarlock = {
     ["Highlord Alexandros Mograine"] = true
 }
 
-local BandageBossesForMage = {
+local BandageBossesForMage        = {
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
     ["Thane Korth\'azz"] = true,
@@ -60,7 +60,7 @@ local BossToNeverInterruptHealSet = {
 }
 
 -- Tranquilizing Shot Targets
-local UseTranquilizingShotSet = {
+local UseTranquilizingShotSet     = {
     ["Gluth"] = true,
     ["Princess Huhuran"] = true,
     ["Flamegor"] = true,
@@ -71,7 +71,7 @@ local UseTranquilizingShotSet = {
 -- [[ Combat ]] --
 
 -- Debuff Restrictions
-local MobsNoCursesSet = {
+local MobsNoCursesSet             = {
     ["Blackwing Mage"] = true,
     ["Blackwing Legionnaire"] = true,
     ["Corrupted Green Whelp"] = true,
@@ -83,7 +83,7 @@ local MobsNoCursesSet = {
     ["Plagued Bat"] = true
 }
 
-local MobsNoSundersSet = {
+local MobsNoSundersSet            = {
     ["Blackwing Mage"] = true,
     ["Blackwing Legionnaire"] = true,
     ["Death Talon Dragonspawn"] = true,
@@ -99,7 +99,7 @@ local MobsNoSundersSet = {
 }
 
 -- Blood Fury Blacklist
-local UseBloodFuryBlacklistSet = {
+local UseBloodFuryBlacklistSet    = {
     ["Shade of Naxxramas"] = true,
     ["Necro Knight"] = true,
     ["Stoneskin Gargoyle"] = true,
@@ -116,7 +116,7 @@ local UseBloodFuryBlacklistSet = {
 }
 
 -- Excluded Whirlwind Targets
-local ExcludedTargetsSet = {
+local ExcludedTargetsSet          = {
     ["Emperor Vek'lor"] = true,
     ["Emperor Vek'nilash"] = true,
     ["The Prophet Skeram"] = true
@@ -125,7 +125,7 @@ local ExcludedTargetsSet = {
 -- [[ Protective Magic ]] --
 
 -- Ward Requirements
-local MobsToFireWardSet = {
+local MobsToFireWardSet           = {
     ["High Priestess Jeklik"] = true,
     ["Necro Night"] = true,
     ["Grand Widow Faerlina"] = true,
@@ -139,7 +139,7 @@ local MobsToFireWardSet = {
     ["Flame Imp"] = true
 }
 
-local MobsToShadowWardSet = {
+local MobsToShadowWardSet         = {
     ["Death Lord"] = true,
     ["Necropolis Acolyte"] = true,
     ["Deathknight Cavalier"] = true,
@@ -150,7 +150,7 @@ local MobsToShadowWardSet = {
     ["Necro Knight"] = true
 }
 
-local ShadowWardDebuffsSet = {
+local ShadowWardDebuffsSet        = {
     "Corruption",
     "Curse of Agony",
     "Siphon Life",
@@ -162,18 +162,18 @@ local ShadowWardDebuffsSet = {
 }
 
 -- Magic Detection/Manipulation
-local MobsToDetectMagicSet = {
+local MobsToDetectMagicSet        = {
     ["Anubisath Sentinel"] = true,
     ["Anubisath Guardian"] = true,
     ["Anubisath Defender"] = true,
     ["Shazzrah"] = true
 }
 
-local MobsToDampenMagicSet = {
+local MobsToDampenMagicSet        = {
     ["Grethok the Controller"] = true,
 }
 
-local MobsToAmplifyMagicSet = {
+local MobsToAmplifyMagicSet       = {
     ["Patchwerk"] = true,
     ["Noth the Plaguebringer"] = true,
     ["Maexxna"] = true
@@ -182,7 +182,7 @@ local MobsToAmplifyMagicSet = {
 -- [[ Boss Triggers ]] --
 
 -- Auto-Turn Requirements (fear immunity)
-local MobsToAutoTurnSet = {
+local MobsToAutoTurnSet           = {
     ["Magmadar"] = true,
     ["Ancient Core Hound"] = true,
     ["Onyxia"] = true,
@@ -191,7 +191,7 @@ local MobsToAutoTurnSet = {
 }
 
 -- Auto-Break Fear Requirements
-local MobsToAutoBreakFearSet = {
+local MobsToAutoBreakFearSet      = {
     ["Deathknight"] = true,
     ["Princess Yauj"] = true
 }
@@ -199,7 +199,7 @@ local MobsToAutoBreakFearSet = {
 -- [[ Totems ]] --
 
 -- Totem Restrictions
-local MobsNoTotemsSet = {
+local MobsNoTotemsSet             = {
     ["Onyxian Warder"] = true,
     ["Corrupted Green Whelp"] = true,
     ["Corrupted Red Whelp"] = true,
@@ -218,7 +218,7 @@ local MobsNoTotemsSet = {
 }
 
 -- AoE Totem Requirements
-local MobsToAoeTotemSet = {
+local MobsToAoeTotemSet           = {
     ["Plague Beast"] = true,
     ["Mutated Grub"] = true,
     ["Frenzied Bat"] = true,
@@ -236,7 +236,7 @@ local MobsToAoeTotemSet = {
 }
 
 -- Corrupted Totems (enemies)
-local CorruptedTotemsSet = {
+local CorruptedTotemsSet          = {
     ["Corrupted Healing Stream Totem"] = true,
     ["Corrupted Windfury Totem"] = true,
     ["Corrupted Stoneskin Totem"] = true,
@@ -246,7 +246,7 @@ local CorruptedTotemsSet = {
 -- [[ Damage Immune ]] --
 
 -- Fire Immunity
-local FireImmuneSet = {
+local FireImmuneSet               = {
     ["Baron Geddon"] = true,
     ["Flameguard"] = true,
     ["Firewalker"] = true,
@@ -273,7 +273,7 @@ local FireImmuneSet = {
 }
 
 -- Frost Immunity
-local FrostImmuneSet = {
+local FrostImmuneSet              = {
     ["Ras Frostwhisper"] = true,
     ["Frostmaul Giant"] = true,
     ["Ice Thistle Yeti"] = true,
@@ -283,7 +283,7 @@ local FrostImmuneSet = {
 -- [[ Boss Categories ]] --
 
 -- Elemental Boss Categories
-local NatureBossSet = {
+local NatureBossSet               = {
     ["The Nature Boss"] = true,
     ["Princess Yauj"] = true,
     ["Lord Kri"] = true,
@@ -299,7 +299,7 @@ local NatureBossSet = {
     ["Razzashi Adder"] = true
 }
 
-local FireBossSet = {
+local FireBossSet                 = {
     ["The Fire Boss"] = true,
     ["Death Talon Overseer"] = true,
     ["Blackwing Spellbinder"] = true,
@@ -339,7 +339,7 @@ local FireBossSet = {
 }
 
 -- Totem-Specific Boss Categories
-local TremorBossSet = {
+local TremorBossSet               = {
     ["The Termor Boss"] = true,
     ["Magmadar"] = true,
     ["Emeriss"] = true,
@@ -351,12 +351,12 @@ local TremorBossSet = {
     ["Onyxia"] = true
 }
 
-local GroundingBossSet = {
+local GroundingBossSet            = {
     ["The Grounding Boss"] = true,
     ["Ossirian the Unscarred"] = true
 }
 
-local PoisonBossSet = {
+local PoisonBossSet               = {
     ["The Poison Boss"] = true,
     ["Princess Yauj"] = true,
     ["Lord Kri"] = true,
@@ -373,7 +373,7 @@ local PoisonBossSet = {
     ["Razzashi Adder"] = true
 }
 
-local FAPBossSet = {
+local FAPBossSet                  = {
     ["Gehennas"] = true,
     ["Flamewaker"] = true,
     ["Lava Elemental"] = true
@@ -382,7 +382,7 @@ local FAPBossSet = {
 -- [[ NPCs ]] --
 
 -- Vendor Categories
-local ReagentVendorsSet = {
+local ReagentVendorsSet           = {
     ["Khur Hornstriker"] = true,
     ["Barim Jurgenstaad"] = true,
     ["Rekkul"] = true,
@@ -393,6 +393,44 @@ local ReagentVendorsSet = {
     ["Thomas Mordan"] = true,
     ["Reagents"] = true,
     ["Consumables"] = true
+}
+
+-- [[ Region ]] --
+Instance                          = {
+    NAXX        = function()
+        return GetRealZoneText() == "Naxxramas"
+    end,
+    AQ40        = function()
+        return GetRealZoneText() == "Ahn\'Qiraj"
+    end,
+    AQ20        = function()
+        return GetRealZoneText() == "Ruins of Ahn\'Qiraj"
+    end,
+    MC          = function()
+        return GetRealZoneText() == "Molten Core"
+    end,
+    BWL         = function()
+        return GetRealZoneText() == "Blackwing Lair"
+    end,
+    ONY         = function()
+        return GetRealZoneText() == "Onyxia\'s Lair"
+    end,
+    ZG          = function()
+        return GetRealZoneText() == "Zul\'Gurub"
+    end,
+    IsWorldBoss = function()
+        return UnitClassification("target") == "worldboss"
+    end,
+    IsInRaid    = function(self)
+        return self.NAXX() or self.AQ40() or self.AQ20()
+            or self.MC() or self.BWL() or self.ONY() or self.ZG()
+    end
+}
+
+Faction                           = {
+    IsHorde = function()
+        return UnitFactionGroup("player") == "Horde"
+    end
 }
 
 -- [[ Functions ]] --

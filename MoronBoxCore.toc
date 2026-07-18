@@ -13,11 +13,6 @@
 
 MoronBox.lua
 
-Config\Config.lua
-Config\Encounters.lua
-
-Global\Rotation.lua
-
 Encounters\MoltenCore\Lucifron.lua
 Encounters\MoltenCore\Magmadar.lua
 Encounters\MoltenCore\Gehennas.lua

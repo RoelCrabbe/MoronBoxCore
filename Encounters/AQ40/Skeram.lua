@@ -420,14 +420,17 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local PriestCounter = {
+local MB_buffingCounterPriest = 1
+local MB_buffingCounterMage   = 1
+
+local PriestCounter           = {
     Cycle = function()
         MB_buffingCounterPriest = (MB_buffingCounterPriest >= getApi().TableLength(getCoreState().ClassList["Priest"]))
             and 1 or (MB_buffingCounterPriest + 1)
     end
 }
 
-local MageCounter = {
+local MageCounter             = {
     Cycle = function()
         MB_buffingCounterMage = (MB_buffingCounterMage >= getApi().TableLength(getCoreState().ClassList["Mage"]))
             and 1 or (MB_buffingCounterMage + 1)

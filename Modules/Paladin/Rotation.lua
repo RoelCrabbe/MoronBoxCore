@@ -8,10 +8,12 @@ local myClass = UnitClass("player")
 local myRace = UnitRace("player")
 
 MoronBox:RegisterModule(MODULE_NAME, function()
+    local PaladinStunNr = 1
+
     local PaladinCounter = {
         Cycle = function()
-            MB_buffingCounterPaladin = (MB_buffingCounterPaladin >= getApi().TableLength(getCoreState().ClassList["Paladin"]))
-                and 1 or (MB_buffingCounterPaladin + 1)
+            PaladinStunNr = (PaladinStunNr >= getApi().TableLength(getCoreState().ClassList["Paladin"]))
+                and 1 or (PaladinStunNr + 1)
         end
     }
 
@@ -316,7 +318,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 PaladinCounter.Cycle()
             end
 
-            if getCore().MyClassAlphabeticalOrder() == MB_buffingCounterPaladin then
+            if getCore().MyClassAlphabeticalOrder() == PaladinStunNr then
                 if getSpells().IsSpellReady("Hammer of Justice") then
                     getRaid().AssistFocus()
                     CastSpellByName("Hammer of Justice")
