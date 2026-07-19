@@ -321,7 +321,7 @@ function MoronBox.Api.sPairs(t, order)
     local size
 
     for k in pairs(t) do
-        size = MoronBox.Api.TableLength(keys)
+        size = getApi().ArrayLength(keys)
         keys[size + 1] = k
     end
 

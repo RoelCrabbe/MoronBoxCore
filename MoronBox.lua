@@ -238,30 +238,101 @@ function MoronBox.QueueFunction(a1, a2, a3, a4, a5, a6, a7, a8, a9)
     queueTimer:Show()
 end
 
+--- @class MoronBoxDelayTimer : Frame
+--- @field steps table
+--- @field index number
+--- @field timer number
+--- @field delay number
+
+--- Executes a list of functions sequentially with a specific time delay
+--- between each step, using an OnUpdate ticker.
+--- @param funcList table: A list (array) of functions to call in order.
+--- @param delay number|nil: The delay in seconds between steps (defaults to 0.1).
+function MoronBox.DelayExecutionOrder(funcList, delay)
+    local frame = CreateFrame("Frame") --[[@as MoronBoxDelayTimer]]
+    frame.steps = funcList
+    frame.index = 1
+    frame.timer = 0
+    frame.delay = delay or TOOLTIP_UPDATE_TIME
+
+    frame:SetScript("OnUpdate", function()
+        this.timer = this.timer + arg1
+        if this.timer >= this.delay then
+            this.timer = 0
+            if this.steps[this.index] then
+                this.steps[this.index]()
+                this.index = this.index + 1
+            else
+                this:Hide()
+            end
+        end
+    end)
+end
+
+--- @class MoronBoxSequencer : Frame
+--- @field timer number
+--- @field delay number
+--- @field maxRetries number
+--- @field retries number
+
+--- Executes a function repeatedly until the GossipFrame is closed or retries are exhausted.
+--- @param func function: The logic to execute.
+--- @param delay number|nil: The delay in seconds (defaults to 0.3).
+function MoronBox.ExecuteSequenced(func, delay)
+    local frame = CreateFrame("Frame") --[[@as MoronBoxSequencer]]
+    frame.timer = 0
+    frame.delay = delay or TOOLTIP_UPDATE_TIME
+    frame.maxRetries = 10
+    frame.retries = 0
+
+    frame:SetScript("OnUpdate", function()
+        local f = this --[[@as MoronBoxSequencer]]
+
+        f.timer = f.timer + arg1
+
+        if f.timer >= f.delay then
+            f.timer = 0
+            f.retries = f.retries + 1
+
+            func()
+
+            if not GossipFrame:IsShown() then
+                f:Hide()
+            elseif f.retries >= f.maxRetries then
+                f:Hide()
+            end
+        end
+    end)
+end
+
 MoronBox:SetScript("OnEvent", function()
     -- Only act when our specific addon is fully loaded by the client
     if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
         MoronBox:UpdateModules()
-
-        MoronBox.QueueFunction(function()
-            DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by |r|cffC71585MoroN.", 1, 1,
-                1)
-            DEFAULT_CHAT_FRAME:AddMessage(
-                "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
-
-            UIErrorsFrame:Hide()
-
-            getCore().GetMySpecc()
-            getHealing().GetHealSpell()
-            getAttack().SetAttackButton()
-            getCore().InitializeClasslists()
-
-            if getSettingsState().AutoEquipSet.Active then
-                getGear().EquipRackSet(getSettingsState().AutoEquipSet.Set)
-            end
-        end)
-
         MoronBox.BootUp = nil
+
+        MoronBox.DelayExecutionOrder({
+            -- Task 1
+            getCore().GetMySpecc,
+            getHealing().GetHealSpell,
+            getAttack().SetAttackButton,
+            getCore().InitializeClasslists,
+
+            function()
+                if getSettingsState().AutoEquipSet.Active then
+                    getGear().EquipRackSet(getSettingsState().AutoEquipSet.Set)
+                end
+            end,
+
+            -- Task 2
+            function()
+                DEFAULT_CHAT_FRAME:AddMessage("|cffFF8000Welcome to MoronBox! |cffffffffCreated by |r|cffDA70D6MoroN.", 1,
+                    1, 1)
+                DEFAULT_CHAT_FRAME:AddMessage(
+                    "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
+                UIErrorsFrame:Hide()
+            end
+        }, 0.25)
     elseif event == "PLAYER_LOGIN" then
         getCore().GetMySpecc()
         getCore().InitializeClasslists()

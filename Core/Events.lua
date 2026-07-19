@@ -2,11 +2,6 @@
 
 local TradeWindowOpen       = { Active = false, Time = 0 }
 local AutoBuyReagents       = { Active = false, Time = 0 }
-local DarkmoonFaire         = { Active = false, Time = 0 }
-local MoltenCoreTeleport    = { Active = false, Time = 0 }
-local TalkToMajordomo       = { Active = false, Time = 0 }
-local TalkToWorldBuffMan    = { Active = false, Time = 0 }
-local TalkToTeleportMan     = { Active = false, Time = 0 }
 
 -- [[ Local Helpers ]] --
 local Original_TakeTaxiNode = TakeTaxiNode
@@ -193,30 +188,66 @@ EventFrame:SetScript("OnEvent", function()
         local time = GetTime()
 
         if tName == "Sayge" then
-            DarkmoonFaire.Active = true
-            DarkmoonFaire.Time = time + 0.2
+            MoronBox.ExecuteSequenced(function()
+                local option1, _, option2 = GetGossipOptions()
+                if not option1 then return end
+
+                if getCore().ImHealer() then
+                    if option1 == "Yes" then
+                        SelectGossipOption(1)
+                    elseif option2 == "Turn him over to liege" or option2 == "Show not so quiet defiance" then
+                        SelectGossipOption(2)
+                    end
+                elseif option1 == "Yes" or option1 == "Slay the Man" or option1 == "Execute your friend" then
+                    SelectGossipOption(1)
+                end
+            end)
         elseif tName == "Lothos Riftwaker" then
-            MoltenCoreTeleport.Active = true
-            MoltenCoreTeleport.Time = time + 0.2
+            MoronBox.ExecuteSequenced(function()
+                local option1 = GetGossipOptions()
+                if not option1 then return end
+
+                if option1 == "Teleport me to the Molten Core" then
+                    SelectGossipOption(1)
+                end
+            end)
         elseif tName == "Teleportman" then
-            TalkToTeleportMan.Active = true
-            TalkToTeleportMan.Time = time + 0.2
+            MoronBox.ExecuteSequenced(function()
+                local _, _, _, _, option3, _, option4 = GetGossipOptions()
+                if not option3 then return end
+
+                if option4 == "Raids" then
+                    SelectGossipOption(4)
+                elseif option3 == "Molten Core" then
+                    SelectGossipOption(3)
+                end
+            end)
         elseif tName == "WorldBuffs" then
-            TalkToWorldBuffMan.Active = true
-            TalkToWorldBuffMan.Time = time + 0.2
+            MoronBox.ExecuteSequenced(function()
+                local option1, _, option2 = GetGossipOptions()
+                if not option1 then return end
+
+                if getSettingsState().SteroidWorlBuffs then
+                    if option2 == "Steroid WorldBuffs" then
+                        SelectGossipOption(2)
+                    end
+                else
+                    if option1 == "Normal WorldBuffs" then
+                        SelectGossipOption(1)
+                    end
+                end
+            end)
         elseif tName == "Majordomo Executus" then
-            TalkToMajordomo.Active = true
-            TalkToMajordomo.Time = time + 0.2
+            MoronBox.ExecuteSequenced(function()
+                if GetGossipOptions() then
+                    SelectGossipOption(1)
+                end
+            end, 0.5)
         elseif getTables().ReagentVendors() then
             AutoBuyReagents.Active = true
             AutoBuyReagents.Time = time + 0.2
         end
     elseif event == "GOSSIP_CLOSED" then
-        DarkmoonFaire.Active = false
-        MoltenCoreTeleport.Active = false
-        TalkToTeleportMan.Active = false
-        TalkToWorldBuffMan.Active = false
-        TalkToMajordomo.Active = false
         AutoBuyReagents.Active = false
     elseif event == "MERCHANT_SHOW" then
         local tName = UnitName("target")
@@ -232,31 +263,11 @@ EventFrame:SetScript("OnEvent", function()
             end
         end
 
-        if tName == "Sayge" then
-            DarkmoonFaire.Active = true
-            DarkmoonFaire.Time = time + 0.2
-        elseif tName == "Lothos Riftwaker" then
-            MoltenCoreTeleport.Active = true
-            MoltenCoreTeleport.Time = time + 0.2
-        elseif tName == "Teleportman" then
-            TalkToTeleportMan.Active = true
-            TalkToTeleportMan.Time = time + 0.2
-        elseif tName == "WorldBuffs" then
-            TalkToWorldBuffMan.Active = true
-            TalkToWorldBuffMan.Time = time + 0.2
-        elseif tName == "Majordomo Executus" then
-            TalkToMajordomo.Active = true
-            TalkToMajordomo.Time = time + 0.2
-        elseif getTables().ReagentVendors() then
+        if getTables().ReagentVendors() then
             AutoBuyReagents.Active = true
             AutoBuyReagents.Time = time + 0.2
         end
     elseif event == "MERCHANT_CLOSED" then
-        DarkmoonFaire.Active = false
-        MoltenCoreTeleport.Active = false
-        TalkToTeleportMan.Active = false
-        TalkToWorldBuffMan.Active = false
-        TalkToMajordomo.Active = false
         AutoBuyReagents.Active = false
     elseif event == "TRADE_SHOW" then
         getConfigState().TradeOpen = true
@@ -589,7 +600,7 @@ end)
 EventFrame:SetScript("OnUpdate", function()
     local currentTime = GetTime()
 
-    if TradeWindowOpen.Active and GetTime() > TradeWindowOpen.Time then
+    if TradeWindowOpen.Active and currentTime > TradeWindowOpen.Time then
         for i = 0, 6 do
             for _, item in pairs(ItemToAutoTrade) do
                 if getConfigState().TradeOpen and GetTradeTargetItemLink(i) and string.find(GetTradeTargetItemLink(i), item) then
@@ -608,63 +619,6 @@ EventFrame:SetScript("OnUpdate", function()
     if AutoBuyReagents.Active and currentTime > AutoBuyReagents.Time then
         getCons().BuyReagentsAndConsumables()
         AutoBuyReagents.Active = false
-    end
-
-    if DarkmoonFaire.Active and currentTime > DarkmoonFaire.Time then
-        DarkmoonFaire.Active = false
-        local option1, _, option2 = GetGossipOptions()
-
-        if getCore().ImHealer() then
-            if option1 == "Yes" then
-                SelectGossipOption(1)
-            elseif option2 == "Turn him over to liege" or option2 == "Show not so quiet defiance" then
-                SelectGossipOption(2)
-            end
-        elseif option1 == "Yes" or option1 == "Slay the Man" or option1 == "Execute your friend" then
-            SelectGossipOption(1)
-        end
-    end
-
-    if MoltenCoreTeleport.Active and currentTime > MoltenCoreTeleport.Time then
-        MoltenCoreTeleport.Active = false
-
-        if GetGossipOptions() == "Teleport me to the Molten Core" then
-            SelectGossipOption(1)
-        end
-    end
-
-    if TalkToMajordomo.Active and currentTime > TalkToMajordomo.Time then
-        TalkToMajordomo.Active = false
-
-        if GetGossipOptions() then
-            SelectGossipOption(1)
-        end
-    end
-
-    if TalkToWorldBuffMan.Active and currentTime > TalkToWorldBuffMan.Time then
-        TalkToWorldBuffMan.Active = false
-        local option1, _, option2 = GetGossipOptions()
-
-        if getSettingsState().SteroidWorlBuffs then
-            if option2 == "Steroid WorldBuffs" then
-                SelectGossipOption(2)
-            end
-        else
-            if option1 == "Normal WorldBuffs" then
-                SelectGossipOption(1)
-            end
-        end
-    end
-
-    if TalkToTeleportMan.Active and currentTime > TalkToTeleportMan.Time then
-        TalkToTeleportMan.Active = false
-        local _, _, _, _, option3, _, option4 = GetGossipOptions()
-
-        if option4 == "Raids" then
-            SelectGossipOption(4)
-        elseif option3 == "Molten Core" then
-            SelectGossipOption(3)
-        end
     end
 
     if getConfigState().HunterFeign.Active and currentTime > getConfigState().HunterFeign.Time then
