@@ -7,6 +7,9 @@ local BOSS_KEY = "Majordomo Executus"
 local ENCOUNTER_KEY = string.upper(string.gsub(BOSS_KEY, " ", "_"))
 local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
+-- Initalize
+MoronBox.Core.Bosses.Majordomo = MoronBox.Core.Bosses.Majordomo or {}
+
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
     local FirePotsStrategy = true

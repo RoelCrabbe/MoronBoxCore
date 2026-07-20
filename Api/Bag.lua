@@ -90,10 +90,12 @@ function MoronBox.Bag.HasItem(itemName)
 
     for bag = 0, 4 do
         for slot = 1, GetContainerNumSlots(bag) do
-            local _, itemCount, _, _, _, _, link = GetContainerItemInfo(bag, slot)
-
-            if link and string.find(link, itemName) then
-                count = count + (itemCount or 1)
+            local texture, itemCount = GetContainerItemInfo(bag, slot)
+            if texture then
+                link = GetContainerItemLink(bag, slot)
+                if link and string.find(link, itemName) then
+                    count = count + (itemCount or 1)
+                end
             end
         end
     end

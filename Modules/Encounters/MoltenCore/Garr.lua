@@ -1,5 +1,6 @@
 -- [[ Garr Bossing Logic ]] --
 
+
 -- Bossname
 local BOSS_KEY = "Garr"
 
@@ -9,6 +10,9 @@ local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
 -- Helpers
 local myName = UnitName("player")
+
+-- Initalize
+MoronBox.Core.Bosses.Garr = MoronBox.Core.Bosses.Garr or {}
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true

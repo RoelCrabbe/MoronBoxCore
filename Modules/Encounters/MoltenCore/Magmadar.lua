@@ -7,6 +7,9 @@ local BOSS_KEY = "Magmadar"
 local ENCOUNTER_KEY = string.upper(string.gsub(BOSS_KEY, " ", "_"))
 local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
+-- Initalize
+MoronBox.Core.Bosses.Magmadar = MoronBox.Core.Bosses.Magmadar or {}
+
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
     local FirePotsStrategy = true

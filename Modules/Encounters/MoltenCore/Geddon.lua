@@ -1,5 +1,6 @@
 -- [[ Geddon Bossing Logic ]] --
 
+
 -- Bossname
 local BOSS_KEY = "Baron Geddon"
 
@@ -9,6 +10,9 @@ local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
 -- Helpers
 local myName = UnitName("player")
+
+-- Initalize
+MoronBox.Core.Bosses.Geddon = MoronBox.Core.Bosses.Geddon or {}
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true

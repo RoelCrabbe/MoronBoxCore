@@ -10,6 +10,9 @@ local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 -- Helper values
 local myClass = UnitClass("player")
 
+-- Initalize
+MoronBox.Core.Bosses.Shazzrah = MoronBox.Core.Bosses.Shazzrah or {}
+
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
     local ArcanePotsStrategy = true
