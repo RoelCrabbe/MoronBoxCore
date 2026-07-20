@@ -343,6 +343,7 @@ MoronBox:SetScript("OnEvent", function()
         getCore().InitializeClasslists()
         MoronBox:UpdateModules()
     elseif event == "ZONE_CHANGED_NEW_AREA" then
-        print("I enter something")
+        -- TODO: Only zone based modules need to reload
+        MoronBox:UpdateModules()
     end
 end)
