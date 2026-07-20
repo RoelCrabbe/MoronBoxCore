@@ -775,6 +775,26 @@ local function HandleBWLTargetingPreFocus()
     return false
 end
 
+local function HandleMCTargetingPreFocus()
+    if getBosses().Lucifron.TargetingPostFocus() then
+        return true
+    end
+
+    if getBosses().Magmadar.TargetingPostFocus() then
+        return true
+    end
+
+    if getBosses().Gehennas.TargetingPreFocus() then
+        return true
+    end
+
+    if getBosses().Shazzrah.TargetingPreFocus() then
+        return true
+    end
+
+    return false
+end
+
 local function HandleNAXXTargetingPostFocus()
     local tName = UnitName("target")
 
@@ -1262,6 +1282,10 @@ function MoronBox.Core.Raid.GetTarget()
         end
     elseif Instance.BWL() and getRaid().IsAtRazorgore() and getEncountersState().Razorgore.Active then
         if HandleBWLTargetingPreFocus() then
+            return
+        end
+    elseif Instance.MC() then
+        if HandleMCTargetingPreFocus() then
             return
         end
     end

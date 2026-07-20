@@ -28,6 +28,22 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local TargetNearestDistanceChanged = false
 
     MoronBox:RegisterExpose({
+        TargetingPreFocus = function()
+            if not BoxStrategy then
+                return false
+            end
+
+            if not getBosses().IsActive(ENCOUNTER_KEY) then
+                return false
+            end
+
+            if not getRaid().ImFocus() then
+                return false
+            end
+
+            getBosses().ExecuteActive(ENCOUNTER_KEY)
+            return true
+        end,
         TargetingPostFocus = function()
             if not BoxStrategy then
                 return false
@@ -57,6 +73,12 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 end, function()
     return Instance.MC()
 end)
+
+function MoronBox.Core.Bosses.Magmadar.TargetingPreFocus()
+    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPreFocus then
+        return MoronBox.Registry[MODULE_NAME].TargetingPreFocus()
+    end
+end
 
 function MoronBox.Core.Bosses.Magmadar.TargetingPostFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPostFocus then
