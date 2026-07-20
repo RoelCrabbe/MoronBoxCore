@@ -548,8 +548,6 @@ EventFrame:SetScript("OnEvent", function()
             getReport().Runes()
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        getConfigState().TrackCooldowns = {}
-
         if getConfigState().AssignedHealTarget ~= nil then
             local resetTime = 1
             local currentTarget = getConfigState().AssignedHealTarget
@@ -566,6 +564,8 @@ EventFrame:SetScript("OnEvent", function()
                 end
             }, resetTime)
         end
+
+        getConfigState().TrackCooldowns         = {}
 
         getConfigState().OffTankIndex           = 1
         getConfigState().OffTankTarget          = nil
