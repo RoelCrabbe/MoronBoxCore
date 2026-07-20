@@ -290,7 +290,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if Instance.BWL() and getTables().CorruptedTotems() and not getUnit().Dead("target") then
+        if Instance.BWL() and getTables().CorruptedTotems() and not getUnit().IsDead("target") then
             if getSpells().IsSpellReady("Fireblast") then
                 CastSpellByName("Fire Blast")
             end
@@ -320,7 +320,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         if Instance.ZG() then
             if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do"
-                and not getUnit().Dead("target") then
+                and not getUnit().IsDead("target") then
                 if getSpells().IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end
@@ -329,7 +329,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
 
-            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().Dead("target") then
+            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().IsDead("target") then
                 if getSpells().IsSpellReady("Fire Blast") then
                     CastSpellByName("Fire Blast")
                 end

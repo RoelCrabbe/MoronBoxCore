@@ -38,7 +38,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(getEncountersState().Vaelastrasz.PriestHealers) do
             local id = getCoreState().MBID[name]
-            if id and not getUnit().Dead(id) then
+            if id and not getUnit().IsDead(id) then
                 return name
             end
         end
@@ -113,7 +113,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
         for i = 1, GetNumPartyMembers() do
             local unit = "party" .. i
-            if not getUnit().Dead(unit) and getUnit().In28YardRange(unit) then
+            if not getUnit().IsDead(unit) and getUnit().In28YardRange(unit) then
                 local guysHurt = UnitHealthMax(unit) - UnitHealth(unit)
                 if guysHurt > hurt then
                     numHurt = numHurt + 1

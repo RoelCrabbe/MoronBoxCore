@@ -26,7 +26,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(getEncountersState().Vaelastrasz.PaladinHealers) do
             local id = getCoreState().MBID[name]
-            if id and not getUnit().Dead(id) then
+            if id and not getUnit().IsDead(id) then
                 return name
             end
         end

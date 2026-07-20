@@ -308,7 +308,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
-        if Instance.BWL() and getTables().getTables().CorruptedTotems() and not getUnit().Dead("target") then
+        if Instance.BWL() and getTables().getTables().CorruptedTotems() and not getUnit().IsDead("target") then
             SaveShardShadowburn(12)
             getSpells().CastOrWand("Searing Pain")
             return true
@@ -330,13 +330,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
 
         if Instance.ZG() then
-            if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do" and not getUnit().Dead("target") then
+            if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") and tName == "Shade of Jin'do" and not getUnit().IsDead("target") then
                 SaveShardShadowburn(12)
                 getSpells().CastOrWand("Searing Pain")
                 return true
             end
 
-            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().Dead("target") then
+            if (tName == "Powerful Healing Ward" or tName == "Brain Wash Totem") and not getUnit().IsDead("target") then
                 SaveShardShadowburn(12)
                 getSpells().CastOrWand("Searing Pain")
                 return true

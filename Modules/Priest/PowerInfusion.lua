@@ -118,6 +118,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     ClearTarget()
                 end
 
+                getApi().CdMessage(spellName .. " on " .. UnitName(targetUnitId) .. "!")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()

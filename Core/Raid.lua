@@ -1024,7 +1024,7 @@ local function HandleBWLTargetingPostFocus()
 
         return true
     elseif GetSubZoneText() == "Shadow Wing Lair" then
-        if getConfigState().RaidLeader and getUnit().Dead(getCoreState().MBID[getConfigState().RaidLeader]) then
+        if getConfigState().RaidLeader and getUnit().IsDead(getCoreState().MBID[getConfigState().RaidLeader]) then
             getRaid().LockOnTarget("Vaelastrasz the Corrupt")
             return true
         end
@@ -1038,11 +1038,11 @@ local function HandleMCTargetingPostFocus()
         return true
     end
 
-    if getBosses().Magmadar.TargetingPostFocus()() then
+    if getBosses().Magmadar.TargetingPostFocus() then
         return true
     end
 
-    if getBosses().Gehennas.TargetingPostFocus()() then
+    if getBosses().Gehennas.TargetingPostFocus() then
         return true
     end
 

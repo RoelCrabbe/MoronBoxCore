@@ -191,7 +191,9 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return
             end
 
-            if getCoreState().ClassList[getConfigState().RaidLeader] and not UnitName(getCoreState().ClassList[getConfigState().RaidLeader] .. "target") then
+            local raidLeader = getConfigState().RaidLeader
+            local raidLeaderId = getCoreState().MBID[raidLeader]
+            if raidLeaderId and not UnitName(raidLeaderId .. "target") then
                 return
             end
 

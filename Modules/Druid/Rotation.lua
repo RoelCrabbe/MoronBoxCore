@@ -22,7 +22,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local function GetActiveVaelastraszHealer()
         for _, name in ipairs(getEncountersState().Vaelastrasz.DruidHealers) do
             local id = getCoreState().MBID[name]
-            if id and not getUnit().Dead(id) then
+            if id and not getUnit().IsDead(id) then
                 return name
             end
         end
@@ -155,13 +155,13 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             SARTURA_DruidDPS()
         elseif Instance.ZG() then
             if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
-                if target == "Shade of Jin'do" and not getUnit().Dead("target") then
+                if target == "Shade of Jin'do" and not getUnit().IsDead("target") then
                     getSpells().CastOrWand("Wrath")
                     return true
                 end
             end
 
-            if (target == "Powerful Healing Ward" or target == "Brain Wash Totem") and not getUnit().Dead("target") then
+            if (target == "Powerful Healing Ward" or target == "Brain Wash Totem") and not getUnit().IsDead("target") then
                 getSpells().CastOrWand("Wrath")
                 return true
             end

@@ -170,9 +170,13 @@ end
 
 EventFrame:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
-        if not Faction.IsHorde() then
-            getSettingsState().RaidInviter = getSettingsState().AllianceRaidInviter
-        end
+        MoronBox.DelayExecutionOrder({
+            function()
+                if not Faction.IsHorde() then
+                    getSettingsState().RaidInviter = getSettingsState().AllianceRaidInviter
+                end
+            end
+        }, 0.5)
 
         TakeTaxiNode = Wrapped_TakeTaxiNode
     elseif event == "TAXIMAP_OPENED" then

@@ -95,7 +95,7 @@ function MoronBox.Core.Bosses.Register(name, config)
         end
 
         for _, n in ipairs(nameList) do
-            if getApi().StringTrim(arg1) == n then
+            if string.find(arg1, "^" .. n .. " %l") then
                 return true
             end
         end
