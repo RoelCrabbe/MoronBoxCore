@@ -1260,10 +1260,6 @@ function MoronBox.Core.Raid.GetTarget()
         if HandleAQ40TargetingPreFocus() then
             return
         end
-    elseif Instance.MC() then
-        if HandleMCTargetingPostFocus() then
-            return
-        end
     elseif Instance.BWL() and getRaid().IsAtRazorgore() and getEncountersState().Razorgore.Active then
         if HandleBWLTargetingPreFocus() then
             return
