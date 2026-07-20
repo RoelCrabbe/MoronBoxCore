@@ -2,7 +2,7 @@
 ## Title: MoronBoxCore by |cff00ccffMoRoN|r
 ## Author: MoRoN
 ## Notes: |cff00ccffMoronBoxCore|r is a advanced framework for MultiBoxers.
-## Dependencies: SuperMacro
+## Dependencies: SuperMacro, Ace2
 
 ..\Ace2\AceLibrary\AceLibrary.lua
 ..\Ace2\AceOO-2.0\AceOO-2.0.lua

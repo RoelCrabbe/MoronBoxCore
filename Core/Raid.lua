@@ -1014,43 +1014,43 @@ local function HandleBWLTargetingPostFocus()
 end
 
 local function HandleMCTargetingPostFocus()
-    if LUCIFRON_TargetingPostFocus() then
+    if getBosses().Lucifron.TargetingPostFocus() then
         return true
     end
 
-    if MAGMADAR_TargetingPostFocus() then
+    if getBosses().Magmadar.TargetingPostFocus()() then
         return true
     end
 
-    if GEHENNAS_TargetingPostFocus() then
+    if getBosses().Gehennas.TargetingPostFocus()() then
         return true
     end
 
-    if GARR_TargetingPostFocus() then
+    if getBosses().Garr.TargetingPostFocus() then
         return true
     end
 
-    if SHAZZRAH_TargetingPostFocus() then
+    if getBosses().Shazzrah.TargetingPostFocus() then
         return true
     end
 
-    if GEDDON_TargetingPostFocus() then
+    if getBosses().Geddon.TargetingPostFocus() then
         return true
     end
 
-    if GOLEMAGG_TargetingPostFocus() then
+    if getBosses().Golemagg.TargetingPostFocus() then
         return true
     end
 
-    if SULFURON_TargetingPostFocus() then
+    if getBosses().Sulfuron.TargetingPostFocus() then
         return true
     end
 
-    if MAJORDOMO_TargetingPostFocus() then
+    if getBosses().Majordomo.TargetingPostFocus() then
         return true
     end
 
-    if RAGNAROS_TargetingPostFocus() then
+    if getBosses().Ragnaros.TargetingPostFocus() then
         return true
     end
 
@@ -1258,6 +1258,10 @@ function MoronBox.Core.Raid.GetTarget()
         end
     elseif Instance.AQ40() then
         if HandleAQ40TargetingPreFocus() then
+            return
+        end
+    elseif Instance.MC() then
+        if HandleMCTargetingPostFocus() then
             return
         end
     elseif Instance.BWL() and getRaid().IsAtRazorgore() and getEncountersState().Razorgore.Active then

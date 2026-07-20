@@ -4,6 +4,7 @@
     <Include file="..\Core\Aura.lua" />
     <Include file="..\Core\Spells.lua" />
     <Include file="..\Core\Buffs.lua" />
+    <Include file="..\Core\Bosses.lua" />
     <Include file="..\Core\Raid.lua" />
     <Include file="..\Core\Dispel.lua" />
     <Include file="..\Core\CrowdControl.lua" />

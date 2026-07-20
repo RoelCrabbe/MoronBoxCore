@@ -247,6 +247,10 @@ function MoronBox.Api.StringSplit(subject, delimiter)
     return unpack(fields)
 end
 
+function MoronBox.Api.StringTrim(str)
+    return (string.gsub(str, "^%s*(.-)%s*$", "%1"))
+end
+
 -- [[ Group ]] --
 
 --- Checks if the player is in a group or raid with other members present.

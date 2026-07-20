@@ -336,6 +336,8 @@ EventFrame:SetScript("OnEvent", function()
 
             print("I\'m Focusing " .. focus .. " Previous tar: " .. focus_caller)
             getConfigState().RaidLeader = focus
+        elseif arg1 == getRaidId() .. "MB_ROLE_HEALER" then
+            getCore().HandleHealerList(arg2)
         elseif arg1 == getRaidId() .. "_flyTaxi" and arg4 ~= myName then
             AutoFlyFollow.Time = currentTime + 30
             AutoFlyFollow.Node = arg2
@@ -546,7 +548,24 @@ EventFrame:SetScript("OnEvent", function()
             getReport().Runes()
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        getConfigState().TrackCooldowns         = {}
+        getConfigState().TrackCooldowns = {}
+
+        if getConfigState().AssignedHealTarget ~= nil then
+            local resetTime = 1
+            local currentTarget = getConfigState().AssignedHealTarget
+
+            MoronBox.DelayExecutionOrder({
+                function()
+                    getApi().CdMessage(
+                        "Unassigning myself from healing " .. currentTarget .. " shortly (" .. resetTime .. "s).")
+                end,
+
+                function()
+                    getDebugger().InfoMsg("Unassigned myself to focusheal " .. currentTarget .. ".")
+                    getConfigState().AssignedHealTarget = nil
+                end
+            }, resetTime)
+        end
 
         getConfigState().OffTankIndex           = 1
         getConfigState().OffTankTarget          = nil

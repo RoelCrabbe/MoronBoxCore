@@ -8,6 +8,7 @@ MoronBox:RegisterEvent("PARTY_MEMBERS_CHANGED")
 MoronBox:RegisterEvent("PLAYER_ENTERING_WORLD")
 MoronBox:RegisterEvent("PLAYER_LOGIN")
 MoronBox:RegisterEvent("UNIT_INVENTORY_CHANGED")
+MoronBox:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 ---@class MoronBoxTooltip: GameTooltip
 MoronBoxTooltip = CreateFrame("GameTooltip", "MoronBoxTooltip", UIParent, "GameTooltipTemplate")
@@ -341,5 +342,7 @@ MoronBox:SetScript("OnEvent", function()
     elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
         getCore().InitializeClasslists()
         MoronBox:UpdateModules()
+    elseif event == "ZONE_CHANGED_NEW_AREA" then
+        print("I enter something")
     end
 end)

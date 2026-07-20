@@ -21,6 +21,7 @@ MoronBox.Core.GeneralState = {
         Hunter = {},
         Warlock = {}
     },
+    HealerList = {},
     WarriorTankInParty = false,
     DruidTankInParty = false,
 }
@@ -31,6 +32,7 @@ end
 
 local myClass = UnitClass("player")
 local myName = UnitName("player")
+local myRace = UnitRace("player")
 
 --- @type MoronBoxState
 local ResetState = getApi().CopyTable(MoronBox.Core.GeneralState)
@@ -60,6 +62,9 @@ function MoronBox.Core.InitializeClasslists()
     if not getApi().GetGroupStatus() then
         return
     end
+
+    -- [[ Find Healers ]] --
+    getCore().InitializeHealerList()
 
     -- [[ Roster Scan ]] --
     if UnitInRaid("player") then
@@ -138,6 +143,26 @@ function MoronBox.Core.InitializeClasslists()
 
     for _, list in pairs(getCoreState().ClassList) do
         getApi().SortAlphabetically(list)
+    end
+
+    getApi().SortAlphabetically(getCoreState().HealerList)
+end
+
+function MoronBox.Core.InitializeHealerList()
+    if not getCore().ImHealer() then
+        return
+    end
+
+    getApi().SendAddonMessage(getRaidId() .. "MB_ROLE_HEALER", myName)
+end
+
+function MoronBox.Core.HandleHealerList(msg)
+    if msg and getCoreState().MBID[msg] then
+        for _, name in ipairs(getCoreState().HealerList) do
+            if name == msg then return end
+        end
+
+        table.insert(getCoreState().HealerList, msg)
     end
 end
 
