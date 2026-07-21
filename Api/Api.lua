@@ -476,7 +476,7 @@ local function applyColor(color, text)
 end
 
 local function getUnitClassColor(unit, text)
-    local _, unitClass = UnitClass(unit)
+    local unitClass = UnitClass(unit)
     if unitClass and CLASS_COLORS[unitClass] then
         return applyColor(CLASS_COLORS[unitClass], text)
     end
@@ -484,15 +484,21 @@ local function getUnitClassColor(unit, text)
 end
 
 function MoronBox.Api.GetColors(note)
-    if note == myName then
-        return getUnitClassColor("player", note)
+    if not note then
+        return nil
+    end
+
+    if myName and note == myName then
+        local res = getUnitClassColor("player", note)
+        if res then return res end
     end
 
     if UnitInRaid("player") then
         for i = 1, GetNumRaidMembers() do
             local unit = "raid" .. i
             if UnitName(unit) == note then
-                return getUnitClassColor(unit, note)
+                local res = getUnitClassColor(unit, note)
+                if res then return res end
             end
         end
     end
@@ -501,13 +507,15 @@ function MoronBox.Api.GetColors(note)
         for i = 1, GetNumPartyMembers() do
             local unit = "party" .. i
             if UnitName(unit) == note then
-                return getUnitClassColor(unit, note)
+                local res = getUnitClassColor(unit, note)
+                if res then return res end
             end
         end
     end
 
     if UnitName("target") == note then
-        return getUnitClassColor("target", note)
+        local res = getUnitClassColor("target", note)
+        if res then return res end
     end
 
     if RAID_MARKERS[note] then
