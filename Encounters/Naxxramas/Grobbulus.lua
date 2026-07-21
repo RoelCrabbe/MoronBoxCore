@@ -87,7 +87,7 @@ local InCombat = mb_inCombat
 local IsAlive = mb_isAlive
 local LockOnTarget = mb_lockOnTarget
 local MyNameInTable = mb_myNameInTable
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -153,7 +153,7 @@ local function UseNaturePotsOnGrobbulus()
         return
     end
 
-    TakePotionsWhenPossible("Greater Nature Protection Potion")
+    PotionsWhenPossible("Greater Nature Protection Potion")
 end
 
 --[####################################################################################################]--
@@ -189,7 +189,7 @@ function GROB_IsAtGrobbulus()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "GROBBULUS", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "GROBBULUS", "ENGAGE", 30)
         GROB_ACTIVE = true
         return true
     end
@@ -203,11 +203,11 @@ end
 
 function GROB:OnEvent()
     if (event == "CHAT_MSG_ADDON") then
-        if (arg1 == MB_RAID .. "GROBBULUS_EMERGENCY") then
+        if (arg1 == getRaidId() .. "GROBBULUS_EMERGENCY") then
             if (arg2 == "PRIEST_OOR") then
                 CdRaidWarning(">> Priest Out of Range! <<")
             end
-        elseif (arg1 == MB_RAID .. "GROBBULUS") then
+        elseif (arg1 == getRaidId() .. "GROBBULUS") then
             if (arg2 == "ENGAGE") then
                 GROB_ACTIVE = true
             end
@@ -249,7 +249,7 @@ function GROB_Decurse()
     end
 
     if not UnitInRange(targetId) then
-        CdAddonMessage(MB_RAID .. "GROBBULUS_EMERGENCY", "PRIEST_OOR")
+        CdAddonMessage(getRaidId() .. "GROBBULUS_EMERGENCY", "PRIEST_OOR")
         return false
     end
 
@@ -290,14 +290,14 @@ function GROB_GetOUT()
         UseNaturePotsOnGrobbulus()
 
         local firstFollow, secondFollow = MB_myGrobbulusRaidFollowers[1], MB_myGrobbulusRaidFollowers[2]
-        local firstFollowId, secondFollowId = MBID[firstFollow], MBID[secondFollow]
+        local firstFollowId, secondFollowId = getCoreState().MBID[firstFollow], getCoreState().MBID[secondFollow]
 
         if not firstFollowId or not secondFollowId then
             CdRaidWarning(">> You Don't Have Enough Follow Targets! <<")
             return false
         end
 
-        local decurseId = MBID[MB_myGrobbulusCleanser]
+        local decurseId = getCoreState().MBID[MB_myGrobbulusCleanser]
         if not decurseId then
             CdRaidWarning(">> You Don't Have Decurse Follow! <<")
             return false
@@ -307,15 +307,15 @@ function GROB_GetOUT()
             local assigned = MB_myGrobbulusCleanseHealers[myName]
 
             if assigned ~= nil then
-                MB_myAssignedHealTarget = assigned
+                getConfigState().AssignedHealTarget = assigned
             else
                 local targetId = GetTargetWithInjection()
                 if targetId then
                     local name = UnitName(targetId)
-                    MB_myAssignedHealTarget = name
+                    getConfigState().AssignedHealTarget = name
                     CdMessage(">> Healing " .. name .. "! <<", 60)
                 else
-                    MB_myAssignedHealTarget = nil
+                    getConfigState().AssignedHealTarget = nil
                 end
             end
         end
@@ -382,7 +382,7 @@ function GROB_Targeting()
                 return true
             end
 
-            if MB_mySpecc ~= "Fire" then
+            if getConfigState().PlayerSpecc ~= "Fire" then
                 for _, tankName in ipairs(MB_myGrobbulusSlimeTanks) do
                     if AssistSpecificTargetFromPlayer("Fallout Slime", tankName) then
                         return true

@@ -100,7 +100,7 @@ local MyNameInTable = mb_myNameInTable
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SpellReady = mb_spellReady
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -168,7 +168,7 @@ local function SARTURA_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "SARTURA", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SARTURA", "ENGAGE", 30)
         SarturaEncounter.Active = true
         return true
     end
@@ -181,7 +181,7 @@ end
 --[####################################################################################################]--
 
 function SARTURA:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "SARTURA" then
+    if arg1 == getRaidId() .. "SARTURA" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Sartura! <<")
             self:OnEnable()
@@ -194,7 +194,7 @@ end
 
 function SARTURA:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Battleguard Sartura dies") and SarturaEncounter.Active then
-        CdAddonMessage(MB_RAID .. "SARTURA", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SARTURA", "DISENGAGE", 30)
     end
 end
 

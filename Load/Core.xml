@@ -1,5 +1,20 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <!-- Core -->
-    <Include file="..\Core-New\Core.lua" />
-    <Include file="..\Core-New\Buffs.lua" />
+    <Include file="..\Core\Core.lua" />
+    <Include file="..\Core\Aura.lua" />
+    <Include file="..\Core\Spells.lua" />
+    <Include file="..\Core\Buffs.lua" />
+    <Include file="..\Core\Bosses.lua" />
+    <Include file="..\Core\Raid.lua" />
+    <Include file="..\Core\Dispel.lua" />
+    <Include file="..\Core\CrowdControl.lua" />
+    <Include file="..\Core\Gear.lua" />
+    <Include file="..\Core\Attack.lua" />
+    <Include file="..\Core\Healing.lua" />
+    <Include file="..\Core\Cons.lua" />
+    <Include file="..\Core\Water.lua" />
+    <Include file="..\Core\Rotation.lua" />
+    <Include file="..\Core\Report.lua" />
+    <Include file="..\Core\Slash.lua" />
+    <Include file="..\Core\Events.lua" />
 </Ui>

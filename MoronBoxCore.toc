@@ -2,7 +2,7 @@
 ## Title: MoronBoxCore by |cff00ccffMoRoN|r
 ## Author: MoRoN
 ## Notes: |cff00ccffMoronBoxCore|r is a advanced framework for MultiBoxers.
-## Dependencies: SuperMacro
+## Dependencies: SuperMacro, Ace2
 
 ..\Ace2\AceLibrary\AceLibrary.lua
 ..\Ace2\AceOO-2.0\AceOO-2.0.lua
@@ -12,48 +12,6 @@
 ..\Ace2\AceAddon-2.0\AceAddon-2.0.lua
 
 MoronBox.lua
-Shared.lua
-
-Global\Rotation.lua
-Global\Functions.lua
-
-Config\Config.lua
-Config\Encounters.lua
-Config\Tables.lua
-Config\Healing.lua
-Config\Keybinds.lua
-
-Handlers\Common\Shared.lua
-
-Handlers\AddonMessage.lua
-Handlers\Attacking.lua
-Handlers\Buffs.lua
-Handlers\Chat.lua
-Handlers\Cons.lua
-Handlers\CrowdControl.lua
-Handlers\Gear.lua
-Handlers\Macros.lua
-Handlers\Roles.lua
-Handlers\Slash.lua
-Handlers\Spells.lua
-Handlers\Target.lua
-
-Core\Target.lua
-Core\Decurse.lua
-Core\GTFO.lua
-
-Core\Buffs\Druid\Mark.lua
-
-Core\Buffs\Priest\FearWard.lua
-Core\Buffs\Priest\PowerInfusion.lua
-Core\Buffs\Priest\Fortitude.lua
-Core\Buffs\Priest\ShadowResistance.lua
-Core\Buffs\Priest\Spirit.lua
-
-Event\Flash.lua
-Event\Turning.lua
-Event\OnUpdate.lua
-Event\OnEvent.lua
 
 Encounters\MoltenCore\Lucifron.lua
 Encounters\MoltenCore\Magmadar.lua
@@ -76,22 +34,8 @@ Encounters\Naxxramas\Grobbulus.lua
 Encounters\Naxxramas\Loatheb.lua
 Encounters\Naxxramas\Thaddius.lua
 
-Rotation\Scripts\Extra.lua
-Rotation\Scripts\Totem.lua
-Rotation\Scripts\MageWater.lua
-Rotation\Scripts\Follow.lua
-Rotation\Scripts\Rotation.lua
-
-Rotation\Druid.lua
-Rotation\Hunter.lua
-Rotation\Mage.lua
-Rotation\Paladin.lua
-Rotation\Priest.lua
-Rotation\Rogue.lua
-Rotation\Shaman.lua
-Rotation\Warlock.lua
-Rotation\Warrior.lua
-
+Load\Config.xml
 Load\Api.xml
 Load\Core.xml
 Load\Modules.xml
+Load\Macro.xml

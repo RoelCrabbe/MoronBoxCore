@@ -1,14 +1,45 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-    <!-- Buff Modules Priest -->
-    <Include file="..\Modules\Buffs\Fortitude.lua" />
-    <Include file="..\Modules\Buffs\Shadow.lua" />
-    <Include file="..\Modules\Buffs\Spirit.lua" />
-    <Include file="..\Modules\Buffs\PowerInfusion.lua" />
-    <Include file="..\Modules\Buffs\FearWard.lua" />
-    <!-- Buff Modules Druid -->
-    <Include file="..\Modules\Buffs\Mark.lua" />
-    <!-- Buff Modules Mage -->
-    <Include file="..\Modules\Buffs\Intellect.lua" />
-    <Include file="..\Modules\Buffs\Amplify.lua" />
-    <Include file="..\Modules\Buffs\Dampen.lua" />
+    <!-- Auto Turn -->
+    <Include file="..\Modules\Turning\Turning.lua" />
+    <!-- Flash -->
+    <Include file="..\Modules\Flash\Flash.lua" />
+    <!-- Warrior -->
+    <Include file="..\Modules\Warrior\Rotation.lua" />
+    <!-- Mage -->
+    <Include file="..\Modules\Mage\Rotation.lua" />
+    <Include file="..\Modules\Mage\Intellect.lua" />
+    <Include file="..\Modules\Mage\Amplify.lua" />
+    <Include file="..\Modules\Mage\Dampen.lua" />
+    <!-- Warlock -->
+    <Include file="..\Modules\Warlock\Rotation.lua" />
+    <!-- Priest -->
+    <Include file="..\Modules\Priest\Rotation.lua" />
+    <Include file="..\Modules\Priest\Fortitude.lua" />
+    <Include file="..\Modules\Priest\Shadow.lua" />
+    <Include file="..\Modules\Priest\Spirit.lua" />
+    <Include file="..\Modules\Priest\PowerInfusion.lua" />
+    <Include file="..\Modules\Priest\FearWard.lua" />
+    <!-- Rogue -->
+    <Include file="..\Modules\Rogue\Rotation.lua" />
+    <!-- Shaman -->
+    <Include file="..\Modules\Shaman\Totem.lua" />
+    <Include file="..\Modules\Shaman\Rotation.lua" />
+    <!-- Hunter -->
+    <Include file="..\Modules\Hunter\Rotation.lua" />
+    <!-- Druid -->
+    <Include file="..\Modules\Druid\Rotation.lua" />
+    <Include file="..\Modules\Druid\Mark.lua" />
+    <!-- Paladin -->
+    <Include file="..\Modules\Paladin\Rotation.lua" />
+    <!-- Molten Core -->
+    <Include file="..\Modules\Encounters\MoltenCore\Lucifron.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Gehennas.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Golemagg.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Sulfuron.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Magmadar.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Ragnaros.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Shazzrah.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Majordomo.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Garr.lua" />
+    <Include file="..\Modules\Encounters\MoltenCore\Geddon.lua" />
 </Ui>

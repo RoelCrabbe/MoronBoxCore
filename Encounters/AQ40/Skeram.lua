@@ -97,7 +97,7 @@ local MyNameInTable = mb_myNameInTable
 local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SpellReady = mb_spellReady
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -193,7 +193,7 @@ local function UseArcanePotsOnSkeram()
         return
     end
 
-    TakePotionsWhenPossible("Greater Arcane Protection Potion")
+    PotionsWhenPossible("Greater Arcane Protection Potion")
 end
 
 --[####################################################################################################]--
@@ -234,7 +234,7 @@ local function SKERAM_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "SKERAM", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SKERAM", "ENGAGE", 30)
         SkeramEncounter.Active = true
         return true
     end
@@ -256,12 +256,12 @@ end
 
 local function CheckIfRealDeath()
     if SkeramEncounter.Active and not InCombat() then
-        CdAddonMessage(MB_RAID .. "SKERAM", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "SKERAM", "DISENGAGE", 30)
     end
 end
 
 function SKERAM:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "SKERAM" then
+    if arg1 == getRaidId() .. "SKERAM" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Skeram! <<")
             self:OnEnable()
@@ -397,7 +397,7 @@ function SKERAM_WarlockDebuff()
     local tankName = ReturnPlayerInRaidFromTable(skeramTankMap[myOrder])
 
     if tankName and TargetFromSpecificPlayer("The Prophet Skeram", tankName) then
-        local tankId = MBID[tankName]
+        local tankId = getCoreState().MBID[tankName]
         local targetID = tankId .. "target"
 
         if tankId and not HasBuffOrDebuff("Curse of Tongues", targetID, "debuff") then
@@ -420,16 +420,19 @@ end
 --[####################################################################################################]--
 --[####################################################################################################]--
 
-local PriestCounter = {
+local MB_buffingCounterPriest = 1
+local MB_buffingCounterMage   = 1
+
+local PriestCounter           = {
     Cycle = function()
-        MB_buffingCounterPriest = (MB_buffingCounterPriest >= TableLength(MB_classList["Priest"]))
+        MB_buffingCounterPriest = (MB_buffingCounterPriest >= getApi().TableLength(getCoreState().ClassList["Priest"]))
             and 1 or (MB_buffingCounterPriest + 1)
     end
 }
 
-local MageCounter = {
+local MageCounter             = {
     Cycle = function()
-        MB_buffingCounterMage = (MB_buffingCounterMage >= TableLength(MB_classList["Mage"]))
+        MB_buffingCounterMage = (MB_buffingCounterMage >= getApi().TableLength(getCoreState().ClassList["Mage"]))
             and 1 or (MB_buffingCounterMage + 1)
     end
 }

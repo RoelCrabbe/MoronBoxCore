@@ -1,6 +1,4 @@
---[####################################################################################################]--
---[######################################## ADDON DATA TABLES #########################################]--
---[####################################################################################################]--
+-- [[ Boss Tables ]] --
 
 --[[
     This file contains all data tables and lookup functions for the addon.
@@ -12,75 +10,18 @@
     - Complex logic functions
 --]]
 
--- Unit Functions
-local UnitName = UnitName
-local UnitClass = UnitClass
-local UnitRace = UnitRace
-local UnitLevel = UnitLevel
-local UnitHealth = UnitHealth
-local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
-local UnitPowerType = UnitPowerType
-local UnitExists = UnitExists
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
-local UnitIsConnected = UnitIsConnected
-local UnitInParty = UnitInParty
-local UnitInRaid = UnitInRaid
-local UnitCanAttack = UnitCanAttack
-local UnitIsFriend = UnitIsFriend
-local UnitIsEnemy = UnitIsEnemy
-local UnitIsVisible = UnitIsVisible
-local UnitAffectingCombat = UnitAffectingCombat
-local UnitCreatureType = UnitCreatureType
-local UnitClassification = UnitClassification
+MoronBox.Config.Tables = MoronBox.Config.Tables or {}
 
--- Buff/Debuff Functions
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+local myClass = UnitClass("player")
 
--- Spell Functions
-local CastSpellByName = CastSpellByName
-local GetSpellCooldown = GetSpellCooldown
-local IsCurrentAction = IsCurrentAction
+function getTables()
+    return MoronBox.Config.Tables
+end
 
--- Target Functions
-local TargetUnit = TargetUnit
-local TargetByName = TargetByName
-local ClearTarget = ClearTarget
-local AssistUnit = AssistUnit
-
--- Party/Raid Functions
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-local IsRaidLeader = IsRaidLeader
-
--- Player Position/Info Functions
-local GetRealZoneText = GetRealZoneText
-local GetSubZoneText = GetSubZoneText
-
--- Addon Communication (if supported on your server)
-local SendAddonMessage = SendAddonMessage
-
--- Misc Utility Functions
-local IsShiftKeyDown = IsShiftKeyDown
-local IsControlKeyDown = IsControlKeyDown
-local IsAltKeyDown = IsAltKeyDown
-
--- Common Names
-local myClass = UnitClass("player") --[[@as string]]
-local myName = UnitName("player") --[[@as string]]
-local myRace = UnitRace("player") --[[@as string]]
-
---[####################################################################################################]--
---[############################################ BOSS MECHANICS ########################################]--
---[####################################################################################################]--
+-- [[ Boss Mechanics ]] --
 
 -- Recklessness Usage Thresholds
-local MB_recklessnessTargetsSet = {
+local RecklessnessTargetsSet      = {
     ["Patchwerk"] = 0.19,
     ["Maexxna"] = 0.19,
     ["Loatheb"] = 0.19,
@@ -96,7 +37,7 @@ local MB_recklessnessTargetsSet = {
 }
 
 -- Bandage Usage by Class
-local MB_bandageBossesForWarlock = {
+local BandageBossesForWarlock     = {
     ["Patchwerk"] = true,
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
@@ -104,7 +45,7 @@ local MB_bandageBossesForWarlock = {
     ["Highlord Alexandros Mograine"] = true
 }
 
-local MB_bandageBossesForMage = {
+local BandageBossesForMage        = {
     ["Lady Blaumeux"] = true,
     ["Sir Zeliek"] = true,
     ["Thane Korth\'azz"] = true,
@@ -112,14 +53,14 @@ local MB_bandageBossesForMage = {
 }
 
 -- Healing Interrupt Immunity
-local MB_bossToNeverInterruptHealSet = {
+local BossToNeverInterruptHealSet = {
     ["Vaelastrasz the Corrupt"] = true,
     ["Maexxna"] = true,
     ["Ossirian the Unscarred"] = true
 }
 
 -- Tranquilizing Shot Targets
-local MB_useTranquilizingShotSet = {
+local UseTranquilizingShotSet     = {
     ["Gluth"] = true,
     ["Princess Huhuran"] = true,
     ["Flamegor"] = true,
@@ -127,12 +68,10 @@ local MB_useTranquilizingShotSet = {
     ["Magmadar"] = true
 }
 
---[####################################################################################################]--
---[########################################## COMBAT RESTRICTIONS #####################################]--
---[####################################################################################################]--
+-- [[ Combat ]] --
 
 -- Debuff Restrictions
-local MB_mobsNoCursesSet = {
+local MobsNoCursesSet             = {
     ["Blackwing Mage"] = true,
     ["Blackwing Legionnaire"] = true,
     ["Corrupted Green Whelp"] = true,
@@ -144,7 +83,7 @@ local MB_mobsNoCursesSet = {
     ["Plagued Bat"] = true
 }
 
-local MB_mobsNoSundersSet = {
+local MobsNoSundersSet            = {
     ["Blackwing Mage"] = true,
     ["Blackwing Legionnaire"] = true,
     ["Death Talon Dragonspawn"] = true,
@@ -160,7 +99,7 @@ local MB_mobsNoSundersSet = {
 }
 
 -- Blood Fury Blacklist
-local MB_useBloodFuryBlacklistSet = {
+local UseBloodFuryBlacklistSet    = {
     ["Shade of Naxxramas"] = true,
     ["Necro Knight"] = true,
     ["Stoneskin Gargoyle"] = true,
@@ -177,18 +116,16 @@ local MB_useBloodFuryBlacklistSet = {
 }
 
 -- Excluded Whirlwind Targets
-local MB_excludedTargetsSet = {
+local ExcludedTargetsSet          = {
     ["Emperor Vek'lor"] = true,
     ["Emperor Vek'nilash"] = true,
     ["The Prophet Skeram"] = true
 }
 
---[####################################################################################################]--
---[######################################### PROTECTIVE MAGIC #########################################]--
---[####################################################################################################]--
+-- [[ Protective Magic ]] --
 
 -- Ward Requirements
-local MB_mobsToFireWardSet = {
+local MobsToFireWardSet           = {
     ["High Priestess Jeklik"] = true,
     ["Necro Night"] = true,
     ["Grand Widow Faerlina"] = true,
@@ -202,7 +139,7 @@ local MB_mobsToFireWardSet = {
     ["Flame Imp"] = true
 }
 
-local MB_mobsToShadowWardSet = {
+local MobsToShadowWardSet         = {
     ["Death Lord"] = true,
     ["Necropolis Acolyte"] = true,
     ["Deathknight Cavalier"] = true,
@@ -213,7 +150,7 @@ local MB_mobsToShadowWardSet = {
     ["Necro Knight"] = true
 }
 
-local MB_shadowWardDebuffsSet = {
+local ShadowWardDebuffsSet        = {
     "Corruption",
     "Curse of Agony",
     "Siphon Life",
@@ -225,29 +162,27 @@ local MB_shadowWardDebuffsSet = {
 }
 
 -- Magic Detection/Manipulation
-local MB_mobsToDetectMagicSet = {
+local MobsToDetectMagicSet        = {
     ["Anubisath Sentinel"] = true,
     ["Anubisath Guardian"] = true,
     ["Anubisath Defender"] = true,
     ["Shazzrah"] = true
 }
 
-local MB_mobsToDampenMagicSet = {
+local MobsToDampenMagicSet        = {
     ["Grethok the Controller"] = true,
 }
 
-local MB_mobsToAmplifyMagicSet = {
+local MobsToAmplifyMagicSet       = {
     ["Patchwerk"] = true,
     ["Noth the Plaguebringer"] = true,
     ["Maexxna"] = true
 }
 
---[####################################################################################################]--
---[####################################### BEHAVIORAL TRIGGERS #######{{###############################]--
---[####################################################################################################]--
+-- [[ Boss Triggers ]] --
 
 -- Auto-Turn Requirements (fear immunity)
-local MB_mobsToAutoTurnSet = {
+local MobsToAutoTurnSet           = {
     ["Magmadar"] = true,
     ["Ancient Core Hound"] = true,
     ["Onyxia"] = true,
@@ -256,17 +191,15 @@ local MB_mobsToAutoTurnSet = {
 }
 
 -- Auto-Break Fear Requirements
-local MB_mobsToAutoBreakFearSet = {
+local MobsToAutoBreakFearSet      = {
     ["Deathknight"] = true,
     ["Princess Yauj"] = true
 }
 
---[####################################################################################################]--
---[########################################## TOTEM MANAGEMENT #####{{{################################]--
---[####################################################################################################]--
+-- [[ Totems ]] --
 
 -- Totem Restrictions
-local MB_mobsNoTotemsSet = {
+local MobsNoTotemsSet             = {
     ["Onyxian Warder"] = true,
     ["Corrupted Green Whelp"] = true,
     ["Corrupted Red Whelp"] = true,
@@ -285,7 +218,7 @@ local MB_mobsNoTotemsSet = {
 }
 
 -- AoE Totem Requirements
-local MB_mobsToAoeTotemSet = {
+local MobsToAoeTotemSet           = {
     ["Plague Beast"] = true,
     ["Mutated Grub"] = true,
     ["Frenzied Bat"] = true,
@@ -303,19 +236,17 @@ local MB_mobsToAoeTotemSet = {
 }
 
 -- Corrupted Totems (enemies)
-local MB_corruptedTotemsSet = {
+local CorruptedTotemsSet          = {
     ["Corrupted Healing Stream Totem"] = true,
     ["Corrupted Windfury Totem"] = true,
     ["Corrupted Stoneskin Totem"] = true,
     ["Corrupted Fire Nova Totem"] = true
 }
 
---[####################################################################################################]--
---[######################################## DAMAGE IMMUNITIES ###########{{{{{#########################]--
---[####################################################################################################]--
+-- [[ Damage Immune ]] --
 
 -- Fire Immunity
-local MB_fireImmuneSet = {
+local FireImmuneSet               = {
     ["Baron Geddon"] = true,
     ["Flameguard"] = true,
     ["Firewalker"] = true,
@@ -342,19 +273,17 @@ local MB_fireImmuneSet = {
 }
 
 -- Frost Immunity
-local MB_frostImmuneSet = {
+local FrostImmuneSet              = {
     ["Ras Frostwhisper"] = true,
     ["Frostmaul Giant"] = true,
     ["Ice Thistle Yeti"] = true,
     ["Highborne Lichling"] = true
 }
 
---[####################################################################################################]--
---[######################################### BOSS CATEGORIES ##########################################]--
---[####################################################################################################]--
+-- [[ Boss Categories ]] --
 
 -- Elemental Boss Categories
-local MB_NatureBossSet = {
+local NatureBossSet               = {
     ["The Nature Boss"] = true,
     ["Princess Yauj"] = true,
     ["Lord Kri"] = true,
@@ -370,7 +299,7 @@ local MB_NatureBossSet = {
     ["Razzashi Adder"] = true
 }
 
-local MB_FireBossSet = {
+local FireBossSet                 = {
     ["The Fire Boss"] = true,
     ["Death Talon Overseer"] = true,
     ["Blackwing Spellbinder"] = true,
@@ -410,7 +339,7 @@ local MB_FireBossSet = {
 }
 
 -- Totem-Specific Boss Categories
-local MB_TremorBossSet = {
+local TremorBossSet               = {
     ["The Termor Boss"] = true,
     ["Magmadar"] = true,
     ["Emeriss"] = true,
@@ -422,12 +351,12 @@ local MB_TremorBossSet = {
     ["Onyxia"] = true
 }
 
-local MB_GroundingBossSet = {
+local GroundingBossSet            = {
     ["The Grounding Boss"] = true,
     ["Ossirian the Unscarred"] = true
 }
 
-local MB_PoisonBossSet = {
+local PoisonBossSet               = {
     ["The Poison Boss"] = true,
     ["Princess Yauj"] = true,
     ["Lord Kri"] = true,
@@ -444,18 +373,16 @@ local MB_PoisonBossSet = {
     ["Razzashi Adder"] = true
 }
 
-local MB_FAPBossSet = {
+local FAPBossSet                  = {
     ["Gehennas"] = true,
     ["Flamewaker"] = true,
     ["Lava Elemental"] = true
 }
 
---[####################################################################################################]--
---[############################################ NPC CATEGORIES #######################################]--
---[####################################################################################################]--
+-- [[ NPCs ]] --
 
 -- Vendor Categories
-local MB_reagentVendorsSet = {
+local ReagentVendorsSet           = {
     ["Khur Hornstriker"] = true,
     ["Barim Jurgenstaad"] = true,
     ["Rekkul"] = true,
@@ -468,245 +395,196 @@ local MB_reagentVendorsSet = {
     ["Consumables"] = true
 }
 
---[####################################################################################################]--
---[########################################## SPELL/ABILITY LISTS ####################################]--
---[####################################################################################################]--
-
--- Spells to Interrupt
-MB_spellsToInt = {
-    -- Basic Damage Spells
-    "Frostbolt",
-    "Shadow Bolt",
-    "Mind Flay",  -- PW trash
-    "Mind Blast", -- AQ40, Mindslayers
-    "Holy Fire",
-    "Drain Life", -- Spider ZG
-
-    -- Healing Spells
-    "Greater Heal",
-    "Great Heal", -- Tiger heal
-    "Heal",
-    "Healing Wave",
-    "Dark Mending", -- Flamewalker Priest
-
-    -- Crowd Control
-    "Banish",
-    "Polymorph",
-
-    -- Debuffs
-    "Cripple",
-
-    -- Instance-Specific Spells
-    "Healing Circle",   -- Suppression Room
-    "Flamestrike",      -- Suppression Room
-    "Demon Portal",     -- Blackwing Warlock
-    "Rain of Fire",     -- Blackwing Warlock
-    "Arcane Explosion", -- Razorgore First Phase
-    "Fireball",         -- Razorgore First Phase
-
-    -- AoE Spells
-    "Fireball Volley", -- Packs behind Vaelastrasz
-    "Shadow Bolt Volley",
-    "Frostbolt Volley",
-    "Venom Spit", -- Snake AOE
-}
-
--- Auto-Trade Items
-MB_itemToAutoTrade = {
-    -- Crafting Materials
-    "Arcanite Bar",
-    "Mooncloth",
-    "Refined Deeprock Salt",
-    "Deeprock Salt",
-    "Cured Rugged Hide",
-    "Arcane Crystal",
-    "Thorium Bar",
-    "Hourglass Sand",
-    "Felcloth",
-
-    -- Essences
-    "Essence of Air",
-    "Essence of Undeath",
-    "Living Essence",
-    "Essence of Water",
-    "Essence of Earth",
-
-    -- Consumables
-    "Major Mana Potion",
-    "Elixir of the Mongoose",
-    "Greater Stoneshield Potion",
-    "Greater Nature Protection Potion",
-    "Greater Shadow Protection Potion",
-    "Gift of Arthas",
-
-    -- Food & Drink
-    "Conjured.*Water",
-    "Rumsey Rum Black Label",
-    "Dirge\'s Kickin\' Chimaerok Chops",
-
-    -- ZG Items
-    ".*Hakkari Bijou",
-}
-
---[####################################################################################################]--
---[######################################### ACCESSOR FUNCTIONS #####################################]--
---[####################################################################################################]--
-
-function mb_bossIShouldUseBandageOn()
-    local myClass = UnitClass("player")
-
-    if myClass == "Warlock" then
-        return mb_tankTargetInSet(MB_bandageBossesForWarlock)
-    elseif myClass == "Mage" then
-        return mb_tankTargetInSet(MB_bandageBossesForMage)
+-- [[ Region ]] --
+Instance                          = {
+    NAXX        = function()
+        return GetRealZoneText() == "Naxxramas"
+    end,
+    AQ40        = function()
+        return GetRealZoneText() == "Ahn\'Qiraj"
+    end,
+    AQ20        = function()
+        return GetRealZoneText() == "Ruins of Ahn\'Qiraj"
+    end,
+    MC          = function()
+        return GetRealZoneText() == "Molten Core"
+    end,
+    BWL         = function()
+        return GetRealZoneText() == "Blackwing Lair"
+    end,
+    ONY         = function()
+        return GetRealZoneText() == "Onyxia\'s Lair"
+    end,
+    ZG          = function()
+        return GetRealZoneText() == "Zul\'Gurub"
+    end,
+    IsWorldBoss = function()
+        return UnitClassification("target") == "worldboss"
+    end,
+    IsInRaid    = function(self)
+        return self.NAXX() or self.AQ40() or self.AQ20()
+            or self.MC() or self.BWL() or self.ONY() or self.ZG()
     end
+}
 
+Faction                           = {
+    IsHorde = function()
+        return UnitFactionGroup("player") == "Horde"
+    end
+}
+
+-- [[ Functions ]] --
+
+function MoronBox.Config.Tables.BossesIShouldUseBandageOn()
+    if myClass == "Warlock" then
+        return getRaid().TankTargetInSet(BandageBossesForWarlock)
+    elseif myClass == "Mage" then
+        return getRaid().TankTargetInSet(BandageBossesForMage)
+    end
     return false
 end
 
-function mb_bossIShouldUseRecklessnessOn()
-    if MBID[MB_raidLeader] and UnitName(MBID[MB_raidLeader] .. "target") then
-        local tankTargetName = UnitName(MBID[MB_raidLeader] .. "target")
-        local healthThreshold = MB_recklessnessTargetsSet[tankTargetName]
+function MoronBox.Config.Tables.BossesIShouldUseRecklessnessOn()
+    local raidLeaderId = getCoreState().MBID[getConfigState().RaidLeader]
+    if raidLeaderId and UnitName(raidLeaderId .. "target") then
+        local tankTargetName = UnitName(raidLeaderId .. "target")
+        local healthThreshold = RecklessnessTargetsSet[tankTargetName]
 
         if healthThreshold then
-            return mb_targetHealthFromRaidleader(tankTargetName, healthThreshold)
+            return getRaid().TargetHealthFromRaidleader(tankTargetName, healthThreshold)
         end
     end
     return false
 end
 
 -- Combat Restriction Functions
-function mb_mobsNoCurses()
+function MoronBox.Config.Tables.MobsNoCurses()
     local targetName = UnitName("target")
-    return targetName and MB_mobsNoCursesSet[targetName] == true
+    return targetName and MobsNoCursesSet[targetName] == true
 end
 
-function mb_mobsNoSunders()
+function MoronBox.Config.Tables.MobsNoSunders()
     local targetName = UnitName("target")
-    return targetName and MB_mobsNoSundersSet[targetName] == true
+    return targetName and MobsNoSundersSet[targetName] == true
 end
 
-function mb_useBloodFury()
-    return not mb_tankTargetInSet(MB_useBloodFuryBlacklistSet)
+function MoronBox.Config.Tables.UseBloodFury()
+    return not getRaid().TankTargetInSet(UseBloodFuryBlacklistSet)
 end
 
-function mb_isExcludedWW()
+function MoronBox.Config.Tables.IsExcludedWW()
     local targetName = UnitName("target")
-    return targetName and MB_excludedTargetsSet[targetName] == true
+    return targetName and ExcludedTargetsSet[targetName] == true
 end
 
-function mb_bossNeverInterruptHeal()
-    return mb_tankTargetInSet(MB_bossToNeverInterruptHealSet)
+function MoronBox.Config.Tables.BossNeverInterruptHeal()
+    return getRaid().TankTargetInSet(BossToNeverInterruptHealSet)
 end
 
-function mb_useTranquilizingShot()
-    return mb_tankTargetInSet(MB_useTranquilizingShotSet)
+function MoronBox.Config.Tables.UseTranquilizingShot()
+    return getRaid().TankTargetInSet(UseTranquilizingShotSet)
 end
 
 -- Protective Magic Functions
-function mb_mobsToFireWard()
-    return mb_tankTargetInSet(MB_mobsToFireWardSet)
+function MoronBox.Config.Tables.MobsToFireWard()
+    return getRaid().TankTargetInSet(MobsToFireWardSet)
 end
 
-function mb_mobsToShadowWard()
-    return mb_tankTargetInSet(MB_mobsToShadowWardSet)
+function MoronBox.Config.Tables.MobsToShadowWard()
+    return getRaid().TankTargetInSet(MobsToShadowWardSet)
 end
 
-function mb_debuffsToShadowWard()
-    for _, debuffName in ipairs(MB_shadowWardDebuffsSet) do
-        if mb_hasBuffOrDebuff(debuffName, "player", "debuff") then
+function MoronBox.Config.Tables.DebuffsToShadowWard()
+    for _, debuffName in ipairs(ShadowWardDebuffsSet) do
+        if getAura().HasBuffOrDebuff(debuffName, "player", "debuff") then
             return true
         end
     end
 
-    return mb_hasBuffNamed("Shadow and Frost Reflect", "target")
+    return getAura().HasBuffNamed("Shadow and Frost Reflect", "target")
 end
 
-function mb_mobsToDetectMagic()
+function MoronBox.Config.Tables.MobsToDetectMagic()
     local targetName = UnitName("target")
-    return targetName and MB_mobsToDetectMagicSet[targetName] == true
+    return targetName and MobsToDetectMagicSet[targetName] == true
 end
 
-function mb_mobsToDampenMagic()
-    return mb_tankTargetInSet(MB_mobsToDampenMagicSet) or LOA_IsAtLoatheb()
+function MoronBox.Config.Tables.MobsToDampenMagic()
+    return getRaid().TankTargetInSet(MobsToDampenMagicSet) or LOA_IsAtLoatheb()
 end
 
-function mb_mobsToAmplifyMagic()
-    return mb_tankTargetInSet(MB_mobsToAmplifyMagicSet)
+function MoronBox.Config.Tables.MobsToAmplifyMagic()
+    return getRaid().TankTargetInSet(MobsToAmplifyMagicSet)
 end
 
 -- Behavioral Functions
-function mb_mobsToAutoTurn()
-    return mb_tankTargetInSet(MB_mobsToAutoTurnSet)
+function MoronBox.Config.Tables.MobsToAutoTurn()
+    return getRaid().TankTargetInSet(MobsToAutoTurnSet)
 end
 
-function mb_mobsToAutoBreakFear()
-    return mb_tankTargetInSet(MB_mobsToAutoBreakFearSet)
+function MoronBox.Config.Tables.MobsToAutoBreakFear()
+    return getRaid().TankTargetInSet(MobsToAutoBreakFearSet)
 end
 
 -- Totem Functions
-function mb_mobsNoTotems()
-    return mb_tankTargetInSet(MB_mobsNoTotemsSet)
+function MoronBox.Config.Tables.MobsNoTotems()
+    return getRaid().TankTargetInSet(MobsNoTotemsSet)
 end
 
-function mb_mobsToAoeTotem()
-    return mb_tankTargetInSet(MB_mobsToAoeTotemSet)
+function MoronBox.Config.Tables.MobsToAoeTotem()
+    return getRaid().TankTargetInSet(MobsToAoeTotemSet)
 end
 
-function mb_corruptedTotems()
+function MoronBox.Config.Tables.CorruptedTotems()
     local targetName = UnitName("target")
-    return targetName and MB_corruptedTotemsSet[targetName] == true
+    return targetName and CorruptedTotemsSet[targetName] == true
 end
 
 -- Immunity Functions
-function mb_isFireImmune()
+function MoronBox.Config.Tables.IsFireImmune()
     local targetName = UnitName("target")
-    return targetName and MB_fireImmuneSet[targetName] == true
+    return targetName and FireImmuneSet[targetName] == true
 end
 
-function mb_isFrostImmune()
+function MoronBox.Config.Tables.IsFrostImmune()
     local targetName = UnitName("target")
-    return targetName and MB_frostImmuneSet[targetName] == true
+    return targetName and FrostImmuneSet[targetName] == true
 end
 
 -- Boss Category Functions
-function mb_isNatureBoss()
-    return mb_tankTargetInSet(MB_NatureBossSet)
+function MoronBox.Config.Tables.IsNatureBoss()
+    return getRaid().TankTargetInSet(NatureBossSet)
 end
 
-function mb_isTremorBoss()
-    return mb_tankTargetInSet(MB_TremorBossSet)
+function MoronBox.Config.Tables.IsTremorBoss()
+    return getRaid().TankTargetInSet(TremorBossSet)
 end
 
-function mb_isGroundingBoss()
-    return mb_tankTargetInSet(MB_GroundingBossSet)
+function MoronBox.Config.Tables.IsGroundingBoss()
+    return getRaid().TankTargetInSet(GroundingBossSet)
 end
 
-function mb_isPoisonBoss()
-    return mb_tankTargetInSet(MB_PoisonBossSet)
+function MoronBox.Config.Tables.IsPoisonBoss()
+    return getRaid().TankTargetInSet(PoisonBossSet)
 end
 
-function mb_isFireBoss()
-    return mb_tankTargetInSet(MB_FireBossSet)
+function MoronBox.Config.Tables.IsFireBoss()
+    return getRaid().TankTargetInSet(FireBossSet)
 end
 
 -- Vendor Functions
-function mb_reagentVendors()
+function MoronBox.Config.Tables.ReagentVendors()
     local targetName = UnitName("target")
-    return targetName and MB_reagentVendorsSet[targetName] == true
+    return targetName and ReagentVendorsSet[targetName] == true
 end
 
-function mb_bossUseFAPon()
-    return mb_tankTargetInSet(MB_FAPBossSet)
+function MoronBox.Config.Tables.BossUseFAPon()
+    return getRaid().TankTargetInSet(FAPBossSet)
 end
 
---[####################################################################################################]--
---[######################################### COMPLEX LOGIC FUNCTIONS ################################]--
---[####################################################################################################]--
+-- [[ Complex Get Stunnable Mobs ]] --
 
--- Stunnable Mob Logic
-function mb_stunnableMob()
+function MoronBox.Config.Tables.StunnableMob()
     local targetName = UnitName("target")
     if not targetName then
         return false
@@ -719,7 +597,7 @@ function mb_stunnableMob()
     }
 
     for _, debuff in ipairs(stunDebuffs) do
-        if mb_hasBuffOrDebuff(debuff, "target", "debuff") then
+        if getAura().HasBuffOrDebuff(debuff, "target", "debuff") then
             return false
         end
     end
@@ -733,29 +611,31 @@ function mb_stunnableMob()
     }
 
     for _, name in ipairs(alwaysStun) do
-        if targetName == name then return true end
+        if targetName == name then
+            return true
+        end
     end
 
     -- Health-dependent stunning
-    local targetHealth = mb_healthPct("target")
+    local targetHealth = getUnit().HealthPct("target")
 
     if targetHealth < 0.6 then
         local hp60 = { "Plagued Champion", "Plagued Guardian" }
         for _, name in ipairs(hp60) do
-            if targetName == name then return true end
+            if targetName == name then
+                return true
+            end
         end
     end
 
     if targetHealth < 0.4 then
         local hp40 = { "Infectious Ghoul", "Spawn of Fankriss", "Plagued Ghoul" }
         for _, name in ipairs(hp40) do
-            if targetName == name then return true end
+            if targetName == name then
+                return true
+            end
         end
     end
 
     return false
 end
-
---[####################################################################################################]--
---[####################################################################################################]--
---[####################################################################################################]--

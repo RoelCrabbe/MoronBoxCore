@@ -100,7 +100,7 @@ local MyClassAlphabeticalOrder = mb_myClassAlphabeticalOrder
 local ReturnPlayerInRaidFromTable = mb_returnPlayerInRaidFromTable
 local SelfBuff = mb_selfBuff
 local SpellReady = mb_spellReady
-local TakePotionsWhenPossible = mb_takePotionsWhenPossible
+local PotionsWhenPossible = mb_takePotionsWhenPossible
 local TankTarget = mb_tankTarget
 local TankTargetHealth = mb_tankTargetHealth
 local TargetFromSpecificPlayer = mb_targetFromSpecificPlayer
@@ -185,14 +185,14 @@ local function TankHasMortalWound(targetId)
 end
 
 local function AnnounceMortalWound()
-    local focId = MBID[MB_raidLeader]
+    local focId = getCoreState().MBID[getConfigState().RaidLeader]
     if not focId then
         return
     end
 
     local targetName = UnitName(focId .. "target")
     if targetName == "Fankriss the Unyielding" and TankHasMortalWound(focId) then
-        CdAddonMessage(MB_RAID .. "FANKRISS", "TAUNT_BOSS", 30)
+        CdAddonMessage(getRaidId() .. "FANKRISS", "TAUNT_BOSS", 30)
     end
 end
 
@@ -209,7 +209,7 @@ local function UseStoneShieldPotsOnFankriss()
         return
     end
 
-    TakePotionsWhenPossible("Greater Stoneshield Potion")
+    PotionsWhenPossible("Greater Stoneshield Potion")
 end
 
 --[####################################################################################################]--
@@ -234,7 +234,7 @@ local function FANKRISS_CheckEncounter()
     end
 
     if inF then
-        CdAddonMessage(MB_RAID .. "FANKRISS", "ENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "FANKRISS", "ENGAGE", 30)
         FankrissEncounter.Active = true
         return true
     end
@@ -247,7 +247,7 @@ end
 --[####################################################################################################]--
 
 function FANKRISS:CHAT_MSG_ADDON()
-    if arg1 == MB_RAID .. "FANKRISS" then
+    if arg1 == getRaidId() .. "FANKRISS" then
         if arg2 == "ENGAGE" then
             CdRaidWarning(">> Fighting Fankriss! <<")
             self:OnEnable()
@@ -262,7 +262,7 @@ end
 
 function FANKRISS:CHAT_MSG_COMBAT_HOSTILE_DEATH()
     if string.find(arg1, "Fankriss the Unyielding dies") and FankrissEncounter.Active then
-        CdAddonMessage(MB_RAID .. "FANKRISS", "DISENGAGE", 30)
+        CdAddonMessage(getRaidId() .. "FANKRISS", "DISENGAGE", 30)
     end
 end
 
@@ -293,8 +293,8 @@ function FANKRISS_MageDPS(Mage)
         CastSpellByName("Fire Blast")
     end
 
-    if Mage[MB_mySpecc] then
-        Mage[MB_mySpecc](Mage)
+    if Mage[getConfigState().PlayerSpecc] then
+        Mage[getConfigState().PlayerSpecc](Mage)
     end
 
     return true
@@ -321,8 +321,8 @@ function FANKRISS_TargetingPreFocus()
     if FANKRISS_CheckEncounter() and MB_myFankrissBoxStrategy then
         local myFankrissOFFTANK = ReturnPlayerInRaidFromTable(MB_myFankrissOFFTANKS)
 
-        if (myName == myFankrissOFFTANK) and MB_raidLeader ~= myName then
-            MB_raidLeader = myName
+        if (myName == myFankrissOFFTANK) and getConfigState().RaidLeader ~= myName then
+            getConfigState().RaidLeader = myName
         end
 
         if not ImFocus() then

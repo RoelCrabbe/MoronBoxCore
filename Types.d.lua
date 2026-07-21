@@ -17,5 +17,6 @@
 --- @field DruidCasters table<number, string> Druids not currently in RaidTanks (i.e. not tanking).
 --- @field GroupID table<string, number> Player name -> group number (1-8).
 --- @field ClassList table<ClassName, table<number, string>> Class name -> alphabetically sorted array of player names.
+--- @field HealerList table<number, string> Alphabetically sorted array of healer names.
 --- @field WarriorTankInParty boolean Whether a Warrior tank from MB_tankList is present.
 --- @field DruidTankInParty boolean Whether a Druid tank from MB_tankList is present.

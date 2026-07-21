@@ -9,6 +9,7 @@
     ],
     "diagnostics.globals": [
         "UIParent",
+        "GossipFrame",
         "UIErrorsFrame",
         "TrinketMenu_MainFrame",
         "this",
