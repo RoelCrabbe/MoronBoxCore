@@ -1,7 +1,8 @@
 ## Interface: 11200
-## Title: MoronBoxCore by |cff00ccffMoRoN|r
-## Author: MoRoN
-## Notes: |cff00ccffMoronBoxCore|r is a advanced framework for MultiBoxers.
+## Title: MoronBoxCore by |cffDA70D6MoroN|r
+## Author: MoroN
+## Notes: |cffFF8000MoronBoxCore|r is an advanced framework for MultiBoxers.
+## Version: 3.1.0
 ## Dependencies: SuperMacro, Ace2
 
 ..\Ace2\AceLibrary\AceLibrary.lua
