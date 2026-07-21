@@ -621,7 +621,7 @@ function MoronBox.Core.Rotation.Cooldowns()
     end
 
     if UnitInRaid("player") then
-        if getUnit().InCombat("player") then
+        if getUnit().InCombat() then
             if not getConfigState().UseCooldowns.Active then
                 getApi().CdPrint("Sending out request to use Cooldowns.")
             else
@@ -660,7 +660,7 @@ function MoronBox.Core.Rotation.UseManualRecklessness()
     end
 
     if UnitInRaid("player") then
-        if getUnit().InCombat("player") then
+        if getUnit().InCombat() then
             if not getConfigState().UseBigCooldowns.Active then
                 getApi().CdPrint("Sending out request to use Recklessness.")
             else

@@ -602,7 +602,7 @@ function MoronBox.Core.Cons.UseLIP()
     end
 
     local aggrox = AceLibrary("Banzai-1.0")
-    if aggrox:GetUnitAggroByUnitId("player") and getUnit().HealthPct("player") <= 0.25 then
+    if aggrox:GetUnitAggroByUnitId("player") and getUnit().HealthPct() <= 0.25 then
         getCons().PotionsWhenPossible("Limited Invulnerability Potion")
     end
 end

@@ -93,7 +93,7 @@ function MoronBox.Core.Water.MakeWater()
         return
     end
 
-    if getUnit().ManaPct("player") > 0.8 and getAura().HasBuffNamed("Drink", "player") then
+    if getUnit().ManaPct() > 0.8 and getAura().HasBuffNamed("Drink", "player") then
         DoEmote("Stand")
         return
     end
@@ -117,7 +117,7 @@ function MoronBox.Core.Water.MakeWater()
 end
 
 function MoronBox.Core.Water.SmartDrink()
-    if getUnit().ManaPct("player") > 0.99 and getAura().HasBuffNamed("Drink", "player") then
+    if getUnit().ManaPct() > 0.99 and getAura().HasBuffNamed("Drink", "player") then
         DoEmote("Stand")
         return
     end
