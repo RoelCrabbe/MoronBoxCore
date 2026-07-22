@@ -82,11 +82,12 @@ local function AssignHealerToName(assignments)
 
     if getRaid().ImFocus() then
         if (assignedTarget == "Reset" or assignedTarget == "reset") then
-            getApi().CdMessage("Unassigned " .. healerName .. " from healing a specific player.")
+            getApi().CdMessage("Unassigned " .. getApi().GetColors(healerName) .. " from healing a specific player.")
             return
         end
 
-        getApi().CdMessage("Assigned " .. healerName .. " to heal " .. assignedTarget .. ".")
+        getApi().CdMessage("Assigned " ..
+            getApi().GetColors(healerName) .. " to heal " .. getApi().GetColors(assignedTarget) .. ".")
     end
 
     if myName == healerName then
@@ -559,7 +560,8 @@ EventFrame:SetScript("OnEvent", function()
             MoronBox.DelayExecutionOrder({
                 function()
                     getApi().CdMessage(
-                        "Unassigning myself from healing " .. currentTarget .. " shortly (" .. resetTime .. "s).")
+                        "Unassigning myself from healing " ..
+                        getApi().GetColors(currentTarget) .. " shortly (" .. resetTime .. "s).")
                 end,
 
                 function()

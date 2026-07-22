@@ -43,7 +43,7 @@ end
 function MoronBox.Debugger.Log(level, message)
     if not DebuggerState.Enabled then return end
 
-    local source = getDebugger().GetShortStack()
+    local source = debugstack(1, 12, 10) -- getDebugger().GetShortStack()
     local key = level .. ":" .. source .. ":" .. message
 
     -- Discard duplicates to prevent chat spam

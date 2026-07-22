@@ -306,11 +306,54 @@ function MoronBox.ExecuteSequenced(func, delay)
     end)
 end
 
+--- @class MoronBoxCoreHook : Frame
+--- @field func function
+--- @field foundConfig boolean
+--- @field hookedUpdate boolean
+
+--- Executes a function once MoronBoxCore is fully loaded and its boot sequence is complete.
+--- @param func function: The logic to execute.
+function MoronBox.HookCore(func)
+    local lurker = CreateFrame("Frame", nil) --[[@as MoronBoxCoreHook]]
+    lurker.func = func
+    lurker:RegisterEvent("ADDON_LOADED")
+    lurker:RegisterEvent("VARIABLES_LOADED")
+    lurker:RegisterEvent("PLAYER_ENTERING_WORLD")
+    lurker:SetScript("OnEvent", function()
+        local f = this --[[@as MoronBoxCoreHook]]
+
+        if event == "ADDON_LOADED" and not f.foundConfig then
+            return
+        elseif event == "VARIABLES_LOADED" then
+            f.foundConfig = true
+        end
+
+        if IsAddOnLoaded("MoronBoxCore") or _G["MoronBoxCore"] then
+            if MoronBox and MoronBox.BootUp then
+                if not f.hookedUpdate then
+                    f.hookedUpdate = true
+                    f:SetScript("OnUpdate", function()
+                        local uf = this --[[@as MoronBoxCoreHook]]
+                        if not MoronBox.BootUp then
+                            uf:SetScript("OnUpdate", nil)
+                            uf:func()
+                            uf:UnregisterAllEvents()
+                        end
+                    end)
+                end
+                return
+            end
+
+            f:func()
+            f:UnregisterAllEvents()
+        end
+    end)
+end
+
 MoronBox:SetScript("OnEvent", function()
     -- Only act when our specific addon is fully loaded by the client
     if event == "ADDON_LOADED" and arg1 == "MoronBoxCore" then
         MoronBox:UpdateModules()
-        MoronBox.BootUp = nil
 
         MoronBox.DelayExecutionOrder({
             -- Task 1
@@ -332,6 +375,12 @@ MoronBox:SetScript("OnEvent", function()
                 DEFAULT_CHAT_FRAME:AddMessage(
                     "|cffFF8000MoronBox: |r|cff00ff00Scripts loaded succesfully. |cffffffffIssues? Let me know!", 1, 1, 1)
                 UIErrorsFrame:Hide()
+            end,
+
+            -- Tasnk 3
+            function()
+                -- No extentions can load
+                MoronBox.BootUp = nil
             end
         }, 0.25)
     elseif event == "PLAYER_LOGIN" then

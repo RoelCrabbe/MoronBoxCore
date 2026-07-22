@@ -80,7 +80,7 @@ function MoronBox.Core.CrowdControl.AssignCrowdControl()
         end
 
         local list = getCoreState().ClassList[className]
-        local num = getApi().TableLength(list)
+        local num = getApi().ArrayLength(list)
 
         if num > 0 then
             getApi().SendAddonMessage(getRaidId() .. "_CC", list[state.CurrentCC[className]])
@@ -145,7 +145,7 @@ function MoronBox.Core.CrowdControl.AssignFear()
 
     local className = "Warlock"
     local locks = getCoreState().ClassList[className]
-    local num_locks = getApi().TableLength(locks)
+    local num_locks = getApi().ArrayLength(locks)
 
     if num_locks > 0 then
         getApi().SendAddonMessage(getRaidId() .. "_FEAR", locks[getConfigState().CurrentFear[className]])
@@ -163,7 +163,7 @@ function MoronBox.Core.CrowdControl.AssignOffTank()
     end
 
     local tanks = getCoreState().AssignableTanks
-    local num_tanks = getApi().TableLength(tanks)
+    local num_tanks = getApi().ArrayLength(tanks)
 
     if not getRaid().ImFocus() or num_tanks == 0 then
         return
@@ -201,7 +201,7 @@ function MoronBox.Core.CrowdControl.AssignInterrupt()
 
     local function AssignInt(className)
         local list = getCoreState().ClassList[className]
-        local num = getApi().TableLength(list)
+        local num = getApi().ArrayLength(list)
 
         if num > 0 then
             getApi().SendAddonMessage(getRaidId() .. "_INT", list[getConfigState().CurrentInterrupt[className]])
@@ -209,8 +209,8 @@ function MoronBox.Core.CrowdControl.AssignInterrupt()
         end
     end
 
-    local hasRogue = getApi().TableLength(getCoreState().ClassList["Rogue"]) > 0
-    local hasShaman = getApi().TableLength(getCoreState().ClassList["Shaman"]) > 0
+    local hasRogue = getApi().ArrayLength(getCoreState().ClassList["Rogue"]) > 0
+    local hasShaman = getApi().ArrayLength(getCoreState().ClassList["Shaman"]) > 0
 
     if hasRogue then
         AssignInt("Rogue")
@@ -224,9 +224,9 @@ function MoronBox.Core.CrowdControl.AssignInterrupt()
         AssignInt("Mage")
     end
 
-    if (getApi().TableLength(getCoreState().ClassList["Rogue"]) +
-            getApi().TableLength(getCoreState().ClassList["Shaman"]) +
-            getApi().TableLength(getCoreState().ClassList["Mage"])) == 0 then
+    if (getApi().ArrayLength(getCoreState().ClassList["Rogue"]) +
+            getApi().ArrayLength(getCoreState().ClassList["Shaman"]) +
+            getApi().ArrayLength(getCoreState().ClassList["Mage"])) == 0 then
         getApi().CdPrint("No interrupters available")
     end
 end
