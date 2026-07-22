@@ -42,4 +42,12 @@
     <Include file="..\Modules\Encounters\MoltenCore\Majordomo.lua" />
     <Include file="..\Modules\Encounters\MoltenCore\Garr.lua" />
     <Include file="..\Modules\Encounters\MoltenCore\Geddon.lua" />
+    <!-- Zul Gurub -->
+    <Include file="..\Modules\Encounters\ZulGurub\Jeklik.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Venoxis.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Marli.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Arlokk.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Mandokir.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Jindo.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Thekal.lua" />
 </Ui>

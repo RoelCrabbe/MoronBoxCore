@@ -1,31 +1,37 @@
--- [[ Gehennas Bossing Logic ]] --
+-- [[ Jeklik Bossing Logic ]] --
 
 -- Bossname
-local BOSS_KEY = "Gehennas"
+local BOSS_KEY = "Jeklik"
 
 -- Values for internal begind the scene logic. Like addon messages and table lookups
 local ENCOUNTER_KEY = string.upper(string.gsub(BOSS_KEY, " ", "_"))
 local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
 -- Initalize
-MoronBox.Core.Bosses.Gehennas = MoronBox.Core.Bosses.Gehennas or {}
+MoronBox.Core.Bosses.Jeklik = MoronBox.Core.Bosses.Jeklik or {}
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
-    local FreeActionPotsStrategy = true
-    local FirePotsStrategy = false
+    local FirePotsStrategy = true
 
     getBosses().Register(ENCOUNTER_KEY, {
-        boss        = { "Gehennas" },
-        guardians   = { "Flamewaker" },
-        onEngage    = function() getApi().CdRaidWarning(">> Fighting Gehennas <<") end,
-        onDisengage = function() getApi().CdRaidWarning(">> Gehennas Defeated <<") end,
-        onActive    = function()
-            if FreeActionPotsStrategy and (getCore().ImTank() or getCore().ImMeleeDPS()) then
-                getCons().PotionsWhenPossible("Free Action Potion")
+        boss                = { "High Priestess Jeklik" },
+        guardians           = { "Bloodseeker Bat" },
+        onEngage            = function() getApi().CdRaidWarning(">> Fighting Jeklik <<") end,
+        onDisengage         = function() getApi().CdRaidWarning(">> Jeklik Defeated <<") end,
+        disableHitDetection = true,
+        onBossYell          = function(arg1)
+            if string.find(arg1, "Lord Hir'eek, grant me wings of vengance!") then
+                getBosses().StartEncounter(ENCOUNTER_KEY)
+            elseif string.find(arg1, "Finally ...death. Curse you Hakkar! Curse you!") then
+                getBosses().EndEncounter(ENCOUNTER_KEY)
             end
+        end,
+        onActive            = function()
+            getBuffs().RequestFearWard()
+            getBuffs().ProcessFearWard()
 
-            if FirePotsStrategy and (getCore().ImHealer() or getCore().ImRangedDPS()) then
+            if FirePotsStrategy then
                 getCons().PotionsWhenPossible("Greater Fire Protection Potion")
             end
         end
@@ -60,6 +66,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             getBosses().ExecuteActive(ENCOUNTER_KEY)
 
+            local targetName = UnitName("target")
+
             if getCore().ImTank() then
                 if not TargetNearestDistanceChanged then
                     SetCVar("targetNearestDistance", "10")
@@ -68,7 +76,19 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
                 getRaid().GetTargetNotOnTank()
                 return true
-            elseif getCore().ImRangedDPS() or getCore().ImMeleeDPS() or getCore().ImHealer() then
+            elseif getCore().ImMeleeDPS() then
+                getRaid().AssistFocus()
+                return true
+            elseif getCore().ImRangedDPS() or getCore().ImHealer() then
+                for _ = 1, 3 do
+                    if targetName == "Bloodseeker Bat" and getUnit().InCombat("target")
+                        and not getUnit().IsDead("target") then
+                        return true
+                    end
+
+                    TargetNearestEnemy()
+                end
+
                 getRaid().AssistFocus()
                 return true
             end
@@ -76,16 +96,16 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
     })
 end, function()
-    return Instance.MC()
+    return Instance.ZG()
 end)
 
-function MoronBox.Core.Bosses.Gehennas.TargetingPreFocus()
+function MoronBox.Core.Bosses.Jeklik.TargetingPreFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPreFocus then
         return MoronBox.Registry[MODULE_NAME].TargetingPreFocus()
     end
 end
 
-function MoronBox.Core.Bosses.Gehennas.TargetingPostFocus()
+function MoronBox.Core.Bosses.Jeklik.TargetingPostFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPostFocus then
         return MoronBox.Registry[MODULE_NAME].TargetingPostFocus()
     end

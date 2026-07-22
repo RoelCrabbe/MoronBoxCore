@@ -15,26 +15,34 @@ function MoronBox.Core.Bosses.Register(name, config)
 
     local BOSS_EVENTS = {
         "CHAT_MSG_ADDON",
-        "CHAT_MSG_COMBAT_HOSTILE_DEATH",
-        "CHAT_MSG_MONSTER_YELL",
         "PLAYER_REGEN_ENABLED",
-        "CHAT_MSG_COMBAT_SELF_HITS",
-        "CHAT_MSG_COMBAT_SELF_MISSES",
-        "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS",
-        "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES",
-        "CHAT_MSG_SPELL_SELF_DAMAGE",
-        "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE",
     }
 
+    if config.onBossYell then
+        table.insert(BOSS_EVENTS, "CHAT_MSG_MONSTER_YELL")
+    end
+
+    if (not config.onBossYell) or config.overrideDetectDeath then
+        table.insert(BOSS_EVENTS, "CHAT_MSG_COMBAT_HOSTILE_DEATH")
+    end
+
+    if not config.disableHitDetection then
+        local HIT_EVENTS = {
+            "CHAT_MSG_COMBAT_SELF_HITS",
+            "CHAT_MSG_COMBAT_SELF_MISSES",
+            "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS",
+            "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES",
+            "CHAT_MSG_SPELL_SELF_DAMAGE",
+            "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE",
+        }
+
+        for _, evt in ipairs(HIT_EVENTS) do
+            table.insert(BOSS_EVENTS, evt)
+        end
+    end
     do
         for _, evt in ipairs(BOSS_EVENTS) do
-            if config.onBossYell and evt == "CHAT_MSG_COMBAT_HOSTILE_DEATH" then
-                -- Skip
-            elseif not config.onBossYell and evt == "CHAT_MSG_MONSTER_YELL" then
-                -- Skip
-            else
-                BossDispatch:RegisterEvent(evt)
-            end
+            BossDispatch:RegisterEvent(evt)
         end
     end
 
@@ -54,21 +62,17 @@ function MoronBox.Core.Bosses.Register(name, config)
 
     session.doEngage = doEngage
 
-    local function doDisengage()
+    local function doDeath()
+        session.Dead = true
+
         if session.Active then
             session.Active = false
             if config.onDisengage then
                 config.onDisengage()
             end
         end
-    end
 
-    session.doDisengage = doDisengage
-
-    local function doDeath()
-        session.Dead = true
         BossDispatch:UnregisterAllEvents()
-        doDisengage()
     end
 
     session.doDeath = doDeath
@@ -78,13 +82,13 @@ function MoronBox.Core.Bosses.Register(name, config)
             return
         end
 
-        doDisengage()
+        if session.Active then
+            session.Active = false
+        end
     end
 
-    session.doReset = doReset
-
     local function onYellMsg()
-        if session.Active and config.onBossYell then
+        if config.onBossYell then
             config.onBossYell(arg1)
         end
     end
@@ -176,6 +180,14 @@ function MoronBox.Core.Bosses.ExecuteActive(name)
     local session = LoadedBossModules[name]
     if session ~= nil and session.Active and session.config.onActive then
         session.config.onActive()
+    end
+end
+
+function MoronBox.Core.Bosses.StartEncounter(name)
+    local session = LoadedBossModules[name]
+    if session ~= nil and not session.Active and session.doEngage then
+        getApi().CdAddonMessage("MB_ENCOUNTER_" .. name, "ENGAGE", 30)
+        session.doEngage()
     end
 end
 

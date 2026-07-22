@@ -16,7 +16,7 @@ function MoronBox.Core.Dispel.Decurse()
     end
 
     if Instance.ZG() then
-        if getRaid().IsAtJindo() and (myClass == "Mage" or myClass == "Druid") then
+        if getBosses().Jindo.IsAtJindo() and (myClass == "Mage" or myClass == "Druid") then
             return false
         end
     elseif Instance.BWL() then

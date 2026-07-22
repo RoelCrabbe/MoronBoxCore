@@ -1,30 +1,28 @@
--- [[ Lucifron Bossing Logic ]] --
+-- [[ Mandokir Bossing Logic ]] --
 
 -- Bossname
-local BOSS_KEY = "Lucifron"
+local BOSS_KEY = "Mandokir"
 
 -- Values for internal begind the scene logic. Like addon messages and table lookups
 local ENCOUNTER_KEY = string.upper(string.gsub(BOSS_KEY, " ", "_"))
 local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
 -- Initalize
-MoronBox.Core.Bosses.Lucifron = MoronBox.Core.Bosses.Lucifron or {}
+MoronBox.Core.Bosses.Mandokir = MoronBox.Core.Bosses.Mandokir or {}
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
-    local ShadowPotsStrategy = false
 
     getBosses().Register(ENCOUNTER_KEY, {
-        boss        = { "Lucifron" },
-        guardians   = { "Flamewaker Protector" },
-        onEngage    = function() getApi().CdRaidWarning(">> Fighting Lucifron <<") end,
-        onDisengage = function() getApi().CdRaidWarning(">> Lucifron Defeated <<") end,
-        onActive    = function()
-            getBuffs().RequestFearWard()
-            getBuffs().ProcessFearWard()
-
-            if ShadowPotsStrategy then
-                getCons().PotionsWhenPossible("Greater Shadow Protection Potion")
+        boss                = { "Bloodlord Mandokir" },
+        guardians           = { "Ohgan" },
+        onEngage            = function() getApi().CdRaidWarning(">> Fighting Mandokir <<") end,
+        onDisengage         = function() getApi().CdRaidWarning(">> Mandokir Defeated <<") end,
+        disableHitDetection = true,
+        overrideDetectDeath = true,
+        onBossYell          = function(arg1)
+            if string.find(arg1, "I'll feed your souls to Hakkar himself!") then
+                getBosses().StartEncounter(ENCOUNTER_KEY)
             end
         end
     })
@@ -32,21 +30,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local TargetNearestDistanceChanged = false
 
     MoronBox:RegisterExpose({
-        TargetingPreFocus = function()
-            if not BoxStrategy then
-                return false
-            end
-
-            if not getBosses().IsActive(ENCOUNTER_KEY) then
-                return false
-            end
-
-            if not getRaid().ImFocus() then
-                return false
-            end
-
-            getBosses().ExecuteActive(ENCOUNTER_KEY)
-        end,
         TargetingPostFocus = function()
             if not BoxStrategy then
                 return false
@@ -74,16 +57,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
     })
 end, function()
-    return Instance.MC()
+    return Instance.ZG()
 end)
 
-function MoronBox.Core.Bosses.Lucifron.TargetingPreFocus()
-    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPreFocus then
-        return MoronBox.Registry[MODULE_NAME].TargetingPreFocus()
-    end
-end
-
-function MoronBox.Core.Bosses.Lucifron.TargetingPostFocus()
+function MoronBox.Core.Bosses.Mandokir.TargetingPostFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPostFocus then
         return MoronBox.Registry[MODULE_NAME].TargetingPostFocus()
     end

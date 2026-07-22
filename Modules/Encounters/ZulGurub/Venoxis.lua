@@ -1,30 +1,32 @@
--- [[ Lucifron Bossing Logic ]] --
+-- [[ Venoxis Bossing Logic ]] --
 
 -- Bossname
-local BOSS_KEY = "Lucifron"
+local BOSS_KEY = "Venoxis"
 
 -- Values for internal begind the scene logic. Like addon messages and table lookups
 local ENCOUNTER_KEY = string.upper(string.gsub(BOSS_KEY, " ", "_"))
 local MODULE_NAME = "MODULE_" .. ENCOUNTER_KEY
 
 -- Initalize
-MoronBox.Core.Bosses.Lucifron = MoronBox.Core.Bosses.Lucifron or {}
+MoronBox.Core.Bosses.Venoxis = MoronBox.Core.Bosses.Venoxis or {}
 
 MoronBox:RegisterModule(MODULE_NAME, function()
     local BoxStrategy = true
-    local ShadowPotsStrategy = false
+    local NaturePotsStrategy = false
 
     getBosses().Register(ENCOUNTER_KEY, {
-        boss        = { "Lucifron" },
-        guardians   = { "Flamewaker Protector" },
-        onEngage    = function() getApi().CdRaidWarning(">> Fighting Lucifron <<") end,
-        onDisengage = function() getApi().CdRaidWarning(">> Lucifron Defeated <<") end,
+        boss        = { "High Priest Venoxis" },
+        guardians   = { "Razzashi Cobra" },
+        onEngage    = function() getApi().CdRaidWarning(">> Fighting Venoxis <<") end,
+        onDisengage = function() getApi().CdRaidWarning(">> Venoxis Defeated <<") end,
+        onBossYell  = function(arg1)
+            if string.find(arg1, "Ssserenity..at lassst!") then
+                getBosses().EndEncounter(ENCOUNTER_KEY)
+            end
+        end,
         onActive    = function()
-            getBuffs().RequestFearWard()
-            getBuffs().ProcessFearWard()
-
-            if ShadowPotsStrategy then
-                getCons().PotionsWhenPossible("Greater Shadow Protection Potion")
+            if NaturePotsStrategy then
+                getCons().PotionsWhenPossible("Greater Nature Protection Potion")
             end
         end
     })
@@ -32,21 +34,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local TargetNearestDistanceChanged = false
 
     MoronBox:RegisterExpose({
-        TargetingPreFocus = function()
-            if not BoxStrategy then
-                return false
-            end
-
-            if not getBosses().IsActive(ENCOUNTER_KEY) then
-                return false
-            end
-
-            if not getRaid().ImFocus() then
-                return false
-            end
-
-            getBosses().ExecuteActive(ENCOUNTER_KEY)
-        end,
         TargetingPostFocus = function()
             if not BoxStrategy then
                 return false
@@ -58,6 +45,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             getBosses().ExecuteActive(ENCOUNTER_KEY)
 
+            local targetName = UnitName("target")
+
             if getCore().ImTank() then
                 if not TargetNearestDistanceChanged then
                     SetCVar("targetNearestDistance", "10")
@@ -67,6 +56,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 getRaid().GetTargetNotOnTank()
                 return true
             elseif getCore().ImRangedDPS() or getCore().ImMeleeDPS() or getCore().ImHealer() then
+                for _ = 1, 3 do
+                    if targetName == "Razzashi Cobra" and not getUnit().IsDead("target")
+                        and not GetRaidTargetIndex("target") then
+                        return true
+                    end
+
+                    TargetNearestEnemy()
+                end
+
                 getRaid().AssistFocus()
                 return true
             end
@@ -74,16 +72,10 @@ MoronBox:RegisterModule(MODULE_NAME, function()
         end
     })
 end, function()
-    return Instance.MC()
+    return Instance.ZG()
 end)
 
-function MoronBox.Core.Bosses.Lucifron.TargetingPreFocus()
-    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPreFocus then
-        return MoronBox.Registry[MODULE_NAME].TargetingPreFocus()
-    end
-end
-
-function MoronBox.Core.Bosses.Lucifron.TargetingPostFocus()
+function MoronBox.Core.Bosses.Venoxis.TargetingPostFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPostFocus then
         return MoronBox.Registry[MODULE_NAME].TargetingPostFocus()
     end
