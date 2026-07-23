@@ -138,8 +138,8 @@ local function SpecialRotation()
             getSpells().OrbControlling()
             return true
         end
-    elseif Instance.ZG() and getRaid().TankTarget("Bloodlord Mandokir") then
-        if getAura().MandokirGaze() then
+    elseif Instance.ZG() and getBosses().Mandokir.IsAtMandokir() then
+        if getBosses().Mandokir.ClearGaze() then
             return true
         end
     elseif Instance.AQ20() and getRaid().TankTarget("Moam") then
@@ -610,8 +610,8 @@ function MoronBox.Core.Rotation.Cooldowns()
         return
     end
 
-    if Instance.ZG() then
-        if getAura().MandokirGaze() then
+    if Instance.ZG() and getBosses().Mandokir.IsAtMandokir() then
+        if getBosses().Mandokir.ClearGaze() then
             return
         end
     end
@@ -645,8 +645,8 @@ function MoronBox.Core.Rotation.UseManualRecklessness()
         return
     end
 
-    if Instance.ZG() then
-        if getAura().MandokirGaze() then
+    if Instance.ZG() and getBosses().Mandokir.IsAtMandokir() then
+        if getBosses().Mandokir.ClearGaze() then
             return
         end
     end
@@ -938,8 +938,8 @@ function MoronBox.Core.Rotation.TankShoot()
         return
     end
 
-    if Instance.ZG() and getRaid().TankTarget("Bloodlord Mandokir") then
-        if getAura().MandokirGaze() then
+    if Instance.ZG() and getBosses().Mandokir.IsAtMandokir() then
+        if getBosses().Mandokir.ClearGaze() then
             return
         end
     end
@@ -974,8 +974,8 @@ function MoronBox.Core.Rotation.ManualTaunt()
         return
     end
 
-    if Instance.ZG() and getRaid().TankTarget("Bloodlord Mandokir") then
-        if getAura().MandokirGaze() then
+    if Instance.ZG() and getBosses().Mandokir.IsAtMandokir() then
+        if getBosses().Mandokir.ClearGaze() then
             return
         end
     end

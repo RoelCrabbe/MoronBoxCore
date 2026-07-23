@@ -16,8 +16,8 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     getBosses().Register(ENCOUNTER_KEY, {
         boss                = { "Jin'do the Hexxer" },
         guardians           = { "Shade of Jin'do", "Powerful Healing Ward", "Brain Wash Totem" },
-        onEngage            = function() getApi().CdRaidWarning(">> Fighting Mandokir <<") end,
-        onDisengage         = function() getApi().CdRaidWarning(">> Mandokir Defeated <<") end,
+        onEngage            = function() getApi().CdRaidWarning(">> Fighting Jin'do <<") end,
+        onDisengage         = function() getApi().CdRaidWarning(">> Jin'do Defeated <<") end,
         disableHitDetection = true,
         overrideDetectDeath = true,
         onBossYell          = function(arg1)

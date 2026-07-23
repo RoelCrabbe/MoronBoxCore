@@ -30,12 +30,15 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local TargetNearestDistanceChanged = false
 
     MoronBox:RegisterExpose({
-        TargetingPostFocus = function()
+        IsAtMandokir = function()
             if not BoxStrategy then
                 return false
             end
 
-            if not getBosses().IsActive(ENCOUNTER_KEY) then
+            return getBosses().IsActive(ENCOUNTER_KEY)
+        end,
+        TargetingPostFocus = function()
+            if not getBosses().Mandokir.IsAtMandokir() then
                 return false
             end
 
@@ -54,14 +57,38 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             end
             return false
+        end,
+        ClearGaze = function()
+            if not getAura().HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
+                return false
+            end
+
+            if getSpells().ImBusy() then
+                SpellStopCasting()
+            end
+
+            TargetUnit("player")
+            return true
         end
     })
 end, function()
     return Instance.ZG()
 end)
 
+function MoronBox.Core.Bosses.Mandokir.IsAtMandokir()
+    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].IsAtMandokir then
+        return MoronBox.Registry[MODULE_NAME].IsAtMandokir()
+    end
+end
+
 function MoronBox.Core.Bosses.Mandokir.TargetingPostFocus()
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].TargetingPostFocus then
         return MoronBox.Registry[MODULE_NAME].TargetingPostFocus()
+    end
+end
+
+function MoronBox.Core.Bosses.Mandokir.ClearGaze()
+    if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].ClearGaze then
+        return MoronBox.Registry[MODULE_NAME].ClearGaze()
     end
 end
