@@ -110,9 +110,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             getSpells().SelfBuff("Aspect of the Hawk")
         end
 
-        if Instance.NAXX() and GLUTH_IsAtGluth() then
-            FreezingTrap()
-        elseif Instance.AQ40() and getAura().HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+        if Instance.AQ40() and getAura().HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
             ClearTarget()
             return
         elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and getRaid().IsAtNefarianPhase() then
@@ -120,7 +118,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 ClearTarget()
                 return
             end
-        elseif Instance.ZG() and getRaid().TankTarget("Hakkar") then
+        elseif Instance.ZG() and getBosses().Hakkar.IsAtHakkar() then
             if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
                 ClearTarget()
                 return

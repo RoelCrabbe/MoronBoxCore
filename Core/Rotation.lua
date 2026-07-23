@@ -61,13 +61,13 @@ function MoronBox.Core.Rotation.ExecuteRotation(rotationType)
 end
 
 function MoronBox.Core.Rotation.HealerJindo(spellName)
-    if Instance.ZG() and getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
-        if UnitName("target") == "Shade of Jin'do" and not getUnit().IsDead("target") then
-            CastSpellByName(spellName)
+    if Instance.ZG() and getBosses().Jindo.IsAtJindo() then
+        if getAura().HasBuffOrDebuff("Delusions of Jin'do", "player", "debuff") then
+            if UnitName("target") == "Shade of Jin'do" and not getUnit().IsDead("target") then
+                CastSpellByName(spellName)
+            end
         end
-        return true
     end
-    return false
 end
 
 -- [[ Invites & Summons ]] --
@@ -437,7 +437,7 @@ local function SpecialHealAndTankClass()
 end
 
 local function SpecialHealAndTankSituation()
-    if Instance.ZG() and myClass == "Mage" and getRaid().TankTarget("Hakkar") then
+    if Instance.ZG() and myClass == "Mage" and getBosses().Hakkar.IsAtHakkar() then
         if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
             ClearTarget()
             return true
@@ -450,7 +450,7 @@ local function SpecialHealAndTankSituation()
         end
 
         if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
-            getRaid().CrowdControlMCedRaidMemberHakkar()
+            return getBosses().Hakkar.CrowdControlMCedRaidMember()
         end
     elseif Instance.AQ40() and SKERAM_InFight() and SKERAM_BoxStrategyEnabled() then
         if SKERAM_CrowdControl() then

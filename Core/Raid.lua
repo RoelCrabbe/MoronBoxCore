@@ -595,10 +595,6 @@ function MoronBox.Core.Raid.CrowdControlMCedRaidMember(debuffName, message)
     return false
 end
 
-function MoronBox.Core.Raid.CrowdControlMCedRaidMemberHakkar()
-    return getRaid().CrowdControlMCedRaidMember("Mind Control", "Sheeping")
-end
-
 function MoronBox.Core.Raid.CrowdControlMCedRaidMemberNefarian()
     return getRaid().CrowdControlMCedRaidMember("Shadow Command", "Sheeping")
 end

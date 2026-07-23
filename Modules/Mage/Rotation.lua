@@ -406,7 +406,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
                 getRaid().CrowdControlMCedRaidMemberNefarian()
             end
-        elseif Instance.ZG() and getRaid().TankTarget("Hakkar") then
+        elseif Instance.ZG() and getBosses().Hakkar.IsAtHakkar() then
             if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
                 ClearTarget()
                 return
@@ -419,7 +419,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             if getCore().MyClassAlphabeticalOrder() == getConfigState().SheepingMageNr then
-                getRaid().CrowdControlMCedRaidMemberHakkar()
+                return getBosses().Hakkar.CrowdControlMCedRaidMember()
             end
         end
 

@@ -50,4 +50,5 @@
     <Include file="..\Modules\Encounters\ZulGurub\Mandokir.lua" />
     <Include file="..\Modules\Encounters\ZulGurub\Jindo.lua" />
     <Include file="..\Modules\Encounters\ZulGurub\Thekal.lua" />
+    <Include file="..\Modules\Encounters\ZulGurub\Hakkar.lua" />
 </Ui>
