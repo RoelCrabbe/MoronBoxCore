@@ -67,7 +67,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             local member = getBuffs().GetMemberForGroup(SpiritPriests, group, RACE_MODULE, SPIRIT_MANA_COST)
 
             if not member then
-                getDebugger().WarnMsg("No " .. CLASS_MODULE .. " found")
+                getApi().CdPrint("No valid " .. CLASS_MODULE .. " found")
                 return
             end
 
@@ -232,7 +232,6 @@ end)
 -- Direct group access → No need to search all groups for targets
 
 -- [[ Macro Entry Points ]] --
----@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestSpirit()

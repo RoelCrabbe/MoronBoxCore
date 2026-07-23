@@ -58,7 +58,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 FEARWARD_MANA_COST)
 
             if not member then
-                getDebugger().WarnMsg("No " .. CLASS_MODULE .. " found")
+                getApi().CdPrint("No valid " .. CLASS_MODULE .. " found")
                 return
             end
 
@@ -97,7 +97,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     ClearTarget()
                 end
 
-                getApi().CdMessage(spellName .. " on " .. UnitName(targetUnitId) .. "!")
+                getApi().CdMessage(spellName .. " on " .. getApi().GetColors(UnitName(targetUnitId)) .. "!")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()
@@ -116,11 +116,12 @@ end, function()
 end)
 
 -- [[ Macro Entry Points ]] --
----@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestFearWard()
-    if Faction.IsHorde() then return end
+    if Faction.IsHorde() then
+        return
+    end
 
     if MoronBox.Registry[MODULE_NAME] and MoronBox.Registry[MODULE_NAME].Request then
         MoronBox.Registry[MODULE_NAME].Request()

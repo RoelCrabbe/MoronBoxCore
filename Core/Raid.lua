@@ -440,7 +440,7 @@ function MoronBox.Core.Raid.AutoAssignBanishOnMoam()
         return
     end
 
-    for i = 1, 5 do
+    for _ = 1, 5 do
         if UnitName("target") == "Mana Fiend" and not GetRaidTargetIndex("target")
             and not getUnit().IsDead("target") then
             getCrowdControl().AssignCrowdControl()

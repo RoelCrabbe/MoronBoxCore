@@ -45,7 +45,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
 
             getBosses().ExecuteActive(ENCOUNTER_KEY)
 
-            local targetName = UnitName("target")
 
             if getCore().ImTank() then
                 if not TargetNearestDistanceChanged then
@@ -57,7 +56,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 return true
             elseif getCore().ImRangedDPS() or getCore().ImMeleeDPS() or getCore().ImHealer() then
                 for _ = 1, 3 do
-                    if targetName == "Razzashi Cobra" and not getUnit().IsDead("target")
+                    if UnitName("target") == "Razzashi Cobra" and not getUnit().IsDead("target")
                         and not GetRaidTargetIndex("target") then
                         return true
                     end

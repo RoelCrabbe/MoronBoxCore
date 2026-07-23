@@ -79,7 +79,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 POWER_INFUSION_MANA_COST)
 
             if not member then
-                getDebugger().WarnMsg("No " .. CLASS_MODULE .. " found")
+                getApi().CdPrint("No valid " .. CLASS_MODULE .. " found")
                 return
             end
 
@@ -118,7 +118,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                     ClearTarget()
                 end
 
-                getApi().CdMessage(spellName .. " on " .. UnitName(targetUnitId) .. "!")
+                getApi().CdMessage(spellName .. " on " .. getApi().GetColors(UnitName(targetUnitId)) .. "!")
                 CastSpellByName(spellName, nil)
                 SpellTargetUnit(targetUnitId)
                 SpellStopTargeting()
@@ -292,7 +292,6 @@ end)
 -- Direct group access → No need to search all groups for targets
 
 -- [[ Macro Entry Points ]] --
----@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestPowerInfusion()
