@@ -223,24 +223,6 @@ end
 
 -- [[ Encounters ]] --
 
-local JindoTargets = {
-    ["Powerful Healing Ward"] = true,
-    ["Shade of Jin'do"] = true,
-    ["Jin'do the Hexxer"] = true,
-    ["Brain Wash Totem"] = true
-}
-
-function MoronBox.Core.Raid.IsAtJindo()
-    for name in pairs(JindoTargets) do
-        if getRaid().TankTarget(name) then
-            return true
-        end
-    end
-
-    local targetName = UnitName("target")
-    return targetName ~= nil and JindoTargets[targetName] == true
-end
-
 local NothTargets = {
     ["Noth the Plaguebringer"] = true,
     ["Plagued Warrior"] = true,
@@ -458,7 +440,7 @@ function MoronBox.Core.Raid.AutoAssignBanishOnMoam()
         return
     end
 
-    for i = 1, 5 do
+    for _ = 1, 5 do
         if UnitName("target") == "Mana Fiend" and not GetRaidTargetIndex("target")
             and not getUnit().IsDead("target") then
             getCrowdControl().AssignCrowdControl()
@@ -611,10 +593,6 @@ function MoronBox.Core.Raid.CrowdControlMCedRaidMember(debuffName, message)
         end
     end
     return false
-end
-
-function MoronBox.Core.Raid.CrowdControlMCedRaidMemberHakkar()
-    return getRaid().CrowdControlMCedRaidMember("Mind Control", "Sheeping")
 end
 
 function MoronBox.Core.Raid.CrowdControlMCedRaidMemberNefarian()
@@ -789,6 +767,14 @@ local function HandleMCTargetingPreFocus()
     end
 
     if getBosses().Shazzrah.TargetingPreFocus() then
+        return true
+    end
+
+    return false
+end
+
+local function HandleZGTargetingPreFocus()
+    if getBosses().Jeklik.TargetingPreFocus() then
         return true
     end
 
@@ -1113,99 +1099,20 @@ local function HandleONYTargetingPostFocus()
 end
 
 local function HandleZGTargetingPostFocus()
-    local tName = UnitName("target")
+    if getBosses().Jeklik.TargetingPostFocus() then
+        return true
+    end
 
-    if getRaid().IsAtJindo() then
-        if getCore().ImTank() then
-            getRaid().GetTargetNotOnTank()
-            return true
-        elseif getCore().ImMeleeDPS() then
-            for i = 1, 2 do
-                if tName == "Shade of Jin\'do" and not getUnit().IsDead("target") then
-                    return true
-                end
+    if getBosses().Venoxis.TargetingPostFocus() then
+        return true
+    end
 
-                TargetNearestEnemy()
-            end
+    if getBosses().Marli.TargetingPostFocus() then
+        return true
+    end
 
-            GetTargetIfNone()
-            return true
-        elseif getCore().ImRangedDPS() then
-            for i = 1, 6 do
-                if tName == "Shade of Jin\'do" and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                if tName == "Powerful Healing Ward" and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                if tName == "Brain Wash Totem" and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                TargetNearestEnemy()
-            end
-
-            GetTargetIfNone()
-            return true
-        end
-    elseif getRaid().TankTarget("High Priestess Mar\'li") then
-        if getCore().ImTank() then
-            getRaid().GetTargetNotOnTank()
-            return true
-        elseif getCore().ImMeleeDPS() then
-            getRaid().AssistFocus()
-            return true
-        elseif getCore().ImRangedDPS() then
-            for i = 1, 4 do
-                if tName == "Spawn of Mar\'li" and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                if tName == "Witherbark Speaker" and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                TargetNearestEnemy()
-            end
-
-            GetTargetIfNone()
-            return true
-        end
-    elseif getRaid().TankTarget("High Priestess Jeklik") then
-        if getCore().ImTank() then
-            getRaid().GetTargetNotOnTank()
-            return true
-        elseif getCore().ImRangedDPS() then
-            for i = 1, 2 do
-                if tName == "Bloodseeker Bat" and getUnit().InCombat("target") and not getUnit().IsDead("target") then
-                    return true
-                end
-
-                TargetNearestEnemy()
-            end
-
-            GetTargetIfNone()
-            return true
-        end
-    elseif getRaid().TankTarget("High Priest Venoxis") then
-        if getCore().ImTank() then
-            getRaid().GetTargetNotOnTank()
-            return true
-        elseif getCore().ImMeleeDPS() or getCore().ImRangedDPS() then
-            for i = 1, 2 do
-                if tName == "Razzashi Cobra" and not getUnit().IsDead("target")
-                    and not GetRaidTargetIndex("target") then
-                    return true
-                end
-
-                TargetNearestEnemy()
-            end
-
-            GetTargetIfNone()
-            return true
-        end
+    if getBosses().Jindo.TargetingPostFocus() then
+        return true
     end
 
     return false
@@ -1286,6 +1193,10 @@ function MoronBox.Core.Raid.GetTarget()
         end
     elseif Instance.MC() then
         if HandleMCTargetingPreFocus() then
+            return
+        end
+    elseif Instance.ZG() then
+        if HandleZGTargetingPreFocus() then
             return
         end
     end

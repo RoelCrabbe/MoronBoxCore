@@ -510,7 +510,7 @@ function MoronBox.Config.Tables.MobsToDetectMagic()
 end
 
 function MoronBox.Config.Tables.MobsToDampenMagic()
-    return getRaid().TankTargetInSet(MobsToDampenMagicSet) or LOA_IsAtLoatheb()
+    return getRaid().TankTargetInSet(MobsToDampenMagicSet) -- or LOA_IsAtLoatheb()
 end
 
 function MoronBox.Config.Tables.MobsToAmplifyMagic()

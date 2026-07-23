@@ -93,7 +93,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
     local EQUIP_THROTTLE = 1.5
 
     local function Annihilator()
-        if not getSettingsState().Warrior.AnnihilatorActive or getApi().TableLength(getSettingsState().Warrior.AnnihilatorWeavers) == 0 then
+        if not getSettingsState().Warrior.AnnihilatorActive or getApi().ArrayLength(getSettingsState().Warrior.AnnihilatorWeavers) == 0 then
             return
         end
 

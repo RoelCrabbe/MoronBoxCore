@@ -45,7 +45,6 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
 
             getBosses().ExecuteActive(ENCOUNTER_KEY)
-            return true
         end,
         TargetingPostFocus = function()
             if not BoxStrategy then

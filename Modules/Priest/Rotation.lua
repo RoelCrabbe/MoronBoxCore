@@ -228,6 +228,21 @@ MoronBox:RegisterModule(MODULE_NAME, function()
             end
         end
 
+        if Instance.AQ40() and getAura().HasBuffOrDebuff("True Fulfillment", "target", "debuff") then
+            ClearTarget()
+            return
+        elseif Instance.BWL() and string.find(GetSubZoneText(), "Nefarian.*Lair") and getRaid().IsAtNefarianPhase() then
+            if getAura().HasBuffOrDebuff("Shadow Command", "target", "debuff") then
+                ClearTarget()
+                return
+            end
+        elseif Instance.ZG() and getBosses().Hakkar.IsAtHakkar() then
+            if getAura().HasBuffOrDebuff("Mind Control", "target", "debuff") then
+                ClearTarget()
+                return
+            end
+        end
+
         if BossSpecificDPS() then
             return
         end

@@ -285,19 +285,6 @@ end
 
 -- [[ Specific Aura At Fights ]] --
 
-function MoronBox.Core.Aura.MandokirGaze()
-    if not getAura().HasBuffOrDebuff("Threatening Gaze", "player", "debuff") then
-        return false
-    end
-
-    if getSpells().ImBusy() then
-        SpellStopCasting()
-    end
-
-    TargetUnit("player")
-    return true
-end
-
 function MoronBox.Core.Aura.PlayerRazorgoreOrb()
     return getAura().HasBuffOrDebuff("Mind Exhaustion", "player", "debuff")
 end

@@ -295,7 +295,7 @@ EventFrame:SetScript("OnEvent", function()
         ConfirmSummon()
         StaticPopup_Hide("CONFIRM_SUMMON")
     elseif event == "RESURRECT_REQUEST" then
-        if getRaid().TankTarget("Bloodlord Mandokir") then
+        if getBosses().Mandokir.IsAtMandokir() then
             return
         end
 

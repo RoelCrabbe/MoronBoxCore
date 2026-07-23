@@ -47,7 +47,7 @@ MoronBox:RegisterModule(MODULE_NAME, function()
                 INTELLECT_MANA_COST)
 
             if not member then
-                getDebugger().WarnMsg("No " .. CLASS_MODULE .. " found")
+                getApi().CdPrint("No valid " .. CLASS_MODULE .. " found")
                 return
             end
 
@@ -104,7 +104,6 @@ end, function()
 end)
 
 -- [[ Macro Entry Points ]] --
----@diagnostic enable: undefined-global
 
 -- Called to request the buff for the player's group.
 function MoronBox.Core.Buffs.RequestIntellect()
